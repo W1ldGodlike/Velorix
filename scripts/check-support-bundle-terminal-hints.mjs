@@ -4,7 +4,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintSuffix } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
+import {
+  PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
+  formatPackagedGuiE2ePlaywrightUiHintSuffix
+} from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import {
   TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY,
   TERMINAL_CONTRACT_HINTS_META_MODULE,
@@ -80,8 +83,20 @@ for (const locale of LOCALE_JSON_LOCALES) {
   const aboutTable = JSON.parse(fs.readFileSync(aboutPath, 'utf8'))
   const expected =
     formatTerminalContractHintsAboutSupportZipSectionsHint(locale) +
-    formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintSuffix(locale)
+    formatPackagedGuiE2ePlaywrightUiHintSuffix(
+      PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
+      locale
+    )
   const hint = aboutTable[TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY]
+  if (
+    TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY !==
+    PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY
+  ) {
+    failed = true
+    console.error(
+      `[${LOG_PREFIX}] TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY must match PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY`
+    )
+  }
   if (hint !== expected) {
     failed = true
     console.error(

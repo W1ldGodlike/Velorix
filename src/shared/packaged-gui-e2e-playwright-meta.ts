@@ -17,6 +17,21 @@ export const PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT =
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_STEP_LABEL =
   'packaged-gui-e2e-playwright-deferred' as const
 
+/** `locales/{ru,en}/settings.json` keys — Playwright suffix (`check:owner-visual-smoke-locale`). */
+export const PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS = [
+  'appSettingsPackagedE2eRegistryGuardHint',
+  'appSettingsPackagedSmokeCopyAppendixHint',
+  'appSettingsOwnerSmokeIntro',
+  'appSettingsOwnerSmokePackagedE2eHint'
+] as const
+
+export type PackagedGuiE2ePlaywrightSettingsUiHintKey =
+  (typeof PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS)[number]
+
+/** `locales/{ru,en}/about.json` — Playwright suffix (`check:support-bundle-terminal-hints`). */
+export const PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY =
+  'aboutSupportZipDiagnosticsSectionsHint' as const
+
 /** §21 quiet order: Help packaged → e2e registry → Playwright deferred → terminal guards. */
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_ORDER_ANCHORS = [
   'help-packaged-smoke-docs',
@@ -72,4 +87,54 @@ export function formatPackagedGuiE2ePlaywrightSettingsHintSuffix(locale: 'en' | 
 /** Root README — §21 Playwright deferred guard (paired with Help crosslinks line). */
 export function formatPackagedGuiE2ePlaywrightRootReadmeLine(): string {
   return `- §21 Playwright GUI e2e (deferred): \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\` — reserved \`${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} planned-gui-e2e; not in package.json until wired).`
+}
+
+/** `docs/ARCHITECTURE.md` — Playwright deferred UI hints (settings + about). */
+export function formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause(): string {
+  return `Playwright UI hints: ${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.join(', ')} + ${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY} via formatPackagedGuiE2ePlaywrightUiHintSuffix (check:owner-visual-smoke-locale, check:support-bundle-terminal-hints)`
+}
+
+/** `docs/RELEASE.md` — owner-visual-smoke locale guard bullet. */
+export function formatPackagedGuiE2ePlaywrightReleaseOwnerVisualSmokeLocaleLine(): string {
+  return `- \`npm run check:owner-visual-smoke-locale\` — theme/HiDPI + §21 Playwright UI hints (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} settings keys, \`formatPackagedGuiE2ePlaywrightUiHintSuffix\`) в \`locales/{ru,en}/settings.json\`;`
+}
+
+/** `docs/RELEASE.md` — deferred Playwright guard bullet. */
+export function formatPackagedGuiE2ePlaywrightReleaseDeferredBullet(): string {
+  return `- \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\` — §21 Playwright GUI e2e отложен: ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} \`planned-gui-e2e\`, зарезервирован \`${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` (пока **нет** в \`package.json\`); канон — \`packaged-gui-e2e-playwright-meta.ts\`; UI — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
+}
+
+/** `bin/README.md` — Playwright UI hints (locales settings + about). */
+export function formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine(): string {
+  return `- §21 Playwright UI hints (locales): \`check:owner-visual-smoke-locale\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} settings keys, \`formatPackagedGuiE2ePlaywrightUiHintSuffix\`); about — \`check:support-bundle-terminal-hints\`.`
+}
+
+/** Tail for `docs/RELEASE.md` copy-appendix paragraph (§21 UI). */
+export function formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail(): string {
+  return ` Playwright UI — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`).`
+}
+
+/** Dispatch Playwright UI hint suffix by locale key (settings + about). */
+export function formatPackagedGuiE2ePlaywrightUiHintSuffix(
+  key:
+    | PackagedGuiE2ePlaywrightSettingsUiHintKey
+    | typeof PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
+  locale: 'en' | 'ru'
+): string {
+  switch (key) {
+    case 'appSettingsPackagedE2eRegistryGuardHint':
+      return formatPackagedGuiE2ePlaywrightSettingsHintSuffix(locale)
+    case 'appSettingsPackagedSmokeCopyAppendixHint':
+      return formatPackagedGuiE2ePlaywrightCopyAppendixHintSuffix(locale)
+    case 'appSettingsOwnerSmokeIntro':
+      return formatPackagedGuiE2ePlaywrightOwnerIntroHintSuffix(locale)
+    case 'appSettingsOwnerSmokePackagedE2eHint':
+      return formatPackagedGuiE2ePlaywrightOwnerHubHintSuffix(locale)
+    case PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY:
+      return formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintSuffix(locale)
+    default: {
+      const _exhaustive: never = key
+      return _exhaustive
+    }
+  }
 }

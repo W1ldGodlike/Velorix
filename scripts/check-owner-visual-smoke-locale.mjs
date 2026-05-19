@@ -9,10 +9,8 @@ import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from '../src/shared/app-settings-hi
 import { APP_SETTINGS_THEME_CHECKLIST_KEYS } from '../src/shared/app-settings-theme-checklist-keys.ts'
 import { LOCALE_JSON_LOCALES } from '../src/shared/locale-json-catalog.ts'
 import {
-  formatPackagedGuiE2ePlaywrightCopyAppendixHintSuffix,
-  formatPackagedGuiE2ePlaywrightOwnerHubHintSuffix,
-  formatPackagedGuiE2ePlaywrightOwnerIntroHintSuffix,
-  formatPackagedGuiE2ePlaywrightSettingsHintSuffix
+  PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS,
+  formatPackagedGuiE2ePlaywrightUiHintSuffix
 } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
@@ -27,10 +25,8 @@ const META_KEYS = [
   'appSettingsHidpiManualHint',
   'appSettingsHidpiChecklistIntro',
   'appSettingsPackagedSmokeParityGuardHint',
-  'appSettingsPackagedSmokeCopyAppendixHint',
-  'appSettingsPackagedE2eRegistryGuardHint',
   'appSettingsOwnerSmokeLocaleGuardHint',
-  'appSettingsOwnerSmokePackagedE2eHint'
+  ...PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS
 ]
 
 const REQUIRED_KEYS = [
@@ -63,41 +59,17 @@ for (const locale of LOCALE_JSON_LOCALES) {
         `[check:owner-visual-smoke-locale] locales/${locale}/settings.json appSettingsPackagedE2eRegistryGuardHint missing: ${helpClause}`
       )
     }
-    const playwrightSuffix = formatPackagedGuiE2ePlaywrightSettingsHintSuffix(locale)
-    if (!e2eHint.includes(playwrightSuffix)) {
-      failed = true
-      console.error(
-        `[check:owner-visual-smoke-locale] locales/${locale}/settings.json appSettingsPackagedE2eRegistryGuardHint missing: ${playwrightSuffix}`
-      )
-    }
   }
-  const copyAppendixHint = table.appSettingsPackagedSmokeCopyAppendixHint
-  if (typeof copyAppendixHint === 'string') {
-    const copyPlaywrightSuffix = formatPackagedGuiE2ePlaywrightCopyAppendixHintSuffix(locale)
-    if (!copyAppendixHint.includes(copyPlaywrightSuffix)) {
-      failed = true
-      console.error(
-        `[check:owner-visual-smoke-locale] locales/${locale}/settings.json appSettingsPackagedSmokeCopyAppendixHint missing: ${copyPlaywrightSuffix}`
-      )
+  for (const key of PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS) {
+    const hint = table[key]
+    if (typeof hint !== 'string') {
+      continue
     }
-  }
-  const ownerIntro = table.appSettingsOwnerSmokeIntro
-  if (typeof ownerIntro === 'string') {
-    const ownerIntroPlaywrightSuffix = formatPackagedGuiE2ePlaywrightOwnerIntroHintSuffix(locale)
-    if (!ownerIntro.includes(ownerIntroPlaywrightSuffix)) {
+    const playwrightSuffix = formatPackagedGuiE2ePlaywrightUiHintSuffix(key, locale)
+    if (!hint.includes(playwrightSuffix)) {
       failed = true
       console.error(
-        `[check:owner-visual-smoke-locale] locales/${locale}/settings.json appSettingsOwnerSmokeIntro missing: ${ownerIntroPlaywrightSuffix}`
-      )
-    }
-  }
-  const ownerHubHint = table.appSettingsOwnerSmokePackagedE2eHint
-  if (typeof ownerHubHint === 'string') {
-    const ownerHubPlaywrightSuffix = formatPackagedGuiE2ePlaywrightOwnerHubHintSuffix(locale)
-    if (!ownerHubHint.includes(ownerHubPlaywrightSuffix)) {
-      failed = true
-      console.error(
-        `[check:owner-visual-smoke-locale] locales/${locale}/settings.json appSettingsOwnerSmokePackagedE2eHint missing: ${ownerHubPlaywrightSuffix}`
+        `[check:owner-visual-smoke-locale] locales/${locale}/settings.json ${key} missing: ${playwrightSuffix}`
       )
     }
   }
@@ -107,5 +79,5 @@ if (failed) {
   process.exit(1)
 }
 console.log(
-  `[check:owner-visual-smoke-locale] OK (${REQUIRED_KEYS.length} keys × ${LOCALE_JSON_LOCALES.length} locales)`
+  `[check:owner-visual-smoke-locale] OK (${REQUIRED_KEYS.length} keys × ${LOCALE_JSON_LOCALES.length} locales; ${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} Playwright UI hints)`
 )

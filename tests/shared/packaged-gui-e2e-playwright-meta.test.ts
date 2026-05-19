@@ -3,10 +3,18 @@ import { describe, expect, it } from 'vitest'
 
 import { PACKAGED_E2E_PLANNED_GUI_STEP_IDS } from '../../src/shared/packaged-e2e-smoke-scenarios'
 import {
+  PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
   PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT,
   PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT,
   PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT,
   PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_ORDER_ANCHORS,
+  PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS,
+  formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause,
+  formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine,
+  formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail,
+  formatPackagedGuiE2ePlaywrightReleaseDeferredBullet,
+  formatPackagedGuiE2ePlaywrightReleaseOwnerVisualSmokeLocaleLine,
+  formatPackagedGuiE2ePlaywrightUiHintSuffix,
   formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine,
   formatPackagedGuiE2ePlaywrightCopyAppendixHintSuffix,
   formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintSuffix,
@@ -75,6 +83,53 @@ describe('packaged-gui-e2e-playwright-meta §21', () => {
     expect(line).toContain('check:packaged-gui-e2e-playwright-deferred')
     expect(line).toContain('test:e2e:gui')
     expect(readFileSync('README.md', 'utf8')).toContain(line)
+  })
+
+  it('formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause matches ARCHITECTURE', () => {
+    expect(readFileSync('docs/ARCHITECTURE.md', 'utf8')).toContain(
+      formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause()
+    )
+  })
+
+  it('RELEASE bullets match formatPackagedGuiE2ePlaywrightRelease* lines', () => {
+    const release = readFileSync('docs/RELEASE.md', 'utf8')
+    expect(release).toContain(formatPackagedGuiE2ePlaywrightReleaseOwnerVisualSmokeLocaleLine())
+    expect(release).toContain(formatPackagedGuiE2ePlaywrightReleaseDeferredBullet())
+    expect(release).toContain(formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail())
+  })
+
+  it('formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine matches bin/README', () => {
+    expect(readFileSync('bin/README.md', 'utf8')).toContain(
+      formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine()
+    )
+  })
+
+  it('PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS lists 4 settings hints', () => {
+    expect(PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS).toEqual([
+      'appSettingsPackagedE2eRegistryGuardHint',
+      'appSettingsPackagedSmokeCopyAppendixHint',
+      'appSettingsOwnerSmokeIntro',
+      'appSettingsOwnerSmokePackagedE2eHint'
+    ])
+    expect(PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY).toBe(
+      'aboutSupportZipDiagnosticsSectionsHint'
+    )
+  })
+
+  it('formatPackagedGuiE2ePlaywrightUiHintSuffix dispatches per locale key', () => {
+    for (const locale of ['en', 'ru'] as const) {
+      for (const key of PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS) {
+        expect(formatPackagedGuiE2ePlaywrightUiHintSuffix(key, locale)).toContain(
+          'check:packaged-gui-e2e-playwright-deferred'
+        )
+      }
+      expect(
+        formatPackagedGuiE2ePlaywrightUiHintSuffix(
+          PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
+          locale
+        )
+      ).toContain('check:packaged-gui-e2e-playwright-deferred')
+    }
   })
 
   it('exports §21 quiet order anchors for help-smoke-guards registry', () => {

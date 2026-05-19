@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1320)
+## Re-anchor (J-1330)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `27a3d2b` (cadence J-1316..1320 §21 Playwright deferred) |
-| Снимок тестов | **276** files / **1840** tests |
-| Спринт | §21 registry/guards + Help (owner/about/packaged/logging) + `check:packaged-gui-e2e-playwright-deferred` [x]; GUI Playwright `test:e2e:gui` в package.json [ ]; owner-smoke/packaged на железе — владелец |
+| Ветка | `main` @ `15d96a4` (cadence J-1326..1330 §21 Playwright UI registry/docs) |
+| Снимок тестов | **276** files / **1851** tests |
+| Спринт | §21 UI hints settings/owner/about/ARCHITECTURE/RELEASE/bin [x]; `test:e2e:gui` в package.json [ ]; owner-smoke/packaged на железе — владелец |
 
-**Последние J:** [J-1318](../IMPLEMENTATION_JOURNAL.md) packaged Help Playwright; [J-1319](../IMPLEMENTATION_JOURNAL.md) help-smoke-guards registry/quiet order; [J-1320](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1316..1320.
+**Последние J:** [J-1328](../IMPLEMENTATION_JOURNAL.md) RELEASE Playwright bullets; [J-1329](../IMPLEMENTATION_JOURNAL.md) bin/README + RELEASE copy; [J-1330](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1326..1330.
 
-**Следующий cadence:** commit **J-1325**.
+**Следующий cadence:** commit **J-1335**.
 
 ## Новый чат
 
