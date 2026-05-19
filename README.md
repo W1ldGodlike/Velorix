@@ -108,6 +108,7 @@ npm run engines:doctor
 - `Data/`, `Help/` — конфиги и подсказки UI.
 - Русские `summary` терминала: **`npm run locales:terminal-summaries-ru`** (дважды до 0 замен) — [`Help/ffmpeg-terminal-hints.md`](./Help/ffmpeg-terminal-hints.md).
 - Help §21: `npm run check:help-workflow-smoke-crosslinks` (44 workflow; tail 42 HelpCrosslinksCountTail + ffmpeg FfmpegTerminalWorkflowClause + knowledge KnowledgeHubDevClause (FAQ 2 in tail, outside 44)); registry `check:help-smoke-guards-package-json` requires `partition:` in all 44 workflow Help.
+- §21 Playwright GUI e2e (deferred): `npm run check:packaged-gui-e2e-playwright-deferred` — reserved `test:e2e:gui` (8 planned-gui-e2e; not in package.json until wired).
 - SDK automation: [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
 - yt-dlp по умолчанию: `<папка программы>/app-data/downloads/ytdlp`.
 - NSIS спрашивает про удаление `app-data/`; в ZIP — `Uninstall FluxAlloy.cmd`.

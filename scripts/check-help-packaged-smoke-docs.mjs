@@ -7,7 +7,9 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
-  formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClause,
+  formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
@@ -69,6 +71,22 @@ for (const rel of [
       rel,
       formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix(locale),
       'crosslinks-quiet-suffix'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClause(locale),
+      'planned-gui-e2e'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix(locale),
+      'playwright-deferred-suffix'
     ) || failed
 }
 

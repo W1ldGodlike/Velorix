@@ -23,6 +23,7 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_QUIET_STEP_LABELS,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmePlaywrightDeferredLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS,
@@ -47,6 +48,8 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET,
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingClause,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClause,
+  formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote,
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
@@ -287,6 +290,22 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     }
   })
 
+  it('packaged Help includes planned GUI e2e and Playwright deferred formatters', () => {
+    for (const rel of [
+      ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
+      ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS
+    ]) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      const text = readFileSync(rel, 'utf8')
+      expect(text).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClause(locale)
+      )
+      expect(text).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix(locale)
+      )
+    }
+  })
+
   it('formats bin/README packaged quiet, dev, and partition lines', () => {
     const quietLine = formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine()
     expect(quietLine).toContain('check:help-packaged-smoke-docs')
@@ -305,11 +324,16 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     expect(partitionGuardLine).toContain(
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET
     )
+    const playwrightDeferredLine =
+      formatPackagedE2eHelpWorkflowCrosslinksBinReadmePlaywrightDeferredLine()
+    expect(playwrightDeferredLine).toContain('test:e2e:gui')
+    expect(playwrightDeferredLine).toContain('check:packaged-gui-e2e-playwright-deferred')
     const readme = readFileSync('bin/README.md', 'utf8')
     expect(readme).toContain(quietLine)
     expect(readme).toContain(devLine)
     expect(readme).toContain(partitionLine)
     expect(readme).toContain(partitionGuardLine)
+    expect(readme).toContain(playwrightDeferredLine)
     const rootLine = formatPackagedE2eHelpWorkflowCrosslinksRootReadmePartitionLine()
     expect(readFileSync('README.md', 'utf8')).toContain(rootLine)
     const agentsLine = formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine()

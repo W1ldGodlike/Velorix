@@ -9,6 +9,8 @@ describe('check:help-smoke-guards-package-json §15', () => {
     expect(result).toContain('[check:help-smoke-guards-package-json] OK')
     expect(result).toContain('quiet order')
     expect(result).toContain('4 Help guards')
+    expect(result).toContain('check:packaged-gui-e2e-playwright-deferred')
+    expect(result).toContain('playwright after e2e-registry')
     expect(result).toContain('partition in 44 workflow')
   })
 })

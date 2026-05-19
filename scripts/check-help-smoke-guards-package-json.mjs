@@ -12,6 +12,10 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+import {
+  PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT,
+  PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_ORDER_ANCHORS
+} from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
 const packageJson = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'package.json'), 'utf8'))
@@ -41,7 +45,32 @@ if (missing.length > 0) {
   process.exit(1)
 }
 
+if (typeof scripts[PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT] !== 'string') {
+  console.error(
+    `[check:help-smoke-guards-package-json] package.json missing §21 script: ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}`
+  )
+  process.exit(1)
+}
+
 const quietText = fs.readFileSync(path.join(REPO_ROOT, 'scripts/run-quiet-check.mjs'), 'utf8')
+const section21QuietPositions = PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_ORDER_ANCHORS.map((label) =>
+  quietText.indexOf(`['${label}',`)
+)
+if (section21QuietPositions.some((pos) => pos < 0)) {
+  console.error(
+    '[check:help-smoke-guards-package-json] run-quiet-check.mjs missing §21 Playwright quiet order anchors'
+  )
+  process.exit(1)
+}
+for (let i = 1; i < section21QuietPositions.length; i++) {
+  if (section21QuietPositions[i] <= section21QuietPositions[i - 1]) {
+    console.error(
+      '[check:help-smoke-guards-package-json] run-quiet-check §21 order: help-packaged → e2e-registry → playwright-deferred → terminal-hints-guards'
+    )
+    process.exit(1)
+  }
+}
+
 const quietPositions = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_QUIET_STEP_LABELS.map(
   (label) => quietText.indexOf(`['${label}',`)
 )
@@ -61,5 +90,5 @@ for (let i = 1; i < quietPositions.length; i++) {
 }
 
 console.log(
-  `[check:help-smoke-guards-package-json] OK (${allGuardScripts.length} Help guards; quiet order; partition in ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow)`
+  `[check:help-smoke-guards-package-json] OK (${allGuardScripts.length} Help guards + ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}; quiet order; §21 playwright after e2e-registry; partition in ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow)`
 )

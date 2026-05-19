@@ -161,13 +161,22 @@ export function formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine(
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET =
   'tail 42 HelpCrosslinksCountTail + ffmpeg FfmpegTerminalWorkflowClause + knowledge KnowledgeHubDevClause (FAQ 2 in tail, outside 44)' as const
 
-/** Required substrings in `bin/README.md` (§21 crosslinks dev line). */
+/** Required substrings in `bin/README.md` (§21 Playwright deferred). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT =
+  'test:e2e:gui' as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD =
+  'check:packaged-gui-e2e-playwright-deferred' as const
+
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS = [
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET,
   'formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine',
   'formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix',
-  'check:help-packaged-smoke-docs'
+  'check:help-packaged-smoke-docs',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD,
+  'packaged-gui-e2e-playwright-meta'
 ] as const
 
 /** Markdown bullet for `bin/README.md` (sync with guard snippets). */
@@ -190,6 +199,11 @@ export function formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine(): strin
   return `**Help §21:** \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (44 workflow; ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}); registry \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\` requires \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET}\` in all ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow Help.`
 }
 
+/** bin/README — §21 Playwright GUI e2e deferred (`test:e2e:gui` not in package.json yet). */
+export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmePlaywrightDeferredLine(): string {
+  return `- §21 planned GUI Playwright (deferred): \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\` — reserved \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` (8 planned-gui-e2e; \`packaged-gui-e2e-playwright-meta\`; not in package.json until wired).`
+}
+
 /** bin/README — packaged Help crosslinks quiet suffix (6 articles, 44 workflow). */
 export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine(): string {
   return `- Packaged Help (win/linux/macos): \`npm run check:help-packaged-smoke-docs\` — \`formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix\` (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET}, 6 articles).`
@@ -200,7 +214,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine(): st
   const docGuards = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS.map(
     (s) => `\`npm run ${s}\``
   ).join(', ')
-  return `- Help smoke guards (\`check:quiet\`): registry \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\`, then ${docGuards}.`
+  return `- Help smoke guards (\`check:quiet\`): registry \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\` (4 Help doc guards + requires \`check:packaged-gui-e2e-playwright-deferred\` in package.json), then ${docGuards}; §21 Playwright deferred after \`check:packaged-e2e-scenarios-registry\`.`
 }
 
 /** bin/README — registry guard requires partition in all workflow Help. */
@@ -306,6 +320,8 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS 
   'formatPackagedManualSmokeE2eAppendixLines',
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 ] as const
 
@@ -325,6 +341,8 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS 
   'appendPackagedManualSmokeE2ePlanLines',
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 ] as const
 
@@ -337,7 +355,9 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_REQUIRED_SNIPPET
   '§21 packaged e2e (CI vs owner)',
   'planned GUI e2e scope',
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD
 ] as const
 
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS = [
@@ -356,6 +376,9 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPE
   '§4.3',
   'owner:',
   '§21 packaged e2e (CI vs owner)',
+  'Planned GUI e2e',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 ] as const
 
@@ -399,6 +422,30 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowA
     : `workflow articles (\`check:help-workflow-smoke-crosslinks\`, ${countSnippet}; ${partition}).`
 }
 
+/** §21 Playwright deferred suffix (about/logging/packaged Help dev lines). */
+export function formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  return locale === 'ru'
+    ? ` §21 Playwright: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\` (reserved \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\`).`
+    : ` §21 Playwright: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\` (reserved \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\`).`
+}
+
+/** Packaged smoke Help — planned GUI e2e clause (8 steps; Playwright deferred). */
+export function formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClause(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  const steps =
+    '`open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`'
+  const reserved =
+    locale === 'ru'
+      ? `Зарезервировано \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` (\`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\`; пока нет в \`package.json\`).`
+      : `Reserved \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` (\`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\`; not in \`package.json\` yet).`
+  return locale === 'ru'
+    ? `**Planned GUI e2e** (8 шагов, Playwright позже) — ${steps}. ${reserved}`
+    : `**Planned GUI e2e** (8 steps, Playwright later): ${steps}. ${reserved}`
+}
+
 /** About support — `releaseSmoke:` dev guards line (§18/§21 anchor). */
 export function formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
@@ -409,7 +456,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeD
     locale === 'ru'
       ? ` §19 build: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` / \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\` (Linux/CI \`npm run build\`).`
       : ` §19 build: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` / \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\` (Linux/CI \`npm run build\`).`
-  return `dev: \`check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}; ${partition}).${buildEsm}`
+  return `dev: \`check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}; ${partition}).${buildEsm}${formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix(locale)}`
 }
 
 /** Knowledge hub — workflow + terminal hints dev guards (§13/§15). */
@@ -468,5 +515,5 @@ export function formatPackagedE2eHelpWorkflowCrosslinksLoggingClause(
     locale === 'ru'
       ? ` §19 build: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` / \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\` (Linux/CI \`npm run build\`);`
       : ` §19 build: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` / \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\` (Linux/CI \`npm run build\`);`
-  return `\`npm run check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}; ${partition}, ${quietTail});${buildEsm}`
+  return `\`npm run check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}; ${partition}, ${quietTail});${buildEsm}${formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix(locale)}`
 }

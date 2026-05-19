@@ -68,6 +68,7 @@
     "check:help-smoke-guards-package-json": "node scripts/check-help-smoke-guards-package-json.mjs",
     "check:help-terminal-hints-docs": "node scripts/check-help-terminal-hints-docs.mjs",
     "check:packaged-e2e-scenarios-registry": "node scripts/check-packaged-e2e-scenarios-registry.mjs",
+    "check:packaged-gui-e2e-playwright-deferred": "node scripts/check-packaged-gui-e2e-playwright-deferred.mjs",
     "check:terminal-summaries-ru": "node scripts/check-terminal-summaries-ru.mjs",
     "check:terminal-data-summaries": "node scripts/check-terminal-data-summaries-quality.mjs",
     "check:terminal-scenario-summaries": "node scripts/check-terminal-scenario-summaries-quality.mjs",

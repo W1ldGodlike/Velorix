@@ -25,6 +25,7 @@ const steps = [
   ['help-packaged-smoke-docs', ['run', 'check:help-packaged-smoke-docs']],
   ['help-terminal-hints-docs', ['run', 'check:help-terminal-hints-docs']],
   ['packaged-e2e-scenarios-registry', ['run', 'check:packaged-e2e-scenarios-registry']],
+  ['packaged-gui-e2e-playwright-deferred', ['run', 'check:packaged-gui-e2e-playwright-deferred']],
   ['terminal-hints-guards-package-json', ['run', 'check:terminal-hints-guards-package-json']],
   ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
   ['terminal-data-summaries', ['run', 'check:terminal-data-summaries']],

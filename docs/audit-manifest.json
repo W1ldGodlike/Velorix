@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T09:44:39.749Z",
+  "generatedAt": "2026-05-19T10:20:09.137Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1176,
+  "fileCount": 1180,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -64,6 +64,7 @@
     "scripts/check-no-secrets.mjs",
     "scripts/check-owner-visual-smoke-locale.mjs",
     "scripts/check-packaged-e2e-scenarios-registry.mjs",
+    "scripts/check-packaged-gui-e2e-playwright-deferred.mjs",
     "scripts/check-packaged-manual-smoke-parity.mjs",
     "scripts/check-platform-packaging-scripts.mjs",
     "scripts/check-renderer-state-approach.mjs",
@@ -763,6 +764,7 @@
     "src/shared/packaged-ffprobe-smoke-minimal.ts",
     "src/shared/packaged-ffprobe-smoke-stream-validators.ts",
     "src/shared/packaged-ffprobe-smoke.ts",
+    "src/shared/packaged-gui-e2e-playwright-meta.ts",
     "src/shared/packaged-manual-smoke-checklist-build.ts",
     "src/shared/packaged-manual-smoke-checklist-format.ts",
     "src/shared/packaged-manual-smoke-locale-lines.ts",
@@ -1000,6 +1002,7 @@
     "tests/scripts/check-native-main-platform-guard.test.ts",
     "tests/scripts/check-owner-visual-smoke-locale.test.ts",
     "tests/scripts/check-packaged-e2e-scenarios-registry.test.ts",
+    "tests/scripts/check-packaged-gui-e2e-playwright-deferred.test.ts",
     "tests/scripts/check-packaged-manual-smoke-parity.test.ts",
     "tests/scripts/check-platform-packaging-scripts.test.ts",
     "tests/scripts/check-release-chain.test.ts",
@@ -1136,6 +1139,7 @@
     "tests/shared/packaged-ffprobe-smoke-core.test.ts",
     "tests/shared/packaged-ffprobe-smoke-stream-detail-a.test.ts",
     "tests/shared/packaged-ffprobe-smoke-stream-detail-b.test.ts",
+    "tests/shared/packaged-gui-e2e-playwright-meta.test.ts",
     "tests/shared/packaged-manual-smoke-checklist.test.ts",
     "tests/shared/packaged-manual-smoke-plain-text.test.ts",
     "tests/shared/packaged-release-smoke.test.ts",

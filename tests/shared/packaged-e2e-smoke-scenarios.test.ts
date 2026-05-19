@@ -83,6 +83,8 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
     const joined = formatPackagedE2eSmokeDiagnosticLines().join('\n')
     expect(joined).toContain('planned GUI e2e scope:')
     expect(joined).toContain('open-file')
+    expect(joined).toContain('test:e2e:gui')
+    expect(joined).toContain('check:packaged-gui-e2e-playwright-deferred')
     expect(joined).toContain(formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine('articles'))
   })
 

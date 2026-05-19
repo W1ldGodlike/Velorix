@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1310)
+## Re-anchor (J-1320)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `5df4e29` (cadence `e075989` J-1306..1310 + re-anchor J-1310; rebase на `d2dbe99`; prior `0a6e246` J-1305) |
-| Снимок тестов | **273** files / **1833** tests |
-| Спринт | §21 registry/guards + `partition:` во всех **44** workflow [x]; GUI Playwright (8 steps) [ ]; §8 `terminalHints:` 24 Help; owner-smoke/packaged на железе — владелец |
+| Ветка | `main` @ cadence commit J-1316..1320 (§21 Playwright deferred) |
+| Снимок тестов | **276** files / **1840** tests |
+| Спринт | §21 registry/guards + Help (owner/about/packaged/logging) + `check:packaged-gui-e2e-playwright-deferred` [x]; GUI Playwright `test:e2e:gui` в package.json [ ]; owner-smoke/packaged на железе — владелец |
 
-**Последние J:** [J-1308](../IMPLEMENTATION_JOURNAL.md) AgentsMd/registry formatters; [J-1309](../IMPLEMENTATION_JOURNAL.md) README `RootReadmePartitionLine`; [J-1310](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1306..1310.
+**Последние J:** [J-1318](../IMPLEMENTATION_JOURNAL.md) packaged Help Playwright; [J-1319](../IMPLEMENTATION_JOURNAL.md) help-smoke-guards registry/quiet order; [J-1320](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1316..1320.
 
-**Следующий cadence:** push + re-anchor **J-1320** (commit **J-1315** — §19 `fix:esm-shim` meta/guards/Help).
+**Следующий cadence:** commit **J-1325**.
 
 ## Новый чат
 
