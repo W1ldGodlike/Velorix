@@ -24,4 +24,4 @@
 - **Linux** — VAAPI (Intel/AMD), при наличии `/dev/dri` и vaapi в `ffmpeg -hwaccels`.
 - **macOS** — VideoToolbox в списке кодеков; ручной smoke в настройках ориентирован на Win/Linux.
 
-См. также [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md), [owner-manual-smoke.md](owner-manual-smoke.md) и [faq-troubleshooting.md](faq-troubleshooting.md). При диагностике HW-export в Support ZIP — dev-блок `terminalHints:` (§8, 24 статей Help) — [logging-and-diagnostics.md](logging-and-diagnostics.md).
+См. также [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md), [owner-manual-smoke.md](owner-manual-smoke.md) и [faq-troubleshooting.md](faq-troubleshooting.md). При диагностике HW-export в Support ZIP — dev-блок `terminalHints:` (§8, 24 статей Help) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 статьи).

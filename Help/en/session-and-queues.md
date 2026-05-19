@@ -16,4 +16,4 @@ You can **open the file** in the editor or **only reveal the folder**, depending
 
 Keep downloads only, then start encoding yourself once the file is on disk.
 
-See also [downloads-workflow.md](downloads-workflow.md). Packaged smoke **ytdlp** step and owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:`; dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md).
+See also [downloads-workflow.md](downloads-workflow.md). Packaged smoke **ytdlp** step and owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:`; dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles).

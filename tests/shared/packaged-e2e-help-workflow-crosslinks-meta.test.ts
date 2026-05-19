@@ -2,6 +2,10 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 import {
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_MISC_TAIL_HELP_PATHS
+} from '../../src/shared/terminal-contract-hints-meta'
+import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS,
@@ -160,18 +164,9 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
   })
 
   it('formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail matches hub Help', () => {
-    for (const rel of [
-      'Help/getting-started.md',
-      'Help/en/getting-started.md',
-      'Help/probe-and-inspector-basics.md',
-      'Help/en/probe-and-inspector-basics.md',
-      'Help/faq-troubleshooting.md',
-      'Help/en/faq-troubleshooting.md',
-      'Help/downloads-workflow.md',
-      'Help/en/downloads-workflow.md',
-      'Help/appearance-language-theme.md',
-      'Help/en/appearance-language-theme.md'
-    ]) {
+    expect(TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS).toHaveLength(42)
+    expect(TERMINAL_CONTRACT_HINTS_WORKFLOW_MISC_TAIL_HELP_PATHS).toHaveLength(26)
+    for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS) {
       const locale = rel.includes('/en/') ? 'en' : 'ru'
       const text = readFileSync(rel, 'utf8')
       expect(text).toContain(formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale))
