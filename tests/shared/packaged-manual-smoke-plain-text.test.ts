@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine } from '../../src/shared/packaged-gui-e2e-playwright-meta'
 import { formatPackagedE2eSmokeDiagnosticLines } from '../../src/shared/packaged-e2e-smoke-scenarios'
 import {
   formatPackagedManualSmokeE2eAppendixLines,
@@ -38,6 +39,8 @@ describe('packaged-manual-smoke-plain-text §3', () => {
     expect(lines[0]).toBe(PACKAGED_MANUAL_SMOKE_E2E_APPENDIX_HEADING)
     expect(lines.slice(1)).toEqual(formatPackagedE2eSmokeDiagnosticLines())
     expect(lines.some((l) => l.includes('check:packaged-e2e-scenarios-registry'))).toBe(true)
+    expect(lines.join('\n')).toContain(formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine())
+    expect(lines.join('\n')).toContain('check:packaged-gui-e2e-playwright-deferred')
   })
 
   it('checklist body matches owner packaged section plus §21 appendix', () => {

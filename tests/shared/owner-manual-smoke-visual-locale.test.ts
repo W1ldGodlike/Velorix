@@ -4,6 +4,12 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
   formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause
 } from '../../src/shared/packaged-e2e-help-workflow-crosslinks-meta'
+import {
+  formatPackagedGuiE2ePlaywrightCopyAppendixHintSuffix,
+  formatPackagedGuiE2ePlaywrightOwnerIntroHintSuffix,
+  formatPackagedGuiE2ePlaywrightOwnerHubHintSuffix,
+  formatPackagedGuiE2ePlaywrightSettingsHintSuffix
+} from '../../src/shared/packaged-gui-e2e-playwright-meta'
 import { formatOwnerManualSmokeHidpiChecklistLinesFromShard } from '../../src/shared/owner-manual-smoke-hidpi-lines'
 import { formatOwnerManualSmokeThemeChecklistLinesFromShard } from '../../src/shared/owner-manual-smoke-theme-lines'
 import enSettings from '../../locales/en/settings.json'
@@ -58,12 +64,24 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
     )
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('FAQ outside 44')
     expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('FAQ вне 44')
+    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
+      formatPackagedGuiE2ePlaywrightSettingsHintSuffix('en')
+    )
+    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
+      formatPackagedGuiE2ePlaywrightSettingsHintSuffix('ru')
+    )
   })
 
   it('owner hub packaged e2e hint links packaged Copy to appendix', () => {
     expect(enSettings.appSettingsOwnerSmokePackagedE2eHint).toContain('§21 packaged e2e')
     expect(ruSettings.appSettingsOwnerSmokePackagedE2eHint).toContain('releaseSmoke:')
     expect(enSettings.appSettingsOwnerSmokePackagedE2eHint).toContain('Packaged panel')
+    expect(enSettings.appSettingsOwnerSmokePackagedE2eHint).toContain(
+      formatPackagedGuiE2ePlaywrightOwnerHubHintSuffix('en')
+    )
+    expect(ruSettings.appSettingsOwnerSmokePackagedE2eHint).toContain(
+      formatPackagedGuiE2ePlaywrightOwnerHubHintSuffix('ru')
+    )
   })
 
   it('packaged copy appendix hint mentions §21 e2e groups', () => {
@@ -71,6 +89,12 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
     expect(ruSettings.appSettingsPackagedSmokeCopyAppendixHint).toContain('§21 packaged e2e')
     expect(enSettings.appSettingsPackagedSmokeCopyAppendixHint).toContain('releaseSmoke:')
     expect(ruSettings.appSettingsPackagedSmokeCopyAppendixHint).toContain('ownerManualSmoke:')
+    expect(enSettings.appSettingsPackagedSmokeCopyAppendixHint).toContain(
+      formatPackagedGuiE2ePlaywrightCopyAppendixHintSuffix('en')
+    )
+    expect(ruSettings.appSettingsPackagedSmokeCopyAppendixHint).toContain(
+      formatPackagedGuiE2ePlaywrightCopyAppendixHintSuffix('ru')
+    )
   })
 
   it('owner smoke intro mentions per-step e2e appendix', () => {
@@ -81,6 +105,12 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
       'formatPackagedManualSmokeE2eAppendixLines'
     )
     expect(enSettings.appSettingsOwnerSmokeIntro).toContain('per-step e2e')
+    expect(enSettings.appSettingsOwnerSmokeIntro).toContain(
+      formatPackagedGuiE2ePlaywrightOwnerIntroHintSuffix('en')
+    )
+    expect(ruSettings.appSettingsOwnerSmokeIntro).toContain(
+      formatPackagedGuiE2ePlaywrightOwnerIntroHintSuffix('ru')
+    )
     expect(ruSettings.appSettingsOwnerSmokeIntro).toContain('per-step e2e')
     expect(enSettings.appSettingsOwnerSmokeIntro).toContain('8 planned GUI')
     expect(ruSettings.appSettingsOwnerSmokeIntro).toContain('planned GUI')

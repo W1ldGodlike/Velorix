@@ -46,6 +46,38 @@ const packagingText = fs.readFileSync(
   'utf8'
 )
 const diag = formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine()
+const scenariosText = fs.readFileSync(
+  path.join(REPO_ROOT, 'src/shared/packaged-e2e-smoke-scenarios.ts'),
+  'utf8'
+)
+if (!scenariosText.includes('formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine()')) {
+  console.error(
+    '[check:packaged-gui-e2e-playwright-deferred] packaged-e2e-smoke-scenarios.ts must call formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine() in formatPackagedE2eSmokeDiagnosticLines (Copy/releaseSmoke appendix)'
+  )
+  process.exit(1)
+}
+for (const rel of [
+  'src/shared/packaged-manual-smoke-plain-text.ts',
+  'src/shared/packaged-release-smoke.ts'
+]) {
+  const text = fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8')
+  if (!text.includes('formatPackagedE2eSmokeDiagnosticLines')) {
+    console.error(
+      `[check:packaged-gui-e2e-playwright-deferred] ${rel} must use formatPackagedE2eSmokeDiagnosticLines (Playwright deferred diagnostic in appendix)`
+    )
+    process.exit(1)
+  }
+}
+const checkReleaseText = fs.readFileSync(
+  path.join(REPO_ROOT, 'src/shared/check-release-scripts.ts'),
+  'utf8'
+)
+if (!checkReleaseText.includes('formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine()')) {
+  console.error(
+    '[check:packaged-gui-e2e-playwright-deferred] check-release-scripts.ts must call formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine()'
+  )
+  process.exit(1)
+}
 if (!packagingText.includes('formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine()')) {
   console.error(
     '[check:packaged-gui-e2e-playwright-deferred] platform-packaging-scripts.ts must call formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine()'

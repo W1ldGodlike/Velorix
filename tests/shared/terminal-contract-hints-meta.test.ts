@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
+import { formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintSuffix } from '../../src/shared/packaged-gui-e2e-playwright-meta'
 import {
   TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT,
   TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT,
@@ -135,10 +136,12 @@ describe('terminal-contract-hints-meta §8', () => {
       string
     >
     expect(ruAbout['aboutSupportZipDiagnosticsSectionsHint']).toBe(
-      formatTerminalContractHintsAboutSupportZipSectionsHint('ru')
+      formatTerminalContractHintsAboutSupportZipSectionsHint('ru') +
+        formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintSuffix('ru')
     )
     expect(enAbout['aboutSupportZipDiagnosticsSectionsHint']).toBe(
-      formatTerminalContractHintsAboutSupportZipSectionsHint('en')
+      formatTerminalContractHintsAboutSupportZipSectionsHint('en') +
+        formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintSuffix('en')
     )
   })
 
