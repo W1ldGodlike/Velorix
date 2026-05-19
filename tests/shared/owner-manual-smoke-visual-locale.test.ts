@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
+import {
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+} from '../../src/shared/packaged-e2e-help-workflow-crosslinks-meta'
 import { formatOwnerManualSmokeHidpiChecklistLinesFromShard } from '../../src/shared/owner-manual-smoke-hidpi-lines'
 import { formatOwnerManualSmokeThemeChecklistLinesFromShard } from '../../src/shared/owner-manual-smoke-theme-lines'
 import enSettings from '../../locales/en/settings.json'
@@ -40,11 +44,15 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
       'check:help-workflow-smoke-crosslinks'
     )
-    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('34 articles')
+    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
+    )
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
       'formatPackagedManualSmokeE2eAppendixLines'
     )
-    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('34 статьи')
+    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+    )
   })
 
   it('owner hub packaged e2e hint links packaged Copy to appendix', () => {

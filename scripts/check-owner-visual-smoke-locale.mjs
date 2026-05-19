@@ -8,6 +8,10 @@ import path from 'node:path'
 import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from '../src/shared/app-settings-hidpi-checklist-keys.ts'
 import { APP_SETTINGS_THEME_CHECKLIST_KEYS } from '../src/shared/app-settings-theme-checklist-keys.ts'
 import { LOCALE_JSON_LOCALES } from '../src/shared/locale-json-catalog.ts'
+import {
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+} from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
 const META_KEYS = [
@@ -46,6 +50,19 @@ for (const locale of LOCALE_JSON_LOCALES) {
     console.error(
       `[check:owner-visual-smoke-locale] locales/${locale}/settings.json missing: ${missing.join(', ')}`
     )
+  }
+  const e2eHint = table.appSettingsPackagedE2eRegistryGuardHint
+  if (typeof e2eHint === 'string') {
+    const countSnippet =
+      locale === 'ru'
+        ? PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+        : PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
+    if (!e2eHint.includes(countSnippet)) {
+      failed = true
+      console.error(
+        `[check:owner-visual-smoke-locale] locales/${locale}/settings.json appSettingsPackagedE2eRegistryGuardHint missing: ${countSnippet}`
+      )
+    }
   }
 }
 

@@ -4,7 +4,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { PLATFORM_PACKAGING_NPM_SCRIPTS } from '../src/shared/platform-packaging-scripts.ts'
+import { PLATFORM_PACKAGING_NPM_SCRIPTS } from '../src/shared/platform-packaging-npm-scripts.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
 const packageJson = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'package.json'), 'utf8'))

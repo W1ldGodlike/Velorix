@@ -4,44 +4,12 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+import {
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
+} from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
-
-const WORKFLOW_HELP_FILES = [
-  'Help/downloads-workflow.md',
-  'Help/ffmpeg-rail-presets.md',
-  'Help/probe-and-inspector-basics.md',
-  'Help/workflows-planner-scenarios.md',
-  'Help/en/downloads-workflow.md',
-  'Help/en/ffmpeg-rail-presets.md',
-  'Help/en/probe-and-inspector-basics.md',
-  'Help/en/workflows-planner-scenarios.md',
-  'Help/knowledge-base-howto.md',
-  'Help/en/knowledge-base-howto.md',
-  'Help/extract-frames.md',
-  'Help/processing-social-presets.md',
-  'Help/en/extract-frames.md',
-  'Help/en/processing-social-presets.md',
-  'Help/processing-history.md',
-  'Help/downloads-settings-rail.md',
-  'Help/en/processing-history.md',
-  'Help/en/downloads-settings-rail.md',
-  'Help/downloads-dragdrop.md',
-  'Help/processing-url-combo.md',
-  'Help/ffmpeg-terminal-hints.md',
-  'Help/en/downloads-dragdrop.md',
-  'Help/en/processing-url-combo.md',
-  'Help/en/ffmpeg-terminal-hints.md',
-  'Help/processing-advanced-fields.md',
-  'Help/en/processing-advanced-fields.md',
-  'Help/appearance-language-theme.md',
-  'Help/en/appearance-language-theme.md',
-  'Help/hardware-encoding.md',
-  'Help/en/hardware-encoding.md',
-  'Help/windows-shell-integration.md',
-  'Help/en/windows-shell-integration.md',
-  'Help/getting-started.md',
-  'Help/en/getting-started.md'
-]
 
 const SNIPPETS = [
   'owner-manual-smoke.md',
@@ -52,7 +20,7 @@ const SNIPPETS = [
 ]
 
 let failed = false
-for (const rel of WORKFLOW_HELP_FILES) {
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS) {
   const file = path.join(REPO_ROOT, rel)
   const text = fs.readFileSync(file, 'utf8')
   const missing = SNIPPETS.filter((s) => !text.includes(s))
@@ -62,9 +30,34 @@ for (const rel of WORKFLOW_HELP_FILES) {
   }
 }
 
+if (
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS.length !==
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT
+) {
+  console.error(
+    `[check:help-workflow-smoke-crosslinks] path count ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS.length} !== PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT})`
+  )
+  process.exit(1)
+}
+
+const binReadmePath = path.join(REPO_ROOT, 'bin/README.md')
+const binReadmeText = fs.readFileSync(binReadmePath, 'utf8')
+if (!binReadmeText.includes('check:help-workflow-smoke-crosslinks')) {
+  failed = true
+  console.error(
+    '[check:help-workflow-smoke-crosslinks] bin/README.md missing: check:help-workflow-smoke-crosslinks'
+  )
+}
+if (!binReadmeText.includes(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET)) {
+  failed = true
+  console.error(
+    `[check:help-workflow-smoke-crosslinks] bin/README.md missing crosslinks count: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET}`
+  )
+}
+
 if (failed) {
   process.exit(1)
 }
 console.log(
-  `[check:help-workflow-smoke-crosslinks] OK (${WORKFLOW_HELP_FILES.length} files; ${SNIPPETS.length} snippets)`
+  `[check:help-workflow-smoke-crosslinks] OK (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} files; ${SNIPPETS.length} snippets; bin/README)`
 )

@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~64%** (J-1214; Help §21 cross-links guard 34 статей; GUI e2e позже). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
+- **Оценка: ~64%** (J-1219; Help §21 crosslinks meta + guards/bin README; GUI e2e позже). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
 
 ## Легенда
 
@@ -46,7 +46,7 @@
 - [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player); приёмка владельца.
 - [x] §2.2/§7.5: `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged RU+EN + guards; Help §21 `e2e <id>:` (owner/about/packaged/workflow + UI hint).
 - [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
-- [~] §19: `pack:*:dir` + `verify:*`; bin/Help `engines:doctor`/`prepare:win`; Help crosslinks guard 34; CI linux [x]; приёмка packaged на железе — владелец.
+- [~] §19: `pack:*:dir` + `verify:*`; bin/Help `engines:doctor`/`prepare:win`; Help crosslinks meta+guards [x]; CI linux [x]; приёмка packaged на железе — владелец.
 - [~] §21: e2e registry/guards [x] (2 CI, 8 planned GUI, 2 manual-owner); GUI Playwright по `PACKAGED_E2E_PLANNED_GUI_STEP_IDS` — позже.
 
 ---

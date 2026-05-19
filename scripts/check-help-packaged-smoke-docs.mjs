@@ -5,6 +5,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+import {
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS
+} from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
 const PACKAGED_HELP_FILES = [
@@ -31,6 +36,14 @@ const BASE_SNIPPETS = [
   '§21 packaged e2e (CI vs owner)'
 ]
 
+const WINDOWS_SNIPPETS = [...BASE_SNIPPETS, 'check:help-workflow-smoke-crosslinks']
+
+const WINDOWS_PACKAGED_HELP_FILES = PACKAGED_HELP_FILES.filter((rel) => rel.includes('windows'))
+
+const NON_WINDOWS_PACKAGED_HELP_FILES = PACKAGED_HELP_FILES.filter(
+  (rel) => !rel.includes('windows')
+)
+
 const MAC_LINUX_SNIPPETS = ['engines:doctor', 'bin/README.md']
 
 function checkFiles(files, snippets, label) {
@@ -49,13 +62,32 @@ function checkFiles(files, snippets, label) {
   return failed
 }
 
+function checkCrosslinksCount(rel, countSnippet, label) {
+  const file = path.join(REPO_ROOT, rel)
+  const text = fs.readFileSync(file, 'utf8')
+  if (!text.includes(countSnippet)) {
+    console.error(
+      `[check:help-packaged-smoke-docs] ${label} ${rel} missing crosslinks count: ${countSnippet}`
+    )
+    return true
+  }
+  return false
+}
+
 let failed = false
-failed = checkFiles(PACKAGED_HELP_FILES, BASE_SNIPPETS, 'all') || failed
+failed = checkFiles(WINDOWS_PACKAGED_HELP_FILES, WINDOWS_SNIPPETS, 'windows') || failed
+failed = checkFiles(NON_WINDOWS_PACKAGED_HELP_FILES, BASE_SNIPPETS, 'mac/linux-base') || failed
 failed = checkFiles(MAC_LINUX_HELP_FILES, MAC_LINUX_SNIPPETS, 'mac/linux') || failed
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS) {
+  const countSnippet = rel.includes('/en/')
+    ? PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
+    : PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+  failed = checkCrosslinksCount(rel, countSnippet, 'win-count') || failed
+}
 
 if (failed) {
   process.exit(1)
 }
 console.log(
-  `[check:help-packaged-smoke-docs] OK (${PACKAGED_HELP_FILES.length} files; all ${BASE_SNIPPETS.length} + mac/linux ${MAC_LINUX_SNIPPETS.length} snippets)`
+  `[check:help-packaged-smoke-docs] OK (${PACKAGED_HELP_FILES.length} files; win ${WINDOWS_SNIPPETS.length} + mac/linux ${BASE_SNIPPETS.length}/${MAC_LINUX_SNIPPETS.length} snippets; win crosslinks count)`
 )

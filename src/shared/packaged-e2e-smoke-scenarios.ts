@@ -13,6 +13,17 @@ import {
 
 export type { PackagedE2eAutomationKind, PackagedE2eSmokeScenario }
 
+export {
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS
+} from './packaged-e2e-help-workflow-crosslinks-meta'
+import { PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT } from './packaged-e2e-help-workflow-crosslinks-meta'
+
 export const PACKAGED_E2E_SMOKE_SCENARIOS: readonly PackagedE2eSmokeScenario[] =
   PACKAGED_E2E_SMOKE_REGISTRY
 
@@ -90,7 +101,7 @@ export function formatPackagedE2eSmokeDiagnosticLines(): string[] {
     ...formatPackagedE2ePerStepDiagnosticLines(),
     'manual owner-smoke: Help/owner-manual-smoke.md + Settings copy (not automated GUI yet)',
     `planned GUI e2e scope: ${PACKAGED_E2E_PLANNED_GUI_STEP_IDS.join(', ')} (Playwright later; ytdlp/export have partial CLI smokes)`,
-    'Help crosslinks: npm run check:help-workflow-smoke-crosslinks (34 articles ↔ owner/packaged §21)',
+    `Help crosslinks: npm run check:help-workflow-smoke-crosslinks (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} articles ↔ owner/packaged §21)`,
     'check: npm run check:packaged-e2e-scenarios-registry'
   ]
 }

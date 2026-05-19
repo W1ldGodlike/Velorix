@@ -21,7 +21,7 @@ npm run check:release
 
 ## Копирование и локали
 
-Кнопка **Скопировать** в packaged-панели выдаёт тот же формат, что Support ZIP: `owner:`, `automated:`, `doc:`, `ui:`, затем `step [id]:`, затем блок **§21 packaged e2e (CI vs owner)** (группы 2/8/2 и per-step `e2e <id>:`). При **английском UI** — строки из `locales/en/win-packaged-manual-smoke.json`. Блок packaged в полном пакете владельца — [owner-manual-smoke.md](owner-manual-smoke.md). **Planned GUI e2e** (8 шагов, Playwright позже) — `open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`. Dev: `npm run check:packaged-manual-smoke-parity`, `npm run check:packaged-e2e-scenarios-registry` (per-step `e2e launch:` в `releaseSmoke:`), `check:help-workflow-smoke-crosslinks` — в `check:quiet`.
+Кнопка **Скопировать** в packaged-панели выдаёт тот же формат, что Support ZIP: `owner:`, `automated:`, `doc:`, `ui:`, затем `step [id]:`, затем блок **§21 packaged e2e (CI vs owner)** (группы 2/8/2 и per-step `e2e <id>:`). При **английском UI** — строки из `locales/en/win-packaged-manual-smoke.json`. Блок packaged в полном пакете владельца — [owner-manual-smoke.md](owner-manual-smoke.md). **Planned GUI e2e** (8 шагов, Playwright позже) — `open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`. Dev: `npm run check:packaged-manual-smoke-parity`, `npm run check:packaged-e2e-scenarios-registry` (per-step `e2e launch:` в `releaseSmoke:`), `check:help-workflow-smoke-crosslinks` (34 статьи) — в `check:quiet`.
 
 ## Краткий порядок
 

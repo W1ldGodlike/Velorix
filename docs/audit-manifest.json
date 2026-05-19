@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T23:37:00.848Z",
+  "generatedAt": "2026-05-19T04:04:01.619Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1157,
+  "fileCount": 1160,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -746,6 +746,7 @@
     "src/shared/owner-manual-smoke-packaged-section.ts",
     "src/shared/owner-manual-smoke-theme-lines.ts",
     "src/shared/packaged-app-smoke.ts",
+    "src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts",
     "src/shared/packaged-e2e-smoke-registry.ts",
     "src/shared/packaged-e2e-smoke-scenarios.ts",
     "src/shared/packaged-engine-candidate-paths.ts",
@@ -765,6 +766,7 @@
     "src/shared/packaged-ytdlp-smoke.ts",
     "src/shared/parse-whitelist.ts",
     "src/shared/path-lite.ts",
+    "src/shared/platform-packaging-npm-scripts.ts",
     "src/shared/platform-packaging-scripts.ts",
     "src/shared/preview-dialog-contract.ts",
     "src/shared/preview-open-dialog-default-path.ts",
@@ -1111,6 +1113,7 @@
     "tests/shared/owner-manual-smoke-theme-lines.test.ts",
     "tests/shared/owner-manual-smoke-visual-locale.test.ts",
     "tests/shared/packaged-app-smoke.test.ts",
+    "tests/shared/packaged-e2e-help-workflow-crosslinks-meta.test.ts",
     "tests/shared/packaged-e2e-smoke-registry.test.ts",
     "tests/shared/packaged-e2e-smoke-scenarios.test.ts",
     "tests/shared/packaged-ffmpeg-smoke.test.ts",

@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1210)
+## Re-anchor (J-1220)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` (cadence commit+push J-1206..1210) |
-| Снимок тестов | **266** files / **1795** tests |
-| Спринт | §21 packaged Copy + shared §21 appendix; Help crosslinks **28**; owner-smoke на железе; GUI Playwright позже |
+| Ветка | `main` (cadence commit+push J-1216..1220) |
+| Снимок тестов | **267** files / **1801** tests |
+| Спринт | §21 `packaged-e2e-help-workflow-crosslinks-meta` (34 paths + guards); owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1208](../IMPLEMENTATION_JOURNAL.md) owner hub packaged e2e hint; [J-1209](../IMPLEMENTATION_JOURNAL.md) Help crosslinks 28 (+appearance); [J-1210](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1206..1210.
+**Последние J:** [J-1218](../IMPLEMENTATION_JOURNAL.md) EN/RU count snippets + owner Help guards; [J-1219](../IMPLEMENTATION_JOURNAL.md) anchor paths, packaged win/bin README; [J-1220](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1216..1220.
 
-**Следующий cadence:** commit **J-1215** (J-1211..1215); push + re-anchor **J-1220**.
+**Следующий cadence:** commit **J-1225** (J-1221..1225); push + re-anchor **J-1230**.
 
 ## Новый чат
 

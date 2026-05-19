@@ -17,7 +17,7 @@
 - **`ownerManualSmoke:`** — полный пакет ручного smoke (тема, HiDPI, HW, packaged, §21 e2e per-step `e2e <id>:`); см. [owner-manual-smoke.md](owner-manual-smoke.md).
 - **`releaseSmoke:`** — CI packaged pipeline, layout win/linux/macos и тот же §21 e2e-план; см. [about-support-logs.md](about-support-logs.md).
 
-Dev: `npm run check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks` (34 статей, в `check:quiet`). UI **Скопировать** (packaged + owner bundle) дописывает **§21 packaged e2e (CI vs owner)**; в Support ZIP — **planned GUI e2e scope** (8 шагов Playwright позже; 2 manual-owner: sprite, mini-player).
+Dev: `npm run check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks` (34 статьи, в `check:quiet`). UI **Скопировать** (packaged + owner bundle) дописывает **§21 packaged e2e (CI vs owner)**; в Support ZIP — **planned GUI e2e scope** (8 шагов Playwright позже; 2 manual-owner: sprite, mini-player).
 
 ## Подробнее про «О программе»
 
