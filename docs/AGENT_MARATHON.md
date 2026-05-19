@@ -21,6 +21,8 @@
 
 **Последние J:** [J-1208](../IMPLEMENTATION_JOURNAL.md) owner hub packaged e2e hint; [J-1209](../IMPLEMENTATION_JOURNAL.md) Help crosslinks 28 (+appearance); [J-1210](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1206..1210.
 
+**Следующий cadence:** commit **J-1215** (J-1211..1215); push + re-anchor **J-1220**.
+
 ## Новый чат
 
 «продолжай» / `+` достаточно. Handoff: [`AGENT_SESSION_HANDOFF.md`](AGENT_SESSION_HANDOFF.md). SDK prompt: [`continue.txt`](../scripts/cursor-automation/prompts/continue.txt).

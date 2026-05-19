@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { getPackagedManualSmokePlainTextForUiLocale } from '../../src/shared/packaged-manual-smoke-plain-text'
+import { formatPackagedE2eSmokeDiagnosticLines } from '../../src/shared/packaged-e2e-smoke-scenarios'
+import {
+  formatPackagedManualSmokeE2eAppendixLines,
+  getPackagedManualSmokePlainTextForUiLocale,
+  PACKAGED_MANUAL_SMOKE_E2E_APPENDIX_HEADING
+} from '../../src/shared/packaged-manual-smoke-plain-text'
 import { getOwnerManualSmokePackagedSectionForUiLocale } from '../../src/shared/owner-manual-smoke-packaged-section'
 
 describe('packaged-manual-smoke-plain-text §3', () => {
@@ -9,7 +14,7 @@ describe('packaged-manual-smoke-plain-text §3', () => {
     expect(text).toContain('owner: manual Windows packaged smoke')
     expect(text).toContain('automated: npm run verify:win-unpacked')
     expect(text).toContain('step [launch]:')
-    expect(text).toContain('=== §21 packaged e2e (CI vs owner) ===')
+    expect(text).toContain(PACKAGED_MANUAL_SMOKE_E2E_APPENDIX_HEADING)
     expect(text).toContain('planned GUI e2e scope:')
     expect(text).toContain('e2e launch: ci-headless')
   })
@@ -28,12 +33,19 @@ describe('packaged-manual-smoke-plain-text §3', () => {
     expect(text).toContain('e2e settings: planned-gui-e2e')
   })
 
+  it('formatPackagedManualSmokeE2eAppendixLines starts with canonical heading', () => {
+    const lines = formatPackagedManualSmokeE2eAppendixLines()
+    expect(lines[0]).toBe(PACKAGED_MANUAL_SMOKE_E2E_APPENDIX_HEADING)
+    expect(lines.slice(1)).toEqual(formatPackagedE2eSmokeDiagnosticLines())
+    expect(lines.some((l) => l.includes('check:packaged-e2e-scenarios-registry'))).toBe(true)
+  })
+
   it('checklist body matches owner packaged section plus §21 appendix', () => {
     const section = getOwnerManualSmokePackagedSectionForUiLocale('en', 'win32')
     expect(section).not.toBeNull()
     const plain = getPackagedManualSmokePlainTextForUiLocale('win', 'en')
     const body = section!.lines.join('\n')
     expect(plain.startsWith(body)).toBe(true)
-    expect(plain.slice(body.length)).toContain('=== §21 packaged e2e (CI vs owner) ===')
+    expect(plain.slice(body.length)).toContain(PACKAGED_MANUAL_SMOKE_E2E_APPENDIX_HEADING)
   })
 })

@@ -82,6 +82,7 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
     expect(joined).toContain('planned GUI e2e scope:')
     expect(joined).toContain('open-file')
     expect(joined).toContain('check:help-workflow-smoke-crosslinks')
+    expect(joined).toContain('34 articles')
   })
 
   it('per-step diagnostic lines cover every registry entry', () => {

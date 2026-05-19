@@ -24,8 +24,8 @@
 
 Подробности: [hardware-encoding.md](hardware-encoding.md), [appearance-language-theme.md](appearance-language-theme.md), [workflows-planner-scenarios.md](workflows-planner-scenarios.md), [windows-shell-integration.md](windows-shell-integration.md).
 
-В конце **«Скопировать весь пакет»** и в Support ZIP `ownerManualSmoke:` добавляется сводка **§21 packaged e2e** (группы ci-headless / planned-gui-e2e / manual-owner) и **12 строк** `e2e <stepId>: <automation> script=…` (например `e2e launch: ci-headless script=smoke:packaged-app`); тот же блок в `releaseSmoke:`.
+В конце **«Скопировать весь пакет»** и в Support ZIP `ownerManualSmoke:` добавляется блок **§21 packaged e2e (CI vs owner)** (`formatPackagedManualSmokeE2eAppendixLines`: группы ci-headless / planned-gui-e2e / manual-owner и **12 строк** `e2e <stepId>: <automation> script=…`, напр. `e2e launch: ci-headless script=smoke:packaged-app`); diagnostics в `releaseSmoke:` без отдельного heading.
 
-**Planned GUI e2e** (Playwright позже, сейчас — ручной smoke): `open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`. **manual-owner** без GUI-автоматизации: `video-sprite`, `mini-player`. Help по шагам — [packaged-windows-smoke.md](packaged-windows-smoke.md) и workflow-статьи (`check:help-workflow-smoke-crosslinks`).
+**Planned GUI e2e** (Playwright позже, сейчас — ручной smoke): `open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`. **manual-owner** без GUI-автоматизации: `video-sprite`, `mini-player`. Help по шагам — [packaged-windows-smoke.md](packaged-windows-smoke.md) и workflow-статьи (`check:help-workflow-smoke-crosslinks`, 34 статьи).
 
 После прогона отметьте пункты в `IMPLEMENTATION_CHECKLIST.md` (раздел «Ручной smoke владельца») и приложите Support ZIP при обращении в поддержку.

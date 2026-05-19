@@ -19,5 +19,5 @@
 - Превью, таймлайн и вывод — [editor-workflow.md](editor-workflow.md) и [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md)
 - Справка внутри программы — [knowledge-base-howto.md](knowledge-base-howto.md)
 - Тема, язык и масштаб Windows — [appearance-language-theme.md](appearance-language-theme.md); полный ручной smoke — [owner-manual-smoke.md](owner-manual-smoke.md)
-- Packaged smoke после сборки — [packaged-windows-smoke.md](packaged-windows-smoke.md) (Linux/macOS — соседние статьи); §21 e2e `e2e <id>:` в `releaseSmoke:` — [about-support-logs.md](about-support-logs.md)
+- Packaged smoke после сборки — [packaged-windows-smoke.md](packaged-windows-smoke.md) (Linux/macOS — соседние статьи); §21 e2e **§21 packaged e2e (CI vs owner)** (`appendPackagedManualSmokeE2ePlanLines`, per-step `e2e <id>:`) в `releaseSmoke:` — [about-support-logs.md](about-support-logs.md)
 - Частые проблемы — [faq-troubleshooting.md](faq-troubleshooting.md)

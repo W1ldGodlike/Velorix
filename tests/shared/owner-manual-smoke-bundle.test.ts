@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { buildOwnerManualSmokeBundleLines } from '../../src/shared/owner-manual-smoke-bundle'
 import { formatOwnerManualSmokeHidpiChecklistLines } from '../../src/shared/owner-manual-smoke-hidpi-lines'
 import {
-  appendPackagedManualSmokeE2ePlanLines,
+  formatPackagedManualSmokeE2eAppendixLines,
   getPackagedManualSmokePlainTextForUiLocale
 } from '../../src/shared/packaged-manual-smoke-plain-text'
 
@@ -35,7 +35,7 @@ describe('owner-manual-smoke-bundle', () => {
     expect(joined).toContain('=== Packaged Win')
     expect(joined).toContain('=== OS scheduler ===')
     expect(joined).toContain('devicePixelRatio: 1.25')
-    expect(joined).toContain('=== §21 packaged e2e (CI vs owner) ===')
+    expect(joined).toContain(formatPackagedManualSmokeE2eAppendixLines()[0])
     expect(joined).toContain('ci-headless')
     expect(joined).toContain('check:packaged-e2e-scenarios-registry')
     expect(joined).toContain('e2e launch: ci-headless script=smoke:packaged-app')
@@ -46,9 +46,7 @@ describe('owner-manual-smoke-bundle', () => {
   })
 
   it('§21 appendix in owner bundle matches packaged panel copy suffix', () => {
-    const appendixBlocks: string[] = []
-    appendPackagedManualSmokeE2ePlanLines(appendixBlocks)
-    const appendix = appendixBlocks.join('\n')
+    const appendix = ['', ...formatPackagedManualSmokeE2eAppendixLines()].join('\n')
     const plain = getPackagedManualSmokePlainTextForUiLocale('win', 'ru')
     expect(plain.endsWith(appendix)).toBe(true)
     const bundle = buildOwnerManualSmokeBundleLines({ platform: 'win32' }).join('\n')

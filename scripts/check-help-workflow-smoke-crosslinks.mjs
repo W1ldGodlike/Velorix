@@ -34,7 +34,13 @@ const WORKFLOW_HELP_FILES = [
   'Help/processing-advanced-fields.md',
   'Help/en/processing-advanced-fields.md',
   'Help/appearance-language-theme.md',
-  'Help/en/appearance-language-theme.md'
+  'Help/en/appearance-language-theme.md',
+  'Help/hardware-encoding.md',
+  'Help/en/hardware-encoding.md',
+  'Help/windows-shell-integration.md',
+  'Help/en/windows-shell-integration.md',
+  'Help/getting-started.md',
+  'Help/en/getting-started.md'
 ]
 
 const SNIPPETS = [

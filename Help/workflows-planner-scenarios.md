@@ -37,4 +37,4 @@
 - Итог прогона — строка состояния и запись в **Истории обработки** (тип `workflowScenario`).
 - macOS LaunchAgent: логи в `~/Library/Logs/FluxAlloy/watch-<taskId>.log`.
 - Linux timer: `journalctl --user -u fluxalloy-watch-<taskId>.service`.
-- Единый пакет owner-smoke (включая scheduler): **Настройки → Зависимости → Ручной smoke** или deep-link в планировщике — [owner-manual-smoke.md](owner-manual-smoke.md). Packaged ffmpeg/ytdlp после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:`.
+- Единый пакет owner-smoke (включая scheduler): **Настройки → Зависимости → Ручной smoke** или deep-link в планировщике — [owner-manual-smoke.md](owner-manual-smoke.md). Packaged ffmpeg/ytdlp после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e **§21 packaged e2e (CI vs owner)** (`formatPackagedManualSmokeE2eAppendixLines`, per-step `e2e <id>:`) в Copy и `releaseSmoke:`; Help: `check:help-workflow-smoke-crosslinks` (34 статьи).

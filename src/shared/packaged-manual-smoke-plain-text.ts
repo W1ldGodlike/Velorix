@@ -18,13 +18,17 @@ import {
 
 export type PackagedManualSmokePlatform = 'win' | 'linux' | 'macos'
 
+/** Заголовок §21 appendix в packaged Copy / ownerManualSmoke / guards. */
+export const PACKAGED_MANUAL_SMOKE_E2E_APPENDIX_HEADING = '=== §21 packaged e2e (CI vs owner) ==='
+
+/** Строки §21 appendix (heading + diagnostics) для Copy и guards. */
+export function formatPackagedManualSmokeE2eAppendixLines(): string[] {
+  return [PACKAGED_MANUAL_SMOKE_E2E_APPENDIX_HEADING, ...formatPackagedE2eSmokeDiagnosticLines()]
+}
+
 /** §21 appendix для packaged Copy и ownerManualSmoke (один канон). */
 export function appendPackagedManualSmokeE2ePlanLines(blocks: string[]): void {
-  blocks.push(
-    '',
-    '=== §21 packaged e2e (CI vs owner) ===',
-    ...formatPackagedE2eSmokeDiagnosticLines()
-  )
+  blocks.push('', ...formatPackagedManualSmokeE2eAppendixLines())
 }
 
 /** Plain text для копирования из UI (owner:/automated:/doc:/ui: + steps + §21 e2e), как Support ZIP. */

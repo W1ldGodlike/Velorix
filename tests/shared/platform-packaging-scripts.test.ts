@@ -25,6 +25,7 @@ describe('platform-packaging-scripts §19', () => {
     expect(lines.some((l) => l.includes('check:owner-visual-smoke-locale'))).toBe(true)
     expect(lines.some((l) => l.includes('check:platform-packaging-scripts'))).toBe(true)
     expect(lines.some((l) => l.includes('check:help-workflow-smoke-crosslinks'))).toBe(true)
+    expect(lines.some((l) => l.includes('34 Help articles'))).toBe(true)
     expect(lines.some((l) => l.includes('check:packaged-e2e-scenarios-registry'))).toBe(true)
     expect(lines.some((l) => l.includes('per-step e2e'))).toBe(true)
     expect(lines.some((l) => l.includes('8 planned-gui-e2e'))).toBe(true)

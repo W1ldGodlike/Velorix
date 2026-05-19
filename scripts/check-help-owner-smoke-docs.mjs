@@ -17,7 +17,8 @@ const OWNER_SNIPPETS = [
   'ownerManualSmoke:',
   '§21 e2e',
   'e2e launch:',
-  '§21 packaged e2e (CI vs owner)'
+  '§21 packaged e2e (CI vs owner)',
+  'formatPackagedManualSmokeE2eAppendixLines'
 ]
 
 const ABOUT_SNIPPETS = [
@@ -29,7 +30,9 @@ const ABOUT_SNIPPETS = [
   'win-unpacked',
   'linux-unpacked',
   'FluxAlloy.app',
-  'present/missing'
+  'present/missing',
+  '§21 packaged e2e (CI vs owner)',
+  'appendPackagedManualSmokeE2ePlanLines'
 ]
 
 function checkFiles(files, snippets, label) {
@@ -47,7 +50,11 @@ function checkFiles(files, snippets, label) {
 }
 
 let failed = false
-failed = checkFiles(OWNER_HELP_FILES, OWNER_SNIPPETS, 'owner') || failed
+failed =
+  checkFiles(['Help/owner-manual-smoke.md'], [...OWNER_SNIPPETS, '34 статьи'], 'owner-ru') || failed
+failed =
+  checkFiles(['Help/en/owner-manual-smoke.md'], [...OWNER_SNIPPETS, '34 articles'], 'owner-en') ||
+  failed
 failed = checkFiles(ABOUT_HELP_FILES, ABOUT_SNIPPETS, 'about') || failed
 
 if (failed) {

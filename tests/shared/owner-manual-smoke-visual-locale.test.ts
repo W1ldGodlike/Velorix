@@ -40,6 +40,11 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
       'check:help-workflow-smoke-crosslinks'
     )
+    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('34 articles')
+    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
+      'formatPackagedManualSmokeE2eAppendixLines'
+    )
+    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('34 статьи')
   })
 
   it('owner hub packaged e2e hint links packaged Copy to appendix', () => {
@@ -56,6 +61,12 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
   })
 
   it('owner smoke intro mentions per-step e2e appendix', () => {
+    expect(enSettings.appSettingsOwnerSmokeIntro).toContain(
+      'formatPackagedManualSmokeE2eAppendixLines'
+    )
+    expect(ruSettings.appSettingsOwnerSmokeIntro).toContain(
+      'formatPackagedManualSmokeE2eAppendixLines'
+    )
     expect(enSettings.appSettingsOwnerSmokeIntro).toContain('per-step e2e')
     expect(ruSettings.appSettingsOwnerSmokeIntro).toContain('per-step e2e')
     expect(enSettings.appSettingsOwnerSmokeIntro).toContain('8 planned GUI')

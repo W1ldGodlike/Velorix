@@ -21,4 +21,4 @@ To pick a default player or editor: use **Default apps…** in Settings (or **Wi
 
 If FluxAlloy is already running, a second launch from Explorer forwards the path to the existing window (single-instance).
 
-See also [workflows-planner-scenarios.md](workflows-planner-scenarios.md), [getting-started.md](getting-started.md). Owner manual **Windows shell** checklist in Support ZIP — [owner-manual-smoke.md](owner-manual-smoke.md) (`ownerManualSmoke:`); packaged open-file — [packaged-windows-smoke.md](../packaged-windows-smoke.md).
+See also [workflows-planner-scenarios.md](workflows-planner-scenarios.md), [getting-started.md](getting-started.md). Owner manual **Windows shell** checklist in Support ZIP — [owner-manual-smoke.md](owner-manual-smoke.md) (`ownerManualSmoke:`; §21 e2e per-step `e2e <id>:` in `releaseSmoke:`); packaged open-file — [packaged-windows-smoke.md](../packaged-windows-smoke.md).
