@@ -16,6 +16,6 @@
 
 **Тесты:** `npm run test` — 267/273 suite pass; 6 файлов (`tests/main/app-data-root.test.ts`, `tests/main/ytdlp-download-options.test.ts`, `tests/main/ffmpeg-progress-smoke.test.ts`, `tests/shared/packaged-ffprobe-smoke-core.test.ts`, `tests/shared/packaged-ffmpeg-smoke.test.ts`, `tests/shared/packaged-ytdlp-smoke.test.ts`) падают из-за Windows-специфичных assert'ов (`.exe` пути, `process.platform === 'win32'`). Это ожидаемо на Linux.
 
-**Build / dev mode:** `npm run dev` и `electron-vite build` не работают на Linux Cloud VM из-за бага в цепочке vite 7.3.3 → esbuild 0.27.7: при формировании SSR-бандла main-процесса строка с кириллицей/§ (`renderer-state-approach.ts`, line 52) обрезается, esbuild видит «Unterminated string literal». Прямой вызов `esbuild.transform` на том же файле — ОК; проблема в том, как vite передаёт chunk. На Windows у автора сборка работает. Для CI-gate на Linux достаточно `npm run lint && npm run typecheck && npm run test`.
+**Build / dev mode:** работает после workaround в `electron.vite.config.ts` (плагин `fix:esm-shim`). Без него electron-vite's `vite:esm-shim` ложно срабатывает на строку `"no Node path import"` в `renderer-state-approach.ts` (regex `ESMStaticImportRe` принимает конец строки за static import), вставляя CJS shim в середину кода. Fix удаляет сломанный плагин из pipeline и вставляет shim корректно.
 
 **Запуск Electron (если понадобится):** требуется `xvfb-run` (уже установлен). Команда: `xvfb-run --auto-servernum npm run dev`.
