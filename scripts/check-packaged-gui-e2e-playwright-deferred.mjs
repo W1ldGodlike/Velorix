@@ -12,12 +12,18 @@ import {
   PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS,
   formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause,
   formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine,
+  formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail,
   formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine,
   formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail,
   formatPackagedGuiE2ePlaywrightReleaseDeferredBullet,
   formatPackagedGuiE2ePlaywrightReleaseOwnerVisualSmokeLocaleLine,
   formatPackagedGuiE2ePlaywrightUiHintSuffix
 } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
+import { PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { PACKAGED_E2E_SMOKE_REGISTRY } from '../src/shared/packaged-e2e-smoke-registry.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -40,6 +46,60 @@ if (typeof packageScripts[PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT] === '
     `[check:packaged-gui-e2e-playwright-deferred] package.json must not define ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT} until Playwright is wired`
   )
   process.exit(1)
+}
+
+const agentsMdText = fs.readFileSync(path.join(REPO_ROOT, 'AGENTS.md'), 'utf8')
+const agentsUiTail = formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail()
+if (!agentsMdText.includes(agentsUiTail)) {
+  console.error(
+    '[check:packaged-gui-e2e-playwright-deferred] AGENTS.md must include formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail()'
+  )
+  process.exit(1)
+}
+
+for (const locale of ['en', 'ru']) {
+  const aboutRel = locale === 'en' ? 'Help/en/about-support-logs.md' : 'Help/about-support-logs.md'
+  const aboutHelpText = fs.readFileSync(path.join(REPO_ROOT, aboutRel), 'utf8')
+  const aboutUiSuffix = formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(locale)
+  if (!aboutHelpText.includes(aboutUiSuffix)) {
+    console.error(
+      `[check:packaged-gui-e2e-playwright-deferred] ${aboutRel} must include formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(${locale})`
+    )
+    process.exit(1)
+  }
+  const loggingRel =
+    locale === 'en' ? 'Help/en/logging-and-diagnostics.md' : 'Help/logging-and-diagnostics.md'
+  const loggingHelpText = fs.readFileSync(path.join(REPO_ROOT, loggingRel), 'utf8')
+  const loggingUiSuffix = formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(locale)
+  if (!loggingHelpText.includes(loggingUiSuffix)) {
+    console.error(
+      `[check:packaged-gui-e2e-playwright-deferred] ${loggingRel} must include formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(${locale})`
+    )
+    process.exit(1)
+  }
+  const plannerRel =
+    locale === 'en'
+      ? 'Help/en/workflows-planner-scenarios.md'
+      : 'Help/workflows-planner-scenarios.md'
+  const plannerHelpText = fs.readFileSync(path.join(REPO_ROOT, plannerRel), 'utf8')
+  const plannerUiSuffix = formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(locale)
+  if (!plannerHelpText.includes(plannerUiSuffix)) {
+    console.error(
+      `[check:packaged-gui-e2e-playwright-deferred] ${plannerRel} must include formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(${locale})`
+    )
+    process.exit(1)
+  }
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  const packagedHelpText = fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8')
+  const packagedUiSuffix = formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(locale)
+  if (!packagedHelpText.includes(packagedUiSuffix)) {
+    console.error(
+      `[check:packaged-gui-e2e-playwright-deferred] ${rel} must include formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(${locale})`
+    )
+    process.exit(1)
+  }
 }
 
 const binReadmeText = fs.readFileSync(path.join(REPO_ROOT, 'bin/README.md'), 'utf8')

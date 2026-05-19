@@ -21,7 +21,7 @@
 
 **Последние J:** [J-1328](../IMPLEMENTATION_JOURNAL.md) RELEASE Playwright bullets; [J-1329](../IMPLEMENTATION_JOURNAL.md) bin/README + RELEASE copy; [J-1330](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1326..1330.
 
-**Следующий cadence:** commit **J-1335**.
+**Следующий cadence:** push + re-anchor **J-1340**.
 
 ## Новый чат
 

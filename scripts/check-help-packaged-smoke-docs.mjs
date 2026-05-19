@@ -11,6 +11,7 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClause,
   formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+import { formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -87,6 +88,14 @@ for (const rel of [
       rel,
       formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix(locale),
       'playwright-deferred-suffix'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(locale),
+      'playwright-ui-hint'
     ) || failed
 }
 

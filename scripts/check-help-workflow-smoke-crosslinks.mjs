@@ -26,6 +26,7 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS,
   formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
@@ -35,6 +36,10 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS,
   formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+import {
+  formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix
+} from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS } from '../src/shared/terminal-contract-hints-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
@@ -198,6 +203,25 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS) {
       rel,
       formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale),
       'anchor-about-dev'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(locale),
+      'anchor-about-playwright-ui'
+    ) || failed
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(locale),
+      'anchor-planner-playwright-ui'
     ) || failed
 }
 for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS) {

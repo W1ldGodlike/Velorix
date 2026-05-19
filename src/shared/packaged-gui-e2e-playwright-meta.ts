@@ -114,6 +114,64 @@ export function formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail(): strin
   return ` Playwright UI — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`).`
 }
 
+/** `AGENTS.md` — Playwright deferred UI hints tail (§21). */
+export function formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail(): string {
+  return ` UI hints: \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
+}
+
+/** `Help/owner-manual-smoke.md` — Settings UI hints clause (RU/EN). */
+export function formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause(locale: 'en' | 'ru'): string {
+  return locale === 'ru'
+    ? ` UI в Настройках (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} ключа + about): \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` — \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`.`
+    : ` Settings UI (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} keys + about): \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` — \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`.`
+}
+
+/** `Help/about-support-logs.md` — About UI hint on `releaseSmoke:` dev line (§18/§21). */
+export function formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(
+  locale: 'en' | 'ru'
+): string {
+  return locale === 'ru'
+    ? ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\` — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`; settings — \`check:owner-visual-smoke-locale\`).`
+    : ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\` — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`; settings — \`check:owner-visual-smoke-locale\`).`
+}
+
+/** §8 settings key cited from logging Help (leaf — id matches `terminal-contract-hints-meta`). */
+export const PACKAGED_GUI_E2E_PLAYWRIGHT_LOGGING_TERMINAL_UI_HINT_KEY =
+  'appSettingsTerminalHintsGuardHint' as const
+
+/** `Help/logging-and-diagnostics.md` — §8 + §21 UI hints on Dev line. */
+export function formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(
+  locale: 'en' | 'ru'
+): string {
+  return locale === 'ru'
+    ? ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_LOGGING_TERMINAL_UI_HINT_KEY}\` (\`check:terminal-hints-locale\`); Playwright — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
+    : ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_LOGGING_TERMINAL_UI_HINT_KEY}\` (\`check:terminal-hints-locale\`); Playwright — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
+}
+
+/** Help crosslinks — settings + about Playwright UI hints (§21). */
+export function formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix(
+  locale: 'en' | 'ru'
+): string {
+  const settingsCount = PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length
+  return locale === 'ru'
+    ? ` UiHintSuffix: \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (${settingsCount} settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
+    : ` UiHintSuffix: \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (${settingsCount} settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
+}
+
+/** `Help/workflows-planner-scenarios.md` — §10/§21 UI hints on owner-smoke crosslinks line. */
+export function formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(
+  locale: 'en' | 'ru'
+): string {
+  return formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix(locale)
+}
+
+/** Packaged smoke Help (win/linux/macos RU+EN) — §19/§21 UI hints on Copy/Dev line. */
+export function formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(
+  locale: 'en' | 'ru'
+): string {
+  return formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix(locale)
+}
+
 /** Dispatch Playwright UI hint suffix by locale key (settings + about). */
 export function formatPackagedGuiE2ePlaywrightUiHintSuffix(
   key:

@@ -18,6 +18,12 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+import {
+  formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause,
+  formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix
+} from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -59,6 +65,17 @@ failed =
     PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS,
     'owner-en'
   ) || failed
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause(locale),
+      'owner-playwright-ui-hints'
+    ) || failed
+}
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS) {
   failed =
     checkHelpSmokeDocSnippet(
@@ -87,6 +104,14 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS) {
       formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale),
       'about-release-smoke-dev'
     ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(locale),
+      'about-playwright-ui-hint'
+    ) || failed
 }
 failed =
   checkHelpSmokeDocFiles(
@@ -96,6 +121,17 @@ failed =
     PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_REQUIRED_SNIPPETS,
     'logging'
   ) || failed
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(locale),
+      'logging-playwright-ui-hint'
+    ) || failed
+}
 failed =
   checkHelpSmokeDocFiles(
     REPO_ROOT,
@@ -113,6 +149,14 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
       rel,
       formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale),
       'planner-crosslinks-tail'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(locale),
+      'planner-playwright-ui-hint'
     ) || failed
 }
 

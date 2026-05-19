@@ -39,6 +39,10 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingClause
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+import {
+  formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix
+} from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -140,6 +144,14 @@ for (const rel of TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS) {
       formatTerminalContractHintsLoggingHelpDevGuardsLine(locale),
       'logging-dev-guards'
     ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(locale),
+      'logging-playwright-ui-hint'
+    ) || failed
 }
 
 failed =
@@ -220,6 +232,14 @@ for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_ABOUT_HELP_PATHS) {
       rel,
       formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale),
       'about-release-smoke-dev'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(locale),
+      'about-playwright-ui-hint'
     ) || failed
 }
 

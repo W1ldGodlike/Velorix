@@ -10,7 +10,15 @@ import {
   PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_ORDER_ANCHORS,
   PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS,
   formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause,
+  formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail,
   formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine,
+  formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
+  PACKAGED_GUI_E2E_PLAYWRIGHT_LOGGING_TERMINAL_UI_HINT_KEY,
+  formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause,
   formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail,
   formatPackagedGuiE2ePlaywrightReleaseDeferredBullet,
   formatPackagedGuiE2ePlaywrightReleaseOwnerVisualSmokeLocaleLine,
@@ -96,6 +104,61 @@ describe('packaged-gui-e2e-playwright-meta §21', () => {
     expect(release).toContain(formatPackagedGuiE2ePlaywrightReleaseOwnerVisualSmokeLocaleLine())
     expect(release).toContain(formatPackagedGuiE2ePlaywrightReleaseDeferredBullet())
     expect(release).toContain(formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail())
+  })
+
+  it('formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail matches AGENTS.md', () => {
+    expect(readFileSync('AGENTS.md', 'utf8')).toContain(
+      formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail()
+    )
+  })
+
+  it('formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause matches owner Help', () => {
+    for (const locale of ['en', 'ru'] as const) {
+      const rel = locale === 'en' ? 'Help/en/owner-manual-smoke.md' : 'Help/owner-manual-smoke.md'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause(locale)
+      )
+    }
+  })
+
+  it('Help UiHintSuffix formatters match §15/§19 articles', () => {
+    const packagedPaths = [
+      'Help/packaged-windows-smoke.md',
+      'Help/en/packaged-windows-smoke.md',
+      'Help/packaged-linux-smoke.md',
+      'Help/en/packaged-linux-smoke.md',
+      'Help/packaged-macos-smoke.md',
+      'Help/en/packaged-macos-smoke.md'
+    ]
+    for (const locale of ['en', 'ru'] as const) {
+      const aboutRel = locale === 'en' ? 'Help/en/about-support-logs.md' : 'Help/about-support-logs.md'
+      const aboutSuffix = formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(locale)
+      expect(aboutSuffix).toContain(PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY)
+      expect(readFileSync(aboutRel, 'utf8')).toContain(aboutSuffix)
+
+      const loggingRel =
+        locale === 'en' ? 'Help/en/logging-and-diagnostics.md' : 'Help/logging-and-diagnostics.md'
+      const loggingSuffix = formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(locale)
+      expect(loggingSuffix).toContain(PACKAGED_GUI_E2E_PLAYWRIGHT_LOGGING_TERMINAL_UI_HINT_KEY)
+      expect(loggingSuffix).toContain('check:terminal-hints-locale')
+      expect(readFileSync(loggingRel, 'utf8')).toContain(loggingSuffix)
+
+      const plannerRel =
+        locale === 'en'
+          ? 'Help/en/workflows-planner-scenarios.md'
+          : 'Help/workflows-planner-scenarios.md'
+      const crosslinksSuffix = formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix(locale)
+      expect(formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(locale)).toBe(
+        crosslinksSuffix
+      )
+      expect(readFileSync(plannerRel, 'utf8')).toContain(crosslinksSuffix)
+    }
+    for (const rel of packagedPaths) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      const suffix = formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(locale)
+      expect(suffix).toBe(formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix(locale))
+      expect(readFileSync(rel, 'utf8')).toContain(suffix)
+    }
   })
 
   it('formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine matches bin/README', () => {
