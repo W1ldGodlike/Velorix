@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1330)
+## Re-anchor (J-1340)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `2188aa9` (cadence J-1326..1330 §21 Playwright UI registry/docs) |
-| Снимок тестов | **276** files / **1851** tests |
-| Спринт | §21 UI hints settings/owner/about/ARCHITECTURE/RELEASE/bin [x]; `test:e2e:gui` в package.json [ ]; owner-smoke/packaged на железе — владелец |
+| Ветка | `main` @ `0111640` (cadence J-1338..1340: simplicity rule + audit follow-up + MediaProbePanel barrel) |
+| Снимок тестов | **276** files / **1854** tests |
+| Спринт | §21 Help/guards [x]; GUI Playwright [~]; owner-smoke / packaged mac+linux на железе — владелец |
 
-**Последние J:** [J-1328](../IMPLEMENTATION_JOURNAL.md) RELEASE Playwright bullets; [J-1329](../IMPLEMENTATION_JOURNAL.md) bin/README + RELEASE copy; [J-1330](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1326..1330.
+**Последние J:** [J-1338](../IMPLEMENTATION_JOURNAL.md) simplicity rule; [J-1339](../IMPLEMENTATION_JOURNAL.md) audit follow-up; [J-1340](../IMPLEMENTATION_JOURNAL.md) cadence commit+push.
 
-**Следующий cadence:** push + re-anchor **J-1340**.
+**Следующий cadence:** push + re-anchor **J-1350**.
 
 ## Новый чат
 
