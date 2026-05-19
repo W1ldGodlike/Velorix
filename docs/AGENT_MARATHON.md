@@ -15,7 +15,7 @@
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `e075989` (cadence commit+push J-1306..1310; re-anchor J-1310; rebase на `d2dbe99`; prior `0a6e246` J-1305) |
+| Ветка | `main` @ `5df4e29` (cadence `e075989` J-1306..1310 + re-anchor J-1310; rebase на `d2dbe99`; prior `0a6e246` J-1305) |
 | Снимок тестов | **273** files / **1833** tests |
 | Спринт | §21 registry/guards + `partition:` во всех **44** workflow [x]; GUI Playwright (8 steps) [ ]; §8 `terminalHints:` 24 Help; owner-smoke/packaged на железе — владелец |
 
