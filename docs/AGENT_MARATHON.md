@@ -15,7 +15,7 @@
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ cadence commit J-1316..1320 (§21 Playwright deferred) |
+| Ветка | `main` @ `27a3d2b` (cadence J-1316..1320 §21 Playwright deferred) |
 | Снимок тестов | **276** files / **1840** tests |
 | Спринт | §21 registry/guards + Help (owner/about/packaged/logging) + `check:packaged-gui-e2e-playwright-deferred` [x]; GUI Playwright `test:e2e:gui` в package.json [ ]; owner-smoke/packaged на железе — владелец |
 
