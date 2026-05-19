@@ -15,7 +15,7 @@
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ cadence commit J-1256..1259 (push J-1260) |
+| Ветка | `main` @ `cc119a4` (cadence commit+push J-1256..1259, J-1260) |
 | Снимок тестов | **273** files / **1829** tests |
 | Спринт | §8 Help 24 статей + meta formatters (logging/about/ffmpeg/tools); About ZIP hint 24 Help; owner-smoke на железе; GUI Playwright позже |
 
