@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1250)
+## Re-anchor (J-1260)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `8c9db6d` (cadence commit+push J-1245..1250) |
-| Снимок тестов | **273** files / **1827** tests |
-| Спринт | §18 Support ZIP `terminalHints:` + 7 terminal guards + 12 Help; Settings/About ZIP aria; owner-smoke на железе; GUI Playwright позже |
+| Ветка | `main` @ cadence commit J-1256..1259 (push J-1260) |
+| Снимок тестов | **273** files / **1829** tests |
+| Спринт | §8 Help 24 статей + meta formatters (logging/about/ffmpeg/tools); About ZIP hint 24 Help; owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1252](../IMPLEMENTATION_JOURNAL.md) packaged smoke Help 20 статей; [J-1253](../IMPLEMENTATION_JOURNAL.md) faq-troubleshooting guard 22; [J-1254](../IMPLEMENTATION_JOURNAL.md) owner-manual-smoke guard 24.
+**Последние J:** [J-1257](../IMPLEMENTATION_JOURNAL.md) about-support `terminalHints:` bullet; [J-1258](../IMPLEMENTATION_JOURNAL.md) About ZIP hint + HW Help; [J-1259](../IMPLEMENTATION_JOURNAL.md) ffmpeg/tools Help 24 guards sync.
 
-**Следующий cadence:** push + re-anchor **J-1260** (commit **J-1255** — локально).
+**Следующий cadence:** commit **J-1265**; push + re-anchor **J-1270**.
 
 ## Новый чат
 

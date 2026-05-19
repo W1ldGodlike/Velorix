@@ -31,7 +31,7 @@
   "aboutTooltipMaintenanceCleanPreview": "Clear preview cache only. Two-step flow: hint first, then confirm.",
   "aboutTooltipMaintenanceSummary": "Show temporary data size per category (bytes and file count) in the status line — no deletion yet.",
   "aboutTooltipSupportZip": "Build a diagnostics ZIP to a path you choose: versions, settings, paths. Handy for support or your own backup.",
-  "aboutSupportZipDiagnosticsSectionsHint": "diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8 dev guards).",
+  "aboutSupportZipDiagnosticsSectionsHint": "diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8, 24 Help articles).",
   "mediaUtilitiesCancelled": "Cancelled.",
   "mediaUtilitiesFileSelected": "Selected: {name}",
   "mediaUtilitiesHashes": "File hashes",

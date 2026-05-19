@@ -22,6 +22,10 @@ import {
   TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS,
   formatTerminalContractHintsBinReadmeGuardsLine,
+  formatTerminalContractHintsAboutSupportZipTerminalHintsBullet,
+  formatTerminalContractHintsFfmpegHelpSupportZipLine,
+  formatTerminalContractHintsToolsHelpPackagedSmokeLine,
+  formatTerminalContractHintsLoggingHelpDevGuardsLine,
   formatTerminalContractHintsShardCountEnSnippet,
   formatTerminalContractHintsShardCountRuSnippet
 } from '../src/shared/terminal-contract-hints-meta.ts'
@@ -46,6 +50,15 @@ for (const rel of TERMINAL_CONTRACT_HINTS_HELP_PATHS) {
     : formatTerminalContractHintsShardCountRuSnippet()
   failed =
     checkHelpSmokeDocSnippet(REPO_ROOT, LOG_PREFIX, rel, countSnippet, 'shard-count') || failed
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatTerminalContractHintsFfmpegHelpSupportZipLine(locale),
+      'ffmpeg-support-zip'
+    ) || failed
 }
 
 failed =
@@ -57,6 +70,18 @@ failed =
     'tools-terminal-inspector'
   ) || failed
 
+for (const rel of TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatTerminalContractHintsToolsHelpPackagedSmokeLine(locale),
+      'tools-packaged-smoke'
+    ) || failed
+}
+
 failed =
   checkHelpSmokeDocFiles(
     REPO_ROOT,
@@ -66,6 +91,18 @@ failed =
     'about-support-logs'
   ) || failed
 
+for (const rel of TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatTerminalContractHintsAboutSupportZipTerminalHintsBullet(locale),
+      'about-terminal-hints-bullet'
+    ) || failed
+}
+
 failed =
   checkHelpSmokeDocFiles(
     REPO_ROOT,
@@ -74,6 +111,18 @@ failed =
     TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS,
     'logging-and-diagnostics'
   ) || failed
+
+for (const rel of TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatTerminalContractHintsLoggingHelpDevGuardsLine(locale),
+      'logging-dev-guards'
+    ) || failed
+}
 
 failed =
   checkHelpSmokeDocFiles(

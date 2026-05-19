@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~65%** (J-1255; §8 Help 24 статей (downloads/packaged/faq/owner); owner-smoke на железе; cadence push J-1260). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
+- **Оценка: ~65%** (J-1260; §8 Help 24 статей meta formatters + guards; owner-smoke на железе; cadence J-1265/J-1270). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
 
 ## Легенда
 
@@ -559,7 +559,7 @@
 - [~] Логи renderer: `window.fluxalloy.log.send` через IPC `fluxalloy:log-renderer` + перехват `error`/`unhandledrejection` в `main.tsx`; канал закреплён за main window, ограничен token bucket и чистит control chars.
 - [x] Логи внешних процессов stdout/stderr: yt-dlp, ffmpeg export/snapshot, ffprobe через общий sanitizer без полного argv.
 - [~] Ротация по размеру: один backup `main.log.1` при превышении 1 MiB.
-- [~] Prune старых диагностических файлов: на старте чистятся crash dumps старше 30 дней, последние 20 сохраняются; архивы `logs/sessions/session-*.log` — не старше ~90 суток и не более ~25 файлов; `diagnostics.txt` в Support ZIP включает usage ключевых каталогов, `maintenanceTargets` (`previewCache`, `ytdlpPartials`, `ffmpegTemp`) и dev-блок `terminalHints:` (§8 meta/guards; J-1241).
+- [~] Prune старых диагностических файлов: на старте чистятся crash dumps старше 30 дней, последние 20 сохраняются; архивы `logs/sessions/session-*.log` — не старше ~90 суток и не более ~25 файлов; `diagnostics.txt` в Support ZIP включает usage ключевых каталогов, `maintenanceTargets` (`previewCache`, `ytdlpPartials`, `ffmpegTemp`) и dev-блок `terminalHints:` (§8 meta/guards; Help logging sync 24 статей — J-1256).
 - [~] Crash handler: `process.on('uncaughtException'|'unhandledRejection')` регистрируется на старте main до `app.whenReady`; после ready показывает диалог ошибки с деталями.
 - [x] Диалог ошибки: кратко + детали.
 - [x] Копировать детали.

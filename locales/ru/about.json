@@ -31,7 +31,7 @@
   "aboutTooltipMaintenanceCleanPreview": "Очистить только кэш превью. Два шага: сначала подсказка, затем подтверждение.",
   "aboutTooltipMaintenanceSummary": "Показать размер временных данных по категориям (байты и число файлов) в строке состояния — без удаления.",
   "aboutTooltipSupportZip": "Собрать архив диагностики в выбранный файл: версии, настройки, пути. Удобно для поддержки или своего бэкапа.",
-  "aboutSupportZipDiagnosticsSectionsHint": "В diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8, dev guards).",
+  "aboutSupportZipDiagnosticsSectionsHint": "В diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8, 24 статей Help).",
   "mediaUtilitiesCancelled": "Отменено.",
   "mediaUtilitiesFileSelected": "Выбран: {name}",
   "mediaUtilitiesHashes": "Хеш-суммы",

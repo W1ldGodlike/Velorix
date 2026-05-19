@@ -93,7 +93,9 @@ export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS = [
   'terminalHints:',
   TERMINAL_CONTRACT_HINTS_META_MODULE,
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT
+  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT,
+  'logging-and-diagnostics.md'
 ] as const
 
 /** Help §18 logging hub — diagnostics.txt blocks (owner/release/terminal). */
@@ -197,6 +199,7 @@ export const TERMINAL_CONTRACT_HINTS_HELP_REQUIRED_SNIPPETS = [
   TERMINAL_CONTRACT_HINTS_META_MODULE,
   'terminal-contract-hints-',
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING,
   'locales:terminal-summaries-ru',
@@ -210,8 +213,42 @@ export const TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS = [
   'ffmpeg-terminal-hints.md',
   'locales:terminal-summaries-ru',
   TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING,
+  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT
 ] as const
+
+/** §8 ffmpeg-terminal-hints Help — Support ZIP terminalHints line. */
+export function formatTerminalContractHintsFfmpegHelpSupportZipLine(
+  locale: TerminalContractHintsLocale
+): string {
+  const helpCountLabel =
+    locale === 'ru'
+      ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей`
+      : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} articles`
+  const runtimeNote = locale === 'ru' ? 'не runtime' : 'not runtime'
+  const inDiagnostics = locale === 'ru' ? 'в' : 'in'
+  const seeAlso =
+    locale === 'ru'
+      ? 'см. [logging-and-diagnostics.md](logging-and-diagnostics.md), [about-support-logs.md](about-support-logs.md)'
+      : 'see [logging-and-diagnostics.md](logging-and-diagnostics.md), [about-support-logs.md](about-support-logs.md)'
+  return `Support ZIP **\`terminalHints:\`** ${inDiagnostics} \`diagnostics.txt\` (dev guards, ${runtimeNote}) — \`npm run check:support-bundle-terminal-hints\`, \`check:help-terminal-hints-docs\` (${helpCountLabel}); ${seeAlso}.`
+}
+
+/** §8 tools-terminal-inspector Help — packaged smoke / Support ZIP tail. */
+export function formatTerminalContractHintsToolsHelpPackagedSmokeLine(
+  locale: TerminalContractHintsLocale
+): string {
+  const helpCountLabel =
+    locale === 'ru'
+      ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей`
+      : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} articles`
+  const crosslinks =
+    '[owner-manual-smoke.md](owner-manual-smoke.md), [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md)'
+  if (locale === 'ru') {
+    return `Полный owner bundle, per-step \`e2e <id>:\` в Support ZIP \`releaseSmoke:\` и dev-блок \`terminalHints:\` (§8 guards) — ${crosslinks}; \`npm run check:support-bundle-terminal-hints\`, \`check:help-terminal-hints-docs\` (${helpCountLabel}).`
+  }
+  return `Full owner bundle, per-step \`e2e <id>:\` in Support ZIP \`releaseSmoke:\`, and dev block \`terminalHints:\` (§8 guards) — ${crosslinks}; \`npm run check:support-bundle-terminal-hints\`, \`check:help-terminal-hints-docs\` (${helpCountLabel}).`
+}
 
 /** Help files covered by `check:help-terminal-hints-docs` (excluding bin/README). */
 export const TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT =
@@ -252,9 +289,42 @@ export function formatTerminalContractHintsDiagnosticLine(): string {
 export function formatTerminalContractHintsAboutSupportZipSectionsHint(
   locale: TerminalContractHintsLocale
 ): string {
+  const helpCountLabel =
+    locale === 'ru'
+      ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей Help`
+      : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} Help articles`
   return locale === 'ru'
-    ? 'В diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8, dev guards).'
-    : 'diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8 dev guards).'
+    ? `В diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8, ${helpCountLabel}).`
+    : `diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8, ${helpCountLabel}).`
+}
+
+/** §18 about-support-logs Help — `terminalHints:` bullet (synced Help count). */
+export function formatTerminalContractHintsAboutSupportZipTerminalHintsBullet(
+  locale: TerminalContractHintsLocale
+): string {
+  const helpCountLabel =
+    locale === 'ru'
+      ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей`
+      : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} articles`
+  const guardsTail =
+    locale === 'ru' ? 'и прочие guards в `check:quiet`' : 'and other `check:quiet` guards'
+  const seeAlso =
+    locale === 'ru'
+      ? 'см. [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md) и [logging-and-diagnostics.md](logging-and-diagnostics.md)'
+      : 'see [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md) and [logging-and-diagnostics.md](logging-and-diagnostics.md)'
+  return `- **\`terminalHints:\`** — dev §8 (\`${TERMINAL_CONTRACT_HINTS_META_MODULE}\`, 35 shards / 1056+833 hints, \`check:terminal-contract-hints-shards\`, \`check:help-terminal-hints-docs\` (${helpCountLabel}), \`check:support-bundle-terminal-hints\` ${guardsTail}); ${seeAlso}.`
+}
+
+/** §18 logging-and-diagnostics Help — §8 terminal guards line (synced count). */
+export function formatTerminalContractHintsLoggingHelpDevGuardsLine(
+  locale: TerminalContractHintsLocale
+): string {
+  const helpCountLabel =
+    locale === 'ru'
+      ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей`
+      : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} articles`
+  const settingsTail = locale === 'ru' ? 'Настройки → Зависимости' : 'Settings → Dependencies'
+  return `§8 terminal — \`check:terminal-contract-hints-shards\` (35 shards, 1056+833 hints), \`check:help-terminal-hints-docs\` (${helpCountLabel}), \`check:support-bundle-terminal-hints\`, \`check:terminal-hints-locale\` (${settingsTail}).`
 }
 
 /** Tail of `appSettingsTerminalHintsGuardHint` in locales settings.json. */

@@ -8,7 +8,7 @@
 
 В **Настройки → Общие → Тема** под переключателями — чеклист для каждого режима: контраст primary-кнопок и ссылок, focus Tab, disabled-состояния, backdrop модалок «Настройки» и «О программе», pop-out «Загрузки», окно инспектора, узлы конструктора сценариев. Для режима **как в системе** смените тему ОС и убедитесь, что приложение следует без перезапуска.
 
-Полный пакет для Support ZIP: **Настройки → Зависимости → Ручной smoke** → «Скопировать весь пакет» (блоки Theme/HiDPI + §21 e2e per-step `e2e <id>:`; см. [owner-manual-smoke.md](owner-manual-smoke.md)). Packaged smoke после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md); в `releaseSmoke:` — тот же §21 appendix.
+Полный пакет для Support ZIP: **Настройки → Зависимости → Ручной smoke** → «Скопировать весь пакет» (блоки Theme/HiDPI + §21 e2e per-step `e2e <id>:`; см. [owner-manual-smoke.md](owner-manual-smoke.md)). Packaged smoke после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md); в `releaseSmoke:` — тот же §21 appendix; dev-блок `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md).
 
 ## Язык интерфейса
 

@@ -30,6 +30,10 @@ import {
   formatTerminalContractHintsAboutSupportZipSectionsHint,
   formatTerminalContractHintsBinReadmeGuardsLine,
   formatTerminalContractHintsDiagnosticLine,
+  formatTerminalContractHintsAboutSupportZipTerminalHintsBullet,
+  formatTerminalContractHintsFfmpegHelpSupportZipLine,
+  formatTerminalContractHintsToolsHelpPackagedSmokeLine,
+  formatTerminalContractHintsLoggingHelpDevGuardsLine,
   formatTerminalContractHintsDownloadsShardBasename,
   formatTerminalContractHintsPreviewMediaShardBasename,
   formatTerminalContractHintsSettingsHelpClause,
@@ -79,10 +83,12 @@ describe('terminal-contract-hints-meta §8', () => {
 
   it('Help ffmpeg-terminal-hints articles cite meta + guard', () => {
     for (const rel of TERMINAL_CONTRACT_HINTS_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
       const text = readFileSync(rel, 'utf8')
       for (const snippet of TERMINAL_CONTRACT_HINTS_HELP_REQUIRED_SNIPPETS) {
         expect(text, `${rel} missing ${snippet}`).toContain(snippet)
       }
+      expect(text).toContain(formatTerminalContractHintsFfmpegHelpSupportZipLine(locale))
     }
   })
 
@@ -92,6 +98,22 @@ describe('terminal-contract-hints-meta §8', () => {
     expect(lines.some((l) => l.includes('check:terminal-contract-hints-shards'))).toBe(true)
     expect(lines.some((l) => l.includes('check:support-bundle-terminal-hints'))).toBe(true)
     expect(lines.some((l) => l.includes('appSettingsTerminalHintsGuardHint'))).toBe(true)
+  })
+
+  it('formatTerminalContractHintsAboutSupportZipTerminalHintsBullet matches about Help', () => {
+    for (const rel of TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      const text = readFileSync(rel, 'utf8')
+      expect(text).toContain(formatTerminalContractHintsAboutSupportZipTerminalHintsBullet(locale))
+    }
+  })
+
+  it('formatTerminalContractHintsLoggingHelpDevGuardsLine matches logging Help', () => {
+    for (const rel of TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      const text = readFileSync(rel, 'utf8')
+      expect(text).toContain(formatTerminalContractHintsLoggingHelpDevGuardsLine(locale))
+    }
   })
 
   it('formatTerminalContractHintsSettingsHelpClause matches locales', () => {
@@ -153,10 +175,12 @@ describe('terminal-contract-hints-meta §8', () => {
 
   it('Help tools-terminal-inspector hub cites meta and Support ZIP terminalHints', () => {
     for (const rel of TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
       const text = readFileSync(rel, 'utf8')
       for (const snippet of TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS) {
         expect(text, `${rel} missing ${snippet}`).toContain(snippet)
       }
+      expect(text).toContain(formatTerminalContractHintsToolsHelpPackagedSmokeLine(locale))
     }
   })
 
