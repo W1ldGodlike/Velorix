@@ -1378,3 +1378,8 @@
 - [J-1298] 2026-05-19 11:39:18 [Assistant]: §18 — `LoggingClause` + partition; logging-and-diagnostics RU+EN; guard `check:help-terminal-hints-docs`; SOURCES. `npm run check:quiet` (273 / 1834).
 - [J-1299] 2026-05-19 11:42:29 [Assistant]: §18 — `AboutSupportReleaseSmokeDevClause` + partition; about-support-logs RU+EN; guards workflow/owner-smoke. `npm run check:quiet` (273 / 1834).
 - [J-1300] 2026-05-19 11:45:30 [Assistant]: Cadence 1300 — commit+push J-1296..1300: partition в packaged/settings/logging/about formatters; re-anchor `AGENT_MARATHON`. `npm run check:quiet` (273 / 1834).
+- [J-1301] 2026-05-19 11:52:10 [Assistant]: §13/§16 — `KnowledgeHubDevClause` + `OwnerManualSmokeWorkflowArticlesClause` partition; knowledge/owner-manual-smoke RU+EN; guards. `npm run check:quiet` (273 / 1834).
+- [J-1302] 2026-05-19 11:58:09 [Assistant]: §21 — `HelpCrosslinksCountTail` + partition в 42 workflow tail Help RU+EN; Vitest partition-in-tail assert. `npm run check:quiet` (273 / 1834).
+- [J-1303] 2026-05-19 12:03:33 [Assistant]: §8/§21 — `FfmpegTerminalWorkflowClause` + partition; ffmpeg-terminal-hints RU+EN; `partition:` в `WORKFLOW_REQUIRED_SNIPPETS` (44 workflow). `npm run check:quiet` (273 / 1834).
+- [J-1304] 2026-05-19 12:08:39 [Assistant]: §21 docs — `ARCHITECTURE`/`SOURCES_OF_TRUTH` partition + `partition:` guard; Vitest 44×`partition:` (merged `it` для audit). `npm run check:quiet` (273 / 1833).
+- [J-1305] 2026-05-19 12:11:20 [Assistant]: Cadence 1305 — commit J-1301..1305: partition во всех 44 workflow (`HelpCrosslinksCountTail`, `FfmpegTerminalWorkflowClause`, knowledge/owner); guards + docs. `npm run check:quiet` (273 / 1833).

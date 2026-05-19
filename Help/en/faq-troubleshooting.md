@@ -9,7 +9,7 @@ Short answers to common questions. Details live in sections 1–6 in the help ta
 - Confirm **yt-dlp** is found: [engines-update-paths.md](engines-update-paths.md).
 - For login-only sites — **cookies** in the downloads rail: [downloads-settings-rail.md](downloads-settings-rail.md).
 - Read the queue row error and logs: [logging-and-diagnostics.md](logging-and-diagnostics.md).
-- For support — [about-support-logs.md](about-support-logs.md) (Support ZIP: `ownerManualSmoke:`, `releaseSmoke:`, `terminalHints:` (§8 dev guards); §21 per-step `e2e <id>:`; owner checklist — [owner-manual-smoke.md](owner-manual-smoke.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles).
+- For support — [about-support-logs.md](about-support-logs.md) (Support ZIP: `ownerManualSmoke:`, `releaseSmoke:`, `terminalHints:` (§8 dev guards); §21 per-step `e2e <id>:`; owner checklist — [owner-manual-smoke.md](owner-manual-smoke.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44).
 
 ## Video downloaded but will not open in the editor
 

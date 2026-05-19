@@ -16,4 +16,4 @@
 
 Всегда можно вставить текст обычным **Ctrl+V**, когда курсор стоит в поле адреса, или воспользоваться меню приложения.
 
-Подробнее про очередь — [downloads-workflow.md](downloads-workflow.md). Packaged **ytdlp** после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); dev-блок `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 статьи).
+Подробнее про очередь — [downloads-workflow.md](downloads-workflow.md). Packaged **ytdlp** после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); dev-блок `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 статьи; partition: tail 42 + ffmpeg + knowledge, FAQ вне 44).

@@ -15,4 +15,4 @@ The stop control sits **next to the URL field** for the active task. You do not 
 
 ## After success
 
-Open the file, reveal the folder, or send the media **to the editor** — see [downloads-workflow.md](downloads-workflow.md). Packaged **ytdlp** after `pack:dir` — [packaged-windows-smoke.md](../packaged-windows-smoke.md); owner bundle and §21 e2e `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles).
+Open the file, reveal the folder, or send the media **to the editor** — see [downloads-workflow.md](downloads-workflow.md). Packaged **ytdlp** after `pack:dir` — [packaged-windows-smoke.md](../packaged-windows-smoke.md); owner bundle and §21 e2e `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44).

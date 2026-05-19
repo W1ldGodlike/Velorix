@@ -47,7 +47,8 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS = 
   'e2e <id>:',
   'releaseSmoke:',
   'terminalHints:',
-  'logging-and-diagnostics.md'
+  'logging-and-diagnostics.md',
+  'partition:'
 ] as const
 
 /** RU+EN workflow/export/downloads/terminal/theme/HW/shell/getting-started. */
@@ -347,14 +348,15 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthet
   return `(${pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)})`
 }
 
-/** Workflow hub Help — crosslinks guard count tail (getting-started, probe, faq). */
+/** Workflow hub Help — crosslinks guard count tail (42 RU+EN tail articles incl. FAQ). */
 export function formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
   return locale === 'ru'
-    ? `; Help: \`check:help-workflow-smoke-crosslinks\` (${countSnippet}).`
-    : `; Help: \`check:help-workflow-smoke-crosslinks\` (${countSnippet}).`
+    ? `; Help: \`check:help-workflow-smoke-crosslinks\` (${countSnippet}; ${partition}).`
+    : `; Help: \`check:help-workflow-smoke-crosslinks\` (${countSnippet}; ${partition}).`
 }
 
 export const formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail =
@@ -365,9 +367,10 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowA
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
   return locale === 'ru'
-    ? `workflow-статьи (\`check:help-workflow-smoke-crosslinks\`, ${countSnippet}).`
-    : `workflow articles (\`check:help-workflow-smoke-crosslinks\`, ${countSnippet}).`
+    ? `workflow-статьи (\`check:help-workflow-smoke-crosslinks\`, ${countSnippet}; ${partition}).`
+    : `workflow articles (\`check:help-workflow-smoke-crosslinks\`, ${countSnippet}; ${partition}).`
 }
 
 /** About support — `releaseSmoke:` dev guards line (§18/§21 anchor). */
@@ -384,17 +387,19 @@ export function formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
-  return `Dev: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}), \`npm run check:help-terminal-hints-docs\`.`
+  const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
+  return `Dev: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}; ${partition}), \`npm run check:help-terminal-hints-docs\`.`
 }
 
-/** ffmpeg-terminal-hints — §21 workflow count + §8 terminal guard (not `HelpCrosslinksCountTail`). */
+/** ffmpeg-terminal-hints — §21 workflow count + partition + §8 terminal guard (not `HelpCrosslinksCountTail`). */
 export function formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
   return locale === 'ru'
-    ? `; §21 workflow: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}; §8 — \`npm run check:help-terminal-hints-docs\`).`
-    : `; §21 workflow: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}; §8 — \`npm run check:help-terminal-hints-docs\`).`
+    ? `; §21 workflow: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}; ${partition}; §8 — \`npm run check:help-terminal-hints-docs\`).`
+    : `; §21 workflow: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}; ${partition}; §8 — \`npm run check:help-terminal-hints-docs\`).`
 }
 
 /** Platform-packaging diagnostics — packaged Help crosslinks guard. */

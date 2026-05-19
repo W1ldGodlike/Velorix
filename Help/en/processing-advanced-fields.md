@@ -10,4 +10,4 @@ The editor rail is split into **collapsible sections**:
 
 Change values in small steps and watch the preview — you catch mistakes before a long encode.
 
-See [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md). Packaged smoke **export**/ffmpeg — [packaged-windows-smoke.md](../packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:`; dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles).
+See [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md). Packaged smoke **export**/ffmpeg — [packaged-windows-smoke.md](../packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:`; dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44).

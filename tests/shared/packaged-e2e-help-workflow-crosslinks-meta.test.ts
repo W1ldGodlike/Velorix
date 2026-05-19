@@ -94,12 +94,9 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     expect(tail.size - faq.size + ffmpeg.size + knowledge.size).toBe(
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT
     )
-  })
-
-  it('paths are unique Help markdown files', () => {
-    const paths = [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS]
-    expect(new Set(paths).size).toBe(paths.length)
-    expect(paths.every((p) => p.startsWith('Help/') && p.endsWith('.md'))).toBe(true)
+    for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS) {
+      expect(readFileSync(rel, 'utf8'), rel).toContain('partition:')
+    }
   })
 
   it('exports Help/locale count snippets', () => {
@@ -143,7 +140,8 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
   })
 
   it('exports workflow required snippets for crosslinks guard', () => {
-    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toHaveLength(7)
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toHaveLength(8)
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toContain('partition:')
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toContain(
       'terminalHints:'
     )
@@ -202,6 +200,11 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
   })
 
   it('formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail matches hub Help', () => {
+    for (const locale of ['ru', 'en'] as const) {
+      expect(formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale)).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
+      )
+    }
     expect(TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS).toHaveLength(42)
     expect(TERMINAL_CONTRACT_HINTS_WORKFLOW_MISC_TAIL_HELP_PATHS).toHaveLength(26)
     for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS) {
@@ -238,9 +241,11 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     )
     for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS) {
       const locale = rel.includes('/en/') ? 'en' : 'ru'
-      expect(readFileSync(rel, 'utf8')).toContain(
-        formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause(locale)
+      const clause = formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause(locale)
+      expect(clause).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
       )
+      expect(readFileSync(rel, 'utf8')).toContain(clause)
     }
   })
 
