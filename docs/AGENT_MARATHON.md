@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1280)
+## Re-anchor (J-1290)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `7be4b9a` (cadence commit+push J-1276..1279, J-1280) |
+| Ветка | `main` @ `e1e6f3e` (cadence commit+push J-1286..1289, J-1290) |
 | Снимок тестов | **273** files / **1834** tests |
-| Спринт | §15 Help crosslinks **44** (`HelpCrosslinksCountTail`, `PackagedCrosslinksQuietSuffix`, packaged linux/macos); §8 `terminalHints:` guards 24 Help; owner-smoke на железе; GUI Playwright §21 позже |
+| Спринт | §15/§21 workflow Help crosslinks **44** (`HelpCrosslinksCountTail` на 42 workflow + anchors); §8 `terminalHints:` 24 Help; `WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS`; owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1278](../IMPLEMENTATION_JOURNAL.md) downloads-workflow 44 tail; [J-1279](../IMPLEMENTATION_JOURNAL.md) SOURCES/ARCHITECTURE formatters; [J-1280](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1276..1279.
+**Последние J:** [J-1288](../IMPLEMENTATION_JOURNAL.md) workflow tails завершены; [J-1289](../IMPLEMENTATION_JOURNAL.md) union guard 42 paths; [J-1290](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1286..1289.
 
-**Следующий cadence:** push + re-anchor **J-1290** (commit **J-1285** @ локальный HEAD).
+**Следующий cadence:** commit **J-1295**; push + re-anchor **J-1300**.
 
 ## Новый чат
 
