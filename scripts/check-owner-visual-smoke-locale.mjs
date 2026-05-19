@@ -10,7 +10,8 @@ import { APP_SETTINGS_THEME_CHECKLIST_KEYS } from '../src/shared/app-settings-th
 import { LOCALE_JSON_LOCALES } from '../src/shared/locale-json-catalog.ts'
 import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -53,6 +54,12 @@ for (const locale of LOCALE_JSON_LOCALES) {
   }
   const e2eHint = table.appSettingsPackagedE2eRegistryGuardHint
   if (typeof e2eHint === 'string') {
+    if (!e2eHint.includes(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT)) {
+      failed = true
+      console.error(
+        `[check:owner-visual-smoke-locale] locales/${locale}/settings.json appSettingsPackagedE2eRegistryGuardHint missing: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}`
+      )
+    }
     const countSnippet =
       locale === 'ru'
         ? PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET

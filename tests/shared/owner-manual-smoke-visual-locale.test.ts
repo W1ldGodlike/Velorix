@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 
 import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 } from '../../src/shared/packaged-e2e-help-workflow-crosslinks-meta'
 import { formatOwnerManualSmokeHidpiChecklistLinesFromShard } from '../../src/shared/owner-manual-smoke-hidpi-lines'
 import { formatOwnerManualSmokeThemeChecklistLinesFromShard } from '../../src/shared/owner-manual-smoke-theme-lines'
@@ -42,7 +43,10 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('planned GUI')
     expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('planned GUI')
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
-      'check:help-workflow-smoke-crosslinks'
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
+    )
+    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
     )
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET

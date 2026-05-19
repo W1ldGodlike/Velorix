@@ -6,20 +6,15 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import {
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
+  pickPackagedE2eHelpWorkflowCrosslinksCountSnippet
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
-const PACKAGED_HELP_FILES = [
-  'Help/packaged-windows-smoke.md',
-  'Help/packaged-linux-smoke.md',
-  'Help/packaged-macos-smoke.md',
-  'Help/en/packaged-windows-smoke.md',
-  'Help/en/packaged-linux-smoke.md',
-  'Help/en/packaged-macos-smoke.md'
-]
+const PACKAGED_HELP_FILES = [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS]
 
 const MAC_LINUX_HELP_FILES = PACKAGED_HELP_FILES.filter(
   (rel) => rel.includes('linux') || rel.includes('macos')
@@ -33,16 +28,13 @@ const BASE_SNIPPETS = [
   'present/missing',
   '§4.3',
   'owner:',
-  '§21 packaged e2e (CI vs owner)'
+  '§21 packaged e2e (CI vs owner)',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 ]
 
-const WINDOWS_SNIPPETS = [...BASE_SNIPPETS, 'check:help-workflow-smoke-crosslinks']
+const WINDOWS_SNIPPETS = BASE_SNIPPETS
 
 const WINDOWS_PACKAGED_HELP_FILES = PACKAGED_HELP_FILES.filter((rel) => rel.includes('windows'))
-
-const NON_WINDOWS_PACKAGED_HELP_FILES = PACKAGED_HELP_FILES.filter(
-  (rel) => !rel.includes('windows')
-)
 
 const MAC_LINUX_SNIPPETS = ['engines:doctor', 'bin/README.md']
 
@@ -75,14 +67,31 @@ function checkCrosslinksCount(rel, countSnippet, label) {
 }
 
 let failed = false
+if (
+  PACKAGED_HELP_FILES.length !==
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS.length +
+    PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS.length
+) {
+  console.error(
+    '[check:help-packaged-smoke-docs] ALL_PACKAGED_HELP_PATHS out of sync with win/mac-linux lists'
+  )
+  process.exit(1)
+}
 failed = checkFiles(WINDOWS_PACKAGED_HELP_FILES, WINDOWS_SNIPPETS, 'windows') || failed
-failed = checkFiles(NON_WINDOWS_PACKAGED_HELP_FILES, BASE_SNIPPETS, 'mac/linux-base') || failed
+failed =
+  checkFiles(
+    [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS],
+    BASE_SNIPPETS,
+    'mac/linux-base'
+  ) || failed
 failed = checkFiles(MAC_LINUX_HELP_FILES, MAC_LINUX_SNIPPETS, 'mac/linux') || failed
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS) {
-  const countSnippet = rel.includes('/en/')
-    ? PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
-    : PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
-  failed = checkCrosslinksCount(rel, countSnippet, 'win-count') || failed
+  failed =
+    checkCrosslinksCount(
+      rel,
+      pickPackagedE2eHelpWorkflowCrosslinksCountSnippet(rel),
+      'win-count'
+    ) || failed
 }
 
 if (failed) {

@@ -6,10 +6,11 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import {
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+  pickPackagedE2eHelpWorkflowCrosslinksCountSnippet
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -32,7 +33,7 @@ const OWNER_SNIPPETS = [
   'e2e launch:',
   '§21 packaged e2e (CI vs owner)',
   'formatPackagedManualSmokeE2eAppendixLines',
-  'check:help-workflow-smoke-crosslinks'
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 ]
 
 const ABOUT_SNIPPETS = [
@@ -47,12 +48,12 @@ const ABOUT_SNIPPETS = [
   'present/missing',
   '§21 packaged e2e (CI vs owner)',
   'appendPackagedManualSmokeE2ePlanLines',
-  'check:help-workflow-smoke-crosslinks'
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 ]
 
 const LOGGING_SNIPPETS = [
   'check:packaged-e2e-scenarios-registry',
-  'check:help-workflow-smoke-crosslinks',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
   '§21 packaged e2e (CI vs owner)',
   'planned GUI e2e scope'
 ]
@@ -61,7 +62,7 @@ const PLANNER_SNIPPETS = [
   'owner-manual-smoke.md',
   'packaged-windows-smoke.md',
   'formatPackagedManualSmokeE2eAppendixLines',
-  'check:help-workflow-smoke-crosslinks'
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 ]
 
 function checkFiles(files, snippets, label) {
@@ -78,36 +79,39 @@ function checkFiles(files, snippets, label) {
   return failed
 }
 
-function checkCrosslinksCount(files, countSnippet, label) {
-  let failed = false
-  for (const rel of files) {
-    const file = path.join(REPO_ROOT, rel)
-    const text = fs.readFileSync(file, 'utf8')
-    if (!text.includes(countSnippet)) {
-      failed = true
-      console.error(
-        `[check:help-owner-smoke-docs] ${label} ${rel} missing crosslinks count: ${countSnippet}`
-      )
-    }
+function checkCrosslinksCount(rel, countSnippet, label) {
+  const file = path.join(REPO_ROOT, rel)
+  const text = fs.readFileSync(file, 'utf8')
+  if (!text.includes(countSnippet)) {
+    console.error(
+      `[check:help-owner-smoke-docs] ${label} ${rel} missing crosslinks count: ${countSnippet}`
+    )
+    return true
   }
-  return failed
+  return false
 }
 
 let failed = false
+if (
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS.length !==
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS.length +
+    PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS.length
+) {
+  console.error(
+    '[check:help-owner-smoke-docs] COUNT_ANCHOR_PATHS out of sync with RU/EN anchor lists'
+  )
+  process.exit(1)
+}
 failed = checkFiles(['Help/owner-manual-smoke.md'], OWNER_SNIPPETS, 'owner-ru') || failed
-failed =
-  checkCrosslinksCount(
-    [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS],
-    PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET,
-    'anchor-ru-count'
-  ) || failed
 failed = checkFiles(['Help/en/owner-manual-smoke.md'], OWNER_SNIPPETS, 'owner-en') || failed
-failed =
-  checkCrosslinksCount(
-    [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS],
-    PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
-    'anchor-en-count'
-  ) || failed
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS) {
+  failed =
+    checkCrosslinksCount(
+      rel,
+      pickPackagedE2eHelpWorkflowCrosslinksCountSnippet(rel),
+      'anchor-count'
+    ) || failed
+}
 failed = checkFiles(ABOUT_HELP_FILES, ABOUT_SNIPPETS, 'about') || failed
 failed = checkFiles(LOGGING_HELP_FILES, LOGGING_SNIPPETS, 'logging') || failed
 failed = checkFiles(PLANNER_HELP_FILES, PLANNER_SNIPPETS, 'planner') || failed

@@ -1,7 +1,10 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
-import { PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT } from '../../src/shared/packaged-e2e-smoke-scenarios'
+import {
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
+} from '../../src/shared/packaged-e2e-smoke-scenarios'
 import {
   BUILD_LINUX_NPM_SCRIPT,
   BUILD_MAC_NPM_SCRIPT,
@@ -25,7 +28,9 @@ describe('platform-packaging-scripts §19', () => {
     expect(lines.some((l) => l.includes('check:packaged-manual-smoke-parity'))).toBe(true)
     expect(lines.some((l) => l.includes('check:owner-visual-smoke-locale'))).toBe(true)
     expect(lines.some((l) => l.includes('check:platform-packaging-scripts'))).toBe(true)
-    expect(lines.some((l) => l.includes('check:help-workflow-smoke-crosslinks'))).toBe(true)
+    expect(
+      lines.some((l) => l.includes(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT))
+    ).toBe(true)
     const crosslinksHint = `${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} Help articles`
     expect(lines.some((l) => l.includes(crosslinksHint))).toBe(true)
     expect(lines.some((l) => l.includes('check:packaged-e2e-scenarios-registry'))).toBe(true)

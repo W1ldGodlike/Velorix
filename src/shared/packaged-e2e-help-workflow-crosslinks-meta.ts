@@ -3,6 +3,20 @@
  * Leaf-модуль без импортов (Node ESM из scripts/*.mjs).
  */
 
+/** npm guard в `check:quiet` (§15 workflow Help ↔ owner/packaged §21). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT =
+  'check:help-workflow-smoke-crosslinks' as const
+
+/** Dev engines README — workflow crosslinks guard + EN count snippet. */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH = 'bin/README.md' as const
+
+/** EN vs RU crosslinks count snippet for a Help path (`Help/en/…` → EN). */
+export function pickPackagedE2eHelpWorkflowCrosslinksCountSnippet(helpRelPath: string): string {
+  return helpRelPath.includes('/en/')
+    ? PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
+    : PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+}
+
 /** RU+EN workflow/export/downloads/terminal/theme/HW/shell/getting-started. */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS = [
   'Help/downloads-workflow.md',
@@ -65,8 +79,28 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS = [
   'Help/en/workflows-planner-scenarios.md'
 ] as const
 
-/** Packaged smoke Help (windows) — dev line cites workflow crosslinks guard. */
+/** Packaged smoke Help (windows) — dev line cites workflow crosslinks guard + count. */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS = [
   'Help/packaged-windows-smoke.md',
   'Help/en/packaged-windows-smoke.md'
+] as const
+
+/** Packaged smoke Help (linux/macos) — dev line cites workflow crosslinks guard. */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS = [
+  'Help/packaged-linux-smoke.md',
+  'Help/packaged-macos-smoke.md',
+  'Help/en/packaged-linux-smoke.md',
+  'Help/en/packaged-macos-smoke.md'
+] as const
+
+/** All packaged smoke Help articles (win + linux + macos, RU+EN). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS = [
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS
+] as const
+
+/** Help §15 articles with explicit crosslinks count (RU+EN anchors). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS = [
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS,
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS
 ] as const
