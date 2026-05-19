@@ -6,7 +6,7 @@
 
 1. **Настройки → Зависимости** — блок **«Ручной smoke (владелец)»**: разверните превью секций (**Тема**, HiDPI, HW, сценарий, спрайт §7.5, мини-плеер §4.3, packaged, планировщик, shell), затем **«Скопировать весь пакет»** (тот же текст в Support ZIP `ownerManualSmoke:`; при **английском UI** — EN-строки из `locales/en/settings.json` и packaged shards). Кнопки **«К …»** переключают вкладку настроек и прокручивают к теме, HiDPI, HW, packaged или Проводнику. Подсказки в панели упоминают dev-guards: `check:owner-visual-smoke-locale`, `check:packaged-manual-smoke-parity`, `check:packaged-e2e-scenarios-registry`, `check:help-terminal-hints-docs` (§21: 12 packaged шагов ↔ CI headless или planned GUI e2e).
 2. Ниже — отдельные панели (у каждой deep-link на эту статью): **NVENC/VAAPI**, **packaged smoke**; **HiDPI** и **Проводник Windows** — вкладка **«Общие»**. Из hub: **«Открыть планировщик»** / **«Открыть конструктор»** (то же, что меню **Сервис**).
-3. **Архив поддержки** — `ownerManualSmoke:` в `diagnostics.txt` (дублирует те же шаги); `releaseSmoke:` — CI packaged pipeline и план §21 e2e; dev-блок `terminalHints:` (§8 guards) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md).
+3. **Архив поддержки** — `ownerManualSmoke:` в `diagnostics.txt` (дублирует те же шаги); `releaseSmoke:` — CI packaged pipeline, `fix:esm-shim` (`electron-vite-build-meta.ts`) для `electron-vite build` на Linux/CI, и план §21 e2e; dev-блок `terminalHints:` (§8 guards) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md).
 
 ## Что проверить
 

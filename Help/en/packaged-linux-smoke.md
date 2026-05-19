@@ -15,6 +15,8 @@ npm run verify:linux-unpacked
 
 The folder must contain `fluxalloy` or `FluxAlloy` and `resources/bin/{yt-dlp,ffmpeg,ffprobe}`.
 
+**Linux/CI build:** `npm run build` (`electron-vite build`) requires the `fix:esm-shim` plugin in [`electron.vite.config.ts`](../../electron.vite.config.ts) (canonical: [`electron-vite-build-meta.ts`](../../src/shared/electron-vite-build-meta.ts); `vite:esm-shim` false-positive on `renderer-state-approach.ts`). GitHub Actions `linux-packaging`: `check:quiet` → `build` → `pack:linux:dir`.
+
 ## In-app checklist
 
 **Settings → Dependencies → Manual Linux packaged smoke (pack:linux:dir)** — copy the steps for your report; they appear in Support ZIP as `linuxPackagedSmoke:`.

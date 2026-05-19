@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { formatElectronViteEsmShimFixDiagnosticLine } from '../../src/shared/electron-vite-build-meta'
 import { listPackagedAppExeCandidatePaths } from '../../src/shared/packaged-app-smoke'
 import { buildSupportZipPackagedReleaseLines } from '../../src/shared/packaged-release-smoke'
 
@@ -16,6 +17,7 @@ describe('packaged-release-smoke §19', () => {
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_PACK_VERIFY'))).toBe(true)
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFPROBE_SMOKE'))).toBe(true)
     expect(lines.some((l) => l.includes('check:release:local'))).toBe(true)
+    expect(lines).toContain(formatElectronViteEsmShimFixDiagnosticLine())
     expect(lines.some((l) => l.includes('build:mac'))).toBe(true)
     expect(lines.some((l) => l.includes('build:linux'))).toBe(true)
     expect(lines.some((l) => l.includes('engines:doctor'))).toBe(true)

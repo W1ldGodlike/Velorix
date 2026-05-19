@@ -6,7 +6,7 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 
 1. **Settings → Dependencies** — **Owner manual smoke**: expand section previews (**Theme**, HiDPI, HW, scenario, video sprite §7.5, mini player §4.3, packaged, scheduler, shell), then **Copy full bundle** (same text in Support ZIP `ownerManualSmoke:`; with **English UI** — EN strings from `locales/en/settings.json` and packaged shards). **Jump to …** buttons switch the settings tab and scroll to theme, HiDPI, HW, packaged, or Explorer. Panel hints mention dev guards: `check:owner-visual-smoke-locale`, `check:packaged-manual-smoke-parity`, `check:packaged-e2e-scenarios-registry`, `check:help-terminal-hints-docs` (§21: 12 packaged steps ↔ CI headless or planned GUI e2e).
 2. Below: separate panels (each deep-links here): **NVENC/VAAPI**, **packaged smoke**; **HiDPI** and **Windows Explorer** — **General** tab. From the hub: **Open task planner** / **Open scenario builder** (same as **Service** menu).
-3. **Support ZIP** — `ownerManualSmoke:` in `diagnostics.txt`; `releaseSmoke:` — CI packaged pipeline and §21 e2e plan; dev block `terminalHints:` (§8 guards) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md).
+3. **Support ZIP** — `ownerManualSmoke:` in `diagnostics.txt`; `releaseSmoke:` — CI packaged pipeline, `fix:esm-shim` (`electron-vite-build-meta.ts`) for Linux/CI `electron-vite build`, and §21 e2e plan; dev block `terminalHints:` (§8 guards) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md).
 
 ## What to verify
 

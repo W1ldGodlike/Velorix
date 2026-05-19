@@ -7,5 +7,6 @@ describe('check:platform-packaging-scripts §19', () => {
       encoding: 'utf8'
     })
     expect(result).toContain('[check:platform-packaging-scripts] OK')
+    expect(result).toContain('fix:esm-shim')
   })
 })

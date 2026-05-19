@@ -285,6 +285,13 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS = [
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS
 ] as const
 
+/** Guard substring in Help owner/about/packaged (`check:help-*-smoke-docs`). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET =
+  'fix:esm-shim' as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH =
+  'electron-vite-build-meta.ts' as const
+
 /** Required substrings — `check:help-owner-smoke-docs` / `check:help-packaged-smoke-docs`. */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS = [
   'packaged-e2e-scenarios-registry',
@@ -297,6 +304,8 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS 
   'e2e launch:',
   '§21 packaged e2e (CI vs owner)',
   'formatPackagedManualSmokeE2eAppendixLines',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 ] as const
 
@@ -314,6 +323,8 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS 
   'present/missing',
   '§21 packaged e2e (CI vs owner)',
   'appendPackagedManualSmokeE2ePlanLines',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
 ] as const
 
@@ -324,7 +335,9 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_REQUIRED_SNIPPET
   'check:support-bundle-terminal-hints',
   'check:help-terminal-hints-docs',
   '§21 packaged e2e (CI vs owner)',
-  'planned GUI e2e scope'
+  'planned GUI e2e scope',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH
 ] as const
 
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS = [
@@ -348,7 +361,10 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPE
 
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIPPETS = [
   'engines:doctor',
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH,
+  'linux-packaging'
 ] as const
 
 /** Parenthetical packaged Help crosslinks count (`(44 articles)` / `(44 статьи)`). */
@@ -389,7 +405,11 @@ export function formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeD
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
   const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
-  return `dev: \`check:packaged-e2e-scenarios-registry\`, \`check:help-workflow-smoke-crosslinks\` (${countSnippet}; ${partition}).`
+  const buildEsm =
+    locale === 'ru'
+      ? ` §19 build: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` / \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\` (Linux/CI \`npm run build\`).`
+      : ` §19 build: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` / \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\` (Linux/CI \`npm run build\`).`
+  return `dev: \`check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}; ${partition}).${buildEsm}`
 }
 
 /** Knowledge hub — workflow + terminal hints dev guards (§13/§15). */
@@ -444,5 +464,9 @@ export function formatPackagedE2eHelpWorkflowCrosslinksLoggingClause(
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
   const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
   const quietTail = locale === 'ru' ? 'в `check:quiet`' : 'in `check:quiet`'
-  return `\`npm run check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}; ${partition}, ${quietTail})`
+  const buildEsm =
+    locale === 'ru'
+      ? ` §19 build: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` / \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\` (Linux/CI \`npm run build\`);`
+      : ` §19 build: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` / \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\` (Linux/CI \`npm run build\`);`
+  return `\`npm run check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}; ${partition}, ${quietTail});${buildEsm}`
 }

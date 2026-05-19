@@ -15,6 +15,8 @@ npm run verify:mac-unpacked
 
 The bundle must contain `Contents/MacOS/FluxAlloy` and `Contents/Resources/bin/`.
 
+**Linux/CI build:** on Linux/CI hosts `npm run build` requires the `fix:esm-shim` plugin (`electron-vite-build-meta.ts`, [`electron.vite.config.ts`](../../electron.vite.config.ts)); CI `linux-packaging` is Linux-only. On macOS locally use `build` → `pack:mac:dir`.
+
 ## In-app checklist
 
 **Settings → Dependencies → Manual macOS packaged smoke (pack:mac:dir)** — copy steps for your report; they appear in Support ZIP as `macosPackagedSmoke:`.

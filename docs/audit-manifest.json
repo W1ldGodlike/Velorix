@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T05:27:33.648Z",
+  "generatedAt": "2026-05-19T09:44:39.749Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1174,
+  "fileCount": 1176,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -611,6 +611,7 @@
     "src/shared/editor-url-paste-behavior.ts",
     "src/shared/editor-video-sprite-manual-smoke-checklist-build.ts",
     "src/shared/editor-video-sprite-manual-smoke-checklist.ts",
+    "src/shared/electron-vite-build-meta.ts",
     "src/shared/engine-contract.ts",
     "src/shared/engine-download-contract.ts",
     "src/shared/engine-statusbar-versions.ts",
@@ -1032,6 +1033,7 @@
     "tests/shared/editor-export-preview-hint-resolve.test.ts",
     "tests/shared/editor-url-paste-behavior.test.ts",
     "tests/shared/editor-video-sprite-manual-smoke-checklist.test.ts",
+    "tests/shared/electron-vite-build-meta.test.ts",
     "tests/shared/engine-contract.test.ts",
     "tests/shared/engine-statusbar-versions.test.ts",
     "tests/shared/engine-update-fetch.test.ts",

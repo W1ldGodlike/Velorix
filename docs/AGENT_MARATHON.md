@@ -21,7 +21,7 @@
 
 **Последние J:** [J-1308](../IMPLEMENTATION_JOURNAL.md) AgentsMd/registry formatters; [J-1309](../IMPLEMENTATION_JOURNAL.md) README `RootReadmePartitionLine`; [J-1310](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1306..1310.
 
-**Следующий cadence:** commit **J-1315**; push + re-anchor **J-1320**.
+**Следующий cadence:** push + re-anchor **J-1320** (commit **J-1315** — §19 `fix:esm-shim` meta/guards/Help).
 
 ## Новый чат
 

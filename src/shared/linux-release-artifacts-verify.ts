@@ -3,6 +3,8 @@
  */
 import { join } from 'node:path'
 
+import { formatElectronViteEsmShimFixDiagnosticLine } from './electron-vite-build-meta'
+
 export function distDirectory(repoRoot: string): string {
   return join(repoRoot, 'dist')
 }
@@ -38,8 +40,9 @@ export function collectLinuxReleaseArtifactFailures(
 export function formatLinuxReleaseArtifactsDiagnosticLines(repoRoot: string): string[] {
   return [
     'command: npm run build:linux && npm run verify:linux-release',
+    formatElectronViteEsmShimFixDiagnosticLine(),
     'checks: dist/*.AppImage и dist/*.deb (имена по electron-builder.yml)',
-    'note: CI job linux-packaging гоняет только pack:linux:dir — полный build:linux локально',
+    'note: CI job linux-packaging — check:quiet + build + pack:linux:dir (не build:linux); полный build:linux локально',
     `dist: ${distDirectory(repoRoot)}`
   ]
 }

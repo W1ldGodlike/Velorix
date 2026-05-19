@@ -19,7 +19,7 @@
 
 | Слой | Вход | Роль |
 | --- | --- | --- |
-| Сборка / runtime Electron | [`package.json`](../package.json) → `main`: `./out/main/index.js` | После `electron-vite build` загружается **main process**. |
+| Сборка / runtime Electron | [`package.json`](../package.json) → `main`: `./out/main/index.js` | После `electron-vite build` загружается **main process**. Linux/CI: [`electron-vite-build-meta.ts`](../src/shared/electron-vite-build-meta.ts) + плагин `fix:esm-shim` в [`electron.vite.config.ts`](../electron.vite.config.ts) (false-positive `vite:esm-shim` на `renderer-state-approach.ts`). |
 | Main | [`src/main/index.ts`](../src/main/index.ts) → [`main-application-bootstrap.ts`](../src/main/main-application-bootstrap.ts) | `app.whenReady` → окна, меню, IPC (`src/main/ipc/register-*`, `register-downloads-*`). |
 | Preload (один бандл) | [`src/preload/index.ts`](../src/preload/index.ts) + [`preload-fluxalloy-*.ts`](../src/preload/) + [`fluxalloy-api-block-*.d.ts`](../src/preload/) | `contextBridge` → `window.fluxalloy`; без Node в renderer. |
 | Renderer | [`src/renderer/src/main.tsx`](../src/renderer/src/main.tsx) | По hash: **`App`** (главное окно), **`#downloads`** → [`DownloadsStandaloneApp`](../src/renderer/src/DownloadsStandaloneApp.tsx), **`#inspector`** → [`InspectorStandaloneApp`](../src/renderer/src/InspectorStandaloneApp.tsx), **`#mini-player`** → [`MiniPlayerStandaloneApp`](../src/renderer/src/MiniPlayerStandaloneApp.tsx). |

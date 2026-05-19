@@ -15,6 +15,8 @@ npm run verify:mac-unpacked
 
 В бандле должны быть `Contents/MacOS/FluxAlloy` и `Contents/Resources/bin/`.
 
+**Linux/CI сборка:** при `npm run build` на Linux/CI нужен плагин `fix:esm-shim` (канон `electron-vite-build-meta.ts`, [`electron.vite.config.ts`](../electron.vite.config.ts)); CI `linux-packaging` — только Linux. Локально на macOS: `build` → `pack:mac:dir`.
+
 ## Чеклист в приложении
 
 **Настройки → Зависимости → Ручной smoke macOS (pack:mac:dir)** — шаги можно скопировать; они попадают в Support ZIP (`macosPackagedSmoke:`).

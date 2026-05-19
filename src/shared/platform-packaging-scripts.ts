@@ -15,6 +15,18 @@ import {
   TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
   formatTerminalContractHintsDiagnosticLine
 } from './terminal-contract-hints-meta'
+import { formatElectronViteEsmShimFixDiagnosticLine } from './electron-vite-build-meta'
+import {
+  BUILD_LINUX_NPM_SCRIPT,
+  BUILD_MAC_NPM_SCRIPT,
+  ENGINES_CI_LINUX_RUNNER,
+  ENGINES_PREPARE_WIN_NPM_SCRIPT,
+  PACK_LINUX_DIR_NPM_SCRIPT,
+  PACK_MAC_DIR_NPM_SCRIPT,
+  VERIFY_LINUX_RELEASE_NPM_SCRIPT,
+  VERIFY_LINUX_UNPACKED_NPM_SCRIPT,
+  VERIFY_MAC_UNPACKED_NPM_SCRIPT
+} from './platform-packaging-npm-scripts'
 
 export {
   BUILD_LINUX_NPM_SCRIPT,
@@ -31,18 +43,6 @@ export {
   VERIFY_MAC_UNPACKED_NPM_SCRIPT
 } from './platform-packaging-npm-scripts'
 
-import {
-  BUILD_LINUX_NPM_SCRIPT,
-  BUILD_MAC_NPM_SCRIPT,
-  ENGINES_CI_LINUX_RUNNER,
-  ENGINES_PREPARE_WIN_NPM_SCRIPT,
-  PACK_LINUX_DIR_NPM_SCRIPT,
-  PACK_MAC_DIR_NPM_SCRIPT,
-  VERIFY_LINUX_RELEASE_NPM_SCRIPT,
-  VERIFY_LINUX_UNPACKED_NPM_SCRIPT,
-  VERIFY_MAC_UNPACKED_NPM_SCRIPT
-} from './platform-packaging-npm-scripts'
-
 /** Подсказки без запуска electron-builder. */
 export function formatPlatformPackagingDiagnosticLines(): string[] {
   return [
@@ -52,6 +52,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     `engines prepare: npm run ${ENGINES_PREPARE_WIN_NPM_SCRIPT} (Windows x64 only; predev/prebuild:win)`,
     `engines mac/linux: нет engines:prepare:mac|linux — bin/ вручную → engines:doctor → pack:*:dir (см. ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH}, Help packaged mac/linux)`,
     `ci: windows-latest (${ENGINES_PREPARE_WIN_NPM_SCRIPT} + packaged smokes); ${ENGINES_CI_LINUX_RUNNER} (${PACK_LINUX_DIR_NPM_SCRIPT} + ${VERIFY_LINUX_UNPACKED_NPM_SCRIPT}, без engines prepare); mac — job нет`,
+    formatElectronViteEsmShimFixDiagnosticLine(),
     'smoke skips: FLUXALLOY_SKIP_PACK_VERIFY, FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_SKIP_FFMPEG_SMOKE, FLUXALLOY_SKIP_YTDLP_SMOKE',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',
     `terminal hints Help: npm run ${TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT}`,

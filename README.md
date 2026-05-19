@@ -77,7 +77,7 @@ npm run engines:doctor
 
 ## Архитектура
 
-Слои main / preload / renderer, IPC, pop-out hash routes, Zustand: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Обновляйте при смене IPC или сборки.
+Слои main / preload / renderer, IPC, pop-out hash routes, Zustand: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Обновляйте при смене IPC или сборки. Linux/CI: `electron-vite build` — плагин `fix:esm-shim` в [`electron.vite.config.ts`](./electron.vite.config.ts) (см. [`src/shared/electron-vite-build-meta.ts`](./src/shared/electron-vite-build-meta.ts)).
 
 ## Релиз
 

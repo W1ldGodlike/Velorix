@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react'
 import type { Plugin } from 'vite'
 import MagicString from 'magic-string'
 
+import { ELECTRON_VITE_ESM_SHIM_FIX_PLUGIN_NAME } from './src/shared/electron-vite-build-meta'
+
 /**
  * Workaround: electron-vite's `vite:esm-shim` plugin uses a regex (ESMStaticImportRe)
  * that false-positives on string literals ending with the word "import" followed by a quote
@@ -18,7 +20,7 @@ function fixedEsmShimPlugin(): Plugin {
   const CJSShim = `\n// -- CommonJS Shims --\nimport __cjs_mod__ from 'node:module';\nconst __filename = import.meta.filename;\nconst __dirname = import.meta.dirname;\nconst require = __cjs_mod__.createRequire(import.meta.url);\n`
 
   return {
-    name: 'fix:esm-shim',
+    name: ELECTRON_VITE_ESM_SHIM_FIX_PLUGIN_NAME,
     apply: 'build',
     enforce: 'post',
     configResolved(config) {

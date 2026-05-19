@@ -14,6 +14,7 @@ import {
   TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
   formatTerminalContractHintsDiagnosticLine
 } from '../../src/shared/terminal-contract-hints-meta'
+import { formatElectronViteEsmShimFixDiagnosticLine } from '../../src/shared/electron-vite-build-meta'
 import {
   BUILD_LINUX_NPM_SCRIPT,
   BUILD_MAC_NPM_SCRIPT,
@@ -34,6 +35,7 @@ describe('platform-packaging-scripts §19', () => {
     expect(lines.some((l) => l.includes(BUILD_MAC_NPM_SCRIPT))).toBe(true)
     expect(lines.some((l) => l.includes(BUILD_LINUX_NPM_SCRIPT))).toBe(true)
     expect(lines.some((l) => l.includes('electron-builder.yml'))).toBe(true)
+    expect(lines).toContain(formatElectronViteEsmShimFixDiagnosticLine())
     expect(lines.some((l) => l.includes('check:packaged-manual-smoke-parity'))).toBe(true)
     expect(lines.some((l) => l.includes('check:owner-visual-smoke-locale'))).toBe(true)
     expect(lines.some((l) => l.includes('check:platform-packaging-scripts'))).toBe(true)
