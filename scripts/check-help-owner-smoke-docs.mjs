@@ -14,7 +14,9 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS,
-  pickPackagedE2eHelpWorkflowCrosslinksCountSnippet
+  pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
+  formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
+  formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
@@ -75,6 +77,17 @@ failed =
     PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS,
     'about'
   ) || failed
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale),
+      'about-release-smoke-dev'
+    ) || failed
+}
 failed =
   checkHelpSmokeDocFiles(
     REPO_ROOT,
@@ -91,6 +104,17 @@ failed =
     PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS,
     'planner'
   ) || failed
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale),
+      'planner-crosslinks-tail'
+    ) || failed
+}
 
 if (failed) {
   process.exit(1)

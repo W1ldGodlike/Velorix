@@ -2,7 +2,14 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 import {
+  TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_MISC_TAIL_HELP_PATHS
+} from '../../src/shared/terminal-contract-hints-meta'
+import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FAQ_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
@@ -21,6 +28,8 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPETS,
@@ -30,11 +39,20 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmeWorkflowPartitionLine,
+  formatPackagedE2eHelpWorkflowCrosslinksRootReadmePartitionLine,
+  formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET,
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingClause,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote,
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
+  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause,
+  formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
+  formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause,
   formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail,
+  formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
@@ -47,6 +65,35 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS.length
     )
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT).toBe(44)
+  })
+
+  it('workflow articles covered by tail, ffmpeg-terminal, or knowledge hub paths', () => {
+    const tail = new Set<string>(TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS)
+    const ffmpeg = new Set<string>(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS)
+    const knowledge = new Set<string>(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS)
+    const faq = new Set<string>(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FAQ_HELP_PATHS)
+    expect(tail.size).toBe(42)
+    expect(ffmpeg.size).toBe(2)
+    expect(knowledge.size).toBe(2)
+    expect(faq.size).toBe(2)
+    expect([...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FAQ_HELP_PATHS]).toEqual([
+      ...TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS
+    ])
+    for (const rel of faq) {
+      expect(tail.has(rel), rel).toBe(true)
+    }
+    for (const rel of tail) {
+      const inArticles = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS.includes(
+        rel as (typeof PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS)[number]
+      )
+      expect(inArticles || faq.has(rel), rel).toBe(true)
+    }
+    for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS) {
+      expect(tail.has(rel) || ffmpeg.has(rel) || knowledge.has(rel), rel).toBe(true)
+    }
+    expect(tail.size - faq.size + ffmpeg.size + knowledge.size).toBe(
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT
+    )
   })
 
   it('paths are unique Help markdown files', () => {
@@ -107,10 +154,10 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
 
   it('formats settings Help clause and owner Help paths from anchors', () => {
     expect(formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('en')).toBe(
-      'Help: check:help-workflow-smoke-crosslinks (44 articles).'
+      `Help: check:help-workflow-smoke-crosslinks (44 articles; ${formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote('en')}).`
     )
     expect(formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('ru')).toBe(
-      'Help: check:help-workflow-smoke-crosslinks (44 статьи).'
+      `Help: check:help-workflow-smoke-crosslinks (44 статьи; ${formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote('ru')}).`
     )
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS).toEqual([
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[0],
@@ -155,23 +202,46 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
   })
 
   it('formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail matches hub Help', () => {
-    for (const rel of [
-      'Help/getting-started.md',
-      'Help/en/getting-started.md',
-      'Help/probe-and-inspector-basics.md',
-      'Help/en/probe-and-inspector-basics.md',
-      'Help/faq-troubleshooting.md',
-      'Help/en/faq-troubleshooting.md',
-      'Help/downloads-workflow.md',
-      'Help/en/downloads-workflow.md'
-    ]) {
+    expect(TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS).toHaveLength(42)
+    expect(TERMINAL_CONTRACT_HINTS_WORKFLOW_MISC_TAIL_HELP_PATHS).toHaveLength(26)
+    for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS) {
       const locale = rel.includes('/en/') ? 'en' : 'ru'
       const text = readFileSync(rel, 'utf8')
       expect(text).toContain(formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale))
     }
+    for (const rel of ['Help/owner-manual-smoke.md', 'Help/en/owner-manual-smoke.md']) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause(locale)
+      )
+    }
+    for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale)
+      )
+    }
+    for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale)
+      )
+    }
+    for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(locale)
+      )
+    }
     expect(formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail('en')).toBe(
       formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail('en')
     )
+    for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause(locale)
+      )
+    }
   })
 
   it('formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine mentions 44 and 6', () => {
@@ -181,6 +251,9 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
   })
 
   it('formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix matches packaged Help', () => {
+    expect(formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote('en')).toContain(
+      'FAQ outside 44'
+    )
     for (const rel of [
       'Help/packaged-windows-smoke.md',
       'Help/packaged-linux-smoke.md',
@@ -205,18 +278,28 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     }
   })
 
-  it('formats bin/README packaged quiet line', () => {
-    const line = formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine()
-    expect(line).toContain('check:help-packaged-smoke-docs')
-    expect(line).toContain('formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix')
-    expect(readFileSync('bin/README.md', 'utf8')).toContain(line)
-  })
-
-  it('formats bin/README dev line with meta module id', () => {
-    const line = formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine()
-    expect(line).toContain(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE)
-    expect(line).toContain('44 articles')
-    expect(line).toContain('workflow + packaged/owner anchors')
+  it('formats bin/README packaged quiet, dev, and partition lines', () => {
+    const quietLine = formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine()
+    expect(quietLine).toContain('check:help-packaged-smoke-docs')
+    expect(quietLine).toContain(
+      'formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix'
+    )
+    const devLine = formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine()
+    expect(devLine).toContain(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE)
+    expect(devLine).toContain('44 articles')
+    expect(devLine).toContain('packaged/owner anchors')
+    const partitionLine = formatPackagedE2eHelpWorkflowCrosslinksBinReadmeWorkflowPartitionLine()
+    expect(partitionLine).toContain(
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET
+    )
+    const readme = readFileSync('bin/README.md', 'utf8')
+    expect(readme).toContain(quietLine)
+    expect(readme).toContain(devLine)
+    expect(readme).toContain(partitionLine)
+    const rootLine = formatPackagedE2eHelpWorkflowCrosslinksRootReadmePartitionLine()
+    expect(readFileSync('README.md', 'utf8')).toContain(rootLine)
+    const agentsLine = formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine()
+    expect(readFileSync('AGENTS.md', 'utf8')).toContain(agentsLine)
   })
 
   it('formats diagnostic line and owner guard paths match anchors', () => {

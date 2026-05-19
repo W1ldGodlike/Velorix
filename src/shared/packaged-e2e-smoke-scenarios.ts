@@ -42,14 +42,25 @@ export {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthetical,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
+  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause,
+  formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
+  formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS,
+  formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause,
   formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingClause,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmeWorkflowPartitionLine,
+  formatPackagedE2eHelpWorkflowCrosslinksRootReadmePartitionLine,
+  formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine,
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause,
@@ -57,6 +68,8 @@ export {
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale
 } from './packaged-e2e-help-workflow-crosslinks-meta'
 import { formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine } from './packaged-e2e-help-workflow-crosslinks-meta'
+
+export { TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS } from './terminal-contract-hints-meta'
 
 export const PACKAGED_E2E_SMOKE_SCENARIOS: readonly PackagedE2eSmokeScenario[] =
   PACKAGED_E2E_SMOKE_REGISTRY

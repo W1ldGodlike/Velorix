@@ -56,6 +56,8 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
     expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
       formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('ru')
     )
+    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('FAQ outside 44')
+    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('FAQ вне 44')
   })
 
   it('owner hub packaged e2e hint links packaged Copy to appendix', () => {

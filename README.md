@@ -107,6 +107,7 @@ npm run engines:doctor
 - Агент: [`AGENTS.md`](./AGENTS.md), [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md).
 - `Data/`, `Help/` — конфиги и подсказки UI.
 - Русские `summary` терминала: **`npm run locales:terminal-summaries-ru`** (дважды до 0 замен) — [`Help/ffmpeg-terminal-hints.md`](./Help/ffmpeg-terminal-hints.md).
+- Help §21: `npm run check:help-workflow-smoke-crosslinks` (44 workflow; tail 42 HelpCrosslinksCountTail + ffmpeg FfmpegTerminalWorkflowClause + knowledge KnowledgeHubDevClause (FAQ 2 in tail, outside 44)).
 - SDK automation: [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
 - yt-dlp по умолчанию: `<папка программы>/app-data/downloads/ytdlp`.
 - NSIS спрашивает про удаление `app-data/`; в ZIP — `Uninstall FluxAlloy.cmd`.

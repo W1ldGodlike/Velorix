@@ -118,6 +118,72 @@ export const TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS = [
   'Help/en/downloads-workflow.md'
 ] as const
 
+/** Help §5 theme/HiDPI — Support ZIP crosslinks (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_APPEARANCE_HELP_PATHS = [
+  'Help/appearance-language-theme.md',
+  'Help/en/appearance-language-theme.md'
+] as const
+
+/** Help §18 about/support — Support ZIP crosslinks anchor (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_ABOUT_HELP_PATHS = [
+  'Help/about-support-logs.md',
+  'Help/en/about-support-logs.md'
+] as const
+
+/** Help §10 planner — Support ZIP crosslinks anchor (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_PLANNER_HELP_PATHS = [
+  'Help/workflows-planner-scenarios.md',
+  'Help/en/workflows-planner-scenarios.md'
+] as const
+
+/** Help §13 knowledge hub — Support ZIP crosslinks (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_KNOWLEDGE_HELP_PATHS = [
+  'Help/knowledge-base-howto.md',
+  'Help/en/knowledge-base-howto.md'
+] as const
+
+/** Help §10 editor workflow — Support ZIP crosslinks (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_EDITOR_HELP_PATHS = [
+  'Help/editor-workflow.md',
+  'Help/en/editor-workflow.md'
+] as const
+
+/** Help §16 HW encoding — Support ZIP crosslinks (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HW_ENCODING_HELP_PATHS = [
+  'Help/hardware-encoding.md',
+  'Help/en/hardware-encoding.md'
+] as const
+
+/** Help §6–§14 workflow — `HelpCrosslinksCountTail` (session…windows-shell). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_MISC_TAIL_HELP_PATHS = [
+  'Help/session-and-queues.md',
+  'Help/en/session-and-queues.md',
+  'Help/workspace-tabs.md',
+  'Help/en/workspace-tabs.md',
+  'Help/keyboard-shortcuts.md',
+  'Help/en/keyboard-shortcuts.md',
+  'Help/ffmpeg-rail-presets.md',
+  'Help/en/ffmpeg-rail-presets.md',
+  'Help/extract-frames.md',
+  'Help/en/extract-frames.md',
+  'Help/processing-social-presets.md',
+  'Help/en/processing-social-presets.md',
+  'Help/processing-history.md',
+  'Help/en/processing-history.md',
+  'Help/processing-advanced-fields.md',
+  'Help/en/processing-advanced-fields.md',
+  'Help/processing-url-combo.md',
+  'Help/en/processing-url-combo.md',
+  'Help/downloads-settings-rail.md',
+  'Help/en/downloads-settings-rail.md',
+  'Help/downloads-dragdrop.md',
+  'Help/en/downloads-dragdrop.md',
+  'Help/windows-shell-integration.md',
+  'Help/en/windows-shell-integration.md',
+  'Help/engines-update-paths.md',
+  'Help/en/engines-update-paths.md'
+] as const
+
 /** Help §16/§19 owner manual smoke — Support ZIP crosslinks (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS = [
   'Help/owner-manual-smoke.md',
@@ -128,6 +194,18 @@ export const TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS = [
 export const TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS = [
   'Help/faq-troubleshooting.md',
   'Help/en/faq-troubleshooting.md'
+] as const
+
+/** Help workflow — `formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail` (42 RU+EN; без ffmpeg-terminal-hints). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS = [
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_APPEARANCE_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_EDITOR_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_HW_ENCODING_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_MISC_TAIL_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_PLANNER_HELP_PATHS
 ] as const
 
 /** Help §19 packaged smoke — Support ZIP crosslinks (win/linux/macos). */

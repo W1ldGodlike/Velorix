@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET,
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine
 } from '../../src/shared/packaged-e2e-smoke-scenarios'
@@ -36,6 +37,11 @@ describe('platform-packaging-scripts §19', () => {
     expect(lines.some((l) => l.includes('check:platform-packaging-scripts'))).toBe(true)
     expect(
       lines.some((l) => l.includes(formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine()))
+    ).toBe(true)
+    expect(
+      lines.some((l) =>
+        l.includes(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET)
+      )
     ).toBe(true)
     expect(
       lines.some((l) =>
