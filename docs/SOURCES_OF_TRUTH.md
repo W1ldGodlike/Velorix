@@ -21,33 +21,29 @@
 2. Исправить **все** дубликаты **одним коммитом**.
 3. Прогнать `npm run check:journal` и `npm run check:checklist` при правках журнала/спринта.
 
-## Карта синхронизации (при правке темы)
+## Карта синхронизации (сжатая группировка)
 
-| Тема                                          | Обновить вместе                                                                                                                                                                           |
-| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Журнал                                        | шапка `IMPLEMENTATION_JOURNAL.md`, `fluxalloy-journal.mdc`, `docs/AGENT_MARATHON.md`, `agent-contract.txt`                                                                                |
-| Спринт-TODO                                   | шапка `IMPLEMENTATION_CHECKLIST.md`, `fluxalloy-checklist.mdc`, `docs/AGENT_MARATHON.md`, `agent-contract.txt`                                                                            |
-| Marathon (срез, bump)                         | skill `fluxalloy-marathon`, `docs/AGENT_MARATHON.md`, `continue.txt`, `agent-contract.txt`                                                                                                |
-| Cadence Git (J-NNN)                           | глоссарий `fluxalloy-rules-explicit.mdc`, `fluxalloy-agent.mdc`, `agent-contract.txt` — `NNN % 5` commit, `NNN % 10` push+re-anchor; **любой** чат                                                                                                      |
-| Итерация / пакет / anti-micro                 | `fluxalloy-agent.mdc`, skill `fluxalloy-marathon`, шапка журнала, `fluxalloy-journal.mdc`, skill `fluxalloy-journal-entry`                                                                |
-| Audit репозитория                             | `fluxalloy-agent.mdc`, `scripts/audit-scope.config.mjs`, `docs/audit-manifest.json`, `audit:inventory` / `audit:inventory-sync` / `audit:copy-paste` / `audit:structural`                   |
-| UI-поверхности / copy / Help                  | `fluxalloy-agent.mdc`, `check-ui-surfaces-guard.mjs`, `knowledge-toc-registry.ts`, `check:ui-copy-quality`, `check:help-packaged-smoke-docs`, `check:help-owner-smoke-docs`, `check:help-workflow-smoke-crosslinks`, чеклист §6/§15 |
-| Zustand renderer (§2.2, J-1126)               | `src/shared/renderer-state-approach.ts`, `src/renderer/src/stores/`, `docs/ARCHITECTURE.md` § Состояние renderer                                                                          |
-| Export preview hints (§7.2, J-1148..1149)     | `editor-export-preview-hint-keys.ts`, `editor-export-preview-hint-resolve.ts`, `check:export-preview-hints-locale`, `ARCHITECTURE.md` locales guards                                      |
-| Video sprite owner-smoke (§7.5, J-1151..1152) | `editor-video-sprite-manual-smoke.json`, `owner-manual-smoke-bundle`, `*-packaged-manual-smoke.json` (`Step_video_sprite`), Help `owner-manual-smoke.md`                                  |
-| Packaged smoke parity (§3/§19)                | `packaged-manual-smoke-step-ids.ts`, `check:packaged-manual-smoke-parity`, `packaged-manual-smoke-plain-text.ts` (`appendPackagedManualSmokeE2ePlanLines`), `owner-manual-smoke-packaged-section`, `check:help-packaged-smoke-docs` (`formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix`, 6 Help) |
-| Platform packaging scripts (§19)              | `platform-packaging-scripts.ts` (`PLATFORM_PACKAGING_NPM_SCRIPTS`), `electron-vite-build-meta.ts` (`fix:esm-shim`), `packaged-gui-e2e-playwright-meta.ts` (`test:e2e:gui` deferred; `PACKAGED_GUI_E2E_PLAYWRIGHT_*_UI_HINT_KEYS`, `formatPackagedGuiE2ePlaywrightUiHintSuffix`; Help UiHintSuffix (AGENTS, 4 §15 anchors, 6 packaged) — `formatPackagedGuiE2ePlaywright*HelpUiHintSuffix`), `check:platform-packaging-scripts`, `check:packaged-gui-e2e-playwright-deferred` |
-| Packaged release smoke (§19/§18)              | `packaged-release-smoke.ts` (`releaseSmoke:` win/linux/macos layout verify), `win-`/`linux-`/`macos-unpacked-layout-verify.ts`, Help `about-support-logs`, `check:help-packaged-smoke-docs`                             |
-| Packaged e2e scenarios (§21)                  | `packaged-e2e-help-workflow-crosslinks-meta.ts` (44 workflow + 6 packaged + 8 anchors; partition: tail 42 `HelpCrosslinksCountTail` (partition) + FAQ 2 вне 44 + ffmpeg 2 `FfmpegTerminalWorkflowClause` (partition + §8) + knowledge 2 `KnowledgeHubDevClause`; `WORKFLOW_PARTITION_REQUIRED_SNIPPET` + `WORKFLOW_REQUIRED_SNIPPETS`; `formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine`); `help-smoke-docs-check.mjs`; `check:help-smoke-guards-package-json` (4 Help guards + `check:packaged-gui-e2e-playwright-deferred` registry/quiet order) + `check:help-*-smoke-docs` + `check:packaged-gui-e2e-playwright-deferred` + `check:owner-visual-smoke-locale` |
-| Terminal scenario hints (§8)                  | `terminal-contract-hints-meta.ts` (`WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS` 42 + FAQ 2); `packaged-e2e-help-workflow-crosslinks-meta.ts` formatters (см. §21, partition во всех 44 workflow); 7 terminal guards; `check:help-terminal-hints-docs` (24 §8 + 42 tail); `check:help-workflow-smoke-crosslinks` (`FfmpegTerminalWorkflowClause` + tail); `check:support-bundle-terminal-hints`; `appSettingsTerminalHintsGuardHint` / `aboutSupportZipDiagnosticsSectionsHint` |
-| Owner visual smoke locales (§2.2/§16)         | `settings.json` (`ownerManualSmokeTheme*`, `ownerManualSmokeHidpi*`, checklist keys), `check:owner-visual-smoke-locale`, `owner-manual-smoke-visual-checklist-locale.ts`                  |
-| Mini Player §4.3 (J-1153–1158)                | `app-session-contract.ts`, `mini-player-window.ts`, `#mini-player`, `export-progress-broadcast`, `mini-player-manual-smoke.json`, `*-packaged-manual-smoke.json` (`Step_mini_player`), Help `owner-manual-smoke.md` |
-| Стек / IPC / main                             | `fluxalloy-core.mdc`, `fluxalloy-electron.mdc`, `fluxalloy-react.mdc`, при IPC — `docs/ARCHITECTURE.md`                                                                                   |
-| Язык правил (однозначность)                   | `fluxalloy-rules-explicit.mdc`, `npm run check:rules-explicit`; при правке любого `.mdc` — сверка глоссария                                                                               |
-| Простота / анти-enterprise                    | [`fluxalloy-simplicity.mdc`](../.cursor/rules/fluxalloy-simplicity.mdc), `AGENTS.md`, `agent-contract.txt`, строка **1** этой таблицы                                                                 |
-| Skills (новый workflow)                       | `.cursor/skills/<name>/SKILL.md`, `AGENTS.md`, `docs/SOURCES_OF_TRUTH.md` (эта таблица)                                                                                                     |
-| Docs / legacy links                           | `check:docs-governance` в `check:quiet`; `audit:orphan-scripts` при чистке scripts                                                                                                         |
-| Handoff между чатами (опционально)            | `docs/AGENT_SESSION_HANDOFF.md`                                                                                                                                                           |
-| Приоритет rules vs шапка                      | `fluxalloy-rules-explicit.mdc` → синхрон шапок `IMPLEMENTATION_*` при смене формата                                                                                                       |
-| Среда агента / дифф / проверки / ответ в чате | `fluxalloy-agent.mdc`, `agent-contract.txt`                                                                                                                                                 |
-| Operational notes (отладка)                   | `docs/AGENT_OPERATIONAL_NOTES.md`                                                                                                                                                         |
+При правке темы обнови **все перечисленные в строке** в **одном коммите** (или ближайшем cadence commit по `J-NNN`).
+
+| Тема | Обновить вместе |
+| --- | --- |
+| Журнал / формат J | шапка `IMPLEMENTATION_JOURNAL.md`, `fluxalloy-journal.mdc`, `agent-contract.txt`; при смене re-anchor snapshot — таблица в `docs/AGENT_MARATHON.md` |
+| Спринт TODO | шапка `IMPLEMENTATION_CHECKLIST.md`, `fluxalloy-checklist.mdc`, `agent-contract.txt` |
+| Marathon / bump / крупный срез | skill `fluxalloy-marathon`, `docs/AGENT_MARATHON.md`, `scripts/cursor-automation/prompts/continue.txt`, `agent-contract.txt` |
+| Cadence Git (J-NNN) | глоссарий `fluxalloy-rules-explicit.mdc`, `fluxalloy-agent.mdc`, `agent-contract.txt`, `continue.txt`, `initial.txt` |
+| Итерация / микро-J / пакет | `fluxalloy-agent.mdc`, skill `fluxalloy-marathon`, `fluxalloy-journal.mdc`, skills `fluxalloy-journal-entry` |
+| Язык правил / глоссарий | `fluxalloy-rules-explicit.mdc`, все `.mdc` где термин; строка иерархии §1 выше; `npm run check:rules-explicit` |
+| Простота governance | `fluxalloy-simplicity.mdc`, `AGENTS.md`, `agent-contract.txt` |
+| Новый skill | `.cursor/skills/<name>/SKILL.md`, `AGENTS.md`, эта таблица |
+| Audit кода репо | `fluxalloy-agent.mdc`, `scripts/audit-scope.config.mjs`, `docs/audit-manifest.json`, `npm run audit:inventory` + `audit:inventory-sync`; при затронутых путях — `audit:structural` / `audit:copy-paste` |
+| Продуктовый код: IPC / main / preload | `fluxalloy-electron.mdc`, `fluxalloy-react.mdc`, `src/shared/ipc-channels.ts`, main + preload + renderer + тесты, `docs/ARCHITECTURE.md` |
+| UI / copy / Help / packaged e2e / terminal hints | доменные `src/**`, `tests/**`, `Help/**`, `locales/**`; guards перечислены в `npm run check:quiet` (`scripts/run-quiet-check.mjs`) — не дублировать полный список здесь |
+| Renderer Zustand (§2.2) | `src/shared/renderer-state-approach.ts`, `src/renderer/src/stores/`, `docs/ARCHITECTURE.md` |
+| Mini Player / smoke шаги | контракты и окна в `src/**`, JSON smoke и Help по чеклисту §4.3 / §19 |
+| Docs / legacy links | `npm run check:docs-governance` в `check:quiet`; `audit:orphan-scripts` при чистке `scripts/` |
+| Handoff (опционально) | `docs/AGENT_SESSION_HANDOFF.md` |
+| Приоритет rules vs шапка | `fluxalloy-rules-explicit.mdc` → синхрон шапок `IMPLEMENTATION_*` при смене формата |
+| Среда агента / ответ в чате | `fluxalloy-agent.mdc`, `agent-contract.txt` |
+| Operational notes | `docs/AGENT_OPERATIONAL_NOTES.md` + затронутый код в `src/main` / renderer |
+
+Help UiHintSuffix (AGENTS, 4 §15 anchors, 6 packaged) — `formatPackagedGuiE2ePlaywright*HelpUiHintSuffix`

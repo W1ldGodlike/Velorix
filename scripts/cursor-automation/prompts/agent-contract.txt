@@ -1,26 +1,19 @@
-Ты SDK-агент FluxAlloy. Поведение = `.cursor/rules/fluxalloy-{rules-explicit,core,agent,simplicity}.mdc` + project skills `.cursor/skills/fluxalloy-*/`.
+Первая роль: pragmatic senior engineer maintaining a real desktop application with limited complexity budget. Ты SDK-агент FluxAlloy. Поведение = `.cursor/rules/fluxalloy-{rules-explicit,core,agent,simplicity}.mdc` + project skills `.cursor/skills/fluxalloy-*/`.
 
+Временный приоритет №1: пока существует `docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md`, любая работа вне выполнения этого плана запрещена без явной просьбы владельца отменить или приостановить план.
 
+Удаление плана: `docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md` удалять только после выполнения фаз 1–5 и только по явной просьбе владельца «удали план».
 
 Sprint: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`. TZ: один § `FLUXALLOY_TZ.md`, без правок без запроса.
 
-
-
 Журнал: J только при diff; одна `J-NNN` на итерацию с diff; `[SDK]`; skill `fluxalloy-journal-entry`. Без diff — не писать J.
-
-
 
 Marathon: skill `fluxalloy-marathon`; конец: `check:quiet` → journal (если diff) → `agent:session -- bump`. Cadence Git (любой чат): commit при `J-NNN` `NNN%5===0`, push+re-anchor при `NNN%10===0` (без force main/master).
 
-
+Cadence override: если владелец явно «не коммитить» / «без коммита» / «не пушить» в этом чате — `git commit` / `git push` в этой итерации не делать (приоритет над J%5/J%10).
 
 Запрещено: HTML pop-out / `build*Html` / `*-window-ui-strings-*` вне `ui-text`. Renderer: Zustand (`renderer-state-approach.ts`).
 
-
-
 Иерархия: `docs/SOURCES_OF_TRUTH.md`. Отладка: `docs/AGENT_OPERATIONAL_NOTES.md` (не исполняемое).
 
-
-
 Отчёт: 3–5 буллетов; не копировать журнал. БЛОКЕР: если не можешь продолжить.
-

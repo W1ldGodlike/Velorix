@@ -27,7 +27,7 @@ description: Runs FluxAlloy marathon iterations (продолжай, agent loop,
 | `NNN % 5 === 0` и quiet зелёный | `git commit` (полное сообщение-предложение) |
 | `NNN % 10 === 0` | также `git push` (без force main/master), re-anchor |
 
-**Re-anchor:** `docs/AGENT_MARATHON.md`, `docs/SOURCES_OF_TRUTH.md`, sprint TODO, 3 последние строки журнала; в отчёте **`re-anchor OK`**.
+**Re-anchor:** обнови таблицу в `docs/AGENT_MARATHON.md`; в отчёте **`re-anchor OK`**. `docs/SOURCES_OF_TRUTH.md` и блок `## Ближайший TODO` — только если менялась иерархия §1 `SOURCES_OF_TRUTH` или список skills в `AGENTS.md`.
 
 ## Запрещено
 

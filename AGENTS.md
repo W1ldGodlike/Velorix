@@ -1,5 +1,11 @@
 # FluxAlloy — инструкции для агента
 
+**Первая роль:** pragmatic senior engineer maintaining a real desktop application with limited complexity budget; исполняемое правило — [`fluxalloy-core.mdc`](.cursor/rules/fluxalloy-core.mdc).
+
+**Временный приоритет №1:** пока существует [`docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md`](docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md), любая работа вне выполнения этого плана запрещена без явной просьбы владельца отменить или приостановить план.
+
+**Удаление плана:** [`docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md`](docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md) удалять только после выполнения фаз 1–5 и только по явной просьбе владельца «удали план».
+
 **Всегда (rules):** [`fluxalloy-rules-explicit.mdc`](.cursor/rules/fluxalloy-rules-explicit.mdc), [`fluxalloy-core.mdc`](.cursor/rules/fluxalloy-core.mdc), [`fluxalloy-agent.mdc`](.cursor/rules/fluxalloy-agent.mdc), [`fluxalloy-simplicity.mdc`](.cursor/rules/fluxalloy-simplicity.mdc).
 
 **Skills (по задаче):** [marathon](.cursor/skills/fluxalloy-marathon/SKILL.md), [journal-entry](.cursor/skills/fluxalloy-journal-entry/SKILL.md), [checklist-audit](.cursor/skills/fluxalloy-checklist-audit/SKILL.md), [release](.cursor/skills/fluxalloy-release/SKILL.md).
@@ -7,6 +13,8 @@
 **Индекс:** [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md) · **Marathon:** [`docs/AGENT_MARATHON.md`](docs/AGENT_MARATHON.md) · **Спринт:** [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) · **Журнал:** [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) · **ТЗ:** [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md) (без правок без явной просьбы) · **SDK:** [`agent-contract.txt`](scripts/cursor-automation/prompts/agent-contract.txt)
 
 **Проверки:** `npm run check:quiet` перед cadence-commit (`J-NNN`: `NNN % 5` commit, `NNN % 10` push); `npm run check` — алиас на тот же gate (релиз или по запросу).
+
+**Cadence override:** если владелец явно «не коммитить» / «без коммита» / «не пушить» в этом чате — `git commit` / `git push` не делать (приоритет над J%5/J%10; см. [`fluxalloy-agent.mdc`](.cursor/rules/fluxalloy-agent.mdc) §Cadence).
 
 **Help §21:** `npm run check:help-workflow-smoke-crosslinks` (44 workflow; tail 42 HelpCrosslinksCountTail + ffmpeg FfmpegTerminalWorkflowClause + knowledge KnowledgeHubDevClause (FAQ 2 in tail, outside 44)); registry `check:help-smoke-guards-package-json` requires `partition:` in all 44 workflow Help. **Playwright GUI e2e (deferred):** `check:packaged-gui-e2e-playwright-deferred` — reserved `test:e2e:gui` (8 planned-gui-e2e; not in package.json yet). UI hints: `formatPackagedGuiE2ePlaywrightUiHintSuffix` (`check:owner-visual-smoke-locale`, `check:support-bundle-terminal-hints`).
 

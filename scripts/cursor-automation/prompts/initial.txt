@@ -8,4 +8,6 @@
 
 Конец итерации: `check:quiet` → journal (если diff) → `agent:session -- bump` → cadence по J (`NNN%5` commit, `NNN%10` push); skill `fluxalloy-marathon`.
 
+Cadence override: если владелец явно «не коммитить» / «без коммита» / «не пушить» в этом чате — `git commit` / `git push` не делать (приоритет над J%5/J%10). Полный контракт: `scripts/cursor-automation/prompts/agent-contract.txt`.
+
 `FLUXALLOY_TZ.md` — не редактировать без явной просьбы пользователя.

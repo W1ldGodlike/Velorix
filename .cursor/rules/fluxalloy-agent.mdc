@@ -16,14 +16,14 @@ Skills: [`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../.cursor/skills/flux
 
 ## Marathon
 
-**Если** «продолжай» / `+` / SDK loop **то** skill **fluxalloy-marathon** + [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md). **Крупный срез** по sprint; `npm run check:quiet` до cadence; `npm run agent:session -- bump` — последний шаг.
+**Если** «продолжай» / `+` / SDK loop **то** skill **fluxalloy-marathon** + [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md). **Крупный срез** — глоссарий; `npm run check:quiet` до cadence; `npm run agent:session -- bump` — последний шаг. Процедура — skill.
 
 ## Cadence Git
 
-- **Если** в итерации записана новая `J-NNN` и `NNN % 5 === 0` и **check:quiet зелёный** **то** `git commit` (**обязательно** — Cursor-чат, marathon, SDK; отдельная просьба «commit» **не** нужна).
-- **Если** `NNN % 10 === 0` **то** также `git push` (без force main/master) + re-anchor → в отчёте **`re-anchor OK`**.
-- **Запрещено:** привязывать commit/push к marathon или к `continue_count`.
-- `continue_count` — метрика loop (`agent:session -- bump`), **не** триггер Git.
+- **Если** новая `J-NNN` и `NNN % 5 === 0` и **check:quiet зелёный** **то** `git commit` (Cursor, marathon, SDK; отдельная просьба «commit» **не** нужна).
+- **Если** `NNN % 10 === 0` **то** `git push` (без force main/master) + re-anchor → **`re-anchor OK`**.
+- **Запрещено:** привязывать commit/push к marathon или `continue_count` (`agent:session -- bump` — только метрика).
+- **Если** владелец в **этом** чате явно «не коммитить» / «без коммита» / «не пушить» **то** `git commit` / `git push` **запрещено** (приоритет над **Cadence Git (J-NNN)**, глоссарий `fluxalloy-rules-explicit.mdc`).
 
 ## UI
 

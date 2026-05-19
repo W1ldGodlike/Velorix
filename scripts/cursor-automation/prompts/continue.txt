@@ -3,3 +3,5 @@
 Skills: `.cursor/skills/fluxalloy-marathon/SKILL.md`, journal-entry при diff. Rules: `fluxalloy-agent.mdc`.
 
 Конец: `check:quiet` → при diff `journal:stamp` + одна J → `agent:session -- bump` → при `NNN%5===0` commit, при `NNN%10===0` push + re-anchor OK.
+
+Cadence override: если владелец явно «не коммитить» / «без коммита» / «не пушить» в этом чате — `git commit` / `git push` не делать (приоритет над J%5/J%10). Полный контракт: `scripts/cursor-automation/prompts/agent-contract.txt`.

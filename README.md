@@ -14,6 +14,7 @@ npm run dev           # Electron + Vite (predev подтянет движки н
 - **Node.js** **≥ 20.19** (`engines` в `package.json`, ориентир [`.nvmrc`](./.nvmrc) — `24`).
 - **Renderer:** Zustand (`src/renderer/src/stores/*`), один бандл UI; pop-out загрузок/инспектора — тот же renderer + hash `#downloads` / `#inspector` (см. [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)).
 - **Агент Cursor:** [`AGENTS.md`](./AGENTS.md) → [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md) (marathon и skills — там, без дубля в README).
+- **Cadence Git / override:** см. [`fluxalloy-agent.mdc`](./.cursor/rules/fluxalloy-agent.mdc), [`agent-contract.txt`](./scripts/cursor-automation/prompts/agent-contract.txt).
 
 ### Первичная настройка окружения
 
