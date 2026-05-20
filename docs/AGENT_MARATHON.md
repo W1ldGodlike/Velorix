@@ -9,13 +9,13 @@
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-20 |
-| Ветка | `main` @ `ac5821c` (**в cwd незакоммичен:** WIP **27**+ paths + `tests/`; журнал **J-1353..1556**; gate — J-1440; git отложен) |
-| Снимок тестов | **280** files / **1901** tests (J-1556: journal align после **J-1555**) |
-| Спринт | Toolchain baseline [x]; §21 handoff Help+docs (scaffold/StepById/wiring) [x]; `test:e2e:gui` — после owner-smoke; Wave 5 Dependabot — после push; **§16/§19 owner-smoke** — владелец |
+| Ветка | `main` @ `bae7dcb` (WIP baseline pushed **J-1557**; было `ac5821c`) |
+| Снимок тестов | **280** files / **1901** tests |
+| Спринт | Toolchain baseline [x] on `main`; §21 handoff [x]; Wave 5 Dependabot — **`gh auth login`** + close PR §Git плана; **§16/§19 owner-smoke** — владелец |
 
-**Последние J:** [J-1556](../IMPLEMENTATION_JOURNAL.md) — journal align **J-1353..1556** (J-1555 cadence + stamp); [J-1555](../IMPLEMENTATION_JOURNAL.md) — cadence **J%5** governance **→ J-1560**; [J-1554](../IMPLEMENTATION_JOURNAL.md) — journal align prep **J-1555**.
+**Последние J:** [J-1557](../IMPLEMENTATION_JOURNAL.md) — WIP commit+push `bae7dcb`; [J-1556](../IMPLEMENTATION_JOURNAL.md) — journal align; [J-1555](../IMPLEMENTATION_JOURNAL.md) — cadence **J%5** → **J-1560**.
 
-**Следующий cadence:** **J-1560** — `git commit` (WIP push — по «push»; journal **J-1353..1556**, §Pre-commit).
+**Следующий cadence:** **J-1560** (commit). Wave 5 PR — владелец/`gh` (см. §Git [`TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](TOOLCHAIN_BASELINE_UPGRADE_PLAN.md)).
 
 ## Cadence J-1558 (prep J-1560 commit)
 
