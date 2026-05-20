@@ -49,7 +49,7 @@
 - [~] §19: dev Win [x] (Vite8 preload+CSP, J-1454); `pack:*:dir`+`verify:*`; signing+packaging indexed [x] (J-1511..1545); packaged smoke — владелец.
 - [x] §21: e2e registry/guards + partition (44+6+8); workflow **44/44** strict formatters (`STRICT_PACKAGED_SMOKE_HELP_PATHS`) + Vitest.
 - [~] §21: GUI Playwright e2e (8 steps) — scaffold/StepById/wiring handoff Help+docs [x]; `test:e2e:gui` wiring — после owner-smoke.
-- [~] Wave 5 Dependabot: push [x] `main` @ `bae7dcb` (J-1557); закрыть PR — `gh auth login` + §Git плана (#4,#6,#7,#11–#15).
+- [x] Wave 5 Dependabot: push [x] `main` @ `910f552`; PR #4,#6,#7,#11–#15 closed (J-1558, `gh`).
 
 ---
 

@@ -11,7 +11,7 @@
 | Дата | 2026-05-20 |
 | Ветка | `main` @ `bae7dcb` (WIP baseline pushed **J-1557**; было `ac5821c`) |
 | Снимок тестов | **280** files / **1901** tests |
-| Спринт | Toolchain baseline [x] on `main`; §21 handoff [x]; Wave 5 Dependabot — **`gh auth login`** + close PR §Git плана; **§16/§19 owner-smoke** — владелец |
+| Спринт | Toolchain baseline [x] on `main`; §21 handoff [x]; Wave 5 Dependabot [x] (J-1558); **§16/§19 owner-smoke** — владелец |
 
 **Последние J:** [J-1557](../IMPLEMENTATION_JOURNAL.md) — WIP commit+push `bae7dcb`; [J-1556](../IMPLEMENTATION_JOURNAL.md) — journal align; [J-1555](../IMPLEMENTATION_JOURNAL.md) — cadence **J%5** → **J-1560**.
 
