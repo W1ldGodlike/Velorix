@@ -30,4 +30,4 @@ npm run check:release
 
 ## J и Git
 
-При diff — **Cadence Git** в `fluxalloy-agent.mdc` (`NNN % 5` commit, `NNN % 10` push), не только в marathon.
+При diff — **Cadence Git** в `fluxalloy-agent.mdc` (`NNN % 5` commit, `NNN % 10` push; любой чат).

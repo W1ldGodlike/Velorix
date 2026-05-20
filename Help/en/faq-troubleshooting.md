@@ -9,7 +9,6 @@ Short answers to common questions. Details live in sections 1–6 in the help ta
 - Confirm **yt-dlp** is found: [engines-update-paths.md](engines-update-paths.md).
 - For login-only sites — **cookies** in the downloads rail: [downloads-settings-rail.md](downloads-settings-rail.md).
 - Read the queue row error and logs: [logging-and-diagnostics.md](logging-and-diagnostics.md).
-- For support — [about-support-logs.md](about-support-logs.md) (Support ZIP: `ownerManualSmoke:`, `releaseSmoke:`, `terminalHints:` (§8 dev guards); §21 per-step `e2e <id>:`; owner checklist — [owner-manual-smoke.md](owner-manual-smoke.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44).
 
 ## Video downloaded but will not open in the editor
 
@@ -34,7 +33,6 @@ Short answers to common questions. Details live in sections 1–6 in the help ta
 
 - Pick a **local file** on disk.
 - Refresh ffprobe summary: [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
-- After `pack:dir`, verify bundled **ffprobe** — [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:`.
 
 ## Text clips, muddy theme, or pop-out looks wrong
 
@@ -48,3 +46,7 @@ Switch UI language (RU/EN) and reopen help: [knowledge-base-howto.md](knowledge-
 ## Keyboard shortcuts
 
 - [keyboard-shortcuts.md](keyboard-shortcuts.md)
+
+## See also
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).

@@ -57,11 +57,13 @@ describe('toolchain baseline (package.json / .npmrc / tsconfig.web)', () => {
     expect(readFileSync('.npmrc', 'utf8')).toContain('legacy-peer-deps=true')
   })
 
-  it('tsconfig.web.json uses TS 6 ignoreDeprecations', () => {
+  it('tsconfig.web.json uses explicit paths without deprecated baseUrl (TS 6)', () => {
     const web = JSON.parse(readFileSync('tsconfig.web.json', 'utf8')) as {
-      compilerOptions?: { ignoreDeprecations?: string }
+      compilerOptions?: { baseUrl?: string; paths?: Record<string, string[]> }
     }
-    expect(web.compilerOptions?.ignoreDeprecations).toBe('6.0')
+    expect(web.compilerOptions?.baseUrl).toBeUndefined()
+    expect(web.compilerOptions?.paths?.['@renderer/*']).toEqual(['./src/renderer/src/*'])
+    expect(web.compilerOptions?.paths?.['@locales/*']).toEqual(['./locales/*'])
   })
 
   it('locks electron-vite 5 and Vitest 4; check:quiet script present', () => {
@@ -168,8 +170,9 @@ describe('toolchain baseline (package.json / .npmrc / tsconfig.web)', () => {
     expect(viteConfig).toContain("name: 'fluxalloy-renderer-dev-csp'")
     const webOpts = readCompilerOptions('tsconfig.web.json')
     const paths = webOpts['paths'] as Record<string, string[]>
-    expect(paths['@renderer/*']).toEqual(['src/renderer/src/*'])
-    expect(paths['@locales/*']).toEqual(['locales/*'])
+    expect(paths['@renderer/*']).toEqual(['./src/renderer/src/*'])
+    expect(paths['@locales/*']).toEqual(['./locales/*'])
+    expect(webOpts['baseUrl']).toBeUndefined()
     expect(webOpts['jsx']).toBe('react-jsx')
   })
 
@@ -217,6 +220,6 @@ describe('toolchain baseline (package.json / .npmrc / tsconfig.web)', () => {
         expect(opts[key]).toBe(true)
       }
     }
-    expect(readCompilerOptions('tsconfig.web.json')['ignoreDeprecations']).toBe('6.0')
+    expect(readCompilerOptions('tsconfig.web.json')['baseUrl']).toBeUndefined()
   })
 })

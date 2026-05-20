@@ -18,8 +18,6 @@
 
 Под таймлайном — **короткая строка** «видео / аудио» (размер кадра и кодеки). Полный разбор файла — в отдельном окне инспектора (см. [probe-and-inspector-basics.md](probe-and-inspector-basics.md)).
 
-## Дальше
+## См. также
 
-Настройки вывода и пресеты — [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md).
-
-Packaged smoke (open-file, snapshot, export) — [packaged-windows-smoke.md](packaged-windows-smoke.md) и соседние статьи для Linux/macOS; owner bundle и §21 e2e per-step `e2e <id>:` в `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); dev-блок `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 статьи; partition: tail 42 + ffmpeg + knowledge, FAQ вне 44).
+[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (smoke после `pack:dir`).

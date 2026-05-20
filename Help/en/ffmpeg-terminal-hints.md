@@ -10,10 +10,13 @@ You can extend the JSON without rebuilding: the files ship next to `FluxAlloy.ex
 
 Common ffmpeg tags: `-i`, `-map`, `-c:v copy`, `-ss`, `-t`, hardware encoders `*_nvenc`/`*_amf`/`*_qsv`. For yt-dlp: `-F`, `-f`, networking via `--proxy` and auth with `--cookies` / from browser.
 
-Packaged smoke bundled ffprobe/ffmpeg/ytdlp — [tools-terminal-inspector.md](tools-terminal-inspector.md), [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); §21 workflow: `npm run check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44; §8 — `npm run check:help-terminal-hints-docs`). §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../../docs/RELEASE.md) §4/§4.1/§4.2 — `check:help-packaged-smoke-docs`; Playwright scaffold: `tests/e2e/gui/planned-gui-e2e-steps.ts` (`PLANNED_GUI_E2E_STEP_IDS`, `PLANNED_GUI_E2E_SCENARIOS`, `PLANNED_GUI_E2E_STEP_BY_ID`). Copy/releaseSmoke includes `PLANNED_GUI_E2E_STEP_BY_ID` (registry `note` per step; `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine`). Wiring: `docs/RELEASE.md` — `formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet` (after owner-smoke on hardware). UiHintSuffix: `appSettingsTerminalHintsGuardHint` (`check:terminal-hints-locale`); Playwright — `formatPackagedGuiE2ePlaywrightUiHintSuffix` (settings + `aboutSupportZipDiagnosticsSectionsHint`; `check:owner-visual-smoke-locale`, `check:support-bundle-terminal-hints`).
 
 ## Built-in scenarios (developers)
 
 Hints for the **Downloads** tab and preview live in shards `src/shared/terminal-contract-hints-*.ts` (canonical **`terminal-contract-hints-meta`**: 20 downloads + 15 preview shards (35 files), 1056+833 hints; `npm run check:terminal-contract-hints-shards`). The barrel is `src/shared/terminal-contract.ts` (`summary` / `token` / `fullLine`). After editing Russian `summary` strings (use **допишите ссылку**, not **допишите URL**, and keep the `(поле …)` gloss for `--print-to-file` lines targeting `flux-ytdlp-*.txt`), run **`npm run locales:terminal-summaries-ru`** **twice** until the second run prints **0** replacements and **0** gloss; use **`npm run locales:terminal-flux-pole`** if you only need the field gloss pass. Scripts do **not** modify `fullLine`. Regression coverage lives in `tests/shared/terminal-contract-scenarios.test.ts`.
 
-Support ZIP **`terminalHints:`** in `diagnostics.txt` (dev guards, not runtime) — `npm run check:support-bundle-terminal-hints`, `check:help-terminal-hints-docs` (24 articles); see [logging-and-diagnostics.md](logging-and-diagnostics.md), [about-support-logs.md](about-support-logs.md).
+Support ZIP diagnostics — [logging-and-diagnostics.md](logging-and-diagnostics.md).
+
+## See also
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).

@@ -6,14 +6,23 @@
  * Usage: node scripts/apply-terminal-summary-ru.mjs
  *        npm run locales:terminal-summaries-ru
  *
+ * Replace table: `scripts/data/terminal-summary-ru-pairs.json` (not split across .mjs shards).
  * After merge or if summaries look reverted (URL vs ссылка, flux without «(поле …)»),
  * run twice until the second run prints 0 replacements and 0 flux (поле) gloss.
  */
 import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'url'
 
-import { TERMINAL_SUMMARY_RU_PAIRS } from './apply-terminal-summary-ru-pairs.mjs'
 import { glossFluxPrintToFileSummary } from './inject-flux-summary-pole.mjs'
 import { listTerminalContractHintFiles } from './terminal-contract-hint-paths.mjs'
+
+const PAIRS_JSON_PATH = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  'data',
+  'terminal-summary-ru-pairs.json'
+)
+const TERMINAL_SUMMARY_RU_PAIRS = JSON.parse(fs.readFileSync(PAIRS_JSON_PATH, 'utf8'))
 
 function applyPairsToText(s, pairs) {
   let total = 0

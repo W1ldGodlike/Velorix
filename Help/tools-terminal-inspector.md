@@ -14,6 +14,8 @@
 
 См. также [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
 
-## Packaged smoke (§19 / §21)
+Журналы и архив поддержки — [logging-and-diagnostics.md](logging-and-diagnostics.md).
 
-После `npm run pack:dir` проверьте bundled ffprobe/ffmpeg в [packaged-windows-smoke.md](packaged-windows-smoke.md). Полный owner bundle, per-step `e2e <id>:` в Support ZIP `releaseSmoke:` и dev-блок `terminalHints:` (§8 guards) — [owner-manual-smoke.md](owner-manual-smoke.md), [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md); `npm run check:support-bundle-terminal-hints`, `check:help-terminal-hints-docs` (24 статей).
+## См. также
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (smoke после `pack:dir`).

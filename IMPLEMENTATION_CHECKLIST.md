@@ -2,7 +2,7 @@
 
 Источник требований: **[`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md)**. **Запрещено** правки ТЗ без **явной просьбы владельца** (глоссарий `fluxalloy-rules-explicit.mdc`). Состояние по §, спринту и TODO — **в этом файле**; хронологию решений, проверок окружения и длинные заметки — в **[`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md)**.
 
-**Канон формата спринта и меток — этот файл** (раздел «Ближайший TODO спринта» ниже). Исполняемая копия для Cursor: [`.cursor/rules/fluxalloy-checklist.mdc`](.cursor/rules/fluxalloy-checklist.mdc). Иерархия: [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md). Marathon: [`docs/AGENT_MARATHON.md`](docs/AGENT_MARATHON.md).
+**Канон формата спринта и меток — этот файл** (раздел «Ближайший TODO спринта» ниже). Исполняемая копия для Cursor: [`.cursor/rules/fluxalloy-checklist.mdc`](.cursor/rules/fluxalloy-checklist.mdc). Иерархия: [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md). «продолжай» / `+`: [`.cursor/skills/fluxalloy-continue/SKILL.md`](.cursor/skills/fluxalloy-continue/SKILL.md).
 
 ## Готовность полного итога
 
@@ -25,7 +25,7 @@
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **280 / 1901** (J-1530; синхрон с «Тестовый раннер»).
+- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **229 / 1758** (J-1565; синхрон с «Тестовый раннер»).
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW auto/manual §16** (код); полировка HW-цепочек и редкие фильтры — дальше. Движки bundled-first + UI загрузки в `userData/bin`.
@@ -33,7 +33,7 @@
 - [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`280 test files / 1901 tests`** (J-1530); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards, toolchain baseline test.
+- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`229 test files / 1758 tests`** (J-1565); `npm run check:quiet` (**34** шага: lint, typecheck, Vitest, doc/guards, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
 
 ## Журнал решений и проверок
 
@@ -47,9 +47,9 @@
 - [x] §2.2/§7.5: `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged RU+EN + guards; Help §21 `e2e <id>:` (owner/about/packaged/workflow + UI hint).
 - [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
 - [~] §19: dev Win [x] (Vite8 preload+CSP, J-1454); `pack:*:dir`+`verify:*`; signing+packaging indexed [x] (J-1511..1545); packaged smoke — владелец.
-- [x] §21: e2e registry/guards + partition (44+6+8); workflow **44/44** strict formatters (`STRICT_PACKAGED_SMOKE_HELP_PATHS`) + Vitest.
+- [x] §21: e2e registry/guards (44+6+8); workflow **44/44** user crosslink footers (`formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter`); meta **1509→908** строк (J-1566).
 - [~] §21: GUI Playwright e2e (8 steps) — scaffold/StepById/wiring handoff Help+docs [x]; `test:e2e:gui` wiring — после owner-smoke.
-- [x] Wave 5 Dependabot: push [x] `main` @ `910f552`; PR #4,#6,#7,#11–#15 closed (J-1558, `gh`).
+- [x] Wave 5 Dependabot: push→gh (journal **J-1558**); cadence **J%5** commit / **J%10** push.
 
 ---
 
@@ -122,7 +122,7 @@
 - [x] Локализация `locales/ru|en/*.json`: 20 шардов, `ui-text-strings-build` только JSON (legacy `ui-text-strings-{ru|en}-NN.ts` удалены J-1142); guards TS↔JSON + ban legacy parts (J-1143).
 - [x] Смена языка без перезапуска (все окна renderer + меню, J-1018).
 - [x] Governance/docs: `fluxalloy-agent.mdc` + skills; `check:docs-governance`; программа GOV закрыта (J-1137); канон — `docs/SOURCES_OF_TRUTH.md`.
-- [x] Toolchain baseline: Electron 42 / Vite 8 / TS 6 / ESLint 9 (10 отложен); план «выполнен» (**J-1354**); Vitest package+governance (**J-1397**/**J-1411**); docs ARCHITECTURE/README/RELEASE (**J-1416**); `fix:esm-shim` (**J-1413**); Vite 8 dev preload SSR + renderer CSP (**J-1454**); [`.npmrc`](.npmrc) `legacy-peer-deps=true`.
+- [x] Toolchain baseline: Electron 42 / Vite 8 / TS 6 / ESLint 9 (10 отложен); выполнен (**J-1354**); план удалён (**J-1559**); Vitest package+governance (**J-1397**/**J-1411**); docs ARCHITECTURE/README/RELEASE (**J-1416**); `fix:esm-shim` (**J-1413**); Vite 8 dev preload SSR + renderer CSP (**J-1454**); [`.npmrc`](.npmrc) `legacy-peer-deps=true`.
 - [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); единый комментированный конфиг `src/sdk-settings.ts`; long-loop режется на короткие `Agent.create` сессии через `SDK_SESSION_STEPS`/`--session-steps` (дефолт 1) для минимизации cache-read; `check:quiet` печатает короткий summary успешных проверок; локальный `STOP=0/1`; retry SDK/transport + быстрых transient error-run, полный повтор любого `status=error` только через `LOOP_RETRY_RUN_ERROR=1`; `continue.txt` работает как чат-команда `+`/compact handoff (не перечитывает весь контекст без причины), журнал требует `J-NNN` и проверяется `check:journal`.
 
 ### §2.3 Устаревший стек
@@ -607,7 +607,7 @@
 - [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, save-text-dialog, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
-- [x] Unit tests: **`280` файлов / `1901` тестов** (Vitest; J-1530); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
+- [x] Unit tests: **`229` файлов / `1758` тестов** (Vitest; J-1565); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [x] E2e packaged smoke: реестр §21 + guards + partition + per-step/`ci.yml` в `check:quiet`.
 - [ ] GUI Playwright e2e (8 planned steps) — позже.

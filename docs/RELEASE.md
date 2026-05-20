@@ -12,13 +12,13 @@ npm run build
 npm run audit:moderate
 ```
 
-**Зависимости:** в корне [`.npmrc`](../.npmrc) — `legacy-peer-deps=true` (baseline Electron 42 / Vite 8; канон — [`docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](TOOLCHAIN_BASELINE_UPGRADE_PLAN.md)). Без `.npmrc` при peer-conflict: `npm install --legacy-peer-deps`.
+**Зависимости:** в корне [`.npmrc`](../.npmrc) — `legacy-peer-deps=true` (baseline Electron 42 / Vite 8; канон — `package.json`; lock — `tests/shared/toolchain-baseline-package.test.ts`). Без `.npmrc` при peer-conflict: `npm install --legacy-peer-deps`.
 
-**WIP baseline (до push):** незакоммиченный toolchain + docs (**27**+ paths, journal **J-1353..1556**) — один commit по [`docs/AGENT_MARATHON.md`](AGENT_MARATHON.md) §Pre-commit (gate **J-1440** push отложен; владелец: «commit»/«push»).
+**Toolchain baseline:** на `main` @ `ff89765` (journal **J-1353..1564**); Electron 42 / Vite 8 / TS 6 / ESLint 9 — `package.json`; lock — `tests/shared/toolchain-baseline-package.test.ts`. План toolchain удалён (**J-1559**).
 
-**Dependabot wave 5 (после merge baseline на `main`):** закрыть устаревшие major-PR (`#4`, `#6`, `#7`, `#11`–`#15`) через `gh` — сценарий в [`TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](TOOLCHAIN_BASELINE_UPGRADE_PLAN.md) §Git; пункт спринта в [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md).
+**Dependabot wave 5:** [x] на `main` — журнал **J-1558** (`gh pr close` #4,#6,#7,#11–#15); пункт спринта в [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md).
 
-**Важно:** **`npm run build`** делает только typecheck + `electron-vite build` — **не** наполняет проектный `bin/` и **не** запускает **`engines:doctor`**. На Linux/CI `electron-vite build` требует плагин **`fix:esm-shim`** в [`electron.vite.config.ts`](../electron.vite.config.ts) (канон — [`electron-vite-build-meta.ts`](../src/shared/electron-vite-build-meta.ts); false-positive `vite:esm-shim` на строке в `renderer-state-approach.ts`). После локального `npm run build` перед `npm run check` / commit — вернуть `src/shared/app-build-info.json` в **`dev`** (`builtAtUtc: null`; см. [`docs/AGENT_OPERATIONAL_NOTES.md`](AGENT_OPERATIONAL_NOTES.md)). Полный Windows-цикл с движками и smoke-упаковкой (`electron-builder --dir`) — **`npm run check:release`** (ниже) или шаги из §2.
+**Важно:** **`npm run build`** делает только typecheck + `electron-vite build` — **не** наполняет проектный `bin/` и **не** запускает **`engines:doctor`**. На Linux/CI `electron-vite build` требует плагин **`fix:esm-shim`** в [`electron.vite.config.ts`](../electron.vite.config.ts) (канон — [`electron-vite-build-meta.ts`](../src/shared/electron-vite-build-meta.ts); false-positive `vite:esm-shim` на строке в `renderer-state-approach.ts`). После локального `npm run build` перед `npm run check` / commit — вернуть `src/shared/app-build-info.json` в **`dev`** (`{"buildId":"dev","builtAtUtc":null}`; **J-1386**). Полный Windows-цикл с движками и smoke-упаковкой (`electron-builder --dir`) — **`npm run check:release`** (ниже) или шаги из §2.
 
 Полный предрелизный прогон на Windows (подготовка `bin/`, **`engines:doctor`** — тот же набор, что после prepare в CI: verify + SHA + версии, `build`, smoke `electron-builder --dir`, затем `npm audit`):
 

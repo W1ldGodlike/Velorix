@@ -40,20 +40,10 @@ export const AUDIT_STRUCTURAL_MAX_LINES = 500
 
 /**
  * Файлы > `AUDIT_STRUCTURAL_MAX_LINES` допустимы только при совпадении glob и непустом `reason`
- * (категория/архитектура, не «разрешить этот путь»). Иначе — split в той же итерации.
+ * (категория/архитектура, не «разрешить этот путь»). Иначе — логический split в той же итерации
+ * (запрещено: дробление только ради лимита; см. `.cursor/rules/fluxalloy-simplicity.mdc`).
  * Glob: `**`, `*`; не список отдельных путей без обоснования.
  *
  * @type {ReadonlyArray<{ glob: string; reason: string }>}
  */
-export const AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED = [
-  {
-    glob: 'src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts',
-    reason:
-      '§15/§21 canonical Help crosslinks registry (44 paths + guards/formatters); leaf for Node ESM — split deferred until path list extract without breaking scripts'
-  },
-  {
-    glob: 'scripts/check-packaged-gui-e2e-playwright-deferred.mjs',
-    reason:
-      '§21 deferred Playwright guard (scaffold/StepById/diagnostics/Help anchors/RELEASE); single executable check — split deferred until shared assert helper without duplicating formatters'
-  }
-]
+export const AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED = []

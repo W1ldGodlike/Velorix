@@ -21,13 +21,9 @@ export const PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_TEST_MODULE =
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS =
   'PLANNED_GUI_E2E_STEP_IDS, PLANNED_GUI_E2E_SCENARIOS, PLANNED_GUI_E2E_STEP_BY_ID' as const
 
-/** npm guard в `check:quiet` (deferred Playwright; `check:help-smoke-guards-package-json` registry). */
+/** Optional guard (pre-release / §21 wiring); not in `check:quiet`. */
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT =
   'check:packaged-gui-e2e-playwright-deferred' as const
-
-/** `run-quiet-check.mjs` step label (without `check:` prefix). */
-export const PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_STEP_LABEL =
-  'packaged-gui-e2e-playwright-deferred' as const
 
 /** `locales/{ru,en}/settings.json` keys — Playwright suffix (`check:owner-visual-smoke-locale`). */
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS = [
@@ -44,11 +40,10 @@ export type PackagedGuiE2ePlaywrightSettingsUiHintKey =
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY =
   'aboutSupportZipDiagnosticsSectionsHint' as const
 
-/** §21 quiet order: Help packaged → e2e registry → Playwright deferred → terminal guards. */
+/** `check:quiet` order anchor: Help packaged → e2e registry → terminal guards. */
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_ORDER_ANCHORS = [
   'help-packaged-smoke-docs',
   'packaged-e2e-scenarios-registry',
-  PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_STEP_LABEL,
   'terminal-hints-guards-package-json'
 ] as const
 
@@ -70,11 +65,6 @@ export function formatPackagedGuiE2ePlaywrightSdkContinuePromptSprintChecklistFr
 /** `scripts/cursor-automation/README.md` — sprint §21 Playwright checklist bullet. */
 export function formatPackagedGuiE2ePlaywrightSdkAutomationReadmeChecklistSprintLine(): string {
   return `- Sprint §21 Playwright (\`IMPLEMENTATION_CHECKLIST\`): \`formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps).`
-}
-
-/** `docs/AGENT_OPERATIONAL_NOTES.md` — deferred Playwright row (operational; not rules). */
-export function formatPackagedGuiE2ePlaywrightOperationalNotesRow(): string {
-  return `| §21 Playwright GUI e2e (deferred) | Scaffold \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` exports \`${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps); Copy/releaseSmoke \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`. Reserved \`${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` — **not** in \`package.json\` until wired. Wiring: [\`docs/RELEASE.md\`](RELEASE.md) — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\`. Guards: \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\` (in \`check:quiet\`). |`
 }
 
 /** Platform-packaging / §21 diagnostics line. */
@@ -195,7 +185,7 @@ export function formatPackagedGuiE2ePlaywrightRootReadmePlaywrightSection(): str
 
 /** `docs/SOURCES_OF_TRUTH.md` — Help UiHintSuffix note (§21 playwright-meta row). */
 export function formatPackagedGuiE2ePlaywrightSourcesOfTruthHelpUiHintsNote(): string {
-  return `Help UiHintSuffix (AGENTS, 4 §15 anchors, 6 packaged) — \`formatPackagedGuiE2ePlaywright*HelpUiHintSuffix\``
+  return `Help UiHintSuffix (4 §15 anchors, 6 packaged) — \`formatPackagedGuiE2ePlaywright*HelpUiHintSuffix\`; AGENTS — slim domains pointer only`
 }
 
 /** `docs/SOURCES_OF_TRUTH.md` — deferred Playwright scaffold module. */

@@ -27,4 +27,4 @@ The list refreshes automatically when a new entry is appended.
 
 ## See also
 
-Output presets — [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md). Scenarios and scheduler — [workflows-planner-scenarios.md](workflows-planner-scenarios.md). Packaged smoke export/snapshot — [packaged-windows-smoke.md](../packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:`; dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44).
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).

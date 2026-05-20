@@ -17,7 +17,7 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksSettingsCopyAppendixHintBody,
   formatPackagedE2eHelpWorkflowCrosslinksSettingsOwnerIntroHintBody,
   formatPackagedE2eHelpWorkflowCrosslinksSettingsRegistryGuardHintBody
-} from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+} from './lib/help-workflow-crosslinks-meta.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
 const META_KEYS = [

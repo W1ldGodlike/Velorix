@@ -15,7 +15,6 @@ import {
   TERMINAL_CONTRACT_HINTS_WORKFLOW_ABOUT_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_WORKFLOW_KNOWLEDGE_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS,
-  TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_BIN_README_PATH,
@@ -26,19 +25,16 @@ import {
   TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS,
   formatTerminalContractHintsBinReadmeGuardsLine,
   formatTerminalContractHintsAboutSupportZipTerminalHintsBullet,
-  formatTerminalContractHintsFfmpegHelpSupportZipLine,
-  formatTerminalContractHintsToolsHelpPackagedSmokeLine,
   formatTerminalContractHintsLoggingHelpDevGuardsLine,
   formatTerminalContractHintsShardCountEnSnippet,
   formatTerminalContractHintsShardCountRuSnippet
 } from '../src/shared/terminal-contract-hints-meta.ts'
 import {
-  formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
   formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause,
   formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
-  formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause,
-  formatPackagedE2eHelpWorkflowCrosslinksLoggingClause
-} from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+  formatPackagedE2eHelpWorkflowCrosslinksLoggingClause,
+  formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter
+} from './lib/help-workflow-crosslinks-meta.mjs'
 import {
   formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
@@ -71,8 +67,8 @@ for (const rel of TERMINAL_CONTRACT_HINTS_HELP_PATHS) {
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatTerminalContractHintsFfmpegHelpSupportZipLine(locale),
-      'ffmpeg-support-zip'
+      formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(locale),
+      'ffmpeg-see-also-footer'
     ) || failed
 }
 
@@ -92,8 +88,8 @@ for (const rel of TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS) {
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatTerminalContractHintsToolsHelpPackagedSmokeLine(locale),
-      'tools-packaged-smoke'
+      formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(locale),
+      'tools-see-also-footer'
     ) || failed
 }
 
@@ -185,15 +181,6 @@ failed =
   checkHelpSmokeDocFiles(
     REPO_ROOT,
     LOG_PREFIX,
-    [...TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS],
-    TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
-    'packaged-smoke'
-  ) || failed
-
-failed =
-  checkHelpSmokeDocFiles(
-    REPO_ROOT,
-    LOG_PREFIX,
     [...TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS],
     TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
     'faq-troubleshooting'
@@ -206,19 +193,10 @@ for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PAT
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale),
-      'help-crosslinks-count'
+      formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(locale),
+      'workflow-user-footer'
     ) || failed
 }
-
-failed =
-  checkHelpSmokeDocFiles(
-    REPO_ROOT,
-    LOG_PREFIX,
-    [...TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS],
-    TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
-    'owner-manual-smoke'
-  ) || failed
 
 for (const rel of TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
@@ -259,8 +237,8 @@ for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_KNOWLEDGE_HELP_PATHS) {
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(locale),
-      'knowledge-hub-dev'
+      formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(locale),
+      'knowledge-see-also-footer'
     ) || failed
 }
 
@@ -291,7 +269,6 @@ const fileCount =
   TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS.length +
   TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS.length +
   TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS.length +
-  TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS.length +
   TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS.length +
   TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS.length
 

@@ -14,4 +14,6 @@ When the caret is **not** inside a text field, **Ctrl+V** (or Cmd+V on macOS) wi
 
 The **inspector** window opens from the **Tools** menu. A full user-rebindable shortcut table will arrive with the dedicated settings screen.
 
-See also [workspace-tabs.md](workspace-tabs.md). Packaged/owner smoke and §21 e2e per-step `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](../packaged-windows-smoke.md); dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44).
+## See also
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).

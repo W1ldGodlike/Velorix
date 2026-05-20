@@ -8,7 +8,6 @@
 
 В **Настройки → Общие → Тема** под переключателями — чеклист для каждого режима: контраст primary-кнопок и ссылок, focus Tab, disabled-состояния, backdrop модалок «Настройки» и «О программе», pop-out «Загрузки», окно инспектора, узлы конструктора сценариев. Для режима **как в системе** смените тему ОС и убедитесь, что приложение следует без перезапуска.
 
-Полный пакет для Support ZIP: **Настройки → Зависимости → Ручной smoke** → «Скопировать весь пакет» (блоки Theme/HiDPI + §21 e2e per-step `e2e <id>:`; см. [owner-manual-smoke.md](owner-manual-smoke.md)). Packaged smoke после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md); в `releaseSmoke:` — тот же §21 appendix; dev-блок `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 статьи; partition: tail 42 + ffmpeg + knowledge, FAQ вне 44).
 
 ## Язык интерфейса
 
@@ -23,6 +22,10 @@
 - какой блок CSS `@120/144/168/192dpi` сейчас активен;
 - чеклист зон для ручной проверки (редактор, загрузки, модалки, статусбар).
 
-Порядок проверки: в **Параметры → Экран → Масштаб** выставьте 100 %, 125 %, 150 % и 200 %, **перезапустите FluxAlloy** и пройдите чеклист — текст и кнопки не должны обрезаться. Те же пункты входят в блок **HiDPI** в [owner-manual-smoke.md](owner-manual-smoke.md).
+[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (smoke после `pack:dir`).
 
 См. [getting-started.md](getting-started.md).
+
+## См. также
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (smoke после `pack:dir`).

@@ -9,7 +9,6 @@
 - Проверьте, что **движок yt-dlp** найден: [engines-update-paths.md](engines-update-paths.md).
 - Для сайтов с входом — **куки** в панели загрузок: [downloads-settings-rail.md](downloads-settings-rail.md).
 - Посмотрите текст ошибки в строке очереди и лог: [logging-and-diagnostics.md](logging-and-diagnostics.md).
-- Если нужна диагностика для поддержки — [about-support-logs.md](about-support-logs.md) (Support ZIP: `ownerManualSmoke:`, `releaseSmoke:`, `terminalHints:` (§8 dev guards); §21 per-step `e2e <id>:`; ручной smoke — [owner-manual-smoke.md](owner-manual-smoke.md); Help: `check:help-workflow-smoke-crosslinks` (44 статьи; partition: tail 42 + ffmpeg + knowledge, FAQ вне 44).
 
 ## Видео скачалось, но не открывается в редакторе
 
@@ -34,7 +33,6 @@
 
 - Выберите **файл на диске** (не только URL без локального файла).
 - Обновите сводку ffprobe; см. [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
-- После `pack:dir` проверьте bundled **ffprobe** — [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:`.
 - Сырой JSON — для опытных; для обычной работы достаточно блоков «дорожки» и «главы».
 
 ## Текст обрезается, тема «грязная» или не та в pop-out
@@ -49,3 +47,7 @@
 ## Где горячие клавиши
 
 - [keyboard-shortcuts.md](keyboard-shortcuts.md)
+
+## См. также
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (smoke после `pack:dir`).

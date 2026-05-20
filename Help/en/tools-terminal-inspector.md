@@ -14,6 +14,8 @@ The **Tools** menu opens a separate window with track tables and the raw analyze
 
 See also [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
 
-## Packaged smoke (§19 / §21)
+Logs and support archive — [logging-and-diagnostics.md](logging-and-diagnostics.md).
 
-After `npm run pack:dir`, verify bundled ffprobe/ffmpeg in [packaged-windows-smoke.md](../packaged-windows-smoke.md). Full owner bundle, per-step `e2e <id>:` in Support ZIP `releaseSmoke:`, and dev block `terminalHints:` (§8 guards) — [owner-manual-smoke.md](owner-manual-smoke.md), [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md); `npm run check:support-bundle-terminal-hints`, `check:help-terminal-hints-docs` (24 articles).
+## See also
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).

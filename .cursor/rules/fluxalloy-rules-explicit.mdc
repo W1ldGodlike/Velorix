@@ -18,7 +18,7 @@ alwaysApply: true
 **Запрещено:**
 
 - **Удалять** строку/файл правила «потому что непонятно» — только **уточнить** или спросить владельца.
-- **Удалять** `.cursor/rules/*.mdc` или требование из `docs/AGENT_MARATHON.md` / `agent-contract.txt` **без** **явной просьбы владельца** («удали rule X»).
+- **Удалять** `.cursor/rules/*.mdc` или требование из `agent-contract.txt` **без** **явной просьбы владельца** («удали rule X»). Файл `docs/AGENT_MARATHON.md` удалён (**J-1562**); не восстанавливать.
 
 **Единственные случаи удаления текста правила:**
 
@@ -49,24 +49,23 @@ alwaysApply: true
 
 | Термин | Определение |
 |--------|-------------|
-| **Итерация** | Ровно **один** цикл: (а) сообщение «продолжай» / `+` и ответ до конца turn; (б) **или** один запуск SDK-агента до `agent:session -- bump`; (в) **или** один полный ответ в обычном чате до завершения turn. **Запрещено:** два `bump` за один логический срез. |
+| **Итерация** | Ровно **один** полный ответ агента до конца turn (в т.ч. сообщение «продолжай» / `+`). |
 | **check:quiet зелёный** | `npm run check:quiet` вернул **exit code 0**. |
-| **continue_count** | Поле `continue_count` в `docs/.agent-session.json`. **Обязательно:** `npm run agent:session -- bump` **в конце** marathon-итерации (+1). **Не** триггер Git commit/push. |
+| **Продолжай / +** | Продолжить **текущую** задачу; **если** закончена **то** [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`. Skill: [`.cursor/skills/fluxalloy-continue/SKILL.md`](../skills/fluxalloy-continue/SKILL.md). |
 | **UI-поверхности (постоянно)** | [`fluxalloy-agent.mdc`](fluxalloy-agent.mdc): один renderer на фичу; **запрещены** HTML-pop-out и `*-window-ui-strings-*` вне `ui-text`; `check:ui-surfaces-guard` + `check:ui-copy-quality`. |
-| **Cadence Git (J-NNN)** | **Если** в итерации записана новая `J-NNN` и `NNN % 5 === 0` **и** **check:quiet зелёный** **то** `git commit` (**любой** чат: Cursor, marathon, SDK). **Если** `NNN % 10 === 0` **то** также `git push` + re-anchor. **Календарь** следующей точки: поле **Следующий cadence** в `docs/AGENT_MARATHON.md`; таблица условий — `.cursor/skills/fluxalloy-marathon/SKILL.md`. **Запрещено:** связывать commit/push с marathon или `continue_count`. |
-| **Режим marathon** | «продолжай» / `+` **или** SDK loop. **Тогда** обязателен **крупный срез**, skill marathon, `agent:session -- bump` в конце. **Не** меняет **Cadence Git (J-NNN)**. |
+| **Cadence Git (J-NNN)** | **Если** в итерации записана новая `J-NNN` и **check:quiet зелёный** **то:** `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push` (без force `main`/`master`). Любой чат (Cursor, SDK). **Следующий cadence:** **J-1570** (commit); **J-1580** (commit + push) — [`fluxalloy-agent.mdc`](fluxalloy-agent.mdc). **Запрещено:** пропускать cadence при зелёном quiet. |
 | **Явная просьба владельца** | В сообщении пользователя в **этом** чате: «правь/измени/добавь» + путь к файлу; **или** «редактируй ТЗ» / `FLUXALLOY_TZ.md`; **или** «удали rule …». Фраза **«явная договорённость»** в шапках `IMPLEMENTATION_*` = **тот же** порог для `FLUXALLOY_TZ.md`. |
-| **Приоритет rules vs шапка** | **Формат** записей (`J-NNN`, время, sprint 3–7) — канон в **шапке** `IMPLEMENTATION_JOURNAL.md` / `IMPLEMENTATION_CHECKLIST.md`. **Процесс** (marathon, cadence, audit, реестры) — канон в `.cursor/rules/*.mdc`. **Если** конфликт **то** уточнить глоссарий и синхронизировать оба места **одним коммитом**. |
+| **Приоритет rules vs шапка** | **Формат** записей (`J-NNN`, время, sprint 3–7) — канон в **шапке** `IMPLEMENTATION_JOURNAL.md` / `IMPLEMENTATION_CHECKLIST.md`. **Процесс** (cadence, audit, реестры, «продолжай») — канон в `.cursor/rules/*.mdc`. **Если** конфликт **то** уточнить глоссарий и синхронизировать оба места **одним коммитом**. |
 | **Микро-J** | Новая строка `J-NNN`, где **единственная** суть — одно из: один `format.tags.*`, один ключ `resolve`, один IPC-канал, один packaged smoke, одна aria-busy правка. `check:journal` падает при ≥4 таких в последних 14 строках. |
-| **Микро-срез** | За итерацию изменён **только** один объект («одно поле / один IPC / …») **без** пакета по таблице тем (skill marathon / глоссарий). **Запрещено** в marathon; по смыслу = одна **микро-J**, даже если J ещё не записана. |
+| **Микро-срез** | За итерацию изменён **только** один объект («одно поле / один IPC / …») **без** пакета по спринту. По смыслу = одна **микро-J**, даже если J ещё не записана. |
 | **Одна J за итерацию** | **Если** в итерации есть diff в репо **то** ровно **1** строка `- [J-NNN]`. **Если** только обсуждение без diff **то** журнал не дописывать. |
 | **Scope аудита «весь репозиторий»** | Все пути из `scripts/audit-scope.config.mjs` (`AUDIT_CODE_ROOTS` + `AUDIT_CODE_ROOT_FILES`). Список файлов: `docs/audit-manifest.json`. |
 | **Сужение scope** | Работа только в ffprobe/§9/одном теге, когда пользователь писал «весь проект» / «всё» / «все файлы» **без** уточнения подпути. **Запрещено.** |
 | **Однотипные поля** | ≥3 поля с одним механизмом: одна строка в `*_SPECS` **или** один вызов `parseWhitelistEnum` с тем же `allowed`. |
 | **Копипаста-парсер** | ≥3 функций `parseX` с телом «`if (raw === 'a' \|\| …)` return …» — заменить реестром; `check:field-registries` / `audit:copy-paste`. |
-| **Крупный срез (marathon)** | За итерацию выполнено **≥2** из: (1) пункт `## Ближайший TODO спринта` отмечен `[x]` или `[~]` с обоснованием; (2) изменён ≥1 файл в `src/` или `tests/` и **check:quiet зелёный**. **Запрещено:** только журнал без (1) или (2). |
+| **Крупный срез** | За итерацию выполнено **≥2** из: (1) пункт `## Ближайший TODO спринта` отмечен `[x]` или `[~]` с обоснованием; (2) изменён ≥1 файл в `src/` или `tests/` и **check:quiet зелёный**. **Запрещено:** только журнал без (1) или (2). |
 | **Подсрез >400 строк** | **Если** diff по одному файлу **>400** строк **то** **≥2** `git commit` в **той же** итерации, **одна J** в конце; после **каждого** commit — **check:quiet зелёный**. Пакет полей/IPC за итерацию **не** отменяет это правило. |
-| **Лимит строк audit-scope** | **`AUDIT_STRUCTURAL_MAX_LINES`** (500) на файл в `src/`, `tests/`, `scripts/`, корневые tsconfig/eslint. **Если** файл **>** 500 **то** split в той же итерации **или** `{ glob, reason }` в `AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED` (`scripts/audit-scope.config.mjs`). **Запрещено:** «разрешить путь» без обоснования категории. `npm run audit:structural`. |
+| **Лимит строк audit-scope** | **`AUDIT_STRUCTURAL_MAX_LINES`** (500) на файл в `src/`, `tests/`, `scripts/`, корневые tsconfig/eslint. **Если** файл **>** 500 **то** **логический** split в той же итерации (**запрещено:** дробление только ради лимита; см. `fluxalloy-simplicity.mdc`) **или** `{ glob, reason }` в `AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED` (`scripts/audit-scope.config.mjs`). **Запрещено:** «разрешить путь» без обоснования категории. `npm run audit:structural`. |
 | **Вертикальный срез (IPC/фича)** | **Если** новый или изменённый IPC-канал **то** в **той же** итерации: `ipc-channels.ts` + main handler + preload expose + renderer вызов + тест(ы) по паттерну соседнего кода. |
 | **Drive-by рефактор** | Правка файла, **не** названного в sprint TODO или сообщении пользователя в этой итерации. **Запрещено.** |
 | **Лишний .md** | Новый/раздутый `.md` вне: `IMPLEMENTATION_*`, `docs/ARCHITECTURE.md`, `docs/AGENT_*`, `docs/SOURCES_OF_TRUTH.md`, `Help/**`, корневые `README*`, `AGENTS.md` — без **явной просьбы владельца**. |
@@ -83,4 +82,4 @@ alwaysApply: true
 
 Меняя определение в этом файле — в **одном коммите** обновить все `.cursor/rules/*.mdc`, где термин используется, и строку в `docs/SOURCES_OF_TRUTH.md`.
 
-Исполняемое про среду агента / marathon / audit / UI — `fluxalloy-agent.mdc` + skills `.cursor/skills/fluxalloy-*/` (не дублировать в `AGENT_OPERATIONAL_NOTES.md`).
+Исполняемое про среду агента / audit / UI — `fluxalloy-agent.mdc` + skills `.cursor/skills/fluxalloy-*/`. Файлы `docs/AGENT_OPERATIONAL_NOTES.md` и `docs/AGENT_SESSION_HANDOFF.md` удалены (**J-1563**); не восстанавливать.

@@ -20,4 +20,6 @@ Hover buttons and switches — many show a longer plain-language explanation.
 
 ## Next
 
-[getting-started.md](getting-started.md) · [downloads-workflow.md](downloads-workflow.md) · [editor-workflow.md](editor-workflow.md). Owner smoke and §21 e2e per-step `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](../packaged-windows-smoke.md); dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44).
+## See also
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).

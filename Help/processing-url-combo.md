@@ -13,4 +13,6 @@
 
 Подходящие записи в журнале можно **повторить** — программа снова откроет этот блок с тем же адресом.
 
-См. [session-and-queues.md](session-and-queues.md) и [downloads-workflow.md](downloads-workflow.md). Packaged smoke очереди/ytdlp — [packaged-windows-smoke.md](packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e `e2e <id>:` в `releaseSmoke:`; dev-блок `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 статьи; partition: tail 42 + ffmpeg + knowledge, FAQ вне 44).
+## См. также
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (smoke после `pack:dir`).

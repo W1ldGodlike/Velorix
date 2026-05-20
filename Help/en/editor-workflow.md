@@ -22,4 +22,6 @@ Below the timeline you get a **short line** for **video / audio** (frame size an
 
 Export settings and presets — [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md).
 
-Packaged smoke (open-file, snapshot, export) — [packaged-windows-smoke.md](../packaged-windows-smoke.md) and Linux/macOS articles; owner bundle and §21 e2e per-step `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44).
+## See also
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).

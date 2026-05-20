@@ -1,13 +1,11 @@
 Ты работаешь в репозитории FluxAlloy (Electron + TypeScript + React).
 
-Крупный блок по `## Ближайший TODO спринта` в `IMPLEMENTATION_CHECKLIST.md` (в т.ч. **Wave 5 Dependabot** [~]: docs `RELEASE` §1 + план; закрытие PR после push на `main` — `agent-contract.txt`, план §Git). §19 signing roadmaps indexed: `release-code-signing-roadmap.ts` + `docs/RELEASE.md` §4/§4.1/§4.2; Help §15 hub + `check:help-packaged-smoke-docs` + `check:help-owner-smoke-docs` + strict signing crosslinks. §19 electron-builder.yml (9 yaml comments; getReleaseCodeSigningElectronBuilderYmlComments); check:release + check:platform-packaging-scripts diagnostics. Sprint §19 checklist: formatReleaseCodeSigningRoadmapChecklistSprintSection19Line (J-1511..1545). Sprint §21 Playwright checklist: formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line (8 steps; test:e2e:gui deferred). Sprint Wave5 checklist: formatToolchainBaselineWipHandoffChecklistSprintWave5Line (cadence J-1560).
+Крупный блок по `## Ближайший TODO спринта` в `IMPLEMENTATION_CHECKLIST.md`.
 
 Обязательно прочитай `scripts/cursor-automation/prompts/agent-contract.txt` (канон SDK; не перечитывай целиком на каждом «продолжай» без причины).
 
 Журнал: последние 30–50 строк `IMPLEMENTATION_JOURNAL.md` — последний `J-NNN`, без дубля. Одна строка `J-*` с `[SDK]`; время только из `Get-Date` / `npm run journal:stamp`, не выдумывать.
 
-Конец итерации: `check:quiet` → journal (если diff) → `agent:session -- bump` → cadence по J (`NNN%5` commit, `NNN%10` push); skill `fluxalloy-marathon` (**календарь:** **J-1560** commit; J-1440 push отложен).
-
-Cadence override: если владелец явно «не коммитить» / «без коммита» / «не пушить» в этом чате — `git commit` / `git push` не делать (приоритет над J%5/J%10). Полный контракт: `scripts/cursor-automation/prompts/agent-contract.txt`. WIP (27+ paths): `docs/AGENT_MARATHON.md` §Pre-commit + §Cadence J-1380. Prep J-1550 commit: docs/AGENT_MARATHON §Pre-commit + formatToolchainBaselineWipHandoffPreCommitGitMessage; journal J-1353..1547 (обновить до последней J перед commit). Prep J-1555 commit: docs/AGENT_MARATHON §Pre-commit + formatToolchainBaselineWipHandoffPreCommitGitMessage; journal J-1353..1551 (обновить до последней J перед commit). Prep J-1560 commit: docs/AGENT_MARATHON §Pre-commit + formatToolchainBaselineWipHandoffPreCommitGitMessage; journal J-1353..1557 (обновить до последней J перед commit). WIP commit: journal J-1353..1556 (обновить TOOLCHAIN_BASELINE_WIP_JOURNAL_RANGE до последней J перед commit).
+Конец итерации: `check:quiet` → journal (если diff). Cadence Git: `NNN % 5` → commit, `NNN % 10` → push при зелёном quiet. **Следующий cadence** **J-1570** — `fluxalloy-agent.mdc`.
 
 `FLUXALLOY_TZ.md` — не редактировать без явной просьбы пользователя.

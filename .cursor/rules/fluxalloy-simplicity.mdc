@@ -20,7 +20,7 @@ Electron и IPC: [`fluxalloy-electron.mdc`](fluxalloy-electron.mdc), [`fluxalloy
 
 ## Исключения (уже канон репо)
 
-**Обязательно:** при конфликте с этим файлом выигрывают проверки и глоссарий `fluxalloy-rules-explicit.mdc`: **однотипные поля**, `npm run check:field-registries`, вертикальный срез IPC (`ipc-channels.ts` + main + preload + renderer + тесты), **Крупный срез** marathon, `npm run audit:copy-paste`. Реестр полей настроек **не** считается enterprise-registry из запрета выше.
+**Обязательно:** при конфликте с этим файлом выигрывают проверки и глоссарий `fluxalloy-rules-explicit.mdc`: **однотипные поля**, `npm run check:field-registries`, вертикальный срез IPC (`ipc-channels.ts` + main + preload + renderer + тесты), **Крупный срез** при «продолжай» / `+`, `npm run audit:copy-paste`. Реестр полей настроек **не** считается enterprise-registry из запрета выше.
 
 ## TypeScript
 

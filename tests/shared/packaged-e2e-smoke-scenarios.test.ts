@@ -1,12 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { PACKAGED_MANUAL_SMOKE_STEPS } from '../../src/shared/packaged-manual-smoke-step-ids'
-import {
-  formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine,
-  formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine,
-  formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine,
-  PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT
-} from '../../src/shared/packaged-gui-e2e-playwright-meta'
+import { PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT } from '../../src/shared/packaged-gui-e2e-playwright-meta'
 import {
   PACKAGED_E2E_CI_SMOKE_SCRIPTS,
   PACKAGED_E2E_SMOKE_SCENARIOS,
@@ -51,14 +46,9 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
   })
 
   it('diagnostic lines mention registry check', () => {
-    const lines = formatPackagedE2eSmokeDiagnosticLines()
-    const joined = lines.join('\n')
+    const joined = formatPackagedE2eSmokeDiagnosticLines().join('\n')
     expect(joined).toContain('check:packaged-e2e-scenarios-registry')
-    expect(joined).toContain('ciSmokeScript npm')
     expect(joined).toContain('smoke:packaged-app')
-    expect(joined).toContain(formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine())
-    expect(joined).toContain(formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine())
-    expect(joined).toContain(formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine())
   })
 
   it('exports readonly step id arrays by automation kind', () => {

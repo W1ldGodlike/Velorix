@@ -24,7 +24,9 @@ const FORBIDDEN_TEXT = [
   { pattern: /check-program-gate/, label: 'check-program-gate' },
   { pattern: /UI_CONSOLIDATION_AND_COPY_PROGRAM/, label: 'UI_CONSOLIDATION_AND_COPY_PROGRAM' },
   { pattern: /continue_count\s*%\s*5/, label: 'continue_count % 5 (use J-NNN cadence)' },
-  { pattern: /continue_count\s*%\s*10/, label: 'continue_count % 10 (use J-NNN cadence)' }
+  { pattern: /continue_count\s*%\s*10/, label: 'continue_count % 10 (use J-NNN cadence)' },
+  { pattern: /fluxalloy-marathon/, label: 'fluxalloy-marathon (renamed fluxalloy-continue)' },
+  { pattern: /не коммитить|не пушить/, label: 'cadence override removed (J-1570)' }
 ]
 
 /** Paths removed in GOV B / J-984 — must not appear as markdown link targets */
@@ -35,6 +37,9 @@ const FORBIDDEN_LINK_TARGETS = [
   '.cursor/rules/fluxalloy-ui-surfaces.mdc',
   '.cursor/rules/fluxalloy-agent-runtime.mdc',
   '.cursor/rules/fluxalloy-program-gate.mdc',
+  'docs/AGENT_MARATHON.md',
+  'docs/AGENT_OPERATIONAL_NOTES.md',
+  'docs/AGENT_SESSION_HANDOFF.md',
   'docs/UI_CONSOLIDATION_AND_COPY_PROGRAM.md',
   'docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md',
   'docs/ZUSTAND_MIGRATION_CHECKLIST_DONE.md',

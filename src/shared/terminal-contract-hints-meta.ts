@@ -33,22 +33,16 @@ export const TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS = [
   'src/renderer/src/components/shell/app-settings-dialog-panes.tsx'
 ] as const
 
-/** §8 terminal guards in `check:quiet` (registry → summaries → shards → locale → Support ZIP). */
+/** §8 terminal guards in `check:quiet` (registry → shards → locale → Support ZIP). */
 export const TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS = [
-  'check:terminal-summaries-ru',
-  'check:terminal-data-summaries',
-  'check:terminal-scenario-summaries',
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT
 ] as const
 
-/** `run-quiet-check.mjs` step labels (registry → summaries → shards → locale → Support ZIP). */
+/** `run-quiet-check.mjs` step labels (registry → shards → locale → Support ZIP). */
 export const TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS = [
   'terminal-hints-guards-package-json',
-  'terminal-summaries-ru',
-  'terminal-data-summaries',
-  'terminal-scenario-summaries',
   'terminal-contract-hints-shards',
   'terminal-hints-locale',
   'support-bundle-terminal-hints'
@@ -229,12 +223,10 @@ export const TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS 
   'releaseSmoke:'
 ] as const
 
-/** Required substrings in getting-started / probe-and-inspector (Support ZIP). */
+/** Required substrings in getting-started / probe / downloads / FAQ (user «См. также» footer). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS = [
-  'terminalHints:',
-  'releaseSmoke:',
-  'about-support-logs.md',
-  'logging-and-diagnostics.md'
+  'owner-manual-smoke.md',
+  'packaged-windows-smoke.md'
 ] as const
 
 /** Части terminal-contract-hints-downloads-NN.ts. */
@@ -272,16 +264,14 @@ export const TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS = [
   'Help/en/tools-terminal-inspector.md'
 ] as const
 
-/** Required substrings in terminal hints Help articles. */
+/** Required substrings in ffmpeg-terminal-hints (§8 dev section + diagnostics link). */
 export const TERMINAL_CONTRACT_HINTS_HELP_REQUIRED_SNIPPETS = [
   TERMINAL_CONTRACT_HINTS_META_MODULE,
   'terminal-contract-hints-',
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING,
   'locales:terminal-summaries-ru',
-  'terminal-contract-scenarios.test.ts'
+  'terminal-contract-scenarios.test.ts',
+  'logging-and-diagnostics.md'
 ] as const
 
 /** Required substrings in tools-terminal-inspector Help hub. */
@@ -290,9 +280,9 @@ export const TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS = [
   'terminal-contract-hints-',
   'ffmpeg-terminal-hints.md',
   'locales:terminal-summaries-ru',
-  TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING,
-  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT
+  'logging-and-diagnostics.md',
+  'owner-manual-smoke.md',
+  'packaged-windows-smoke.md'
 ] as const
 
 /** §8 ffmpeg-terminal-hints Help — Support ZIP terminalHints line. */

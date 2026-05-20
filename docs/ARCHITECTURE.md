@@ -27,11 +27,13 @@
 
 ### npm: lockfile и peer-deps
 
-- В корне репозитория — [`.npmrc`](../.npmrc): **`legacy-peer-deps=true`** (Vite 8 vs peer `electron-vite` ^7). Канон и история baseline — [`TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](TOOLCHAIN_BASELINE_UPGRADE_PLAN.md).
+- В корне репозитория — [`.npmrc`](../.npmrc): **`legacy-peer-deps=true`** (Vite 8 vs peer `electron-vite` ^7). Канон baseline — `package.json` / `package-lock.json`; lock — `tests/shared/toolchain-baseline-package.test.ts` (журнал **J-1354**).
 - GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)): в job **`check`** (Windows) и **`linux-packaging`** (Ubuntu) шаг **Install** — **`npm ci`** (оба читают корневой `.npmrc`).
-- **Dependabot (wave 5):** после появления baseline toolchain на **`main`** — закрытие устаревших major-PR через **`gh`** ([план toolchain §Git](TOOLCHAIN_BASELINE_UPGRADE_PLAN.md); предрелиз [`RELEASE.md`](RELEASE.md) §1).
-- **WIP baseline (до push):** journal **J-1353..1556**, **27**+ paths — [`toolchain-baseline-wip-handoff-meta.ts`](../src/shared/toolchain-baseline-wip-handoff-meta.ts); commit/push — [`AGENT_MARATHON.md`](AGENT_MARATHON.md) §Pre-commit (gate **J-1440** push отложен; **Следующий cadence** **J-1560** commit).
+- **Dependabot (wave 5):** [x] на **`main`** — журнал **J-1558**; операционно — [`RELEASE.md`](RELEASE.md) §1.
+- **Toolchain baseline:** `main` @ `ff89765`, journal **J-1353..1570** — [`toolchain-baseline-wip-handoff-meta.ts`](../src/shared/toolchain-baseline-wip-handoff-meta.ts); план удалён **J-1559**; **Следующий cadence** **J-1570** commit.
 - **Packaging config:** [`electron-builder.yml`](../electron-builder.yml) — win **nsis** + **zip** (no `portable`); mac **dmg** + `notarize: false`; linux AppImage + deb; `publish: null`; **9** §19 yaml comments (`getReleaseCodeSigningElectronBuilderYmlComments`) — §19 в [`docs/RELEASE.md`](RELEASE.md) §4.
+- **`npm run build`:** пишет `src/shared/app-build-info.json`. Перед `check` / commit после build — **`{"buildId":"dev","builtAtUtc":null}`** (**J-1386**); см. [`RELEASE.md`](RELEASE.md) §1.
+- **LF в исходниках:** только LF; `npm run check:line-endings`; правки — `npm run format` / prettier, не `Set-Content` с CRLF.
 
 Зачем разделять: **безопасность** — процессы, пути и секреты ОС только в main; UI в renderer с **`contextIsolation: true`** и **`nodeIntegration: false`**.
 
@@ -90,6 +92,7 @@
 
 ## Медиа и доступ к файлам
 
+- **CSP:** [`src/renderer/index.html`](../src/renderer/index.html) — `media-src` / `connect-src`; при падении `<video>` / `fetch` — CSP и способ отдачи файла в main.
 - Кастомная схема **`fluxmedia://`** и множество **`allowedMediaPaths`** (реальный путь после `realpath`): см. [`src/main/media-protocol.ts`](../src/main/media-protocol.ts). Renderer не может открыть произвольный `file://` без регистрации пути через main.
 - **ffprobe** и экспорт допускаются только для путей, прошедших **`isGrantedMediaPath`** (открытие через диалог / явная выдача доступа из main).
 - **§7.5 спрайт:** renderer `EditorVideoSpritePanel` → preload `export.generateVideoSprite` → IPC `fluxalloy:generate-video-sprite` ([`register-export-video-sprite-ipc.ts`](../src/main/ipc/register-export-video-sprite-ipc.ts)); argv `fps` + optional `drawtext` (PTS hms) + `scale` + `tile`; save dialog; история `ffmpegSnapshot`.

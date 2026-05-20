@@ -58,10 +58,6 @@ const FORBIDDEN_TEXT_WHEN_PROGRAM_ENDED = [
     patterns: [/program_gate:\s*open/i, /fluxalloy-program-gate/i, /check:program-gate/i]
   },
   {
-    rel: 'docs/AGENT_MARATHON.md',
-    patterns: [/program_gate:\s*open/i, /fluxalloy-program-gate/i]
-  },
-  {
     rel: '.cursor/rules/fluxalloy-marathon.mdc',
     patterns: [/PROGRAM GATE открыт/i]
   },

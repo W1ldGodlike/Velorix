@@ -4,6 +4,7 @@ import { spawn } from 'node:child_process'
 const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const maxFailureOutputChars = Number.parseInt(process.env.CHECK_QUIET_FAILURE_CHARS ?? '80000', 10)
 
+/** Daily gate: product checks + doc guards used by scripts (no duplicate Vitest execSync wrappers). */
 const steps = [
   ['lint', ['run', 'lint']],
   ['line-endings', ['run', 'check:line-endings']],
@@ -15,7 +16,6 @@ const steps = [
   ['field-registries', ['run', 'check:field-registries']],
   ['locales-json', ['run', 'check:locales-json']],
   ['locales-ts-overlap', ['run', 'check:locales-ts-overlap']],
-  ['export-preview-hints-locale', ['run', 'check:export-preview-hints-locale']],
   ['packaged-manual-smoke-parity', ['run', 'check:packaged-manual-smoke-parity']],
   ['owner-visual-smoke-locale', ['run', 'check:owner-visual-smoke-locale']],
   ['platform-packaging-scripts', ['run', 'check:platform-packaging-scripts']],
@@ -25,22 +25,14 @@ const steps = [
   ['help-packaged-smoke-docs', ['run', 'check:help-packaged-smoke-docs']],
   ['help-terminal-hints-docs', ['run', 'check:help-terminal-hints-docs']],
   ['packaged-e2e-scenarios-registry', ['run', 'check:packaged-e2e-scenarios-registry']],
-  ['packaged-gui-e2e-playwright-deferred', ['run', 'check:packaged-gui-e2e-playwright-deferred']],
   ['terminal-hints-guards-package-json', ['run', 'check:terminal-hints-guards-package-json']],
-  ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
-  ['terminal-data-summaries', ['run', 'check:terminal-data-summaries']],
-  ['terminal-scenario-summaries', ['run', 'check:terminal-scenario-summaries']],
   ['terminal-contract-hints-shards', ['run', 'check:terminal-contract-hints-shards']],
   ['terminal-hints-locale', ['run', 'check:terminal-hints-locale']],
   ['support-bundle-terminal-hints', ['run', 'check:support-bundle-terminal-hints']],
   ['ui-copy-quality', ['run', 'check:ui-copy-quality']],
   ['audit:copy-paste', ['run', 'audit:copy-paste']],
-  ['audit:todo-debt', ['run', 'audit:todo-debt']],
-  ['audit:dead-type-reexports', ['run', 'audit:dead-type-reexports']],
   ['audit:ipc-architecture', ['run', 'audit:ipc-architecture']],
-  ['audit:shared-contracts', ['run', 'audit:shared-contracts']],
   ['audit:structural', ['run', 'audit:structural']],
-  ['audit:inventory-sync', ['run', 'audit:inventory-sync']],
   ['journal', ['run', 'check:journal']],
   ['docs-governance', ['run', 'check:docs-governance']],
   ['ui-surfaces-guard', ['run', 'check:ui-surfaces-guard']],

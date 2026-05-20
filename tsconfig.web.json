@@ -9,7 +9,7 @@
     "locales/**/*.json"
   ],
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
+    "allowImportingTsExtensions": true,
     "composite": true,
     "noImplicitAny": true,
     "noUncheckedIndexedAccess": true,
@@ -17,11 +17,10 @@
     "noPropertyAccessFromIndexSignature": true,
     "useUnknownInCatchVariables": true,
     "jsx": "react-jsx",
-    "baseUrl": ".",
     "resolveJsonModule": true,
     "paths": {
-      "@renderer/*": ["src/renderer/src/*"],
-      "@locales/*": ["locales/*"]
+      "@renderer/*": ["./src/renderer/src/*"],
+      "@locales/*": ["./locales/*"]
     }
   }
 }

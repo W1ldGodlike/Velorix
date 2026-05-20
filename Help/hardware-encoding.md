@@ -6,7 +6,6 @@
 
 1. Откройте короткий клип H.264 (10–30 с) в редакторе.
 2. Дождитесь probe в rail «Формат» — в списке кодеков появятся доступные HW-варианты.
-3. Для проверки на своей видеокарте: **Настройки → Зависимости → Ручной smoke NVENC / VAAPI** — пошаговый чеклист и кнопка копирования (тот же текст попадает в Support ZIP). Полный пакет (тема, HiDPI, HW, спрайт §7.5, мини-плеер, packaged) — [owner-manual-smoke.md](owner-manual-smoke.md) (в конце §21 e2e: per-step `e2e <id>:` в `ownerManualSmoke:` / `releaseSmoke:`); после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md) и соседние статьи для Linux/macOS.
 
 ## Режимы
 
@@ -24,4 +23,6 @@
 - **Linux** — VAAPI (Intel/AMD), при наличии `/dev/dri` и vaapi в `ffmpeg -hwaccels`.
 - **macOS** — VideoToolbox в списке кодеков; ручной smoke в настройках ориентирован на Win/Linux.
 
-См. также [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md), [owner-manual-smoke.md](owner-manual-smoke.md) и [faq-troubleshooting.md](faq-troubleshooting.md). При диагностике HW-export в Support ZIP — dev-блок `terminalHints:` (§8, 24 статей Help) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 статьи; partition: tail 42 + ffmpeg + knowledge, FAQ вне 44).
+## См. также
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (smoke после `pack:dir`).

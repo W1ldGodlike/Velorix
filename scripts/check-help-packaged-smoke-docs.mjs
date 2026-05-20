@@ -12,7 +12,7 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxPlannedGuiFooter,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyAutomationGroupsParenthetical,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyDevClause
-} from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+} from './lib/help-workflow-crosslinks-meta.mjs'
 import { formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import {
   formatLinuxReleaseCodeSigningRoadmapHelpClause,

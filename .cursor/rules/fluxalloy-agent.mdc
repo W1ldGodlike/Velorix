@@ -1,31 +1,28 @@
 ---
-description: Исполняемое — marathon, пакеты, audit, UI, среда агента
+description: Исполняемое — продолжай/+, audit, UI, cadence Git, среда агента
 alwaysApply: true
 ---
 
 # Agent (исполняемое)
 
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
-Skills: [`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../.cursor/skills/fluxalloy-marathon/SKILL.md), [`fluxalloy-journal-entry`](../../.cursor/skills/fluxalloy-journal-entry/SKILL.md), [`fluxalloy-checklist-audit`](../../.cursor/skills/fluxalloy-checklist-audit/SKILL.md), [`fluxalloy-release`](../../.cursor/skills/fluxalloy-release/SKILL.md).
+Skills: [`.cursor/skills/fluxalloy-continue/SKILL.md`](../../.cursor/skills/fluxalloy-continue/SKILL.md), [`fluxalloy-journal-entry`](../../.cursor/skills/fluxalloy-journal-entry/SKILL.md), [`fluxalloy-checklist-audit`](../../.cursor/skills/fluxalloy-checklist-audit/SKILL.md), [`fluxalloy-release`](../../.cursor/skills/fluxalloy-release/SKILL.md).
+
+## Продолжай / +
+
+**Если** в чате «продолжай» или `+` **то** skill [`fluxalloy-continue`](../../.cursor/skills/fluxalloy-continue/SKILL.md): продолжить текущую задачу; **если** закончена **то** [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`; при diff — `npm run check:quiet` и одна `J-NNN` (skill journal-entry).
 
 ## Итерация и журнал
 
 - **Если** в итерации есть diff в репо **то** ровно **1** строка `J-NNN` (`npm run journal:stamp`); skill **fluxalloy-journal-entry**.
 - **Если** только обсуждение без diff **то** журнал **не** дописывать.
-- **Запрещено:** **микро-J**, **микро-срез** (глоссарий); пакет полей/IPC — таблица в skill marathon / глоссарий.
-
-## Marathon
-
-**Если** «продолжай» / `+` / SDK loop **то** skill **fluxalloy-marathon** + [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md). **Крупный срез** — глоссарий; `npm run check:quiet` до cadence; `npm run agent:session -- bump` — последний шаг. Процедура — skill.
+- **Запрещено:** **микро-J**, **микро-срез** (глоссарий).
 
 ## Cadence Git
 
-- **Если** новая `J-NNN` и `NNN % 5 === 0` и **check:quiet зелёный** **то** `git commit` (Cursor, marathon, SDK; отдельная просьба «commit» **не** нужна).
-- **Если** `NNN % 10 === 0` **то** `git push` (без force main/master) + re-anchor → **`re-anchor OK`**.
-- **Запрещено:** привязывать commit/push к marathon или `continue_count` (`agent:session -- bump` — только метрика).
-- **Если** владелец в **этом** чате явно «не коммитить» / «без коммита» / «не пушить» **то** `git commit` / `git push` **запрещено** (приоритет над **Cadence Git (J-NNN)**, глоссарий `fluxalloy-rules-explicit.mdc`).
-- **Календарь** `J%5` / `J%10` (следующая точка) — поле **Следующий cadence** в [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md); таблица — [`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../.cursor/skills/fluxalloy-marathon/SKILL.md).
-- **WIP baseline** (**27**+ paths, gate **J-1440**): §Pre-commit в [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md); commit/push — только по явной просьбе владельца в чате.
+- **Следующий cadence:** **J-1570** (commit); **J-1580** (commit + push).
+- **Если** в итерации записана новая `J-NNN` и **check:quiet зелёный** **то:** `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push` (без force `main`/`master`). Cursor, SDK, обычный чат — без исключений.
+- **Запрещено:** пропускать `git commit` / `git push` при выполнении условий выше.
 
 ## UI
 
@@ -33,8 +30,8 @@ Skills: [`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../.cursor/skills/flux
 
 ## Audit
 
-**Обязательно:** `npm run check:quiet` перед cadence-commit. Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs). **Запрещено:** файл в scope **>500** строк без split (`npm run audit:structural`). Реестры вместо копипасты `parseX` — `npm run check:field-registries`.
+**Обязательно:** `npm run check:quiet` перед cadence-commit. Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs). **Запрещено:** файл в scope **>500** строк без **логического** split **или** `{ glob, reason }` в `AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED` (`npm run audit:structural`; **запрещено:** дробление только ради лимита — [`fluxalloy-simplicity.mdc`](fluxalloy-simplicity.mdc)). Реестры вместо копипасты `parseX` — `npm run check:field-registries`.
 
 ## Среда (Windows)
 
-PowerShell; абсолютные пути в tools; **запрещено** bash-only heredoc для обязательных шагов. **Если** `git commit` **то** here-string `$msg = @'…'@`. **Если** меняли `src/`/`tests/` **то** `npm run typecheck`. Operational: [`docs/AGENT_OPERATIONAL_NOTES.md`](../../docs/AGENT_OPERATIONAL_NOTES.md).
+PowerShell; абсолютные пути в tools; **запрещено** bash-only heredoc для обязательных шагов. **Если** `git commit` **то** here-string `$msg = @'…'@`. **Если** меняли `src/`/`tests/` **то** `npm run typecheck`. Отладка CSP/медиа/build: [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md); release: [`docs/RELEASE.md`](../../docs/RELEASE.md).

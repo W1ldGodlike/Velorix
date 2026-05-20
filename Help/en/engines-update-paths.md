@@ -16,6 +16,6 @@ When bundled files are missing, the status area offers to **download** the missi
 
 Windows release builds can enable strict hash checks to guard against tampered binaries. Maintainer notes live in the project’s build documentation.
 
-## Packaged smoke (§19 / §21)
+## See also
 
-After `npm run pack:dir` (Windows) or `pack:linux:dir` / `pack:mac:dir`, verify engines under `dist/*-unpacked` (`smoke:packaged-*` in CI). Owner manual smoke and §21 e2e (per-step `e2e <id>:` in Support ZIP `releaseSmoke:`) — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](../packaged-windows-smoke.md); dev block `terminalHints:` (§8, 24 Help articles) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44). Dev: `npm run check:packaged-e2e-scenarios-registry`, `check:help-terminal-hints-docs`; see `bin/README.md`.
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).

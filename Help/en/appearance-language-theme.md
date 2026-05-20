@@ -8,7 +8,6 @@ Use the **View** menu or **Settings → General → Theme** to pick dark, light,
 
 **Settings → General → Theme** lists checks for each mode: primary button and accent link contrast, Tab focus rings, disabled states, Settings/About modal backdrops, the downloads pop-out, the inspector window, and scenario builder nodes. For **match the system**, change the OS theme and confirm FluxAlloy follows without restarting.
 
-Full Support ZIP bundle: **Settings → Dependencies → Owner manual smoke** → **Copy full bundle** (Theme/HiDPI blocks + §21 e2e per-step `e2e <id>:`; see [owner-manual-smoke.md](owner-manual-smoke.md)). Packaged smoke after `pack:dir` — [packaged-windows-smoke.md](../packaged-windows-smoke.md); `releaseSmoke:` carries the same §21 appendix; dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44).
 
 ## Interface language
 
@@ -23,6 +22,10 @@ Language changes button labels, built-in FFmpeg export presets, status messages,
 - which CSS `@120/144/168/192dpi` block is active;
 - a checklist of areas to verify manually (editor, downloads, modals, status bar).
 
-To verify: set **Settings → Display → Scale** to 100 %, 125 %, 150 %, and 200 %, **restart FluxAlloy**, and run through the checklist — labels and buttons must not clip. The same items are in the **HiDPI** block in [owner-manual-smoke.md](owner-manual-smoke.md).
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).
 
 See [getting-started.md](getting-started.md).
+
+## See also
+
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).

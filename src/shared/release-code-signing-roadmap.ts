@@ -90,16 +90,6 @@ export function formatReleaseCodeSigningRoadmapArchitectureSigningIndexedClause(
   return `§19 signing indexed (SDK sprint + diagnostics): Help §15 hub — \`check:help-packaged-smoke-docs\`, \`check:help-owner-smoke-docs\`, strict signing crosslinks; \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; \`check:release\` / \`check:platform-packaging-scripts\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`.${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedTail()}`
 }
 
-/** `docs/AGENT_OPERATIONAL_NOTES.md` — §19 signing roadmaps row. */
-export function formatReleaseCodeSigningRoadmapOperationalNotesRow(): string {
-  return `| §19 publish signing (win/linux/mac) | Roadmaps in [\`docs/RELEASE.md\`](RELEASE.md) §4/§4.1/§4.2; ${formatReleaseCodeSigningRoadmapHelpGuardsMarkdownTail()} formatters — [\`release-code-signing-roadmap.ts\`](../src/shared/release-code-signing-roadmap.ts). Dev \`pack:*:dir\` may skip signing until publish. |`
-}
-
-/** `docs/AGENT_OPERATIONAL_NOTES.md` — §19 signing indexed (SDK sprint + diagnostics). */
-export function formatReleaseCodeSigningRoadmapOperationalNotesSigningIndexedRow(): string {
-  return `| §19 signing indexed | SDK \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; Support ZIP — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\` (\`check:release\` / \`check:platform-packaging-scripts\`).${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedShortTail()} |`
-}
-
 /** `bin/README.md` — §19 signing roadmaps entry point. */
 export function formatReleaseCodeSigningRoadmapBinReadmeLine(): string {
   return `- §19 publish signing (win/linux/mac): [\`release-code-signing-roadmap.ts\`](../src/shared/release-code-signing-roadmap.ts) + [\`docs/RELEASE.md\`](../docs/RELEASE.md) §4/§4.1/§4.2; ${formatReleaseCodeSigningRoadmapHelpGuardsMarkdownTail()}`
@@ -255,12 +245,6 @@ export function formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnos
   return `electron-builder.yml §19 yaml comments: ${count} (getReleaseCodeSigningElectronBuilderYmlComments in release-code-signing-roadmap.ts)`
 }
 
-/** `docs/AGENT_OPERATIONAL_NOTES.md` — §19 electron-builder.yml packaging row. */
-export function formatReleaseCodeSigningRoadmapOperationalNotesElectronBuilderRow(): string {
-  const count = getReleaseCodeSigningElectronBuilderYmlComments().length
-  return `| §19 electron-builder.yml | [\`electron-builder.yml\`](../electron-builder.yml) — win **nsis** + **zip** (no \`portable\`); mac/linux targets; **${count}** §19 yaml comments (\`getReleaseCodeSigningElectronBuilderYmlComments\`); diagnostics — \`check:release\` / \`check:platform-packaging-scripts\` (\`formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnosticLine\`). |`
-}
-
 /** `AGENTS.md` — §19 signing indexed bullet (SDK sprint + diagnostics). */
 export function formatReleaseCodeSigningRoadmapAgentsSigningIndexedBullet(): string {
   return `**§19 signing indexed:** Help §15 hub + \`check:help-packaged-smoke-docs\` + \`check:help-owner-smoke-docs\` + strict signing crosslinks; SDK \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; diagnostics — \`check:release\` / \`check:platform-packaging-scripts\` (\`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`).${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedShortTail()}`
@@ -299,7 +283,7 @@ export function formatReleaseCodeSigningRoadmapChecklistSprintSection19Line(): s
 
 /** `docs/SOURCES_OF_TRUTH.md` §19 signing index — signing indexed tail. */
 export function formatReleaseCodeSigningRoadmapSourcesSigningIndexedFragment(): string {
-  return `signing indexed (continue.txt, initial.txt, agent-contract.txt; SdkPromptSprintSigningIndexedBlock/DiagnosticLine; SdkContractSigningIndexedClause+packaging plain tail; ARCHITECTURE.md, RELEASE.md §4, AGENTS.md, README.md, AGENT_OPERATIONAL_NOTES.md, bin/README.md, cursor-automation/README.md); packaging indexed electron-builder.yml (J-1520..1539); sprint checklist formatReleaseCodeSigningRoadmapChecklistSprintSection19Line (${RELEASE_CODE_SIGNING_SPRINT_INDEXED_JOURNAL_SPAN})`
+  return `signing indexed (continue.txt, initial.txt, agent-contract.txt; SdkPromptSprintSigningIndexedBlock/DiagnosticLine; SdkContractSigningIndexedClause+packaging plain tail; ARCHITECTURE.md, RELEASE.md §4, AGENTS.md, README.md, bin/README.md, cursor-automation/README.md); packaging indexed electron-builder.yml (J-1520..1539); sprint checklist formatReleaseCodeSigningRoadmapChecklistSprintSection19Line (${RELEASE_CODE_SIGNING_SPRINT_INDEXED_JOURNAL_SPAN})`
 }
 
 /** continue.txt / initial.txt — sprint §19 checklist fragment. */
@@ -329,7 +313,7 @@ export function formatReleaseCodeSigningRoadmapSdkAutomationReadmeSigningIndexed
 
 /** `scripts/cursor-automation/README.md` — sprint §19 checklist bullet. */
 export function formatReleaseCodeSigningRoadmapSdkAutomationReadmeChecklistSprintLine(): string {
-  return `- Sprint §19 (\`IMPLEMENTATION_CHECKLIST\`): \`formatReleaseCodeSigningRoadmapChecklistSprintSection19Line\` (${RELEASE_CODE_SIGNING_SPRINT_INDEXED_JOURNAL_SPAN}); Vitest \`toolchain-baseline-governance.test.ts\`.`
+  return `- Sprint §19 (\`IMPLEMENTATION_CHECKLIST\`): \`formatReleaseCodeSigningRoadmapChecklistSprintSection19Line\` (${RELEASE_CODE_SIGNING_SPRINT_INDEXED_JOURNAL_SPAN}).`
 }
 
 /** `scripts/cursor-automation/README.md` — §19 electron-builder.yml index. */

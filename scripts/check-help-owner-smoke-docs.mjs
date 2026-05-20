@@ -17,16 +17,15 @@ import {
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
   formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevParagraph,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingDevParagraph,
-  formatPackagedE2eHelpWorkflowCrosslinksPlannerDiagnosticsParagraph,
   formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeArchiveSupportClause,
-  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiParagraph
-} from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiParagraph,
+  formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter
+} from './lib/help-workflow-crosslinks-meta.mjs'
 import {
   formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightLoggingPlannedGuiScopeClause,
-  formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause,
-  formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix
+  formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause
 } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
@@ -93,7 +92,9 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS) {
       'owner-archive-support-clause'
     ) || failed
 }
+const plannerHelpPathSet = new Set(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS)
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS) {
+  if (plannerHelpPathSet.has(rel)) continue
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
@@ -159,14 +160,13 @@ failed =
   ) || failed
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
-  const plannerUiHint = formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(locale)
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedE2eHelpWorkflowCrosslinksPlannerDiagnosticsParagraph(locale, plannerUiHint),
-      'planner-diagnostics-paragraph'
+      formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(locale),
+      'planner-see-also-footer'
     ) || failed
 }
 
