@@ -15,12 +15,16 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
-  formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
-  formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail
+  formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevParagraph,
+  formatPackagedE2eHelpWorkflowCrosslinksLoggingDevParagraph,
+  formatPackagedE2eHelpWorkflowCrosslinksPlannerDiagnosticsParagraph,
+  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeArchiveSupportClause,
+  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiParagraph
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import {
   formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightLoggingPlannedGuiScopeClause,
   formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause,
   formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix
 } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
@@ -67,13 +71,26 @@ failed =
   ) || failed
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
+  const ownerPlannedGuiParagraph =
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiParagraph(
+      locale,
+      formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause(locale)
+    )
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause(locale),
-      'owner-playwright-ui-hints'
+      ownerPlannedGuiParagraph,
+      'owner-planned-gui-paragraph'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeArchiveSupportClause(locale),
+      'owner-archive-support-clause'
     ) || failed
 }
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS) {
@@ -96,21 +113,17 @@ failed =
   ) || failed
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
+  const aboutUiHint = formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(locale)
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale),
-      'about-release-smoke-dev'
-    ) || failed
-  failed =
-    checkHelpSmokeDocSnippet(
-      REPO_ROOT,
-      LOG_PREFIX,
-      rel,
-      formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(locale),
-      'about-playwright-ui-hint'
+      formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevParagraph(
+        locale,
+        aboutUiHint
+      ),
+      'about-release-smoke-dev-paragraph'
     ) || failed
 }
 failed =
@@ -128,8 +141,12 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_PATHS) {
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(locale),
-      'logging-playwright-ui-hint'
+      formatPackagedE2eHelpWorkflowCrosslinksLoggingDevParagraph(
+        locale,
+        formatPackagedGuiE2ePlaywrightLoggingPlannedGuiScopeClause(locale),
+        formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(locale)
+      ),
+      'logging-dev-paragraph'
     ) || failed
 }
 failed =
@@ -142,21 +159,14 @@ failed =
   ) || failed
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
+  const plannerUiHint = formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(locale)
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale),
-      'planner-crosslinks-tail'
-    ) || failed
-  failed =
-    checkHelpSmokeDocSnippet(
-      REPO_ROOT,
-      LOG_PREFIX,
-      rel,
-      formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(locale),
-      'planner-playwright-ui-hint'
+      formatPackagedE2eHelpWorkflowCrosslinksPlannerDiagnosticsParagraph(locale, plannerUiHint),
+      'planner-diagnostics-paragraph'
     ) || failed
 }
 

@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest'
 
 import { PACKAGED_MANUAL_SMOKE_STEPS } from '../../src/shared/packaged-manual-smoke-step-ids'
 import {
+  formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine,
+  formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine,
+  formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine,
+  PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT
+} from '../../src/shared/packaged-gui-e2e-playwright-meta'
+import {
   PACKAGED_E2E_CI_SMOKE_SCRIPTS,
   PACKAGED_E2E_SMOKE_SCENARIOS,
   expandPackagedE2eCiSmokeScriptsForWorkflow,
@@ -50,11 +56,16 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
     expect(joined).toContain('check:packaged-e2e-scenarios-registry')
     expect(joined).toContain('ciSmokeScript npm')
     expect(joined).toContain('smoke:packaged-app')
+    expect(joined).toContain(formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine())
+    expect(joined).toContain(formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine())
+    expect(joined).toContain(formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine())
   })
 
   it('exports readonly step id arrays by automation kind', () => {
     expect(PACKAGED_E2E_CI_HEADLESS_STEP_IDS).toEqual(['launch', 'engines'])
-    expect(PACKAGED_E2E_PLANNED_GUI_STEP_IDS).toHaveLength(8)
+    expect(PACKAGED_E2E_PLANNED_GUI_STEP_IDS).toHaveLength(
+      PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT
+    )
     expect(PACKAGED_E2E_MANUAL_OWNER_STEP_IDS).toEqual(['video-sprite', 'mini-player'])
     expect(listPackagedE2eStepIdsByAutomation('planned-gui-e2e')).toEqual([
       ...PACKAGED_E2E_PLANNED_GUI_STEP_IDS

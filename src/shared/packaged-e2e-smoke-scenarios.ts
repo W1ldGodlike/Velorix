@@ -70,7 +70,11 @@ export {
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale
 } from './packaged-e2e-help-workflow-crosslinks-meta'
 import { formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine } from './packaged-e2e-help-workflow-crosslinks-meta'
-import { formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine } from './packaged-gui-e2e-playwright-meta'
+import {
+  formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine,
+  formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine,
+  formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine
+} from './packaged-gui-e2e-playwright-meta'
 
 export { TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS } from './terminal-contract-hints-meta'
 
@@ -152,6 +156,8 @@ export function formatPackagedE2eSmokeDiagnosticLines(): string[] {
     'manual owner-smoke: Help/owner-manual-smoke.md + Settings copy (not automated GUI yet)',
     `planned GUI e2e scope: ${PACKAGED_E2E_PLANNED_GUI_STEP_IDS.join(', ')} (Playwright later; ytdlp/export have partial CLI smokes)`,
     formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine(),
+    formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine(),
+    formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine(),
     `Help crosslinks: ${formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine('articles')}`,
     'check: npm run check:packaged-e2e-scenarios-registry',
     'check: npm run check:packaged-gui-e2e-playwright-deferred'

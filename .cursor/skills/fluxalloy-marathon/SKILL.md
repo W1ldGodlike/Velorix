@@ -26,8 +26,10 @@ description: Runs FluxAlloy marathon iterations (продолжай, agent loop,
 | --- | --- |
 | `NNN % 5 === 0` и quiet зелёный | `git commit` (полное сообщение-предложение) |
 | `NNN % 10 === 0` | также `git push` (без force main/master), re-anchor |
+| Календарь `J%5` / `J%10` | Таблица re-anchor в [`docs/AGENT_MARATHON.md`](../../../docs/AGENT_MARATHON.md), поле **Следующий cadence** (**J-1560** commit; J-1440 push отложен — владелец: «commit»/«push») |
+| WIP toolchain + docs | §Pre-commit + §Cadence J-1380 в [`docs/AGENT_MARATHON.md`](../../../docs/AGENT_MARATHON.md); **27**+ paths, gate **J-1440**; `main` @ `ac5821c` до commit |
 
-**Re-anchor:** обнови таблицу в `docs/AGENT_MARATHON.md`; в отчёте **`re-anchor OK`**. `docs/SOURCES_OF_TRUTH.md` и блок `## Ближайший TODO` — только если менялась иерархия §1 `SOURCES_OF_TRUTH` или список skills в `AGENTS.md`.
+**Re-anchor:** обнови таблицу в `docs/AGENT_MARATHON.md`; в отчёте **`re-anchor OK`**. `docs/SOURCES_OF_TRUTH.md` и блок `## Ближайший TODO` — только если менялась иерархия §1 `SOURCES_OF_TRUTH`, список skills в `AGENTS.md`, **или снимок Vitest** (стр. «Vitest snapshot (Windows gate)» в Карте синхронизации `SOURCES_OF_TRUTH`).
 
 ## Запрещено
 

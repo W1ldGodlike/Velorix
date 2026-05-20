@@ -7,6 +7,10 @@ alwaysApply: true
 
 **Обязательно:** агент действует как pragmatic senior engineer maintaining a real desktop application with limited complexity budget: минимальный проверяемый diff, существующие паттерны, без нового слоя абстракции без требования из [`fluxalloy-simplicity.mdc`](fluxalloy-simplicity.mdc).
 
+**Если** в [`docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](../../docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md) статус **не** «выполнен» **то** запрещена работа вне плана (волны 0–5, поломки миграции) без явной просьбы владельца приостановить план.
+
+**Запрещено:** удалять [`docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](../../docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md) без явной просьбы владельца «удали план toolchain» (после «выполнен» файл — архив baseline).
+
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
 Индекс: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).  
 Исполняемое: [`fluxalloy-agent.mdc`](fluxalloy-agent.mdc), [`fluxalloy-simplicity.mdc`](fluxalloy-simplicity.mdc).
@@ -17,6 +21,8 @@ alwaysApply: true
 | [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) | Sprint `## Ближайший TODO спринта`; `npm run check:checklist` |
 | [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) | Хроника; J при diff — skill journal-entry |
 | [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC/renderer; обновлять при новом канале |
+| [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md) | Marathon snapshot; **Следующий cadence** (**J-1560** commit; J-1440 push отложен); WIP (**27**+ paths, gate **J-1440**) — §Pre-commit + §Cadence J-1380 |
+| [`docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](../../docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md) | Архив baseline toolchain; **если** статус **не** «выполнен» **то** stop-the-world по плану (см. абзацы выше в этом файле) |
 
 **Стек:** Electron + React + TypeScript; main/preload/renderer; Zustand — [`renderer-state-approach.ts`](../../src/shared/renderer-state-approach.ts).
 

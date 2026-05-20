@@ -42,6 +42,25 @@ function fixedEsmShimPlugin(): Plugin {
   }
 }
 
+/**
+ * Vite dev вставляет inline `<script type="module">` (react-refresh, @vite/client).
+ * Строгий `script-src 'self'` в index.html блокирует их — окно остаётся чёрным при `npm run dev`.
+ */
+function rendererDevCspPlugin(): Plugin {
+  return {
+    name: 'fluxalloy-renderer-dev-csp',
+    apply: 'serve',
+    transformIndexHtml(html) {
+      return html
+        .replace("script-src 'self'", "script-src 'self' 'unsafe-inline'")
+        .replace(
+          "connect-src 'self' http://127.0.0.1:* fluxmedia:",
+          "connect-src 'self' http://127.0.0.1:* http://localhost:* ws://127.0.0.1:* ws://localhost:* fluxmedia:"
+        )
+    }
+  }
+}
+
 function findLastRealImportEnd(code: string): number {
   const lines = code.split('\n')
   let pos = 0
@@ -67,11 +86,19 @@ export default defineConfig({
   // Main — дефолт; preload: главное окно + pop-out `#downloads` / `#inspector` (тот же entry).
   main: { plugins: [fixedEsmShimPlugin()] },
   preload: {
+    // Vite 8 SSR: preset electron-vite ставит ssr.noExternal=true → в бандл попадает electron/index.js
+    // (install.js), а не runtime API → диалог out/preload/install.js и чёрное окно.
+    ssr: {
+      // Vite 8 SSROptions types omit `false`; overrides electron-vite preset `noExternal: true`.
+      // @ts-expect-error — keep electron / @electron-toolkit/preload external in preload bundle
+      noExternal: false
+    },
     build: {
       rollupOptions: {
         input: {
           index: resolve('src/preload/index.ts')
-        }
+        },
+        external: ['electron', /^electron\/.+/, '@electron-toolkit/preload']
       }
     }
   },
@@ -83,6 +110,6 @@ export default defineConfig({
         '@locales': resolve('locales')
       }
     },
-    plugins: [react()]
+    plugins: [react(), rendererDevCspPlugin()]
   }
 })

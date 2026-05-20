@@ -41,7 +41,8 @@ import {
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import {
   formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
-  formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix
+  formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightLoggingPlannedGuiScopeClause
 } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
@@ -143,6 +144,14 @@ for (const rel of TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS) {
       rel,
       formatTerminalContractHintsLoggingHelpDevGuardsLine(locale),
       'logging-dev-guards'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightLoggingPlannedGuiScopeClause(locale),
+      'logging-planned-gui-scope'
     ) || failed
   failed =
     checkHelpSmokeDocSnippet(

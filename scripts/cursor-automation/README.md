@@ -9,6 +9,8 @@ cd scripts/cursor-automation
 npm install
 ```
 
+Корень репозитория содержит [`.npmrc`](../../.npmrc) (`legacy-peer-deps=true` для основного приложения); при `npm install` из этой папки npm обычно подхватывает его при обходе родительских каталогов. Канон — [`docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](../../docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md). После того как baseline оказался на **`main`**, мейнтейнер закрывает устаревшие Dependabot PR (**wave 5**) по [§Git плана](../../docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md). **WIP** toolchain + docs (**27**+ paths, gate **J-1440**) — [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md) §Pre-commit + §Cadence J-1380 (по явной просьбе «commit»/«push» владельца; **Следующий cadence** **J-1560** commit; J-1440 push отложен).
+
 Ключ API (личный или service account): обычно **Dashboard → Integrations**.
 Если ключ был отправлен в чат/лог, лучше сразу отозвать его и создать новый.
 
@@ -41,6 +43,13 @@ npm run agent:loop -- --max-steps 200 --session-steps 1
 ```dotenv
 CURSOR_API_KEY=crsr_...
 ```
+
+- §19 publish signing (win/linux/mac): `release-code-signing-roadmap.ts` + `docs/RELEASE.md` §4/§4.1/§4.2 — см. `prompts/agent-contract.txt`; Help check:help-packaged-smoke-docs + check:help-owner-smoke-docs + strict signing (check:help-workflow-smoke-crosslinks).
+- §19 signing indexed: `continue.txt` / `initial.txt` / `agent-contract.txt` — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock` / `formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause`; diagnostics — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine` (`check:release` / `check:platform-packaging-scripts`). Packaging indexed: `electron-builder.yml` (**9** §19 yaml comments; J-1520..1539).
+- §19 packaging (electron-builder.yml): win nsis+zip (no portable); 9 §19 yaml comments — getReleaseCodeSigningElectronBuilderYmlComments in release-code-signing-roadmap.ts.
+- Sprint §19 (`IMPLEMENTATION_CHECKLIST`): `formatReleaseCodeSigningRoadmapChecklistSprintSection19Line` (J-1511..1545); Vitest `toolchain-baseline-governance.test.ts`.
+- Sprint §21 Playwright (`IMPLEMENTATION_CHECKLIST`): `formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line` (8 steps).
+- Sprint Wave 5 (`IMPLEMENTATION_CHECKLIST`): `formatToolchainBaselineWipHandoffChecklistSprintWave5Line` (27+ paths; **J-1560**).
 
 Промпты по умолчанию: каталог **`prompts/`** (`initial.txt`, `continue.txt`). Общие правила поведения — **`prompts/agent-contract.txt`**; именно туда добавляйте нюансы, которые агент должен соблюдать всегда. `continue.txt` намеренно похож на команду `+` в живом чате: агент читает чеклист/журнал только точечно, когда нужно выбрать следующий блок или записать новый `J-NNN`. Для длинных запусков runner сам пересоздаёт `Agent` короткими сессиями и даёт компактный handoff, чтобы не тащить огромный accumulated conversation/cache context. Свой текст — через `PROMPTS_DIR` или правка файлов.
 

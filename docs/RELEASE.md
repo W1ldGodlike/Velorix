@@ -6,12 +6,19 @@
 
 ```powershell
 git status
+npm install
 npm run check
 npm run build
 npm run audit:moderate
 ```
 
-**Важно:** **`npm run build`** делает только typecheck + `electron-vite build` — **не** наполняет проектный `bin/` и **не** запускает **`engines:doctor`**. На Linux/CI `electron-vite build` требует плагин **`fix:esm-shim`** в [`electron.vite.config.ts`](../electron.vite.config.ts) (канон — [`electron-vite-build-meta.ts`](../src/shared/electron-vite-build-meta.ts); false-positive `vite:esm-shim` на строке в `renderer-state-approach.ts`). Полный Windows-цикл с движками и smoke-упаковкой (`electron-builder --dir`) — **`npm run check:release`** (ниже) или шаги из §2.
+**Зависимости:** в корне [`.npmrc`](../.npmrc) — `legacy-peer-deps=true` (baseline Electron 42 / Vite 8; канон — [`docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](TOOLCHAIN_BASELINE_UPGRADE_PLAN.md)). Без `.npmrc` при peer-conflict: `npm install --legacy-peer-deps`.
+
+**WIP baseline (до push):** незакоммиченный toolchain + docs (**27**+ paths, journal **J-1353..1556**) — один commit по [`docs/AGENT_MARATHON.md`](AGENT_MARATHON.md) §Pre-commit (gate **J-1440** push отложен; владелец: «commit»/«push»).
+
+**Dependabot wave 5 (после merge baseline на `main`):** закрыть устаревшие major-PR (`#4`, `#6`, `#7`, `#11`–`#15`) через `gh` — сценарий в [`TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`](TOOLCHAIN_BASELINE_UPGRADE_PLAN.md) §Git; пункт спринта в [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md).
+
+**Важно:** **`npm run build`** делает только typecheck + `electron-vite build` — **не** наполняет проектный `bin/` и **не** запускает **`engines:doctor`**. На Linux/CI `electron-vite build` требует плагин **`fix:esm-shim`** в [`electron.vite.config.ts`](../electron.vite.config.ts) (канон — [`electron-vite-build-meta.ts`](../src/shared/electron-vite-build-meta.ts); false-positive `vite:esm-shim` на строке в `renderer-state-approach.ts`). После локального `npm run build` перед `npm run check` / commit — вернуть `src/shared/app-build-info.json` в **`dev`** (`builtAtUtc: null`; см. [`docs/AGENT_OPERATIONAL_NOTES.md`](AGENT_OPERATIONAL_NOTES.md)). Полный Windows-цикл с движками и smoke-упаковкой (`electron-builder --dir`) — **`npm run check:release`** (ниже) или шаги из §2.
 
 Полный предрелизный прогон на Windows (подготовка `bin/`, **`engines:doctor`** — тот же набор, что после prepare в CI: verify + SHA + версии, `build`, smoke `electron-builder --dir`, затем `npm audit`):
 
@@ -116,7 +123,7 @@ npm run build:win
 
 **Куда кладётся `--dir`:** и **`npm run pack:dir`**, и **`npm run build:unpack`** (оба через `electron-builder --dir`) формируют распакованное приложение в **`dist/win-unpacked/`** на Windows (`directories.output` в `electron-builder.yml`; каталог `dist/` в `.gitignore`). Перед этим **`bin/`** должен быть заполнен (`engines:prepare:win` / `release:win*`), иначе в пакет не попадут bundled-движки.
 
-`npm run build:win` формирует NSIS, portable и zip (`electron-builder`: `nsis`, `portable`, `zip`). Перед скриптом npm выполняет **`prebuild:win`** → `engines:prepare:win`. Команды **`release:win`** / **`release:win:force`** вызывают `npm run build` (не `build:win`), поэтому после уже сделанного prepare **`prebuild:win` не срабатывает повторно**.
+`npm run build:win` формирует NSIS и zip (`electron-builder`: `nsis`, `zip`; цель **`portable`** не используется — см. ТЗ §19). Перед скриптом npm выполняет **`prebuild:win`** → `engines:prepare:win`. Команды **`release:win`** / **`release:win:force`** вызывают `npm run build` (не `build:win`), поэтому после уже сделанного prepare **`prebuild:win` не срабатывает повторно**.
 
 Локально без авто-поиска сертификата подписи (часто быстрее, если CSC не настроен):
 
@@ -124,6 +131,22 @@ npm run build:win
 $env:CSC_IDENTITY_AUTO_DISCOVERY = 'false'
 npm run build:win
 ```
+
+**Подпись кода (roadmap для публикации за пределами dev-сборки; локальный `pack:dir` или `CSC_IDENTITY_AUTO_DISCOVERY=false` может быть без Authenticode):**
+
+1. Сертификат **Authenticode** (OV/EV) или корпоративный код-подписывающий сертификат; PFX и пароль — вне репозитория.
+2. Переменные **`CSC_LINK`** / **`WIN_CSC_LINK`** (путь к сертификату или secure file) и при необходимости **`CSC_KEY_PASSWORD`** на release runner / CI.
+3. **electron-builder** по умолчанию подписывает `FluxAlloy.exe` через bundled `winCodeSign` / `signtool.exe` при наличии сертификата; без CSC — см. блок `CSC_IDENTITY_AUTO_DISCOVERY=false` выше.
+4. Проверка: `signtool verify /pa /v` по `dist/win-unpacked/FluxAlloy.exe` и артефактам NSIS/zip.
+5. Первые публичные сборки: учитывать **SmartScreen** (репутация файла/издателя); timestamp-сервер (RFC3161) в настройках подписи.
+
+Канон — документация Microsoft Authenticode и раздел **Windows** в **electron-builder**; ключи обновлять с `electron-builder.yml` и целевой версией Electron.
+
+Конфиг упаковки: [`electron-builder.yml`](../electron-builder.yml) — `win.target`: **nsis** + **zip** (без `portable`, см. ТЗ §19); `mac`: dmg + `entitlementsInherit` + `notarize: false`; `linux`: AppImage + deb; `publish: null`; **9** inline §19 yaml-комментариев (`getReleaseCodeSigningElectronBuilderYmlComments` в `release-code-signing-roadmap.ts`); signing-ключи — §4/§4.1/§4.2 ниже.
+
+**Дорожные карты подписи (win/linux/mac, канон):** [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) — Help clauses в `packaged-{windows,linux,macos}-smoke.md` (+ EN) и §15 hub (getting-started, owner/about, logging, knowledge, planner, ffmpeg); guards `npm run check:help-packaged-smoke-docs`, `check:help-owner-smoke-docs`, strict signing в `check:help-workflow-smoke-crosslinks`; dev `pack:*:dir` / `CSC_IDENTITY_AUTO_DISCOVERY=false` может обходиться без подписи до публикации.
+
+**§19 signing indexed (SDK sprint + diagnostics):** Help §15 hub + `check:help-packaged-smoke-docs` + `check:help-owner-smoke-docs` + strict signing crosslinks; `continue.txt` / `initial.txt` / `agent-contract.txt` — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock` / `formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause`; Support ZIP — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine` (`check:release` / `check:platform-packaging-scripts`). **Packaging indexed:** `electron-builder.yml` (**9** §19 yaml comments); `formatReleaseCodeSigningRoadmap*ElectronBuilder*` + `formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnosticLine` (J-1520..1539).
 
 Support ZIP (`diagnostics.txt` → `releaseSmoke:`, `terminalHints:`) на любой ОС перечисляет layout win/linux/macos unpacked (present/missing), сводку §21 e2e и dev §8 terminal guards — см. [about-support-logs](../Help/about-support-logs.md), [logging-and-diagnostics](../Help/logging-and-diagnostics.md).
 
@@ -161,7 +184,19 @@ npm run verify:linux-unpacked
 3. Те же сценарии, что в §4 для Windows: движки, редактор, загрузки, снимок, экспорт, спрайт §7.5, мини-плеер §4.3 (при busy-задачах), база знаний, Support ZIP.
 4. Убедитесь, что в логах и артефактах нет секретов.
 
-Справка: `Help/packaged-linux-smoke.md`. В Support ZIP `releaseSmoke:` — layout `dist/linux-unpacked/` и `resources/*` (present/missing без запуска verify на другой ОС).
+**Подпись артефактов (roadmap для публикации за пределами dev-сборки; локальный `pack:linux:dir` может быть без GPG):**
+
+1. Выбрать канал: **AppImage** (подпись upstream-стилем), **deb** (GPG + `debsigs`/`dpkg-sig` по политике репозитория) или tar без подписи для внутреннего распространения.
+2. Хранить GPG-ключ и passphrase вне репозитория; на CI — secret store, не в логах `electron-builder`.
+3. **electron-builder** linux-цели (`AppImage`, `deb`) — включить подпись в конфиге только на release runner с ключом.
+4. Проверка: `gpg --verify` для подписанного `.deb`/`.AppImage` (или политика вашего mirror); для unpacked smoke — достаточно `verify:linux-unpacked` без GPG.
+5. Flatpak/Snap — отдельное решение, если появится отдельная цель упаковки.
+
+Канон — документация **electron-builder** (linux targets) и политика GPG вашего дистрибутивного канала.
+
+Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatLinuxReleaseCodeSigningRoadmapHelpClause`); `Help/packaged-linux-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.
+
+В Support ZIP `releaseSmoke:` — layout `dist/linux-unpacked/` и `resources/*` (present/missing без запуска verify на другой ОС).
 
 ### 4.2 macOS (pack:mac:dir)
 
@@ -178,7 +213,19 @@ npm run verify:mac-unpacked
 3. Сценарии как в §4 (включая спрайт §7.5 и мини-плеер §4.3); пути движков — `Contents/Resources/bin`.
 4. Нет секретов в логах и артефактах.
 
-Справка: `Help/packaged-macos-smoke.md`. В Support ZIP `releaseSmoke:` — кандидаты `dist/mac*/FluxAlloy.app` и layout `Contents/Resources/*` (present/missing без запуска verify на Windows).
+**Подпись кода и notarization (roadmap для публикации за пределами dev-сборки; локальный `pack:mac:dir` может быть без них):**
+
+1. Учётная запись **Apple Developer Program**, сертификат **Developer ID Application** в Keychain доступа macOS-сборочной машины; **Team ID** для конфигурации сборки (см. `electron-builder`).
+2. В **electron-builder** задать идентичность подписи, **hardened runtime**, при необходимости plist **entitlements** / `entitlementsInherit` только под реальные разрешения (файлы, сеть, утилиты в `Contents/Resources/bin`).
+3. Проверка подписи: `codesign --verify --deep --strict --verbose=2` по `FluxAlloy.app`; при диагностике — `codesign -dv --verbose=4` на бинарник в `Contents/MacOS`.
+4. **Notarization** через Apple Notary Service: загрузка артефакта (`notarytool submit`, либо актуальный `xcrun notarytool` из Xcode CLT), ожидание `Accepted`, затем **`xcrun stapler staple`** по `.app`/дистрибутиву для офлайн-проверки Gatekeeper.
+5. Контроль на чистой macOS: снять quarantine при ручном копировании (`xattr`), при сомнениях — `spctl --assess --verbose` для `.app`.
+
+Канон реализации — официальные разделы Apple (Gatekeeper / notarization / hardened runtime) и раздел mac в документации **electron-builder**; ключи конфигурации обновлять вместе с целевыми платформами Electron.
+
+Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatMacosReleaseCodeSigningRoadmapHelpClause`); `Help/packaged-macos-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.
+
+В Support ZIP `releaseSmoke:` — кандидаты `dist/mac*/FluxAlloy.app` и layout `Contents/Resources/*` (present/missing без запуска verify на Windows).
 
 **Локали owner/packaged smoke (dev, в `check:quiet`):**
 
@@ -187,6 +234,9 @@ npm run verify:mac-unpacked
 - `npm run check:platform-packaging-scripts` — имена npm-скриптов §19 в `package.json`;
 - `npm run check:packaged-e2e-scenarios-registry` — §21 реестр: 12 шагов ↔ manual smoke (2 ci-headless, 8 planned-gui-e2e, 2 manual-owner); канон stepId — `PACKAGED_E2E_*_STEP_IDS` в `packaged-e2e-smoke-scenarios.ts`; `ci-headless` обязан иметь npm `ciSmokeScript`; `manual-owner` — без скрипта; несуществующие скрипты — fail; `PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS` (parent→leaf) сверяется с `package.json`. Уникальные leaf-скрипты — в `.github/workflows/ci.yml` (Vitest `ci-packaged-smoke-steps`). Support ZIP / owner bundle: per-step `e2e <id>: <automation> script=…`.
 - `npm run check:packaged-gui-e2e-playwright-deferred` — §21 Playwright GUI e2e отложен: 8 `planned-gui-e2e`, зарезервирован `test:e2e:gui` (пока **нет** в `package.json`); канон — `packaged-gui-e2e-playwright-meta.ts`; UI — `formatPackagedGuiE2ePlaywrightUiHintSuffix` (`check:owner-visual-smoke-locale`, `check:support-bundle-terminal-hints`).
+- Playwright scaffold (deferred): `tests/e2e/gui/planned-gui-e2e-steps.ts` — `PLANNED_GUI_E2E_STEP_IDS, PLANNED_GUI_E2E_SCENARIOS, PLANNED_GUI_E2E_STEP_BY_ID`; `test:e2e:gui` not in `package.json` until wired.
+- Playwright planned notes (deferred): `PLANNED_GUI_E2E_STEP_BY_ID` in `tests/e2e/gui/planned-gui-e2e-steps.ts`; Copy/releaseSmoke — `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine`.
+- §21 Playwright wiring (when ready): add `@playwright/test` + `playwright.config.ts`; `test:e2e:gui` in `package.json` from `tests/e2e/gui/planned-gui-e2e-steps.ts` (`PLANNED_GUI_E2E_SCENARIOS`); update `check:packaged-gui-e2e-playwright-deferred.mjs` (remove absence check for reserved script); optional CI job after owner-smoke on hardware.
 - `npm run check:help-smoke-guards-package-json` — `PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS` ↔ `package.json`; quiet order; `partition:` в `WORKFLOW_REQUIRED_SNIPPETS`;
 - `npm run check:help-packaged-smoke-docs` / `check:help-owner-smoke-docs` — packaged §19/§21 snippets в Help; packaged win/linux/macos — `formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix` (44 + partition note);
 - `npm run check:help-workflow-smoke-crosslinks` — `packaged-e2e-help-workflow-crosslinks-meta` (44 workflow + 6 packaged + 8 anchors; tail 42 `HelpCrosslinksCountTail`, ffmpeg-terminal `FfmpegTerminalWorkflowClause`, knowledge `KnowledgeHubDevClause`; FAQ в tail, вне 44); `bin/README.md` — `BinReadmeWorkflowPartitionLine`, `BinReadmePartitionGuardLine`; `README.md`/`AGENTS.md` — `RootReadmePartitionLine` / `AgentsMdHelpLine` (partition registry); owner/packaged §21 + `terminalHints:` → logging hub; дублирует guard/count с `check:help-owner-smoke-docs`, `check:help-packaged-smoke-docs`, `check:owner-visual-smoke-locale` (`formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause`).
@@ -234,6 +284,6 @@ git status
 
 После push убедиться, что GitHub Actions `ci` зелёный. Тот же workflow можно запустить вручную: **Actions → `ci` → Run workflow** (`workflow_dispatch`).
 
-Workflow `ci` на Windows: `actions/checkout` с `fetch-depth: 1`; `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; на job заданы **`FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1`** и **`FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1`** (строгая проверка `Data/trusted_hashes.json` внутри `npm run check`); кэш **`%LOCALAPPDATA%\electron\Cache`** и **`%LOCALAPPDATA%\electron-builder\Cache`** (по `package-lock.json`); кэш `bin/`; `engines:prepare:win`; **`npm run engines:doctor`** (verify + SHA256-строки в лог + `--versions`; в verify при `GITHUB_ACTIONS` или `FLUXALLOY_LOG_ENGINE_VERSIONS` — первая строка версии каждого exe); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
+Workflow `ci` на Windows: `actions/checkout` с `fetch-depth: 1`; `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; на job заданы **`FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1`** и **`FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1`** (строгая проверка `Data/trusted_hashes.json` внутри `npm run check`); кэш **`%LOCALAPPDATA%\electron\Cache`** и **`%LOCALAPPDATA%\electron-builder\Cache`** (по `package-lock.json`); кэш `bin/`; `engines:prepare:win`; **`npm run engines:doctor`** (verify + SHA256-строки в лог + `--versions`; в verify при `GITHUB_ACTIONS` или `FLUXALLOY_LOG_ENGINE_VERSIONS` — первая строка версии каждого exe); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/zip.
 
 На runner после `pack:dir` появляется **`dist/win-unpacked/`** (см. §4), затем отдельные шаги CI: **`verify:win-unpacked`**, **`smoke:packaged-app`**, **`smoke:packaged-ffprobe`** (lavfi-клип + JSON probe и registry smoke), **`smoke:packaged-ffmpeg`** (`-version` + `-encoders`), **`smoke:packaged-ytdlp`** — тот же набор, что в **`npm run smoke:packaged-release`** / `check:release`, но с отдельными логами при падении. Workflow **не** загружает `dist/win-unpacked/` в Artifacts — только проверка успешности шагов.

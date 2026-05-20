@@ -16,7 +16,12 @@ import {
   formatTerminalContractHintsDiagnosticLine
 } from './terminal-contract-hints-meta'
 import { formatElectronViteEsmShimFixDiagnosticLine } from './electron-vite-build-meta'
-import { formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine } from './packaged-gui-e2e-playwright-meta'
+import {
+  formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine,
+  formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine,
+  formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine,
+  PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT
+} from './packaged-gui-e2e-playwright-meta'
 import {
   BUILD_LINUX_NPM_SCRIPT,
   BUILD_MAC_NPM_SCRIPT,
@@ -28,6 +33,30 @@ import {
   VERIFY_LINUX_UNPACKED_NPM_SCRIPT,
   VERIFY_MAC_UNPACKED_NPM_SCRIPT
 } from './platform-packaging-npm-scripts'
+import {
+  formatLinuxReleaseCodeSigningRoadmapDiagnosticLine,
+  formatMacosReleaseCodeSigningRoadmapDiagnosticLine,
+  formatReleaseCodeSigningRoadmapCheckReleaseDiagnosticLine,
+  formatReleaseCodeSigningRoadmapElectronBuilderConfigDiagnosticLine,
+  formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnosticLine,
+  formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine,
+  formatWindowsReleaseCodeSigningRoadmapDiagnosticLine
+} from './release-code-signing-roadmap'
+import { formatToolchainBaselineWipHandoffCheckReleaseDiagnosticLine } from './toolchain-baseline-wip-handoff-meta'
+
+export {
+  formatLinuxReleaseCodeSigningRoadmapDiagnosticLine,
+  formatLinuxReleaseCodeSigningRoadmapHelpClause,
+  formatMacosReleaseCodeSigningRoadmapDiagnosticLine,
+  formatMacosReleaseCodeSigningRoadmapHelpClause,
+  formatReleaseCodeSigningRoadmapBinReadmeLine,
+  formatReleaseCodeSigningRoadmapAgentsElectronBuilderBullet,
+  formatReleaseCodeSigningRoadmapReadmeElectronBuilderLine,
+  formatReleaseCodeSigningRoadmapOperationalNotesRow,
+  formatReleaseCodeSigningRoadmapOperationalNotesElectronBuilderRow,
+  formatWindowsReleaseCodeSigningRoadmapDiagnosticLine,
+  formatWindowsReleaseCodeSigningRoadmapHelpClause
+} from './release-code-signing-roadmap'
 
 export {
   BUILD_LINUX_NPM_SCRIPT,
@@ -58,7 +87,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',
     `terminal hints Help: npm run ${TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT}`,
     `terminal hints shards: ${formatTerminalContractHintsDiagnosticLine()}`,
-    'config: electron-builder.yml targets win (nsis/portable/zip), mac (dmg), linux (AppImage, deb)',
+    formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnosticLine(),
     'packaged owner-smoke: npm run check:packaged-manual-smoke-parity (win/linux/macos Step_* + meta)',
     'owner visual smoke: npm run check:owner-visual-smoke-locale (theme/HiDPI settings.json ru/en)',
     'packaging scripts: npm run check:platform-packaging-scripts (PLATFORM_PACKAGING_NPM_SCRIPTS)',
@@ -67,11 +96,20 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     `help workflow partition guard: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET} in all ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow Help`,
     formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine(),
     `help smoke guards: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS.join(', ')} (check:help-smoke-guards-package-json)`,
-    '§21 e2e registry: npm run check:packaged-e2e-scenarios-registry (2 ci-headless, 8 planned-gui-e2e, 2 manual-owner; per-step e2e <id>:)',
+    `§21 e2e registry: npm run check:packaged-e2e-scenarios-registry (2 ci-headless, ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} planned-gui-e2e, 2 manual-owner; per-step e2e <id>:)`,
     formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine(),
+    formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine(),
+    formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine(),
     '§21 playwright deferred: npm run check:packaged-gui-e2e-playwright-deferred (test:e2e:gui reserved; not in package.json yet)',
     'CI packaged: npm run smoke:packaged-release (verify:win-unpacked + app + engines leaf smokes)',
     'Support ZIP releaseSmoke: win/linux/macos layout (present/missing) + §21 e2e per-step lines',
+    formatWindowsReleaseCodeSigningRoadmapDiagnosticLine(),
+    formatLinuxReleaseCodeSigningRoadmapDiagnosticLine(),
+    formatMacosReleaseCodeSigningRoadmapDiagnosticLine(),
+    formatReleaseCodeSigningRoadmapCheckReleaseDiagnosticLine(),
+    formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine(),
+    formatReleaseCodeSigningRoadmapElectronBuilderConfigDiagnosticLine(),
+    formatToolchainBaselineWipHandoffCheckReleaseDiagnosticLine(),
     'Support ZIP terminalHints: §8 dev guards (formatTerminalContractHintsSupportZipLines; check:support-bundle-terminal-hints)'
   ]
 }

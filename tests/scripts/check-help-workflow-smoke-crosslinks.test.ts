@@ -14,6 +14,7 @@ describe('check:help-workflow-smoke-crosslinks §15', () => {
     })
     expect(result).toContain('[check:help-workflow-smoke-crosslinks] OK')
     expect(result).toContain(`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow`)
+    expect(result).toContain('strict 44/44')
     expect(result).toContain(
       `${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS.length} packaged`
     )

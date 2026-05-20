@@ -24,6 +24,8 @@ Skills: [`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../.cursor/skills/flux
 - **Если** `NNN % 10 === 0` **то** `git push` (без force main/master) + re-anchor → **`re-anchor OK`**.
 - **Запрещено:** привязывать commit/push к marathon или `continue_count` (`agent:session -- bump` — только метрика).
 - **Если** владелец в **этом** чате явно «не коммитить» / «без коммита» / «не пушить» **то** `git commit` / `git push` **запрещено** (приоритет над **Cadence Git (J-NNN)**, глоссарий `fluxalloy-rules-explicit.mdc`).
+- **Календарь** `J%5` / `J%10` (следующая точка) — поле **Следующий cadence** в [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md); таблица — [`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../.cursor/skills/fluxalloy-marathon/SKILL.md).
+- **WIP baseline** (**27**+ paths, gate **J-1440**): §Pre-commit в [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md); commit/push — только по явной просьбе владельца в чате.
 
 ## UI
 

@@ -1,5 +1,6 @@
 appId: com.fluxalloy.app
 productName: FluxAlloy
+# §19 publish signing (dev pack:*:dir may skip): release-code-signing-roadmap.ts + docs/RELEASE.md §4 (win Authenticode/CSC), §4.2 (mac notarize), §4.1 (linux GPG).
 directories:
   buildResources: build
   # Явно фиксируем выход (дефолт electron-builder тоже `dist`) — см. docs/RELEASE.md про `win-unpacked`.
@@ -29,6 +30,7 @@ extraResources:
     to: bin
 win:
   executableName: FluxAlloy
+  # win.target: nsis + zip only (no portable — single-root policy; см. FLUXALLOY_TZ.md §19 и docs/RELEASE.md §4).
   # Распаковка: zip / win-unpacked (всё в одной папке + app-data/). Цель portable — один exe с распаковкой в %TEMP%; для single-root не использовать.
   target:
     - nsis
@@ -37,8 +39,10 @@ win:
   extraFiles:
     - from: build/Uninstall-FluxAlloy.cmd
       to: Uninstall FluxAlloy.cmd
+  # win: default electron-builder signing/signtool (CSC_LINK / WIN_CSC_LINK on publish — docs/RELEASE.md §4).
   # Значение по умолчанию electron-builder: подпись/правка exe при упаковке. После перезагрузки и
   # выдачи `SeCreateSymbolicLinkPrivilege` / Developer Mode распаковка winCodeSign снова должна проходить.
+# nsis: Setup.exe installer — docs/RELEASE.md §4 (Authenticode at publish; deleteAppDataOnUninstall: false).
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -46,6 +50,7 @@ nsis:
   createDesktopShortcut: always
   deleteAppDataOnUninstall: false
   include: build/installer.nsh
+# mac: notarize false until publish (Developer ID + notarytool — docs/RELEASE.md §4.2); entitlementsInherit — build/entitlements.mac.plist.
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
@@ -54,15 +59,19 @@ mac:
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
+# dmg: mac artifact (.dmg); notarize при publish — docs/RELEASE.md §4.2.
 dmg:
   artifactName: ${name}-${version}.${ext}
+# linux.target: AppImage + deb (GPG signing on publish — docs/RELEASE.md §4.1).
 linux:
   target:
     - AppImage
     - deb
   maintainer: fluxalloy
   category: Utility
+# appImage: linux AppImage artifact name; GPG signing on publish — docs/RELEASE.md §4.1.
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
+# publish: null — без auto-publish до явной настройки канала (docs/RELEASE.md §1).
 publish: null

@@ -1,12 +1,16 @@
 Первая роль: pragmatic senior engineer maintaining a real desktop application with limited complexity budget. Ты SDK-агент FluxAlloy. Поведение = `.cursor/rules/fluxalloy-{rules-explicit,core,agent,simplicity}.mdc` + project skills `.cursor/skills/fluxalloy-*/`.
 
+Toolchain baseline: выполнен (см. `docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md`). Sprint снова по чеклисту.
+
 Sprint: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`. TZ: один § `FLUXALLOY_TZ.md`, без правок без запроса.
 
 Журнал: J только при diff; одна `J-NNN` на итерацию с diff; `[SDK]`; skill `fluxalloy-journal-entry`. Без diff — не писать J.
 
-Marathon: skill `fluxalloy-marathon`; конец: `check:quiet` → journal (если diff) → `agent:session -- bump`. Cadence Git (любой чат): commit при `J-NNN` `NNN%5===0`, push+re-anchor при `NNN%10===0` (без force main/master).
+Wave 5 Dependabot: после baseline на `main` — `gh auth login`, закрыть PR из `docs/TOOLCHAIN_BASELINE_UPGRADE_PLAN.md` §Git; см. `docs/RELEASE.md` §1.
 
-Cadence override: если владелец явно «не коммитить» / «без коммита» / «не пушить» в этом чате — `git commit` / `git push` в этой итерации не делать (приоритет над J%5/J%10).
+Marathon: skill `fluxalloy-marathon` ([`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../../.cursor/skills/fluxalloy-marathon/SKILL.md) — таблица Cadence Git); календарь — **Следующий cadence** в `docs/AGENT_MARATHON.md` (**J-1560** commit; J-1440 push отложен). §21 Playwright: scaffold `tests/e2e/gui/planned-gui-e2e-steps.ts` (`PLANNED_GUI_E2E_STEP_IDS`, `PLANNED_GUI_E2E_SCENARIOS`, `PLANNED_GUI_E2E_STEP_BY_ID`); Copy/releaseSmoke `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine`; `test:e2e:gui` deferred — см. `docs/RELEASE.md` wiring handoff. §19 signing roadmaps (win/linux/mac): `release-code-signing-roadmap.ts` + `docs/RELEASE.md` §4/§4.1/§4.2; Help check:help-packaged-smoke-docs + check:help-owner-smoke-docs + strict signing (check:help-workflow-smoke-crosslinks). §19 signing indexed: `release-code-signing-roadmap.ts` + `docs/RELEASE.md` §4/§4.1/§4.2; Help §15 hub + `check:help-packaged-smoke-docs` + `check:help-owner-smoke-docs` + strict signing crosslinks. packaging indexed: electron-builder.yml (9 §19 yaml comments; J-1520..1539). §19 packaging (electron-builder.yml): win nsis+zip (no portable); 9 §19 yaml comments (getReleaseCodeSigningElectronBuilderYmlComments in release-code-signing-roadmap.ts); check:release + check:platform-packaging-scripts diagnostics. Конец: `check:quiet` → journal (если diff) → `agent:session -- bump`. Cadence Git (любой чат): commit при `J-NNN` `NNN%5===0`, push+re-anchor при `NNN%10===0` (без force main/master).
+
+Cadence override: если владелец явно «не коммитить» / «без коммита» / «не пушить» в этом чате — `git commit` / `git push` в этой итерации не делать (приоритет над J%5/J%10). WIP (27+ paths, gate J-1440); journal J-1353..1556; cadence J-1560 commit (J-1440 push отложен); §Pre-commit + §Cadence J-1380 в docs/AGENT_MARATHON.md.
 
 Запрещено: HTML pop-out / `build*Html` / `*-window-ui-strings-*` вне `ui-text`. Renderer: Zustand (`renderer-state-approach.ts`).
 

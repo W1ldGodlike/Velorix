@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT } from '../../src/shared/packaged-gui-e2e-playwright-meta'
 import {
   PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS,
   PACKAGED_E2E_SMOKE_REGISTRY
@@ -30,7 +31,7 @@ describe('packaged-e2e-smoke-registry §21 leaf', () => {
     const count = (kind: (typeof PACKAGED_E2E_SMOKE_REGISTRY)[number]['automation']): number =>
       PACKAGED_E2E_SMOKE_REGISTRY.filter((s) => s.automation === kind).length
     expect(count('ci-headless')).toBe(2)
-    expect(count('planned-gui-e2e')).toBe(8)
+    expect(count('planned-gui-e2e')).toBe(PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT)
     expect(count('manual-owner')).toBe(2)
   })
 })

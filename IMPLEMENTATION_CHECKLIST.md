@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~67%** (J-1337; §21 ffmpeg/knowledge Help UiHintSuffix; owner-smoke на железе). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
+- **Оценка: ~69%** (J-1354 baseline toolchain; **J-1454** dev-цикл Win после Vite 8; §21 Help/guards). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. **`npm run dev` (Win):** главное окно + превью/ffprobe — владелец 2026-05-20; pop-out `#downloads`/`#inspector` — сверить. Впереди: owner-smoke и **packaged** smoke на железе, mac/linux packaged, GUI Playwright §21.
 
 ## Легенда
 
@@ -25,7 +25,7 @@
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **253 / 1752** (J-1153).
+- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **280 / 1901** (J-1530; синхрон с «Тестовый раннер»).
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW auto/manual §16** (код); полировка HW-цепочек и редкие фильтры — дальше. Движки bundled-first + UI загрузки в `userData/bin`.
@@ -33,7 +33,7 @@
 - [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`276 test files / 1854 tests`** (J-1335); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
+- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`280 test files / 1901 tests`** (J-1530); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards, toolchain baseline test.
 
 ## Журнал решений и проверок
 
@@ -46,9 +46,10 @@
 - [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player); приёмка владельца.
 - [x] §2.2/§7.5: `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged RU+EN + guards; Help §21 `e2e <id>:` (owner/about/packaged/workflow + UI hint).
 - [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
-- [~] §19: `pack:*:dir` + `verify:*`; bin/Help `engines:doctor`/`prepare:win`; Help crosslinks [x]; CI linux + `fix:esm-shim` meta/guards/Help [x]; приёмка packaged на железе — владелец.
-- [x] §21: e2e registry/guards + partition (44+6+8; registry + Vitest).
-- [~] §21: GUI Playwright e2e (8 steps) — deferred guard + Help anchors+packaged (6) UiHintSuffix [x]; `test:e2e:gui` в package.json позже.
+- [~] §19: dev Win [x] (Vite8 preload+CSP, J-1454); `pack:*:dir`+`verify:*`; signing+packaging indexed [x] (J-1511..1545); packaged smoke — владелец.
+- [x] §21: e2e registry/guards + partition (44+6+8); workflow **44/44** strict formatters (`STRICT_PACKAGED_SMOKE_HELP_PATHS`) + Vitest.
+- [~] §21: GUI Playwright e2e (8 steps) — scaffold/StepById/wiring handoff Help+docs [x]; `test:e2e:gui` wiring — после owner-smoke.
+- [~] Wave 5 Dependabot: push→gh §Git; cadence git отложен; «commit»/«push» → `AGENT_MARATHON` §Pre-commit (27+ paths, J-1440); **J-1560** commit / push по «push».
 
 ---
 
@@ -100,12 +101,14 @@
 
 ### §2.1 Целевые платформы
 
-- [x] Windows dev-сборка проверена.
+- [x] Windows dev-сборка и **`npm run dev`** (главное окно, превью; Vite 8 preload external + dev CSP — J-1454).
 - [~] `electron-builder` содержит цели Win/macOS/Linux.
 - [~] Проверить macOS targets на macOS-среде (`pack:mac:dir` + `verify:mac-unpacked`; CI job нет; J-1032).
 - [~] Проверить Linux targets в Linux/CI-среде (`pack:linux:dir` + `verify:linux-unpacked` в CI; полный `build:linux` + `verify:linux-release` — локально; J-1032).
 - [x] Выделить слой `platform` / `nativeMain` для различий ОС (`native-main-platform`, `check:native-main-platform-guard`; J-1031).
-- [ ] Заложить дорожную карту подписи/notarization для macOS.
+- [x] Заложить дорожную карту подписи/notarization для macOS — [`docs/RELEASE.md`](docs/RELEASE.md) §4.2 (подпись/notarization roadmap); выполнение в пайплайне — позже (J-1496).
+- [x] Заложить дорожную карту подписи Windows (Authenticode) — [`docs/RELEASE.md`](docs/RELEASE.md) §4 + `release-code-signing-roadmap.ts` (J-1498).
+- [x] Заложить дорожную карту подписи Linux (GPG deb/AppImage) — [`docs/RELEASE.md`](docs/RELEASE.md) §4.1 + `release-code-signing-roadmap.ts` (J-1499).
 
 ### §2.2 Технологический стек
 
@@ -119,6 +122,7 @@
 - [x] Локализация `locales/ru|en/*.json`: 20 шардов, `ui-text-strings-build` только JSON (legacy `ui-text-strings-{ru|en}-NN.ts` удалены J-1142); guards TS↔JSON + ban legacy parts (J-1143).
 - [x] Смена языка без перезапуска (все окна renderer + меню, J-1018).
 - [x] Governance/docs: `fluxalloy-agent.mdc` + skills; `check:docs-governance`; программа GOV закрыта (J-1137); канон — `docs/SOURCES_OF_TRUTH.md`.
+- [x] Toolchain baseline: Electron 42 / Vite 8 / TS 6 / ESLint 9 (10 отложен); план «выполнен» (**J-1354**); Vitest package+governance (**J-1397**/**J-1411**); docs ARCHITECTURE/README/RELEASE (**J-1416**); `fix:esm-shim` (**J-1413**); Vite 8 dev preload SSR + renderer CSP (**J-1454**); [`.npmrc`](.npmrc) `legacy-peer-deps=true`.
 - [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); единый комментированный конфиг `src/sdk-settings.ts`; long-loop режется на короткие `Agent.create` сессии через `SDK_SESSION_STEPS`/`--session-steps` (дефолт 1) для минимизации cache-read; `check:quiet` печатает короткий summary успешных проверок; локальный `STOP=0/1`; retry SDK/transport + быстрых transient error-run, полный повтор любого `status=error` только через `LOOP_RETRY_RUN_ERROR=1`; `continue.txt` работает как чат-команда `+`/compact handoff (не перечитывает весь контекст без причины), журнал требует `J-NNN` и проверяется `check:journal`.
 
 ### §2.3 Устаревший стек
@@ -580,8 +584,9 @@
 - [~] Windows NSIS + ZIP (без цели `portable` — single-root); `installer.nsh` / `Uninstall FluxAlloy.cmd` — опциональное удаление `app-data/` (по умолчанию нет); `verify:win-unpacked` после `pack:dir`; интерактивный smoke — позже.
 - [ ] macOS dmg/zip.
 - [ ] Linux AppImage/deb/tar.
-- [ ] Подпись Windows — отдельное решение.
-- [ ] Подпись/notarization macOS — отдельное решение.
+- [x] Подпись Windows — roadmap [`docs/RELEASE.md`](docs/RELEASE.md) §4 + `release-code-signing-roadmap.ts` (J-1498); Authenticode/CSC в CI — позже.
+- [x] Подпись/notarization macOS — roadmap [`docs/RELEASE.md`](docs/RELEASE.md) §4.2 + Help packaged-macos (J-1496..1497).
+- [x] Подпись Linux (GPG deb/AppImage) — roadmap [`docs/RELEASE.md`](docs/RELEASE.md) §4.1 + Help packaged-linux (J-1499); CI — позже.
 - [x] Временный `win.signAndEditExecutable: false` снят после перезагрузки; `build:unpack`/`winCodeSign` проходят с поведением electron-builder по умолчанию.
 
 ## §20. Пресеты
@@ -602,7 +607,7 @@
 - [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, save-text-dialog, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
-- [x] Unit tests: **`242` файла / `1725` тестов** (Vitest); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
+- [x] Unit tests: **`280` файлов / `1901` тестов** (Vitest; J-1530); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [x] E2e packaged smoke: реестр §21 + guards + partition + per-step/`ci.yml` в `check:quiet`.
 - [ ] GUI Playwright e2e (8 planned steps) — позже.
@@ -614,7 +619,7 @@
 - [x] `npm run check` проходит.
 - [x] `npm run build` проходит.
 - [x] `npm run build:win` проходит.
-- [x] `npm run dev`: после перезагрузки PATH подхватывает Node/npm без ручной правки сессии (проверено вызовом `node`/`npm` из PowerShell).
+- [x] `npm run dev` (Win): PATH; главное окно + превью/ffprobe после Vite 8 fix (**J-1454**); pop-out `#downloads`/`#inspector` — сверить владельцу.
 - [ ] Рабочий Windows installer с реальными ресурсами.
 - [~] Рабочий NSIS + ZIP рядом с `app-data/` (приёмка установщика — позже).
 - [ ] macOS артефакты.

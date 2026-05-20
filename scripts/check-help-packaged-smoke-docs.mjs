@@ -7,11 +7,18 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
-  formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix,
-  formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClause,
-  formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedCopyPlannedGuiTail,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxCopyDevClause,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxPlannedGuiFooter,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyAutomationGroupsParenthetical,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyDevClause
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
+import {
+  formatLinuxReleaseCodeSigningRoadmapHelpClause,
+  formatMacosReleaseCodeSigningRoadmapHelpClause,
+  formatWindowsReleaseCodeSigningRoadmapHelpClause
+} from '../src/shared/release-code-signing-roadmap.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -23,6 +30,8 @@ const MAC_LINUX_HELP_FILES = PACKAGED_HELP_FILES.filter(
   (rel) => rel.includes('linux') || rel.includes('macos')
 )
 
+const MACOS_PACKAGED_HELP_FILES = PACKAGED_HELP_FILES.filter((rel) => rel.includes('macos'))
+const LINUX_PACKAGED_HELP_FILES = PACKAGED_HELP_FILES.filter((rel) => rel.includes('linux'))
 const WINDOWS_PACKAGED_HELP_FILES = PACKAGED_HELP_FILES.filter((rel) => rel.includes('windows'))
 
 let failed = false
@@ -60,42 +69,83 @@ failed =
     PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIPPETS,
     'mac/linux'
   ) || failed
-for (const rel of [
-  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
-  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS
-]) {
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix(locale),
-      'crosslinks-quiet-suffix'
+      formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyAutomationGroupsParenthetical(locale),
+      'win-copy-automation-groups'
     ) || failed
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  const uiHint = formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(locale)
+  const tail = formatPackagedE2eHelpWorkflowCrosslinksPackagedCopyPlannedGuiTail(
+    locale,
+    formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyDevClause(locale),
+    uiHint
+  )
+  failed =
+    checkHelpSmokeDocSnippet(REPO_ROOT, LOG_PREFIX, rel, tail, 'packaged-planned-gui-tail') ||
+    failed
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  const uiHint = formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(locale)
+  const tail = formatPackagedE2eHelpWorkflowCrosslinksPackagedCopyPlannedGuiTail(
+    locale,
+    formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxCopyDevClause(locale),
+    uiHint
+  )
+  failed =
+    checkHelpSmokeDocSnippet(REPO_ROOT, LOG_PREFIX, rel, tail, 'packaged-planned-gui-tail') ||
+    failed
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClause(locale),
-      'planned-gui-e2e'
+      formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxPlannedGuiFooter(locale),
+      'mac-linux-planned-gui-footer'
     ) || failed
+}
+for (const rel of MACOS_PACKAGED_HELP_FILES) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix(locale),
-      'playwright-deferred-suffix'
+      formatMacosReleaseCodeSigningRoadmapHelpClause(locale),
+      'macos-signing-roadmap'
     ) || failed
+}
+for (const rel of WINDOWS_PACKAGED_HELP_FILES) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(locale),
-      'playwright-ui-hint'
+      formatWindowsReleaseCodeSigningRoadmapHelpClause(locale),
+      'windows-signing-roadmap'
+    ) || failed
+}
+for (const rel of LINUX_PACKAGED_HELP_FILES) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatLinuxReleaseCodeSigningRoadmapHelpClause(locale),
+      'linux-signing-roadmap'
     ) || failed
 }
 

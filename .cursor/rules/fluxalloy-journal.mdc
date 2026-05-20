@@ -8,9 +8,9 @@ alwaysApply: false
 # Журнал (канон = шапка файла)
 
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
-Синхронизация: шапка [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) + этот rule + `docs/AGENT_MARATHON.md` + `agent-contract.txt` — [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).
+Синхронизация: шапка [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) + этот rule + `docs/AGENT_MARATHON.md` + `agent-contract.txt` — [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md) (строка **Cadence Git** и приоритет **4** в §1).
 
-**Если** меняете **Cadence Git (J-NNN)** **то** строка «Cadence Git» в [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md) в **одном** `git commit` с `fluxalloy-agent.mdc`, `fluxalloy-rules-explicit.mdc`, `agent-contract.txt`, `continue.txt`, `initial.txt`.
+**Если** меняете **Cadence Git (J-NNN)** **то** строка **Cadence Git** и приоритет **4** в §1 [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md) в **одном** `git commit` с `fluxalloy-agent.mdc`, `fluxalloy-rules-explicit.mdc`, [`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../.cursor/skills/fluxalloy-marathon/SKILL.md), [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md) (§Pre-commit / §Handoff WIP при WIP baseline), `agent-contract.txt`, `continue.txt`, `initial.txt`.
 
 **Если** правите `IMPLEMENTATION_JOURNAL.md` **то** сначала прочитать раздел «Правило записей» в шапке файла.
 

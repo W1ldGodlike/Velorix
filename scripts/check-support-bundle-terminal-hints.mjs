@@ -6,7 +6,7 @@ import path from 'node:path'
 
 import {
   PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
-  formatPackagedGuiE2ePlaywrightUiHintSuffix
+  formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintBody
 } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import {
   TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY,
@@ -81,12 +81,10 @@ for (const rel of TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS) {
 for (const locale of LOCALE_JSON_LOCALES) {
   const aboutPath = path.join(REPO_ROOT, 'locales', locale, 'about.json')
   const aboutTable = JSON.parse(fs.readFileSync(aboutPath, 'utf8'))
-  const expected =
-    formatTerminalContractHintsAboutSupportZipSectionsHint(locale) +
-    formatPackagedGuiE2ePlaywrightUiHintSuffix(
-      PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
-      locale
-    )
+  const expected = formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintBody(
+    locale,
+    formatTerminalContractHintsAboutSupportZipSectionsHint(locale)
+  )
   const hint = aboutTable[TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY]
   if (
     TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY !==
