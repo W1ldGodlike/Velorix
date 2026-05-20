@@ -3,7 +3,7 @@
  * Leaf-модуль без импортов (Node ESM из scripts/*.mjs и Vitest).
  */
 
-export const TOOLCHAIN_BASELINE_WIP_JOURNAL_RANGE = 'J-1353..1570' as const
+export const TOOLCHAIN_BASELINE_WIP_JOURNAL_RANGE = 'J-1353..1571' as const
 export const TOOLCHAIN_BASELINE_WIP_NEXT_CADENCE = 'J-1570' as const
 export const TOOLCHAIN_BASELINE_WIP_MAIN_SHA = 'ff89765' as const
 

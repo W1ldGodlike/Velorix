@@ -30,7 +30,7 @@
 - В корне репозитория — [`.npmrc`](../.npmrc): **`legacy-peer-deps=true`** (Vite 8 vs peer `electron-vite` ^7). Канон baseline — `package.json` / `package-lock.json`; lock — `tests/shared/toolchain-baseline-package.test.ts` (журнал **J-1354**).
 - GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)): в job **`check`** (Windows) и **`linux-packaging`** (Ubuntu) шаг **Install** — **`npm ci`** (оба читают корневой `.npmrc`).
 - **Dependabot (wave 5):** [x] на **`main`** — журнал **J-1558**; операционно — [`RELEASE.md`](RELEASE.md) §1.
-- **Toolchain baseline:** `main` @ `ff89765`, journal **J-1353..1570** — [`toolchain-baseline-wip-handoff-meta.ts`](../src/shared/toolchain-baseline-wip-handoff-meta.ts); план удалён **J-1559**; **Следующий cadence** **J-1570** commit.
+- **Toolchain baseline:** `main` @ `ff89765`, journal **J-1353..1571** — [`toolchain-baseline-wip-handoff-meta.ts`](../src/shared/toolchain-baseline-wip-handoff-meta.ts); план удалён **J-1559**; **Следующий cadence** **J-1570** commit.
 - **Packaging config:** [`electron-builder.yml`](../electron-builder.yml) — win **nsis** + **zip** (no `portable`); mac **dmg** + `notarize: false`; linux AppImage + deb; `publish: null`; **9** §19 yaml comments (`getReleaseCodeSigningElectronBuilderYmlComments`) — §19 в [`docs/RELEASE.md`](RELEASE.md) §4.
 - **`npm run build`:** пишет `src/shared/app-build-info.json`. Перед `check` / commit после build — **`{"buildId":"dev","builtAtUtc":null}`** (**J-1386**); см. [`RELEASE.md`](RELEASE.md) §1.
 - **LF в исходниках:** только LF; `npm run check:line-endings`; правки — `npm run format` / prettier, не `Set-Content` с CRLF.
