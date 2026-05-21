@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 
-import { logExternalProcessLine } from './external-process-log'
+import { formatExternalProcessExitCode, logExternalProcessLine } from './external-process-log'
 import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 import { parseFfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-format-parse'
 
@@ -86,7 +86,11 @@ export function runFfmpegSnapshotFrame(params: {
     })
 
     child.on('close', (code) => {
-      logExternalProcessLine('ffmpeg-snapshot', 'lifecycle', `closed exitCode=${code ?? '?'}`)
+      logExternalProcessLine(
+        'ffmpeg-snapshot',
+        'lifecycle',
+        `closed exitCode=${formatExternalProcessExitCode(code)}`
+      )
       if (code === 0) {
         resolve({ ok: true })
         return

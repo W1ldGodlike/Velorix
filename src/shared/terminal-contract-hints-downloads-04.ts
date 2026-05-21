@@ -1,186 +1,7 @@
 import type { TerminalCommandHintEntry } from './terminal-contract-types'
 
-/** §8 — подсказки вкладки «Загрузки» (часть 04). */
+/** §8 — подсказки Загрузки (часть 4/14; §8 audit prune). */
 export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_04: TerminalCommandHintEntry[] = [
-  {
-    tool: 'yt-dlp',
-    token: '· только аудио mp3',
-    summary:
-      'После скачивания извлечь аудиодорожку в MP3 (--extract-audio --audio-format mp3); допишите ссылку.',
-    fullLine: 'yt-dlp --extract-audio --audio-format mp3 '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· качество аудио 192k',
-    summary:
-      'Целевое качество аудио при извлечении (--audio-quality 192K --extract-audio); допишите ссылку.',
-    fullLine: 'yt-dlp --audio-quality 192K --extract-audio '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· вывод: число записей в плейлисте (n_entries)',
-    summary:
-      'Число записей плейлиста без скачивания (--skip-download --print n_entries); допишите ссылку.',
-    fullLine: 'yt-dlp --skip-download --print n_entries '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· вшить главы',
-    summary: 'Вшить главы в файл после скачивания (--embed-chapters); допишите ссылку и -f/-o.',
-    fullLine: 'yt-dlp --embed-chapters '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· отметить просмотренным',
-    summary:
-      'Отметить как просмотренное без скачивания (--mark-watched --skip-download); допишите ссылку (YouTube и др.).',
-    fullLine: 'yt-dlp --mark-watched --skip-download '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· все превью',
-    summary:
-      'Сохранить все превью без видео (--write-all-thumbnails --skip-download); допишите ссылку.',
-    fullLine: 'yt-dlp --write-all-thumbnails --skip-download '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· без проверки форматов -F',
-    summary:
-      'Список форматов без проверки ссылки для каждого (--no-check-formats -F); быстрее, но менее надёжно; допишите ссылку.',
-    fullLine: 'yt-dlp --no-check-formats -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· плейлист в обратном порядке -J',
-    summary: 'Плейлист в обратном порядке и JSON (--playlist-reverse -J); допишите ссылку.',
-    fullLine: 'yt-dlp --playlist-reverse -J '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· плейлист в случайном порядке -J',
-    summary:
-      'Случайный порядок элементов плейлиста и JSON (--playlist-random -J); допишите ссылку.',
-    fullLine: 'yt-dlp --playlist-random -J '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· заголовок ua в стиле curl -F',
-    summary:
-      'Подменить заголовок User-Agent (--user-agent curl/8.5.0 -F; типичная строка curl); CDN (сеть доставки) и WAF (защита на периметре); допишите ссылку.',
-    fullLine: 'yt-dlp --user-agent curl/8.5.0 -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· лимит при ограничении скорости -F',
-    summary:
-      'Лимит скорости при намеренном снижении отдачи (throttling; ключ --throttled-rate 100K -F); допишите ссылку.',
-    fullLine: 'yt-dlp --throttled-rate 100K -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· вшить субтитры',
-    summary:
-      'Вшить субтитры в контейнер после скачивания (--embed-subs; обычно вместе с --write-subs); допишите ссылку и -f.',
-    fullLine: 'yt-dlp --embed-subs '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· субтитры в srt',
-    summary: 'Конвертировать субтитры в SRT постпроцессором (--convert-subs srt); допишите ссылку.',
-    fullLine: 'yt-dlp --convert-subs srt '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· шаблон -o: заголовок.расширение',
-    summary:
-      'Шаблон имени без пробелов (-o %(title)s.%(ext)s); допишите ссылку (при необходимости смените шаблон вручную).',
-    fullLine: 'yt-dlp -o %(title)s.%(ext)s '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· нарезка по главам',
-    summary:
-      'Разрезать выход по главам (--split-chapters; нужна утилита FFmpeg в каталогах из PATH); допишите ссылку.',
-    fullLine: 'yt-dlp --split-chapters '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· вырезать главы спонсора',
-    summary:
-      'Вырезать главы категории sponsor из финального файла (--remove-chapters sponsor); допишите ссылку.',
-    fullLine: 'yt-dlp --remove-chapters sponsor '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· метаданные плейлиста',
-    summary:
-      'Сохранить метаданные плейлиста рядом с файлами (--write-playlist-metafiles); допишите ссылку на плейлист.',
-    fullLine: 'yt-dlp --write-playlist-metafiles '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· принудительная перезапись',
-    summary:
-      'Перезаписывать существующие файлы без вопросов (--force-overwrites); допишите ссылку.',
-    fullLine: 'yt-dlp --force-overwrites '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· без докачки',
-    summary:
-      'Не продолжать частичные загрузки с .part (--no-continue; начать заново); допишите ссылку.',
-    fullLine: 'yt-dlp --no-continue '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· перекод в mp4',
-    summary:
-      'Перекодировать итог в MP4 постпроцессором (--recode-video mp4); допишите ссылку и формат источника.',
-    fullLine: 'yt-dlp --recode-video mp4 '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· скачать фрагмент по времени',
-    summary:
-      'Скачать только фрагмент времени (--download-sections *0:00-2:00; правый конец правьте вручную); допишите ссылку.',
-    fullLine: 'yt-dlp --download-sections *0:00-2:00 '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· стоп при несовпадении фильтров',
-    summary:
-      'Прервать весь прогон при первом несовпадении --match-filter (--break-match-filters); допишите ссылку и фильтр.',
-    fullLine: 'yt-dlp --break-match-filters '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· без перезаписи после поста',
-    summary:
-      'Не перезаписывать файлы, уже обработанные постпроцессором (--no-post-overwrites); допишите ссылку.',
-    fullLine: 'yt-dlp --no-post-overwrites '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· добавить метаданные',
-    summary:
-      'Записать в файл базовые теги из метаданных площадки (--add-metadata); допишите ссылку и -f/-o.',
-    fullLine: 'yt-dlp --add-metadata '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· hls: внешний загрузчик ffmpeg -F',
-    summary:
-      'HLS: тянуть поток через утилиту FFmpeg вместо встроенного загрузчика (--hls-prefer-ffmpeg -F); обход части сбоев на стороне CDN; допишите ссылку.',
-    fullLine: 'yt-dlp --hls-prefer-ffmpeg -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· путь к бинарнику ffmpeg',
-    summary:
-      'Явный путь к утилите FFmpeg для постпроцессоров и слияния потоков (--ffmpeg-location ffmpeg); при необходимости замените на полный путь без пробелов; допишите ссылку.',
-    fullLine: 'yt-dlp --ffmpeg-location ffmpeg '
-  },
   {
     tool: 'yt-dlp',
     token: '· каталоги в домашней папке',
@@ -215,13 +36,6 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_04: TerminalCommandHintEntry
     summary:
       'Проверить каждый формат по ссылке на поток (--check-all-formats -F); медленно, зато без сюрпризов при скачивании; допишите ссылку.',
     fullLine: 'yt-dlp --check-all-formats -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· таймаут сокета 60 с',
-    summary:
-      'Таймаут сокета 60 с (--socket-timeout 60); медленные сети доставки (CDN) и прокси; допишите ссылку.',
-    fullLine: 'yt-dlp --socket-timeout 60 '
   },
   {
     tool: 'yt-dlp',
@@ -368,5 +182,247 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_04: TerminalCommandHintEntry
     summary:
       'Встроенный загрузчик фрагментов (--downloader native -F); обход части сбоев утилиты FFmpeg; допишите ссылку.',
     fullLine: 'yt-dlp --downloader native -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· tls: старое повторное согласование -F',
+    summary:
+      'Небезопасное повторное согласование TLS по старой схеме (legacy renegotiation, --legacy-server-connect -F) для старых узлов CDN; допишите ссылку.',
+    fullLine: 'yt-dlp --legacy-server-connect -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· без проверки обновлений -F',
+    summary:
+      'Не запрашивать в сети проверку обновлений yt-dlp (--no-call-home -F); допишите ссылку.',
+    fullLine: 'yt-dlp --no-call-home -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· не новее даты -F',
+    summary:
+      'Только ролики не новее даты (--datebefore 20991231 -F; поменяйте дату YYYYMMDD); допишите ссылку.',
+    fullLine: 'yt-dlp --datebefore 20991231 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вшить .info.json',
+    summary:
+      'Встроить .info.json в контейнер после скачивания (--embed-info-json); допишите ссылку и -f/-o.',
+    fullLine: 'yt-dlp --embed-info-json '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· логин из netrc -F',
+    summary: 'Учётные данные из ~/.netrc (--netrc -F); для сайтов с логином; допишите ссылку.',
+    fullLine: 'yt-dlp --netrc -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· принудительно общий экстрактор -F',
+    summary:
+      'Принудительно общий модуль извлечения generic (--force-generic-extractor -F) при сбое распознавания; допишите ссылку.',
+    fullLine: 'yt-dlp --force-generic-extractor -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: число подписчиков (channel_follower_count)',
+    summary:
+      'Число подписчиков канала без скачивания (--skip-download --print channel_follower_count); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print channel_follower_count '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: средний рейтинг (average_rating)',
+    summary:
+      'Средний рейтинг и оценка без скачивания (--skip-download --print average_rating); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print average_rating '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· все ссылки в журнал',
+    summary:
+      'Список всех извлечённых ссылок в журнал (--write-all-urls --skip-download); допишите ссылку.',
+    fullLine: 'yt-dlp --write-all-urls --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· дамп страниц в html',
+    summary:
+      'Сырой дамп HTML-страниц модуля извлечения (extractor) в файлы (--dump-pages --skip-download); диагностика разметки и ответов API; допишите ссылку.',
+    fullLine: 'yt-dlp --dump-pages --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· без прогресс-бара -F',
+    summary:
+      'Без прогресс-бара в консоли (--no-progress -F); чище вывод в длинных списках; допишите ссылку.',
+    fullLine: 'yt-dlp --no-progress -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: признак приватности (is_private)',
+    summary:
+      'Признак приватного или ограниченного ролика без скачивания (--skip-download --print is_private); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print is_private '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· один ролик -J',
+    summary:
+      'JSON метаданных только для одного ролика по ссылке на плейлист (--no-playlist -J); допишите ссылку.',
+    fullLine: 'yt-dlp --no-playlist -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· hls в контейнере ts -F',
+    summary:
+      'HLS: сохранять как MPEG-TS сегменты (--hls-use-mpegts -F) при проблемах с фрагментами; допишите ссылку.',
+    fullLine: 'yt-dlp --hls-use-mpegts -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· субтитры без видео',
+    summary: 'Скачать ручные субтитры без видео (--write-subs --skip-download); допишите ссылку.',
+    fullLine: 'yt-dlp --write-subs --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· макс. пауза запроса -F',
+    summary:
+      'Верхняя граница пауз между HTTP-запросами (--max-sleep-interval 10 -F); подстройте секунды; допишите ссылку.',
+    fullLine: 'yt-dlp --max-sleep-interval 10 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· пауза перед повтором -F',
+    summary: 'Пауза между повторными попытками загрузки (--retry-sleep 5 -F); допишите ссылку.',
+    fullLine: 'yt-dlp --retry-sleep 5 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· мин. размер файла -F',
+    summary:
+      'Пропускать форматы меньше порога (--min-filesize 100K -F); поменяйте размер при необходимости; допишите ссылку.',
+    fullLine: 'yt-dlp --min-filesize 100K -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· повторы доступа к диску -F',
+    summary:
+      'Повторы при ошибках чтения и записи на диске (--file-access-retries 5 -F); допишите ссылку.',
+    fullLine: 'yt-dlp --file-access-retries 5 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: название как у плейлиста (playlist)',
+    summary:
+      'Название плейлиста без скачивания (--skip-download --print playlist); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print playlist '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: автонумерация в -o (поле playlist_autonumber)',
+    summary:
+      'Автонумерация в шаблоне -o без скачивания (--skip-download --print playlist_autonumber); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print playlist_autonumber '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: правка метаданных, unix (modified_timestamp)',
+    summary:
+      'Unix-время последнего изменения метаданных без скачивания (--skip-download --print modified_timestamp); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print modified_timestamp '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: релиз, unix (release_timestamp)',
+    summary:
+      'Unix-время релиза и премьеры без скачивания (--skip-download --print release_timestamp); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print release_timestamp '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: загрузка на площадку, unix (upload_timestamp)',
+    summary:
+      'Unix-время загрузки на площадку без скачивания (--skip-download --print upload_timestamp); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print upload_timestamp '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: соотношение после растяжения (stretched_ratio)',
+    summary:
+      'Соотношение сторон после растяжения кадра (поле stretched_ratio в метаданных yt-dlp, если задаётся площадкой) без скачивания (--skip-download --print stretched_ratio); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print stretched_ratio '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: местоположение (location)',
+    summary:
+      'Данные о местоположении из метаданных без скачивания (--skip-download --print location); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print location '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· youtube: android-клиент -F',
+    summary:
+      'YouTube: клиент Android через --extractor-args (--extractor-args youtube:player_client=android -F); обход части веб-ограничений; допишите ссылку.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=android -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· youtube: встроенный клиент tv -F',
+    summary:
+      'YouTube: встроенный TV-клиент (--extractor-args youtube:player_client=tv_embedded -F); допишите ссылку.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=tv_embedded -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· youtube: ios-клиент -F',
+    summary:
+      'YouTube: iOS-клиент через --extractor-args (--extractor-args youtube:player_client=ios -F); допишите ссылку.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=ios -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: альтернативный заголовок (alternate_title)',
+    summary:
+      'Альтернативный заголовок без скачивания (--skip-download --print alternate_title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print alternate_title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: внутренний ключ экстрактора (extractor_key)',
+    summary:
+      'Внутренний ключ модуля извлечения (поле extractor_key — служебный идентификатор экстрактора) без скачивания (--skip-download --print extractor_key); сверка с `--print extractor`; допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print extractor_key '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· плоский плейлист: ссылка страницы',
+    summary:
+      'Плоский плейлист: ссылка на страницу каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print webpage_url); допишите ссылку на плейлист.',
+    fullLine: 'yt-dlp --flat-playlist --skip-download --print webpage_url '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео-обход de (Германия) -F',
+    summary:
+      'Гео-обход с кодом страны DE (--geo-bypass-country DE -F); поменяйте ISO-код при необходимости; допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country DE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: канал с галочкой (channel_is_verified)',
+    summary:
+      'Флаг верифицированного канала без скачивания (--skip-download --print channel_is_verified); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print channel_is_verified '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookie из opera',
+    summary:
+      'Сухой прогон с файлами cookie из Opera (--skip-download --cookies-from-browser opera); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --cookies-from-browser opera '
   }
 ]

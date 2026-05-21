@@ -1,12 +1,6 @@
 import type { JSX } from 'react'
 
-import {
-  IconBan,
-  IconPopOutWindow,
-  IconQueuePlus,
-  IconQueueTrash,
-  IconSettings
-} from '../LucideMiniIcons'
+import { IconBan, IconPopOutWindow, IconQueuePlus, IconQueueTrash } from '../LucideMiniIcons'
 import { getUiLocale, uiText, uiTextVars } from '../../locales/ui-text'
 import { isDownloadsStandaloneSurface } from '../../renderer-surface'
 import type { DownloadsWorkspaceMainProps } from './downloads-workspace-main-props'
@@ -19,8 +13,6 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
     setDownloadsUrl,
     downloadsMainUrlFieldId,
     onAddToQueue,
-    downloadsNarrowLayout,
-    onScrollToSettings,
     downloadsRows,
     setStatusHint
   } = props
@@ -74,20 +66,6 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
               {uiText('downloadsPopOut')}
             </button>
           )}
-          {downloadsNarrowLayout ? (
-            <button
-              type="button"
-              className="app-btn app-btn-icon-leading"
-              aria-describedby="downloads-page-hint"
-              title={uiText('downloadsScrollToSettings')}
-              onClick={() => {
-                onScrollToSettings()
-              }}
-            >
-              <IconSettings title="" size={17} />
-              {uiText('downloadsScrollToSettings')}
-            </button>
-          ) : null}
         </div>
       </div>
       <div

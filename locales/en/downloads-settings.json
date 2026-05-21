@@ -2,6 +2,7 @@
   "downloadsRailAria": "Download settings",
   "downloadsSettingsSectionsStackAria": "Collapsible yt-dlp settings sections",
   "downloadsRailTitle": "yt-dlp settings",
+  "downloadsSettingsPanelDetailsAria": "Collapsible yt-dlp settings panel",
   "downloadsRailSubtitle": "Video quality, save folder, subtitles, after-download actions, and network behavior. Sections collapse; the same values apply in the pop-out downloads window.",
   "downloadsRailIntroTooltip": "These fields affect upcoming downloads from the queue. Hover any switch, list, or button for a longer plain-language explanation.",
   "downloadsRailFormatSummary": "Format",

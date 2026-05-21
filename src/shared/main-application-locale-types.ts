@@ -53,6 +53,7 @@ export type MainApplicationStrings = {
   settingsBackupImportConfirm: string
   settingsBackupImportCancel: string
   menuTools: string
+  menuMediaFileUtilities: string
   menuInspector: string
   menuMiniPlayer: string
   menuOpenFolder: string

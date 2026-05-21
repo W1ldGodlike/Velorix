@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 
-import { logExternalProcessLine } from './external-process-log'
+import { formatExternalProcessExitCode, logExternalProcessLine } from './external-process-log'
 
 export function runFfmpegCommand(params: {
   ffmpegPath: string
@@ -30,7 +30,11 @@ export function runFfmpegCommand(params: {
     })
 
     child.on('close', (code) => {
-      logExternalProcessLine(params.logTag, 'lifecycle', `closed exitCode=${code ?? '?'}`)
+      logExternalProcessLine(
+        params.logTag,
+        'lifecycle',
+        `closed exitCode=${formatExternalProcessExitCode(code)}`
+      )
       const stderr = stderrTail.trim()
       if (code === 0) {
         resolve({ ok: true, stderr })

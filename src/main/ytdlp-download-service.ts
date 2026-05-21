@@ -4,7 +4,7 @@ import { join } from 'path'
 
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
-import { logExternalProcessLine } from './external-process-log'
+import { formatExternalProcessExitCode, logExternalProcessLine } from './external-process-log'
 import { appendProcessStreamBuffer } from './process-stream-buffer'
 import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
@@ -316,7 +316,7 @@ export function runYtdlpOnce(
       logExternalProcessLine(
         'yt-dlp',
         'lifecycle',
-        `closed exitCode=${exitCode ?? '?'} signal=${killSignal ?? '-'}`
+        `closed exitCode=${formatExternalProcessExitCode(exitCode)} signal=${killSignal ?? '-'}`
       )
       if (signal.aborted) {
         reject(abortErr(locale))

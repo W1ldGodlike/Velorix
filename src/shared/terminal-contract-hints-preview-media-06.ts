@@ -1,398 +1,432 @@
 import type { TerminalCommandHintEntry } from './terminal-contract-types'
 import { TERMINAL_CURRENT_FILE_PLACEHOLDER } from './terminal-contract-types'
 
-/** §8 — подсказки превью/ffprobe (часть 06). */
+/** §8 — подсказки превью/ffprobe (часть 6/8; §8 audit prune). */
 export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_06: TerminalCommandHintEntry[] = [
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: масштаб iw/2 на 2с',
+    token: '· ffmpeg: removegrain 2с',
     summary:
-      'Уменьшение ширины вдвёое (-vf scale=iw/2:-2) первых 2 с; дымовая проверка scale с выражениями iw/ih; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=iw/2:-2 -t 2 -an -sn -f null -`
+      'Пространственное сглаживание removegrain=m0=c2 первых 2 с; дымовая проверка removegrain; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf removegrain=m0=c2 -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: смесь стерео в mono 3с',
+    token: '· ffmpeg: pp al 2с',
     summary:
-      'Сведение стерео в моно через pan первых 3 с (pan=mono|c0=0.5*c0+0.5*c1); дымовая проверка pan; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af pan=mono|c0=0.5*c0+0.5*c1 -t 3 -vn -sn -f null -`
+      'Лёгкая постобработка pp=al первых 2 с; дымовая проверка фильтра pp; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf pp=al -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: aformat 48 kHz stereo 3с',
+    token: '· ffmpeg: dedot mix2 2с',
     summary:
-      'Приведение аудио к 48 kHz stereo через aformat первых 3 с; дымовая проверка ограничений формата; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aformat=sample_rates=48000:channel_layouts=stereo -t 3 -vn -sn -f null -`
+      'Подавление точек dedot=spatial_mix=2 первых 2 с; дымовая проверка dedot; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf dedot=spatial_mix=2 -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: tblend среднее 2с',
+    token: '· ffmpeg: owdenoise 2с',
     summary:
-      'Усреднение соседних кадров tblend=all_mode=average первых 2 с; дымовая проверка темпорального фильтра; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf tblend=all_mode=average -t 2 -an -sn -f null -`
+      'Вейвлет-шумодав owdenoise первых 2 с (-vf owdenoise=6.0); дымовая проверка owdenoise; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf owdenoise=6.0 -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: mpdecimate 6с',
+    token: '· ffmpeg: estdif 2с',
     summary:
-      'Прореживание почти дубликатов кадров mpdecimate первых 6 с; дымовая проверка детектора статики; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf mpdecimate -t 6 -an -sn -f null -`
+      'Деинтерлейс estdif первых 2 с; дымовая проверка estdif; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf estdif -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: silenceremove rms 10с',
+    token: '· ffmpeg: w3fdif 2с',
     summary:
-      'Удаление ведущей тишины по RMS первых 10 с (silenceremove с detection=rms и порогом -55 dB); дымовая проверка отличия от peak; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af silenceremove=start_periods=1:start_duration=0.25:start_threshold=-55dB:detection=rms:stop_periods=-1 -t 10 -vn -sn -f null -`
+      'Деинтерлейс w3fdif первых 2 с; дымовая проверка w3fdif; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf w3fdif -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: yadif 3с',
+    token: '· ffmpeg: kerndeint 8 2с',
     summary:
-      'Деинтерлейс yadif=0:0:0 первых 3 с; дымовая проверка чересстрочного фильтра; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf yadif=0:0:0 -t 3 -an -sn -f null -`
+      'Деинтерлейс kerndeint=thresh=8 первых 2 с; дымовая проверка kerndeint; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf kerndeint=thresh=8 -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: eq яркость 2с',
+    token: '· ffmpeg: scale flags neighbor 2с',
     summary:
-      'Лёгкая коррекция яркости через eq первых 2 с (brightness=0.04 contrast=1.02); дымовая проверка eq; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf eq=brightness=0.04:contrast=1.02 -t 2 -an -sn -f null -`
+      'Масштаб соседним пикселем flags=neighbor первых 2 с (-vf scale=320:240:flags=neighbor); дымовая проверка алгоритма scale; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=320:240:flags=neighbor -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: map v:0 null 2с',
+    token: '· ffmpeg: format yuv420p 2с',
     summary:
-      'Декод только первой видеодорожки (-map 0:v:0 — индекс в команде) первых 2 с в null; дымовая проверка -map индекса; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -map 0:v:0 -t 2 -an -sn -f null -`
+      'Принудительный формат пикселей yuv420p первых 2 с (-vf format=yuv420p); дымовая проверка format; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf format=yuv420p -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: stereo3d anaglyph 2с',
+    summary:
+      'Анаглиф red/cyan через stereo3d первых 2 с (in_sbsl:out_anaglyph); дымовая проверка stereo3d без кавычек в argv; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf stereo3d=sbsl:anaglyph_red_cyan -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: paletteuse dummy 1с',
+    summary:
+      'Квантование через palettegen+paletteuse первой секунды (256 цветов, однопроходный гиф-подобный путь); дымовая проверка palette*; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf palettegen=max_colors=128:reserve_transparent=0,paletteuse -t 1 -an -sn -f null -`
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 только color_primaries',
+    token: '· субтитры s:3 codec_name',
     summary:
-      'Первая видеодорожка (v:0): только color_primaries (поле ffprobe: первичные цвета дисплея); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_primaries -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Четвёртая дорожка субтитров s:3: только codec_name (поле ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:3 -show_entries stream=codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 только color_space',
+    token: '· видео v:0 первые 10 pict_type',
     summary:
-      'Первая видеодорожка (v:0): только color_space (поле ffprobe: цветовое пространство bt709 и др.); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Типы кадров I/B/P первых 10 кадров первой видеодорожки (v:0) (-show_frames, поле pict_type, -read_intervals %+#10); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -show_entries frame=pict_type -read_intervals %+#10 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 duration_ts',
+    token: '· контейнер tags=encoder,major_brand',
     summary:
-      'Первая видеодорожка (v:0): длительность в тиках time_base (поле ffprobe duration_ts; сверка с duration в секундах); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=duration_ts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Два тега контейнера encoder и major_brand (поля format_tags); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=encoder,major_brand -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: histeq 2с',
+    summary:
+      'Адаптивная эквализация гистограммы histeq первых 2 с; дымовая проверка histeq; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf histeq -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: deflicker b2 2с',
+    summary:
+      'Подавление мерцания deflicker=b=2 первых 2 с; дымовая проверка deflicker; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf deflicker=b=2 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: lagfun 2с',
+    summary:
+      'Шлейф кадров lagfun первых 2 с (-vf lagfun=decay=0.92); дымовая проверка lagfun; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf lagfun=decay=0.92 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: noise 2с',
+    summary:
+      'Псевдослучайный шум noise первых 2 с (-vf noise=alls=8:allf=t); дымовая проверка noise; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf noise=alls=8:allf=t -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: shufflepixels 2с',
+    summary:
+      'Перемешивание блоков shufflepixels первых 2 с (56×56, 3 кадра); дымовая проверка shufflepixels; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf shufflepixels=56:56:3 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: lenscorrection 2с',
+    summary:
+      'Лёгкая коррекция дисторсии lenscorrection первых 2 с (k1=-0.01,k2=-0.01); дымовая проверка lenscorrection; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf lenscorrection=cx=0.5:cy=0.5:k1=-0.01:k2=-0.01 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: fps=24000/1001 явно 2с',
+    summary:
+      'Явные 24000/1001 fps на выходе первых 2 с (-vf fps=24000/1001); дымовая проверка дробного fps; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf fps=24000/1001 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: tinterlace merge 2с',
+    summary:
+      'Чересстрочное слияние tinterlace=merge + fieldorder=tff первых 2 с; дымовая проверка tinterlace; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf tinterlace=merge,fieldorder=tff -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: pseudocolor 2с',
+    summary:
+      'Псевдоцветовая карта pseudocolor preset=rainbow первых 2 с; дымовая проверка pseudocolor; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf pseudocolor=preset=rainbow -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: colorhold 2с',
+    summary:
+      'Удержание узкого цветового диапазона colorhold первых 2 с (similarity=0.15); дымовая проверка colorhold; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorhold=similarity=0.15 -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 pix_fmt и profile',
+    token: '· видео v:5 codec_name',
     summary:
-      'Первая видеодорожка (v:0): pix_fmt и profile (поля ffprobe: формат пикселей и профиль кодека); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=pix_fmt,profile -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Шестой видеопоток v:5: codec_name (поле ffprobe; редкие мультиракурсные контейнеры); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:5 -show_entries stream=codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 первые 2 пакета',
+    token: '· дорожка данных d:6',
     summary:
-      'Первые два пакета первой видеодорожки (v:0) (-read_intervals %+#2 — только два пакета, -show_packets); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#2 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Седьмая data-дорожка d:6: codec_tag_string (поле ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams d:6 -show_entries stream=codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· контейнер: time_base',
+    token: '· главы id и старт',
     summary:
-      'Контейнер: format time_base (поле format.time_base — база времени контейнера); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -show_entries format=time_base -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Все главы: id и start_time (-show_chapters -show_entries chapter=id,start_time -of compact); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_chapters -show_entries chapter=id,start_time -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· аудио a:0 max_bit_rate',
+    token: '· аудио a:0 sample_aspect_ratio',
     summary:
-      'Первая аудиодорожка (a:0): max_bit_rate (поле ffprobe: пиковый битрейт при VBR, если задан); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=max_bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Первая аудиодорожка (a:0): sample_aspect_ratio (поле ffprobe: формальный SAR у аудио, часто N/A); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=sample_aspect_ratio -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: bwdif 2с',
+    summary:
+      'Деинтерлейс bwdif=mode=send_field первых 2 с; дымовая проверка bwdif; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf bwdif=mode=send_field -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: il filter 2с',
+    summary:
+      'Чередование полей через il=d:c первых 2 с; дымовая проверка фильтра il; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf il=d:c -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: colormatrix 601→709 2с',
+    summary:
+      'Матрица цветов colormatrix=bt601:bt709 первых 2 с; дымовая проверка colormatrix; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colormatrix=bt601:bt709 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: smartblur 2с',
+    summary:
+      'Умное размытие smartblur первых 2 с (-vf smartblur=luma_radius=1.2:luma_strength=0.4); дымовая проверка smartblur; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf smartblur=luma_radius=1.2:luma_strength=0.4 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: chromakey зелёный 2с',
+    summary:
+      'Ключ по зелёному chromakey первых 2 с (color=0x00ff00:similarity=0.02:blend=0.05); дымовая проверка chromakey; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf chromakey=color=0x00ff00:similarity=0.02:blend=0.05 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: yadif send_field 2с',
+    summary:
+      'Деинтерлейс yadif=1:-1:0 (режим send_field) первых 2 с; дымовая проверка числовых опций yadif; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf yadif=1:-1:0 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: phase A 2с',
+    summary:
+      'Коррекция фазы chroma phase=A первых 2 с (-vf phase=A); дымовая проверка phase; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf phase=A -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: lumakey 2с',
+    summary:
+      'Ключ по яркости lumakey первых 2 с (threshold=0.08); дымовая проверка lumakey; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf lumakey=threshold=0.08:tolerance=0.02 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: limiter 2с',
+    summary:
+      'Ограничитель яркости limiter первых 2 с (16-235); дымовая проверка limiter; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf limiter=16:235 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: colorbalance rgb 2с',
+    summary:
+      'Сдвиг баланса RGB через colorbalance первых 2 с (rs=0.08 gs=-0.02 bs=0.05); дымовая проверка colorbalance; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorbalance=rs=0.08:gs=-0.02:bs=0.05 -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffprobe',
-    token: '· субтитры s:0 codec_long_name',
+    token: '· видео v:0 codec_tag',
     summary:
-      'Дорожка субтитров (s:0): codec_long_name (поле ffprobe: длинное имя кодека субтитров); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: map a:0 null 2с',
-    summary:
-      'Декод только первой аудиодорожки (-map 0:a:0 — индекс в команде) первых 2 с в null; дымовая проверка -map аудио; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -map 0:a:0 -t 2 -vn -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: boxblur 2с',
-    summary:
-      'Лёгкое размытие boxblur первых 2 с (-vf boxblur=2:1); дымовая проверка пространственного фильтра; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf boxblur=2:1 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: gblur 2с',
-    summary:
-      'Гауссово размытие gblur первых 2 с (-vf gblur=sigma=1.2); дымовая проверка gblur; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf gblur=sigma=1.2 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: edgedetect 2с',
-    summary:
-      'Контуры edgedetect первых 2 с (-vf edgedetect=low=0.1:high=0.3); дымовая проверка высокочастотного фильтра; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf edgedetect=low=0.1:high=0.3 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: vignette 2с',
-    summary:
-      'Лёгкое затемнение по краям vignette первых 2 с (-vf vignette=PI/5); дымовая проверка vignette; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf vignette=PI/5 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: colorbalance 2с',
-    summary:
-      'Лёгкий сдвиг баланса белого colorbalance первых 2 с (rs=0.06); дымовая проверка цветокоррекции; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorbalance=rs=0.06 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: negate 2с',
-    summary:
-      'Инверсия яркости negate первых 2 с (-vf negate); дымовая проверка точечного видеофильтра; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf negate -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: hue сдвиг 2с',
-    summary:
-      'Сдвиг оттенка hue=h=0.08 первых 2 с; дымовая проверка hue; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf hue=h=0.08 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: gradfun 2с',
-    summary:
-      'Сглаживание бэнда gradfun первых 2 с (-vf gradfun=strength=0.9); дымовая проверка gradfun; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf gradfun=strength=0.9 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: dctdnoiz 2с',
-    summary:
-      'Лёгкое шумоподавление dctdnoiz первых 2 с (-vf dctdnoiz=s=4); дымовая проверка DCT-денойзера; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf dctdnoiz=s=4 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: weave 1с',
-    summary:
-      'Чересстрочное переплетение полей weave первую секунду (-vf weave); дымовая проверка weave; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf weave -t 1 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: fieldorder tff 2с',
-    summary:
-      'Указание порядка полей fieldorder=tff первых 2 с; дымовая проверка метаданных чересстрочности; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf fieldorder=tff -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: tpad хвост 2с',
-    summary:
-      'Короткая подкладка кадров в хвост через tpad первых 2 с (stop_mode=add, stop_duration=0.08); дымовая проверка tpad; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf tpad=stop_mode=add:stop_duration=0.08 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: sab 2с',
-    summary:
-      'Лёгкое сглаживание sab первых 2 с (-vf sab=strength=0.2); дымовая проверка shape adaptive blur; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf sab=strength=0.2 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: shuffleplanes 2с',
-    summary:
-      'Перестановка цветовых плоскостей shuffleplanes первых 2 с (map0g=1:map1g=0:map2g=2); дымовая проверка shuffleplanes без кавычек в argv; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf shuffleplanes=map0g=1:map1g=0:map2g=2 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: extractplanes y 2с',
-    summary:
-      'Извлечь только плоскость Y через extractplanes=y первых 2 с; дымовая проверка планарного разбора; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf extractplanes=y -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: swapuv 2с',
-    summary:
-      'Обмен цветоразностных каналов swapuv первых 2 с; дымовая проверка цвета без перекодирования в файл; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf swapuv -t 2 -an -sn -f null -`
+      'Первая видеодорожка (v:0): codec_tag (поле ffprobe: числовой тег кодека вместе с codec_tag_string); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_tag -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 start_pts',
+    token: '· главы end_time',
     summary:
-      'Первая видеодорожка (v:0): только start_pts (поле ffprobe: первая метка времени видео в тиках time_base); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Все главы: end_time (-show_chapters -show_entries chapter=end_time -of compact); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_chapters -show_entries chapter=end_time -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· аудио a:0 index',
+    token: '· аудио a:1 channels',
     summary:
-      'Первая аудиодорожка (a:0): только index (поле ffprobe: порядковый индекс дорожки в контейнере); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=index -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Вторая аудиодорожка a:1: только channels (поле ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· тег comment (контейнер)',
+    token: '· видео v:0 bt601 709 цвет',
     summary:
-      'Тег контейнера comment (поле format_tags: длинный комментарий, если записан); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -show_entries format_tags=comment -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Первая видеодорожка (v:0): color_space, color_transfer и color_primaries одной строкой (поля ffprobe; сводка HDR/SDR); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space,color_transfer,color_primaries -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: scale divisible 2с',
+    summary:
+      'Масштаб с force_divisible_by=2 первых 2 с (-vf scale=w=320:h=240:force_divisible_by=2); дымовая проверка выравнивания размеров; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=w=320:h=240:force_divisible_by=2 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: colorspace fast 2с',
+    summary:
+      'Перевод цветового пространства colorspace=iall=bt601:all=bt709:fast=1 первых 2 с; дымовая проверка colorspace; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorspace=iall=bt601:all=bt709:fast=1 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: framestep 2с',
+    summary:
+      'Прореживание кадров framestep=2 первых 4 с; дымовая проверка framestep; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf framestep=2 -t 4 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: tmideint bob 2с',
+    summary:
+      'Деинтерлейс tmideint=mode=bob первых 2 с; дымовая проверка tmideint; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf tmideint=mode=bob -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: erosion 2с',
+    summary:
+      'Морфологическое сужение erosion первых 2 с; дымовая проверка erosion; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf erosion -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: dilation 2с',
+    summary:
+      'Морфологическое расширение dilation первых 2 с; дымовая проверка dilation; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf dilation -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: shuffleplanes 2:1:0',
+    summary:
+      'Перестановка плоскостей shuffleplanes=2:1:0 первых 2 с; дымовая проверка shuffleplanes; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf shuffleplanes=2:1:0 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: decimate cycle 12',
+    summary:
+      'Прореживание decimate=cycle=12 первых 6 с; дымовая проверка decimate с циклом; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf decimate=cycle=12 -t 6 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: scale bicubic full chroma 2с',
+    summary:
+      'Масштаб bicubic с full_chroma_inp первых 2 с (-vf scale=flags=bicubic+full_chroma_inp:interl=0); дымовая проверка scale; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=w=iw:h=ih:flags=bicubic+full_chroma_inp:interl=0 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: avgblur 2с',
+    summary:
+      'Размытие avgblur 3×3 первых 2 с (-vf avgblur=3:1); дымовая проверка avgblur; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf avgblur=3:1 -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffprobe',
-    token: '· тег replaygain_track_gain',
-    summary:
-      'Тег контейнера REPLAYGAIN_TRACK_GAIN (поле format_tags: нормализация громкости ReplayGain); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -show_entries format_tags=REPLAYGAIN_TRACK_GAIN -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+    token: '· контейнер тег album',
+    summary: 'Тег контейнера album (поле format_tags=album); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=album -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 color_range',
+    token: '· контейнер musicbrainz_trackid',
     summary:
-      'Первая видеодорожка (v:0): только color_range (поле ffprobe: tv или pc и др.); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_range -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Идентификатор трека MusicBrainz в контейнере (поле format_tags=musicbrainz_trackid); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=musicbrainz_trackid -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· субтитры s:1 codec_long_name',
+    token: '· видео v:3 кратко',
     summary:
-      'Вторая дорожка субтитров s:1: codec_long_name (поле ffprobe); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: hflip 2с',
-    summary:
-      'Горизонтальное отражение hflip первых 2 с; дымовая проверка геометрии; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf hflip -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: vflip 2с',
-    summary:
-      'Вертикальное отражение vflip первых 2 с; дымовая проверка геометрии; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf vflip -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: transpose=0 на 1с',
-    summary:
-      'Поворот transpose=0 на 90° против часовой первую секунду; дымовая проверка transpose; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf transpose=0 -t 1 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: deshake 3с',
-    summary:
-      'Стабилизация deshake первых 3 с; дымовая проверка motion compensation; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf deshake -t 3 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: median 2с',
-    summary:
-      'Медианное шумоподавление median=3 первых 2 с; дымовая проверка spatial median; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf median=3 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: decimate 5с',
-    summary:
-      'Прореживание дубликатов decimate первых 5 с; дымовая проверка decimate; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf decimate -t 5 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: pullup 4с',
-    summary:
-      'Инверсия телесинка pullup первых 4 с; дымовая проверка pullup; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf pullup -t 4 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: fps=film=24',
-    summary:
-      'Приведение к киношным 24 fps через fps=film=24 первых 3 с; дымовая проверка fps=film; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf fps=film=24 -t 3 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: tmix 2с',
-    summary:
-      'Усреднение соседних кадров tmix=frames=3 первых 2 с; дымовая проверка tmix; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf tmix=frames=3 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: curves lighter 2с',
-    summary:
-      'Пресет curves=preset=lighter первых 2 с; дымовая проверка curves; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf curves=preset=lighter -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: colorchannelmixer 2с',
-    summary:
-      'Лёгкий микс каналов colorchannelmixer первых 2 с (rr=0.95:bb=1.05); дымовая проверка матрицы RGB; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorchannelmixer=rr=0.95:bb=1.05 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: rotate 2° 2с',
-    summary:
-      'Поворот на ~2° через rotate=2*PI/180 первых 2 с; дымовая проверка rotate; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf rotate=2*PI/180 -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: yadif send_frame 2с',
-    summary:
-      'Деинтерлейс yadif=send_frame первых 2 с; дымовая проверка режима send_frame; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf yadif=mode=send_frame -t 2 -an -sn -f null -`
-  },
-  {
-    tool: 'ffmpeg',
-    token: '· ffmpeg: fps=60 2с',
-    summary:
-      'Принудительные 60 fps на выходе первых 2 с (-vf fps=60); дымовая проверка удвоения/прореживания cadence; путь к медиа подставляется из превью.',
-    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf fps=60 -t 2 -an -sn -f null -`
+      'Четвёртый видеопоток v:3: ширина, высота и кодек (поля ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:3 -show_entries stream=width,height,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 field_order',
+    token: '· данные d:7 кратко',
     summary:
-      'Первая видеодорожка (v:0): только field_order (поле ffprobe: чересстрочность tff/bff/progressive); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=field_order -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Восьмой поток данных d:7: тип и кодек (поля codec_type и codec_name); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams d:7 -show_entries stream=codec_type,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· аудио a:2 handler_name',
+    token: '· вложения t:2 кратко',
     summary:
-      'Третья аудиодорожка a:2: тег handler_name в stream_tags (поле ffprobe: имя обработчика дорожки); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -select_streams a:2 -show_entries stream_tags=handler_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Третий поток вложений t:2: тип и кодек (поля codec_type и codec_name); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams t:2 -show_entries stream=codec_type,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· субтитры s:10 disposition',
+    summary:
+      'Одиннадцатая дорожка субтитров s:10: disposition и кодек (поля disposition и codec_name); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:10 -show_entries stream=disposition,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· главы теги title',
+    summary:
+      'Теги title у всех глав (-show_chapters -show_entries chapter_tags=title -of compact); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_chapters -show_entries chapter_tags=title -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· кадры v:0 pkt_duration_time 3',
+    summary:
+      'Первые три кадра первой видеодорожки (v:0): длительность пакета pkt_duration_time (-show_frames -read_intervals %+#3); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#3 -show_entries frame=pkt_duration_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: fftdnoiz 2с',
+    summary:
+      'Шумоподавление fftdnoiz=sigma=2 первых 2 с; дымовая проверка fftdnoiz; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf fftdnoiz=sigma=2 -t 2 -an -sn -f null -`
   }
 ]

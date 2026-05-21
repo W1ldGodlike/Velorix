@@ -36,6 +36,9 @@ export type FfmpegHwEncodersProbeResult =
       hwaccels: readonly string[]
       /** Модель и драйвер NVIDIA (§4.C статусбар); `null` если nvidia-smi недоступен. */
       nvidiaGpu: NvidiaSmiGpuInfo | null
+      /** Имена видеоадаптеров ОС — фильтр списка HW-кодеков и бенчмарка. */
+      gpuAdapterNames: readonly string[]
+      osPlatform: NodeJS.Platform
     }
   | { ok: false; error: string }
 

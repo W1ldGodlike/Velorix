@@ -3,6 +3,10 @@
  */
 
 import type { FfmpegExportVideoCodecId } from './ffmpeg-export-contract'
+import {
+  isFfmpegHwEncoderFamilyRunnableInBenchmark,
+  type FfmpegExportBenchmarkHardwareHints
+} from './ffmpeg-export-benchmark-hardware'
 import type { FfmpegHwEncodersSnapshot, FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 import {
   FFMPEG_HW_VIDEO_ENCODER_SELECT_ORDER,
@@ -11,7 +15,8 @@ import {
 import { FFMPEG_EXPORT_BENCHMARK_MAX_CANDIDATES } from './ffmpeg-export-benchmark-contract'
 
 export function buildFfmpegExportBenchmarkCandidates(
-  snapshot: FfmpegHwEncodersSnapshot | null | undefined
+  snapshot: FfmpegHwEncodersSnapshot | null | undefined,
+  hardware?: FfmpegExportBenchmarkHardwareHints
 ): FfmpegExportVideoCodecId[] {
   const out: FfmpegExportVideoCodecId[] = ['libx264']
   if (!snapshot) {
@@ -27,6 +32,9 @@ export function buildFfmpegExportBenchmarkCandidates(
     }
     const fam = getFfmpegHwEncoderFamily(id)
     if (familiesSeen.has(fam)) {
+      continue
+    }
+    if (hardware !== undefined && !isFfmpegHwEncoderFamilyRunnableInBenchmark(fam, hardware)) {
       continue
     }
     familiesSeen.add(fam)

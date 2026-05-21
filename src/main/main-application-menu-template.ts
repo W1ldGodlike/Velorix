@@ -237,6 +237,17 @@ export function buildApplicationMenuTemplate(
             focusOrCreateMiniPlayerWindow()
           }
         },
+        {
+          label: m.menuMediaFileUtilities,
+          click: (): void => {
+            const target = getMainUiWindow()
+            if (!target || target.isDestroyed()) {
+              return
+            }
+            target.focus()
+            target.webContents.send(mw.openMediaFileUtilities)
+          }
+        },
         { type: 'separator' },
         {
           label: m.menuOpenFolder,

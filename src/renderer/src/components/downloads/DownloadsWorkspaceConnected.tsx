@@ -128,10 +128,6 @@ export function DownloadsWorkspaceConnected(): JSX.Element {
         onAddToQueue={() => {
           void handleAddDownloadsFromMain()
         }}
-        downloadsNarrowLayout={downloadsNarrowLayout}
-        onScrollToSettings={() => {
-          downloadsSettingsRailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }}
         downloadsStats={downloadsStats}
         downloadsStatusFilter={downloadsStatusFilter}
         setDownloadsStatusFilter={setDownloadsStatusFilter}
@@ -178,6 +174,9 @@ export function DownloadsWorkspaceConnected(): JSX.Element {
       />
       <DownloadsSettingsRail
         ref={downloadsSettingsRailRef}
+        stackedLayout={downloadsNarrowLayout}
+        embeddedOpen={downloadsWindowUiPanels.downloadsEmbeddedSettingsOpen}
+        onEmbeddedToggle={downloadsWindowUiPanels.persistDownloadsEmbeddedSettingsOpen}
         downloadsOptionsBusy={downloadsWorkspace.downloadsOptionsBusy}
         downloadsHistoryBusy={downloadsWorkspace.downloadsHistoryBusy}
         downloadsOptions={downloadsWorkspace.downloadsOptions}

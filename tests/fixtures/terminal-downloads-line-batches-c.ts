@@ -241,7 +241,6 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_C: readonly TerminalDownloadsLineBa
       'yt-dlp --geo-bypass-country BJ -F ',
       'yt-dlp --geo-bypass-country TG -F ',
       'yt-dlp --geo-bypass-country BF -F ',
-      'yt-dlp --geo-bypass-country CI -F ',
       'yt-dlp --geo-bypass-country LR -F ',
       'yt-dlp --geo-bypass-country SL -F ',
       'yt-dlp --geo-bypass-country GN -F ',
@@ -292,9 +291,7 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_C: readonly TerminalDownloadsLineBa
       'yt-dlp --print-to-file playlist flux-ytdlp-playlist.txt --skip-download ',
       'yt-dlp --print-to-file annotations flux-ytdlp-annotations.txt --skip-download ',
       'yt-dlp --print-to-file storyboards flux-ytdlp-storyboards.txt --skip-download ',
-      'yt-dlp --print-to-file playlist_webpage_url flux-ytdlp-plwpurl.txt --skip-download ',
-      'yt-dlp --retries 20 -F ',
-      'yt-dlp --fragment-retries 20 -F '
+      'yt-dlp --print-to-file playlist_webpage_url flux-ytdlp-plwpurl.txt --skip-download '
     ] as const
   },
   {

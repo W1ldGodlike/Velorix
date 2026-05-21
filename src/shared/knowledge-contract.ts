@@ -22,28 +22,28 @@ export type KnowledgeReadArticleRequest = string | { slug: string; preferredUiLo
 /** Список статей: заголовки из `Help/en/*.md` при `preferredUiLocale: 'en'`, если файл есть. */
 export type KnowledgeListArticlesRequest = { preferredUiLocale?: 'ru' | 'en' } | undefined
 
-/** Deep-link из UI в базу знаний: логи, Support ZIP, диагностика (`Help/about-support-logs.md`). */
+/** Deep-link из UI в базу знаний: логи, Support ZIP, диагностика (`Help/ru/about-support-logs.md`). */
 export const KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS = 'about-support-logs'
 
-/** §15 / терминал — `Help/ffmpeg-terminal-hints.md`. */
+/** §15 / терминал — `Help/ru/ffmpeg-terminal-hints.md`. */
 export const KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS = 'ffmpeg-terminal-hints'
 
-/** Правая панель загрузок — `Help/downloads-settings-rail.md`. */
+/** Правая панель загрузок — `Help/ru/downloads-settings-rail.md`. */
 export const KNOWLEDGE_SLUG_DOWNLOADS_SETTINGS_RAIL = 'downloads-settings-rail'
 
-/** Пресеты и rail ffmpeg — `Help/ffmpeg-rail-presets.md`. */
+/** Пресеты и rail ffmpeg — `Help/ru/ffmpeg-rail-presets.md`. */
 export const KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS = 'ffmpeg-rail-presets'
 
-/** Пакетный экспорт и очереди — `Help/session-and-queues.md`. */
+/** Пакетный экспорт и очереди — `Help/ru/session-and-queues.md`. */
 export const KNOWLEDGE_SLUG_SESSION_AND_QUEUES = 'session-and-queues'
 
 /** §6.4 — история загрузок yt-dlp (вкладка и pop-out). */
 export const KNOWLEDGE_SLUG_DOWNLOADS_WORKFLOW = 'downloads-workflow'
 
-/** Инспектор ffprobe — `Help/probe-and-inspector-basics.md`. */
+/** Инспектор ffprobe — `Help/ru/probe-and-inspector-basics.md`. */
 export const KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR = 'probe-and-inspector-basics'
 
-/** FAQ — `Help/faq-troubleshooting.md`. */
+/** FAQ — `Help/ru/faq-troubleshooting.md`. */
 export const KNOWLEDGE_SLUG_FAQ_TROUBLESHOOTING = 'faq-troubleshooting'
 
 /** §16 — аппаратные кодеры и ручной smoke в настройках. */

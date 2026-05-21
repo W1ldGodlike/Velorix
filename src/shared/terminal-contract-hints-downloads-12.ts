@@ -1,358 +1,396 @@
 import type { TerminalCommandHintEntry } from './terminal-contract-types'
 
-/** §8 — подсказки вкладки «Загрузки» (часть 12). */
+/** §8 — подсказки Загрузки (часть 12/14; §8 audit prune). */
 export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_12: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
-    token: '· в файл: номер сезона',
+    token: '· гео er (Эритрея) -F',
+    summary: 'Гео-обход через Эритрею (--geo-bypass-country ER -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country ER -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ss (Южный Судан) -F',
+    summary: 'Гео-обход через Южный Судан (--geo-bypass-country SS -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country SS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ye (Йемен) -F',
+    summary: 'Гео-обход через Йемен (--geo-bypass-country YE -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country YE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео mr (Мавритания) -F',
+    summary: 'Гео-обход через Мавританию (--geo-bypass-country MR -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country MR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· в файл: текст песни',
     summary:
-      'Записать номер сезона (поле season_number) в flux-ytdlp-snum.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file season_number flux-ytdlp-snum.txt --skip-download '
+      'Записать (поле lyrics) (текст песни, если модуль извлечения отдаёт) в flux-ytdlp-lyrics.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file lyrics flux-ytdlp-lyrics.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: номер эпизода',
+    token: '· в файл: номер диска',
     summary:
-      'Записать номер эпизода (поле episode_number) в flux-ytdlp-epnum.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file episode_number flux-ytdlp-epnum.txt --skip-download '
+      'Записать (поле disc_number) (номер диска в каталоге) в flux-ytdlp-discnum.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file disc_number flux-ytdlp-discnum.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: название эпизода',
+    token: '· в файл: издатель',
     summary:
-      'Записать (поле episode) (строка площадки) в flux-ytdlp-epstr.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file episode flux-ytdlp-epstr.txt --skip-download '
+      'Записать (поле publisher) (издатель и лейбл, если есть) в flux-ytdlp-publisher.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file publisher flux-ytdlp-publisher.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: id эпизода',
+    token: '· в файл: настроение',
     summary:
-      'Записать идентификатор эпизода (поле episode_id) в flux-ytdlp-epid.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file episode_id flux-ytdlp-epid.txt --skip-download '
+      'Записать (поле mood) (настроение и тег настроения, если модуль извлечения отдаёт) в flux-ytdlp-mood.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file mood flux-ytdlp-mood.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: id сезона',
+    token: '· гео cm (Камерун) -F',
+    summary: 'Гео-обход через Камерун (--geo-bypass-country CM -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country CM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ga (Габон) -F',
+    summary: 'Гео-обход через Габон (--geo-bypass-country GA -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country GA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео cg (Республика Конго) -F',
+    summary: 'Гео-обход через Республику Конго (--geo-bypass-country CG -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country CG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео cd (ДР Конго) -F',
+    summary: 'Гео-обход через ДР Конго (--geo-bypass-country CD -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country CD -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео cf (ЦАР) -F',
+    summary: 'Гео-обход через ЦАР (--geo-bypass-country CF -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country CF -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео gq (Экваториальная Гвинея) -F',
+    summary: 'Гео-обход через Экваториальную Гвинею (--geo-bypass-country GQ -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country GQ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео st (Сан-Томе и Принсипи) -F',
+    summary: 'Гео-обход через Сан-Томе и Принсипи (--geo-bypass-country ST -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country ST -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео bi (Бурунди) -F',
+    summary: 'Гео-обход через Бурунди (--geo-bypass-country BI -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country BI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео rw (Руанда) -F',
+    summary: 'Гео-обход через Руанду (--geo-bypass-country RW -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country RW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ug (Уганда) -F',
+    summary: 'Гео-обход через Уганду (--geo-bypass-country UG -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country UG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео tz (Танзания) -F',
+    summary: 'Гео-обход через Танзанию (--geo-bypass-country TZ -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country TZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео zm (Замбия) -F',
+    summary: 'Гео-обход через Замбию (--geo-bypass-country ZM -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country ZM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· в файл: сортировка исполнителя',
     summary:
-      'Записать идентификатор сезона (поле season_id) в flux-ytdlp-sid.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file season_id flux-ytdlp-sid.txt --skip-download '
+      'Записать (поле artist_sort) (сортировочное имя исполнителя) в flux-ytdlp-artistsort.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file artist_sort flux-ytdlp-artistsort.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: id канала плейлиста',
+    token: '· в файл: сортировка альбома',
     summary:
-      'Записать идентификатор канала плейлиста (поле playlist_channel_id) в flux-ytdlp-plchid.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file playlist_channel_id flux-ytdlp-plchid.txt --skip-download '
+      'Записать (поле album_sort) (сортировочное имя альбома) в flux-ytdlp-albumsort.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file album_sort flux-ytdlp-albumsort.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: частота дискретизации',
+    token: '· в файл: дирижёр',
     summary:
-      'Записать (поле asr) (Hz дискретизации аудио) в flux-ytdlp-asr.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file asr flux-ytdlp-asr.txt --skip-download '
+      'Записать (поле conductor) (дирижёр, если есть) в flux-ytdlp-conductor.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file conductor flux-ytdlp-conductor.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: защита контента (has_drm)',
+    token: '· в файл: исполнители',
     summary:
-      'Записать признак DRM (поле has_drm) в flux-ytdlp-drm.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file has_drm flux-ytdlp-drm.txt --skip-download '
+      'Записать (поле performers) (список исполнителей, если модуль извлечения отдаёт) в flux-ytdlp-performers.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file performers flux-ytdlp-performers.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: встраивание в плеер',
+    token: '· в файл: авторские права',
     summary:
-      'Записать ограничения встроенного плеера (поле playable_in_embed) в flux-ytdlp-embed.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file playable_in_embed flux-ytdlp-embed.txt --skip-download '
+      'Записать (поле copyright) (строка правообладателя) в flux-ytdlp-copy.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file copyright flux-ytdlp-copy.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: был эфир',
+    token: '· в файл: ссылка на автора',
     summary:
-      'Записать признак «был эфир» (поле was_live) в flux-ytdlp-waslive.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file was_live flux-ytdlp-waslive.txt --skip-download '
+      'Записать (поле uploader_url) (каноническая ссылка на страницу автора) в flux-ytdlp-upurl.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file uploader_url flux-ytdlp-upurl.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: тип медиа',
+    token: '· в файл: продюсер',
     summary:
-      'Записать тип медиа (поле media_type) в flux-ytdlp-mtype.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file media_type flux-ytdlp-mtype.txt --skip-download '
+      'Записать producer (поле producer, если есть) в flux-ytdlp-producer.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file producer flux-ytdlp-producer.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео pf (Французская Полинезия) -F',
-    summary: 'Гео-обход через Французскую Полинезию (--geo-bypass-country PF -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country PF -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео nc (Новая Каледония) -F',
-    summary: 'Гео-обход через Новую Каледонию (--geo-bypass-country NC -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country NC -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео fj (Фиджи) -F',
-    summary: 'Гео-обход через Фиджи (--geo-bypass-country FJ -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country FJ -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео vu (Вануату) -F',
-    summary: 'Гео-обход через Вануату (--geo-bypass-country VU -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country VU -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео sb (Соломоновы о-ва) -F',
-    summary: 'Гео-обход через Соломоновы острова (--geo-bypass-country SB -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country SB -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео fm (Микронезия) -F',
+    token: '· в файл: режиссёр',
     summary:
-      'Гео-обход через Федеративные Штаты Микронезии (--geo-bypass-country FM -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country FM -F '
+      'Записать (поле director) (режиссёр или автор видео, если модуль извлечения отдаёт) в flux-ytdlp-director.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file director flux-ytdlp-director.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео mh (Маршалловы о-ва) -F',
-    summary: 'Гео-обход через Маршалловы острова (--geo-bypass-country MH -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country MH -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео pw (Палау) -F',
-    summary: 'Гео-обход через Палау (--geo-bypass-country PW -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country PW -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· не стоп при отклонении формата -F',
+    token: '· без предсборки путей -F',
     summary:
-      'Не останавливаться на отклонённом формате (--no-break-on-reject -F); допишите ссылку.',
-    fullLine: 'yt-dlp --no-break-on-reject -F '
+      'Не строить выходные пути до фактического скачивания (--no-build-paths -F); меньше лишних mkdir при -F; допишите ссылку.',
+    fullLine: 'yt-dlp --no-build-paths -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: тип записи',
+    token: '· гео bj (Бенин) -F',
+    summary: 'Гео-обход через Бенин (--geo-bypass-country BJ -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country BJ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео tg (Того) -F',
+    summary: 'Гео-обход через Того (--geo-bypass-country TG -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country TG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео bf (Буркина-Фасо) -F',
+    summary: 'Гео-обход через Буркина-Фасо (--geo-bypass-country BF -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country BF -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео lr (Либерия) -F',
+    summary: 'Гео-обход через Либерию (--geo-bypass-country LR -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country LR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео sl (Сьерра-Леоне) -F',
+    summary: 'Гео-обход через Сьерра-Леоне (--geo-bypass-country SL -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country SL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео gn (Гвинея) -F',
+    summary: 'Гео-обход через Гвинею (--geo-bypass-country GN -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country GN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео gw (Гвинея-Бисау) -F',
+    summary: 'Гео-обход через Гвинею-Бисау (--geo-bypass-country GW -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country GW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· в файл: аранжировщик',
     summary:
-      'Записать тип объекта (поле _type: video, playlist и т. п.) в flux-ytdlp-otype.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file _type flux-ytdlp-otype.txt --skip-download '
+      'Записать (поле arranger) (аранжировка, если есть) в flux-ytdlp-arranger.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file arranger flux-ytdlp-arranger.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: ссылка на плейлист',
+    token: '· в файл: ремиксёр',
     summary:
-      'Записать ссылку на плейлист (поле playlist_url) в flux-ytdlp-plurl.txt без скачивания; допишите ссылку на плейлист.',
-    fullLine: 'yt-dlp --print-to-file playlist_url flux-ytdlp-plurl.txt --skip-download '
+      'Записать (поле remixer) (ремиксёр, если модуль извлечения отдаёт) в flux-ytdlp-remixer.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file remixer flux-ytdlp-remixer.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: ссылка на манифест',
+    token: '· в файл: звукорежиссёр',
     summary:
-      'Записать (поле manifest_url) (манифест HLS, DASH и др.) в flux-ytdlp-manurl.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file manifest_url flux-ytdlp-manurl.txt --skip-download '
+      'Записать (поле engineer) (звукорежиссёр или инженер записи, если есть) в flux-ytdlp-engineer.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file engineer flux-ytdlp-engineer.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: sar после растяжения кадра',
+    token: '· в файл: автор текста',
     summary:
-      'Записать (поле stretched_ratio) (анаморфное растяжение кадра, если модуль извлечения отдаёт) в flux-ytdlp-sarfix.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file stretched_ratio flux-ytdlp-sarfix.txt --skip-download '
+      'Записать (поле lyricist) (автор текста, если есть) в flux-ytdlp-lyricist.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file lyricist flux-ytdlp-lyricist.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: запрошенные форматы',
+    token: '· в файл: группировка',
     summary:
-      'Записать (поле requested_formats) (JSON выбранных потоков) в flux-ytdlp-reqf.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file requested_formats flux-ytdlp-reqf.txt --skip-download '
+      'Записать grouping (поле группировки треков, как в Apple Music и iTunes) в flux-ytdlp-grouping.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file grouping flux-ytdlp-grouping.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео nr (Науру) -F',
-    summary: 'Гео-обход через Науру (--geo-bypass-country NR -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country NR -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео tv (Тувалу) -F',
-    summary: 'Гео-обход через Тувалу (--geo-bypass-country TV -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country TV -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео ki (Кирибати) -F',
-    summary: 'Гео-обход через Кирибати (--geo-bypass-country KI -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country KI -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео wf (Уоллис и Футуна) -F',
-    summary: 'Гео-обход через Уоллис и Футуна (--geo-bypass-country WF -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country WF -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· прогресс реже (Δ 5 с) -F',
+    token: '· в файл: сборник',
     summary:
-      'Реже обновлять строку прогресса (--progress-delta 5 -F); меньше шума в выводе при длинных списках с -F; допишите ссылку.',
-    fullLine: 'yt-dlp --progress-delta 5 -F '
+      'Записать (поле compilation) (признак сборника, если модуль извлечения отдаёт) в flux-ytdlp-compilation.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file compilation flux-ytdlp-compilation.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: список форматов',
+    token: '· в файл: шоу',
     summary:
-      'Записать список форматов (поле formats; JSON или текст от модуля извлечения) в flux-ytdlp-formats.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file formats flux-ytdlp-formats.txt --skip-download '
+      'Записать (поле show) (название шоу или сериала, если модуль извлечения отдаёт) в flux-ytdlp-show.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file show flux-ytdlp-show.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: прямая ссылка',
+    token: '· в файл: исполнители альбома',
     summary:
-      'Записать прямую ссылку на поток выбранного формата (поле url) в flux-ytdlp-url.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file url flux-ytdlp-url.txt --skip-download '
+      'Записать (поле album_artists) (альбомные исполнители: сборники VA, приглашённые артисты feat. и т. п., если модуль извлечения отдаёт) в flux-ytdlp-albumartists.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file album_artists flux-ytdlp-albumartists.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: миниатюры',
+    token: '· в файл: актёрский состав',
     summary:
-      'Записать словарь миниатюр (поле thumbnails;, ссылки на обложки разных размеров) в flux-ytdlp-thumbs.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file thumbnails flux-ytdlp-thumbs.txt --skip-download '
+      'Записать (поле cast) (актерский состав, если модуль извлечения отдаёт) в flux-ytdlp-cast.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file cast flux-ytdlp-cast.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: геометаданные',
+    token: '· в файл: телесеть',
     summary:
-      'Записать (поле location) (местоположение из метаданных площадки) в flux-ytdlp-locmeta.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file location flux-ytdlp-locmeta.txt --skip-download '
+      'Записать (поле network) (телесеть или студия вещания, если модуль извлечения отдаёт) в flux-ytdlp-network.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file network flux-ytdlp-network.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ax (Аландские о-ва) -F',
-    summary: 'Гео-обход через Аландские острова (--geo-bypass-country AX -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country AX -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео sj (Шпицберген и Ян-Майен) -F',
-    summary: 'Гео-обход через Шпицберген и Ян-Майен (--geo-bypass-country SJ -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country SJ -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео sh (о. Вознесения) -F',
-    summary: 'Гео-обход через остров Святой Елены (--geo-bypass-country SH -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country SH -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· метаданные размера в расширенных атрибутах (xattr) -F',
+    token: '· лимит скорости 500k -F',
     summary:
-      'Писать ожидаемый размер файла в xattr где поддерживается ОС (--xattr-set-filesize -F); допишите ссылку.',
-    fullLine: 'yt-dlp --xattr-set-filesize -F '
+      'Список форматов с ограничением скорости 500 KiB/s (--limit-rate 500K -F); меньше нагрузки на канал при -F; допишите ссылку.',
+    fullLine: 'yt-dlp --limit-rate 500K -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: эпоха публикации',
+    token: '· гео sv (Сальвадор) -F',
+    summary: 'Гео-обход через Сальвадор (--geo-bypass-country SV -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country SV -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео hn (Гондурас) -F',
+    summary: 'Гео-обход через Гондурас (--geo-bypass-country HN -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country HN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ni (Никарагуа) -F',
+    summary: 'Гео-обход через Никарагуа (--geo-bypass-country NI -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country NI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео gt (Гватемала) -F',
+    summary: 'Гео-обход через Гватемалу (--geo-bypass-country GT -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country GT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео bz (Белиз) -F',
+    summary: 'Гео-обход через Белиз (--geo-bypass-country BZ -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country BZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео do (Доминикана) -F',
     summary:
-      'Записать (поле epoch) (время публикации в UNIX, если модуль извлечения отдаёт) в flux-ytdlp-epoch.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file epoch flux-ytdlp-epoch.txt --skip-download '
+      'Гео-обход через Доминиканскую Республику (--geo-bypass-country DO -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country DO -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: запрошенные субтитры',
-    summary:
-      'Записать (поле requested_subtitles) (JSON выбранных субтитров) в flux-ytdlp-reqsubs.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file requested_subtitles flux-ytdlp-reqsubs.txt --skip-download '
+    token: '· гео ht (Гаити) -F',
+    summary: 'Гео-обход через Гаити (--geo-bypass-country HT -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country HT -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: канал плейлиста',
-    summary:
-      'Записать (поле playlist_channel) (имя канала плейлиста) в flux-ytdlp-plch.txt без скачивания; допишите ссылку на плейлист.',
-    fullLine: 'yt-dlp --print-to-file playlist_channel flux-ytdlp-plch.txt --skip-download '
+    token: '· гео xk (Косово) -F',
+    summary: 'Гео-обход через Косово (--geo-bypass-country XK -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country XK -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: число элементов',
-    summary:
-      'Записать (поле n_entries) (число элементов плейлиста) в flux-ytdlp-nent.txt без скачивания; допишите ссылку на плейлист.',
-    fullLine: 'yt-dlp --print-to-file n_entries flux-ytdlp-nent.txt --skip-download '
+    token: '· гео ve (Венесуэла) -F',
+    summary: 'Гео-обход через Венесуэлу (--geo-bypass-country VE -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country VE -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: дизлайки',
-    summary:
-      'Записать число дизлайков (поле dislike_count, часто NA) в flux-ytdlp-dislikes.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file dislike_count flux-ytdlp-dislikes.txt --skip-download '
+    token: '· гео ec (Эквадор) -F',
+    summary: 'Гео-обход через Эквадор (--geo-bypass-country EC -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country EC -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· без метафайлов плейлиста -F',
-    summary:
-      'Не писать .info.json и .description рядом с плейлистом (--no-playlist-metafiles -F); допишите ссылку на плейлист.',
-    fullLine: 'yt-dlp --no-playlist-metafiles -F '
+    token: '· гео py (Парагвай) -F',
+    summary: 'Гео-обход через Парагвай (--geo-bypass-country PY -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country PY -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео bv (о. Буве) -F',
-    summary: 'Гео-обход через остров Буве (--geo-bypass-country BV -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country BV -F '
+    token: '· гео cu (Куба) -F',
+    summary: 'Гео-обход через Кубу (--geo-bypass-country CU -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country CU -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео tf (Французские Южные территории) -F',
-    summary:
-      'Гео-обход через Французские Южные и Антарктические территории (--geo-bypass-country TF -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country TF -F '
+    token: '· гео gy (Гайана) -F',
+    summary: 'Гео-обход через Гайану (--geo-bypass-country GY -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country GY -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео hm (Херд и Макдональд) -F',
-    summary:
-      'Гео-обход через остров Херд и острова Макдональд (--geo-bypass-country HM -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country HM -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео io (Британская территория в Индийском океане) -F',
-    summary:
-      'Гео-обход через Британскую территорию в Индийском океане (--geo-bypass-country IO -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country IO -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео pn (Питкэрн) -F',
-    summary: 'Гео-обход через Питкэрн (--geo-bypass-country PN -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country PN -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео aq (Антарктида) -F',
-    summary: 'Гео-обход через Антарктиду (--geo-bypass-country AQ -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country AQ -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео gs (Южная Георгия) -F',
-    summary:
-      'Гео-обход через Южную Георгию и Южные Сандвичевы острова (--geo-bypass-country GS -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country GS -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео pm (Сен-Пьер и Микелон) -F',
-    summary: 'Гео-обход через Сен-Пьер и Микелон (--geo-bypass-country PM -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country PM -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· в файл: дата релиза',
-    summary:
-      'Записать (поле release_date) (поле YYYYMMDD) в flux-ytdlp-reldate.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file release_date flux-ytdlp-reldate.txt --skip-download '
+    token: '· гео sr (Суринам) -F',
+    summary: 'Гео-обход через Суринам (--geo-bypass-country SR -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country SR -F '
   }
 ]

@@ -10,4 +10,6 @@ export interface AppAboutInfo {
   electronVersion: string
   chromeVersion: string
   nodeVersion: string
+  /** `process.platform` main — для owner/packaged smoke в renderer без Node `process`. */
+  osPlatform: NodeJS.Platform
 }

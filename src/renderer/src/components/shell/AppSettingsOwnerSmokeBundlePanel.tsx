@@ -12,8 +12,6 @@ import {
   prependOwnerManualSmokeReportHeader
 } from '../../../../shared/owner-manual-smoke-bundle-report-header'
 import { getOwnerManualSmokePackagedSectionForUiLocale } from '../../../../shared/owner-manual-smoke-packaged-section'
-import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from '../../../../shared/app-settings-hidpi-checklist-keys'
-import { APP_SETTINGS_THEME_CHECKLIST_KEYS } from '../../../../shared/app-settings-theme-checklist-keys'
 import { getFfmpegHwManualSmokeChecklistForUiLocale } from '../../hw-manual-smoke-checklist-locale'
 import {
   getOwnerManualSmokeHidpiChecklistLinesForUiLocale,
@@ -30,17 +28,7 @@ import { getMiniPlayerManualSmokeChecklistForUiLocale } from '../../mini-player-
 import { getWorkflowScenarioManualSmokeChecklistForUiLocale } from '../../workflow-scenario-manual-smoke-checklist-locale'
 import { getWindowsShellManualSmokeChecklistForUiLocale } from '../../windows-shell-manual-smoke-checklist-locale'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
-import type { AppSettingsDialogSection } from '../../../../shared/app-settings-dialog-section'
-import {
-  APP_SETTINGS_THEME_ANCHOR,
-  APP_SETTINGS_HIDPI_ANCHOR,
-  APP_SETTINGS_HW_SMOKE_ANCHOR,
-  APP_SETTINGS_OWNER_SMOKE_BUNDLE_ANCHOR,
-  APP_SETTINGS_PACKAGED_SMOKE_ANCHOR,
-  APP_SETTINGS_WIN_SHELL_ANCHOR,
-  jumpToAppSettingsSmokeTarget,
-  type AppSettingsSmokeJumpTarget
-} from './app-settings-smoke-anchors'
+import { APP_SETTINGS_OWNER_SMOKE_BUNDLE_ANCHOR } from './app-settings-smoke-anchors'
 import { OwnerManualSmokeChecklistSectionsPreview } from './OwnerManualSmokeChecklistSectionsPreview'
 
 function formatUiDpiSnapshotLines(): string[] {
@@ -59,31 +47,15 @@ function formatUiDpiSnapshotLines(): string[] {
   return lines
 }
 
-function OwnerSmokeJumpButton(props: { label: string; onClick: () => void }): JSX.Element {
-  return (
-    <button
-      type="button"
-      className="app-btn app-btn-compact app-settings-owner-smoke-jump"
-      onClick={props.onClick}
-    >
-      {props.label}
-    </button>
-  )
-}
-
 export function AppSettingsOwnerSmokeBundlePanel(props: {
   sectionHintId: string
-  settingsSection: AppSettingsDialogSection
-  onSettingsSectionChange: (section: AppSettingsDialogSection) => void
   onOpenWorkflowPlanner?: () => void
   onOpenWorkflowScenarioBuilder?: () => void
   onOpenKnowledgeArticle?: (slug: string) => void
 }): JSX.Element {
-  const jump = (target: AppSettingsSmokeJumpTarget): void => {
-    jumpToAppSettingsSmokeTarget(target, props.settingsSection, props.onSettingsSectionChange)
-  }
   const [copyHint, setCopyHint] = useState<string | null>(null)
   const [reportHeaderLines, setReportHeaderLines] = useState<readonly string[]>([])
+  const [osPlatform, setOsPlatform] = useState<NodeJS.Platform | null>(null)
   const [osCaps, setOsCaps] = useState<WorkflowOsSchedulerSmokeCapabilities | null>(null)
   const [shellSupported, setShellSupported] = useState(false)
   const locale = getUiLocale()
@@ -94,6 +66,7 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
       if (cancelled) {
         return
       }
+      setOsPlatform(info.osPlatform)
       setReportHeaderLines(
         formatOwnerManualSmokeBundleReportHeaderLines({
           appName: info.appName,
@@ -202,10 +175,12 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
     return formatFfmpegHwManualSmokeChecklistPlainText(shellSections)
   }, [shellSections])
 
-  const packagedSection = useMemo(
-    () => getOwnerManualSmokePackagedSectionForUiLocale(locale),
-    [locale]
-  )
+  const packagedSection = useMemo(() => {
+    if (!osPlatform) {
+      return null
+    }
+    return getOwnerManualSmokePackagedSectionForUiLocale(locale, osPlatform)
+  }, [locale, osPlatform])
 
   const packagedPlainText = useMemo(() => {
     if (!packagedSection) {
@@ -213,16 +188,6 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
     }
     return [packagedSection.heading, ...packagedSection.lines].join('\n')
   }, [packagedSection])
-
-  const themeCheckLines = useMemo(
-    () => APP_SETTINGS_THEME_CHECKLIST_KEYS.map((key) => uiText(key)),
-    []
-  )
-
-  const hidpiCheckLines = useMemo(
-    () => APP_SETTINGS_HIDPI_CHECKLIST_KEYS.map((key) => uiText(key)),
-    []
-  )
 
   const themeBundleLines = useMemo(
     () => getOwnerManualSmokeThemeChecklistLinesForUiLocale(locale),
@@ -279,13 +244,11 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
   }
 
   return (
-    <section
-      id={APP_SETTINGS_OWNER_SMOKE_BUNDLE_ANCHOR}
-      className="app-settings-fieldset app-settings-owner-smoke-panel"
-      aria-describedby={props.sectionHintId}
-    >
+    <div className="app-settings-qa-inner" aria-describedby={props.sectionHintId}>
       <div className="app-settings-hw-smoke-header">
-        <h3 className="app-settings-hidpi-title">{uiText('appSettingsOwnerSmokeLegend')}</h3>
+        <p className="app-modal-hint app-settings-qa-lead">
+          {uiText('appSettingsOwnerSmokeIntro')}
+        </p>
         <div
           className="app-settings-panel-head-trailing"
           role="toolbar"
@@ -301,144 +264,85 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
               }}
             />
           ) : null}
-          <button type="button" className="app-btn app-btn-compact" onClick={onCopy}>
+          <button
+            type="button"
+            className="app-btn app-btn-compact app-btn-primary"
+            onClick={onCopy}
+          >
             {uiText('appSettingsOwnerSmokeCopy')}
           </button>
         </div>
       </div>
-      <p className="app-modal-hint">{uiText('appSettingsOwnerSmokeIntro')}</p>
-      <p className="app-modal-hint">{uiText('appSettingsOwnerSmokePreviewHint')}</p>
-      <p className="app-modal-hint">{uiText('appSettingsOwnerSmokeLocaleGuardHint')}</p>
-      <p className="app-modal-hint">{uiText('appSettingsPackagedSmokeParityGuardHint')}</p>
-      <p className="app-modal-hint">{uiText('appSettingsPackagedE2eRegistryGuardHint')}</p>
-      <p className="app-modal-hint">{uiText('appSettingsOwnerSmokePackagedE2eHint')}</p>
       {copyHint ? (
         <p className="app-modal-hint" role="status" aria-live="polite">
           {copyHint}
         </p>
       ) : null}
-      <details className="app-settings-owner-smoke-preview-block" open>
-        <summary className="app-settings-owner-smoke-preview-summary">
-          {uiText('appSettingsOwnerSmokePreviewSectionTheme')}
-        </summary>
-        <p className="app-modal-hint">{uiText('appSettingsThemeManualHint')}</p>
-        <p className="app-settings-hw-smoke-label">{uiText('appSettingsThemeChecklistIntro')}</p>
-        <ul className="app-settings-hidpi-checklist">
-          {themeCheckLines.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ul>
-        <OwnerSmokeJumpButton
-          label={uiText('appSettingsOwnerSmokeJumpTheme')}
-          onClick={() => {
-            jump({ section: 'general', anchorId: APP_SETTINGS_THEME_ANCHOR })
-          }}
+      {(props.onOpenWorkflowPlanner || props.onOpenWorkflowScenarioBuilder) && (
+        <div className="app-settings-qa-actions">
+          {props.onOpenWorkflowScenarioBuilder ? (
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              onClick={() => {
+                props.onOpenWorkflowScenarioBuilder?.()
+              }}
+            >
+              {uiText('appSettingsOwnerSmokeJumpScenarioBuilder')}
+            </button>
+          ) : null}
+          {props.onOpenWorkflowPlanner ? (
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              onClick={() => {
+                props.onOpenWorkflowPlanner?.()
+              }}
+            >
+              {uiText('appSettingsOwnerSmokeJumpPlanner')}
+            </button>
+          ) : null}
+        </div>
+      )}
+      <div id={APP_SETTINGS_OWNER_SMOKE_BUNDLE_ANCHOR} className="app-settings-qa-previews">
+        <OwnerManualSmokeChecklistSectionsPreview
+          sections={hwSections}
+          summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionHw')}
         />
-      </details>
-      <details className="app-settings-owner-smoke-preview-block" open>
-        <summary className="app-settings-owner-smoke-preview-summary">
-          {uiText('appSettingsOwnerSmokePreviewSectionHidpi')}
-        </summary>
-        <p className="app-modal-hint">{uiText('appSettingsHidpiManualHint')}</p>
-        <p className="app-settings-hw-smoke-label">{uiText('appSettingsHidpiChecklistIntro')}</p>
-        <ul className="app-settings-hidpi-checklist">
-          {hidpiCheckLines.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ul>
-        <p className="app-settings-hw-smoke-label">
-          {uiText('appSettingsOwnerSmokePreviewUiDpiLabel')}
-        </p>
-        <ul className="app-settings-hidpi-checklist app-settings-owner-smoke-mono-lines">
-          {formatUiDpiSnapshotLines().map((line) => (
-            <li key={line}>
-              <code>{line}</code>
-            </li>
-          ))}
-        </ul>
-      </details>
-      <OwnerManualSmokeChecklistSectionsPreview
-        sections={hwSections}
-        summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionHw')}
-      />
-      <OwnerSmokeJumpButton
-        label={uiText('appSettingsOwnerSmokeJumpHw')}
-        onClick={() => {
-          jump({ section: 'dependencies', anchorId: APP_SETTINGS_HW_SMOKE_ANCHOR })
-        }}
-      />
-      <OwnerManualSmokeChecklistSectionsPreview
-        sections={scenarioSections}
-        summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionScenario')}
-      />
-      {scenarioSections.length > 0 && props.onOpenWorkflowScenarioBuilder ? (
-        <OwnerSmokeJumpButton
-          label={uiText('appSettingsOwnerSmokeJumpScenarioBuilder')}
-          onClick={() => {
-            props.onOpenWorkflowScenarioBuilder?.()
-          }}
+        <OwnerManualSmokeChecklistSectionsPreview
+          sections={scenarioSections}
+          summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionScenario')}
         />
-      ) : null}
-      <OwnerManualSmokeChecklistSectionsPreview
-        sections={videoSpriteSections}
-        summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionVideoSprite')}
-      />
-      <OwnerManualSmokeChecklistSectionsPreview
-        sections={miniPlayerSections}
-        summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionMiniPlayer')}
-      />
-      {packagedSection ? (
-        <details className="app-settings-owner-smoke-preview-block">
-          <summary className="app-settings-owner-smoke-preview-summary">
-            {uiText('appSettingsOwnerSmokePreviewSectionPackaged')}
-          </summary>
-          <p className="app-settings-hw-smoke-section-title">{packagedSection.heading}</p>
-          <ul className="app-settings-hidpi-checklist app-settings-owner-smoke-mono-lines">
-            {packagedSection.lines.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
-          <OwnerSmokeJumpButton
-            label={uiText('appSettingsOwnerSmokeJumpPackaged')}
-            onClick={() => {
-              jump({
-                section: 'dependencies',
-                anchorId: APP_SETTINGS_PACKAGED_SMOKE_ANCHOR[packagedSection.platform]
-              })
-            }}
-          />
-        </details>
-      ) : null}
-      <OwnerSmokeJumpButton
-        label={uiText('appSettingsOwnerSmokeJumpHidpi')}
-        onClick={() => {
-          jump({ section: 'general', anchorId: APP_SETTINGS_HIDPI_ANCHOR })
-        }}
-      />
-      <OwnerManualSmokeChecklistSectionsPreview
-        sections={osSections}
-        summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionOs')}
-      />
-      {osSections.length > 0 && props.onOpenWorkflowPlanner ? (
-        <OwnerSmokeJumpButton
-          label={uiText('appSettingsOwnerSmokeJumpPlanner')}
-          onClick={() => {
-            props.onOpenWorkflowPlanner?.()
-          }}
+        <OwnerManualSmokeChecklistSectionsPreview
+          sections={videoSpriteSections}
+          summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionVideoSprite')}
         />
-      ) : null}
-      <OwnerManualSmokeChecklistSectionsPreview
-        sections={shellSections}
-        summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionShell')}
-      />
-      {shellSupported ? (
-        <OwnerSmokeJumpButton
-          label={uiText('appSettingsOwnerSmokeJumpShell')}
-          onClick={() => {
-            jump({ section: 'general', anchorId: APP_SETTINGS_WIN_SHELL_ANCHOR })
-          }}
+        <OwnerManualSmokeChecklistSectionsPreview
+          sections={miniPlayerSections}
+          summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionMiniPlayer')}
         />
-      ) : null}
-    </section>
+        {packagedSection ? (
+          <details className="app-settings-owner-smoke-preview-block">
+            <summary className="app-settings-owner-smoke-preview-summary">
+              {uiText('appSettingsOwnerSmokePreviewSectionPackaged')}
+            </summary>
+            <p className="app-settings-hw-smoke-section-title">{packagedSection.heading}</p>
+            <ul className="app-settings-hidpi-checklist app-settings-owner-smoke-mono-lines">
+              {packagedSection.lines.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
+        <OwnerManualSmokeChecklistSectionsPreview
+          sections={osSections}
+          summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionOs')}
+        />
+        <OwnerManualSmokeChecklistSectionsPreview
+          sections={shellSections}
+          summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionShell')}
+        />
+      </div>
+    </div>
   )
 }

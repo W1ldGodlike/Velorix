@@ -43,6 +43,7 @@ import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
+import { subscribeVoidIpc } from './preload-ipc-subscribe-void'
 import { fluxalloyDownloads } from './preload-fluxalloy-downloads'
 import {
   fluxalloyBatchExport,
@@ -380,16 +381,8 @@ export const fluxalloy = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
-  onOpenEnginePaths: (listener: () => void): (() => void) => {
-    const channel = mw.openEnginePaths
-    const handler = (): void => {
-      listener()
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  },
+  onOpenEnginePaths: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.openEnginePaths, listener),
   onOpenSettings: (listener: (section: AppSettingsDialogSection) => void): (() => void) => {
     const channel = mw.openSettings
     const handler = (_: unknown, raw: unknown): void => {
@@ -400,76 +393,21 @@ export const fluxalloy = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
-  onEnginePathsChanged: (listener: () => void): (() => void) => {
-    const channel = mw.enginePathsChanged
-    const handler = (): void => {
-      listener()
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  },
-  onSettingsBackupImported: (listener: () => void): (() => void) => {
-    const channel = mw.settingsBackupImported
-    const handler = (): void => {
-      listener()
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  },
-  onProcessingHistoryChanged: (listener: () => void): (() => void) => {
-    const channel = mw.processingHistoryChanged
-    const handler = (): void => {
-      listener()
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  },
-  onOpenAbout: (listener: () => void): (() => void) => {
-    const channel = mw.openAbout
-    const handler = (): void => {
-      listener()
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  },
-  onOpenExternalFilterScript: (listener: () => void): (() => void) => {
-    const channel = mw.openExternalFilterScript
-    const handler = (): void => {
-      listener()
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  },
-  onOpenWorkflowPlanner: (listener: () => void): (() => void) => {
-    const channel = mw.openWorkflowPlanner
-    const handler = (): void => {
-      listener()
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  },
-  onOpenWorkflowScenarioBuilder: (listener: () => void): (() => void) => {
-    const channel = mw.openWorkflowScenarioBuilder
-    const handler = (): void => {
-      listener()
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  },
+  onEnginePathsChanged: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.enginePathsChanged, listener),
+  onSettingsBackupImported: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.settingsBackupImported, listener),
+  onProcessingHistoryChanged: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.processingHistoryChanged, listener),
+  onOpenAbout: (listener: () => void): (() => void) => subscribeVoidIpc(mw.openAbout, listener),
+  onOpenMediaFileUtilities: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.openMediaFileUtilities, listener),
+  onOpenExternalFilterScript: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.openExternalFilterScript, listener),
+  onOpenWorkflowPlanner: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.openWorkflowPlanner, listener),
+  onOpenWorkflowScenarioBuilder: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.openWorkflowScenarioBuilder, listener),
   onMainWindowUiPanelsChanged: (
     listener: (panels: MainWindowUiPanelState | undefined) => void
   ): (() => void) => {

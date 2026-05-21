@@ -1,4 +1,9 @@
+import { formatChildProcessExitCode } from '../shared/child-process-exit-code'
 import { logInfo } from './logger-service'
+
+export function formatExternalProcessExitCode(code: number | null | undefined): string {
+  return formatChildProcessExitCode(code)
+}
 
 export type ExternalProcessStream = 'stdout' | 'stderr' | 'lifecycle'
 

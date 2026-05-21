@@ -1,5 +1,10 @@
 import type { TerminalCommandHintEntry } from '../../shared/terminal-contract'
 import { primaryTerminalHintExample } from '../../shared/terminal-hint-json-display'
+import {
+  formatTerminalHintRowLabel,
+  formatTerminalHintRowSummary
+} from '../../shared/terminal-hint-ui-copy'
+import { getUiLocale } from './locales/ui-text'
 import type { YtdlpCommandHintEntry } from '../../shared/ytdlp-download-contract'
 import { uiText, uiTextVars } from './locales/ui-text'
 
@@ -67,7 +72,8 @@ export function terminalHintToolRank(
 }
 
 export function terminalHintInsertAccessibleDescription(hint: TerminalCommandHintEntry): string {
-  const summaryRaw = hint.summary?.trim() ?? ''
+  const locale = getUiLocale()
+  const summaryRaw = formatTerminalHintRowSummary(hint, locale)
   const summary =
     summaryRaw.length > 180
       ? `${summaryRaw.slice(0, 178)}${uiText('commonUnicodeEllipsis')}`
@@ -77,9 +83,10 @@ export function terminalHintInsertAccessibleDescription(hint: TerminalCommandHin
     example !== undefined && example.length > 80
       ? `${example.slice(0, 78)}${uiText('commonUnicodeEllipsis')}`
       : example
+  const tokenLabel = formatTerminalHintRowLabel(hint, locale)
   if (summary.length > 0) {
     return uiTextVars('terminalHintInsertButtonAriaTemplate', {
-      token: hint.token,
+      token: tokenLabel,
       tool: hint.tool,
       summary:
         exampleShort !== undefined && exampleShort.length > 0
@@ -88,7 +95,7 @@ export function terminalHintInsertAccessibleDescription(hint: TerminalCommandHin
     })
   }
   return uiTextVars('terminalHintInsertButtonAriaNoSummaryTemplate', {
-    token: hint.token,
+    token: tokenLabel,
     tool: hint.tool
   })
 }

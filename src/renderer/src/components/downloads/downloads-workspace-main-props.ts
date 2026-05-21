@@ -20,8 +20,6 @@ export type DownloadsWorkspaceMainProps = {
   setDownloadsUrl: Dispatch<SetStateAction<string>>
   downloadsMainUrlFieldId: string
   onAddToQueue: () => void
-  downloadsNarrowLayout: boolean
-  onScrollToSettings: () => void
   downloadsStats: DownloadsQueueStats
   downloadsStatusFilter: DownloadsStatusFilter
   setDownloadsStatusFilter: (next: DownloadsStatusFilter) => void

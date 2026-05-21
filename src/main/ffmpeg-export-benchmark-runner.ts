@@ -12,6 +12,7 @@ import {
   type FfmpegExportBenchmarkRow
 } from '../shared/ffmpeg-export-benchmark-contract'
 import { buildFfmpegExportBenchmarkCandidates } from '../shared/ffmpeg-export-benchmark-candidates'
+import { buildFfmpegExportBenchmarkHardwareHintsFromHwProbe } from '../shared/ffmpeg-export-benchmark-hardware'
 import { estimateFfmpegBenchmarkFullEncodeSec } from '../shared/ffmpeg-export-benchmark-metrics'
 import { parseFfmpegExportBenchmarkLoadThreshold } from '../shared/ffmpeg-export-benchmark-load-threshold'
 import {
@@ -48,16 +49,18 @@ export async function runFfmpegExportBenchmark(params: {
     probeDurationSec !== null && probeDurationSec > sampleSec ? probeDurationSec : sampleSec
 
   let hwSnap = createEmptyFfmpegHwEncodersSnapshot()
+  let benchmarkHardware = undefined
   try {
     const pr = await probeFfmpegHwEncoders(params.ffmpegPath)
     if (pr.ok) {
       hwSnap = pr.snapshot
+      benchmarkHardware = buildFfmpegExportBenchmarkHardwareHintsFromHwProbe(pr)
     }
   } catch {
     /* probe optional */
   }
 
-  const candidates = buildFfmpegExportBenchmarkCandidates(hwSnap)
+  const candidates = buildFfmpegExportBenchmarkCandidates(hwSnap, benchmarkHardware)
   const loadThresholdPercent = parseFfmpegExportBenchmarkLoadThreshold(
     params.settings.ffmpegExportBenchmarkLoadThresholdPercent
   )

@@ -14,7 +14,7 @@ import {
 import { buildEditorExportCodecDetailTooltip } from '../../editor-export-codec-tooltip'
 import { formatEditorExportHwCodecHint } from '../../editor-export-hw-codec-hint'
 import {
-  probeSnapshotOrEmpty,
+  probeRunnableHwSnapshot,
   resolveFfmpegExportVideoCodecForArgv
 } from '../../../../shared/ffmpeg-export-video-codec'
 import { uiText, uiTextVars } from '../../locales/ui-text'
@@ -66,7 +66,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(
   )
   const resolvedVideoCodec = resolveFfmpegExportVideoCodecForArgv(
     exportVideoCodec,
-    probeSnapshotOrEmpty(hwEncoderProbe)
+    probeRunnableHwSnapshot(hwEncoderProbe)
   )
   const videoCodecFieldTitle =
     uiText('editorTooltipVideoCodec') +
@@ -143,8 +143,10 @@ export function EditorFfmpegSettingsRailVideoCodecFields(
         </p>
       ) : null}
       <EditorFfmpegBenchmarkPanel {...props} />
-      <EditorExtractFramesPanel {...props} />
-      <EditorVideoSpritePanel {...props} />
+      <div className="app-settings-media-tools">
+        <EditorExtractFramesPanel {...props} />
+        <EditorVideoSpritePanel {...props} />
+      </div>
       <label className="app-field" title={uiText('editorTooltipEncodePreset')}>
         <span>{uiText('editorFieldEncodePreset')}</span>
         <select

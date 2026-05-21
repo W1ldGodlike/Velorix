@@ -43,17 +43,17 @@ Runtime resolution order is:
 
 ### macOS / Linux (gap)
 
-- Авто-скрипта `engines:prepare:mac` / `engines:prepare:linux` **нет** (только `engines:prepare:win`).
-- **Порядок владельца:** (1) положить `ffmpeg`, `ffprobe`, `yt-dlp` в этот `bin/` (без `.exe`); (2) `npm run engines:doctor`; (3) `build` + `pack:*:dir` + `verify:*`; (4) UI packaged smoke + [owner-manual-smoke](../Help/owner-manual-smoke.md) (§21 e2e в Support ZIP).
+- `engines:prepare:mac` / `engines:prepare:linux` — help-only bundled-first (без сетевой загрузки; только `engines:prepare:win` качает exe).
+- **Порядок владельца:** (1) положить `ffmpeg`, `ffprobe`, `yt-dlp` в этот `bin/` (без `.exe`); (2) `npm run engines:doctor`; (3) `build` + `pack:*:dir` + `verify:*`; (4) UI packaged smoke + [owner-manual-smoke](../Help/ru/owner-manual-smoke.md) (§21 e2e в Support ZIP).
 - **macOS (локально):** `npm run build && npm run pack:mac:dir` → `npm run verify:mac-unpacked` (проверка `dist/mac*/FluxAlloy.app`).
 - **Linux (локально):** быстрый smoke — `pack:linux:dir` + `verify:linux-unpacked` (как в CI); полный релиз — `npm run build:linux` → `npm run verify:linux-release` (`.AppImage` + `.deb` в `dist/`).
 - GitHub Actions: **windows-latest** — `engines:prepare:win` + packaged smokes; **ubuntu-latest** — `check:quiet` + `build` + `pack:linux:dir` + `verify:linux-unpacked` (движки в `bin/` для CI не обязательны). `electron-vite build` на Linux — плагин `fix:esm-shim` (`electron-vite-build-meta.ts`). См. `docs/ARCHITECTURE.md` § Bundled engines и CI.
 - Packaged owner-smoke locales (win/linux/macos): `npm run check:packaged-manual-smoke-parity` — в `check:quiet`; UI **Скопировать** (packaged + owner bundle) дописывает §21 packaged e2e appendix — Настройки → Зависимости.
 - §21 packaged e2e registry: `npm run check:packaged-e2e-scenarios-registry` (12 steps; `ciSmokeScript` ↔ `package.json`; `PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS` parent→leaf, напр. `smoke:packaged-engines` → ffprobe/ytdlp/ffmpeg); Support ZIP — per-step `e2e <id>:`; planned GUI e2e — `listPackagedE2eStepIdsByAutomation('planned-gui-e2e')` в diagnostics.
-- §21 planned GUI Playwright (deferred): `npm run check:packaged-gui-e2e-playwright-deferred` — reserved `test:e2e:gui` (8 planned-gui-e2e; `packaged-gui-e2e-playwright-meta`; not in package.json until wired).
-- §21 Playwright scaffold (deferred): `tests/e2e/gui/planned-gui-e2e-steps.ts` exports `PLANNED_GUI_E2E_STEP_IDS, PLANNED_GUI_E2E_SCENARIOS, PLANNED_GUI_E2E_STEP_BY_ID` (8 steps; `test:e2e:gui` not in package.json yet).
+- §21 Playwright GUI e2e: `npm run check:packaged-gui-e2e-playwright-deferred` — `npm run test:e2e:gui` → `tests/e2e/gui/planned-gui-e2e.spec.ts` (8 skip без `FLUXALLOY_E2E_APP`).
+- §21 Playwright scaffold: `tests/e2e/gui/planned-gui-e2e-steps.ts` exports `PLANNED_GUI_E2E_STEP_IDS, PLANNED_GUI_E2E_SCENARIOS, PLANNED_GUI_E2E_STEP_BY_ID` (8 steps; env `FLUXALLOY_E2E_APP` или `dist/win-unpacked/FluxAlloy.exe`).
 - §21 Playwright planned notes (deferred): `PLANNED_GUI_E2E_STEP_BY_ID` in `tests/e2e/gui/planned-gui-e2e-steps.ts`; Copy/releaseSmoke — `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine`.
-- §21 Playwright wiring (when ready): `docs/RELEASE.md` — `formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet` (after owner-smoke on hardware).
+- §21 Playwright specs (next): `docs/RELEASE.md` — `formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet`.
 - §21 Playwright UI hints (locales): `check:owner-visual-smoke-locale` (4 settings keys, `formatPackagedGuiE2ePlaywrightUiHintSuffix`); about — `check:support-bundle-terminal-hints`.
 - Help §21 crosslinks: `npm run check:help-workflow-smoke-crosslinks` — канон `packaged-e2e-help-workflow-crosslinks-meta` (44 articles; 44/44 workflow user crosslink footers; packaged/owner anchors).
 - Workflow crosslinks (44): user footer (owner-manual-smoke + packaged-windows-smoke); 44/44 workflow user crosslink footers.

@@ -19,6 +19,8 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_MANUAL_OWNER_STEP_COUNT
 } from './packaged-e2e-help-workflow-crosslinks-registry.ts'
 import type { PackagedE2eHelpWorkflowCrosslinksLocale } from './packaged-e2e-help-workflow-crosslinks-registry.ts'
+import { formatPackagedGuiE2ePlaywrightSettingsHintSuffix } from './packaged-gui-e2e-playwright-meta.ts'
+import { formatPackagedGuiE2ePlaywrightRootReadmeLine } from './packaged-gui-e2e-playwright-meta.ts'
 
 export function formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
@@ -77,29 +79,13 @@ export function formatPackagedE2eHelpWorkflowCrosslinksSettingsOwnerIntroAutomat
   return `formatPackagedManualSmokeE2eAppendixLines (${groups} + per-step e2e <id>:)`
 }
 
-/** Playwright tail for `appSettingsOwnerSmokeIntro` (§3/§21). */
-function formatPackagedE2eHelpWorkflowCrosslinksSettingsOwnerIntroPlaywrightTail(): string {
-  return ` Playwright GUI: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD} (reserved ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}).`
-}
-
-/** Full `appSettingsOwnerSmokeIntro` in locales settings.json. */
+/** Full `appSettingsOwnerSmokeIntro` in locales settings.json (UI copy, not dev guard tails). */
 export function formatPackagedE2eHelpWorkflowCrosslinksSettingsOwnerIntroHintBody(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
-  const intro =
-    locale === 'ru'
-      ? 'Копирует единый чеклист с заголовком версии/сборки: тема, HiDPI, HW, сценарии, packaged smoke вашей ОС, планировщик и (на Windows) Проводник; в конце — '
-      : 'Copies one checklist with a version/build header: theme, HiDPI, HW, scenarios, packaged smoke for your OS, scheduler, and (on Windows) Explorer shell; ends with '
-  const zipTail =
-    locale === 'ru'
-      ? '. Тело — в Support ZIP (ownerManualSmoke:) и releaseSmoke:.'
-      : '. Body is in Support ZIP (ownerManualSmoke:) and releaseSmoke:.'
-  return (
-    intro +
-    formatPackagedE2eHelpWorkflowCrosslinksSettingsOwnerIntroAutomationSnippet(locale) +
-    zipTail +
-    formatPackagedE2eHelpWorkflowCrosslinksSettingsOwnerIntroPlaywrightTail()
-  )
+  return locale === 'ru'
+    ? 'Скопируйте полный чеклист для отчёта о ручной проверке (тема, HiDPI, GPU, packaged для вашей ОС). Разделы ниже — только превью.'
+    : 'Copy the full manual QA checklist for your report (theme, HiDPI, GPU, packaged build for this OS). Sections below are preview only.'
 }
 
 /** Tail of `appSettingsPackagedE2eRegistryGuardHint` in locales settings.json. */
@@ -137,9 +123,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksSettingsCopyAppendixHintB
 function formatPackagedE2eHelpWorkflowCrosslinksSettingsRegistryPlaywrightClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
-  return locale === 'ru'
-    ? `; Playwright: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD} (reserved ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}; не в package.json)`
-    : `; Playwright: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD} (reserved ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}; not in package.json yet)`
+  return formatPackagedGuiE2ePlaywrightSettingsHintSuffix(locale)
 }
 
 /** Full `appSettingsPackagedE2eRegistryGuardHint` in locales settings.json. */
@@ -218,9 +202,9 @@ export function formatPackagedE2eHelpWorkflowCrosslinksAgentsMdFullHelpLine(
   return `${formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine()} ${playwrightHelpSection}`
 }
 
-/** bin/README — §21 Playwright GUI e2e deferred (`test:e2e:gui` not in package.json yet). */
+/** bin/README — §21 Playwright GUI e2e (`test:e2e:gui` wired). */
 export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmePlaywrightDeferredLine(): string {
-  return `- §21 planned GUI Playwright (deferred): \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\` — reserved \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_E2E_COUNT} planned-gui-e2e; \`packaged-gui-e2e-playwright-meta\`; not in package.json until wired).`
+  return formatPackagedGuiE2ePlaywrightRootReadmeLine()
 }
 
 /** bin/README — packaged Help crosslinks quiet suffix (6 articles, 44 workflow). */

@@ -46,6 +46,7 @@ function mergeMainWindowUiPanels(
 
 type PanelsStoreState = {
   mainUiPanels: MainWindowUiPanelState
+  downloadsEmbeddedSettingsOpen: boolean
   downloadsEmbeddedHistoryOpen: boolean
   downloadsEmbeddedLogOpen: boolean
   downloadsHistoryListMode: DownloadsHistoryListMode
@@ -57,6 +58,7 @@ type PanelsStoreActions = {
   hydrateMainWindowUiPanels: (patch: MainWindowUiPanelState | null | undefined) => void
   persistMainWindowUiPanelToggle: (key: MainWindowUiPanelKey, nextOpen: boolean) => void
   hydrateDownloadsWindowUiPanels: (patch: DownloadsWindowUiPanelState | null | undefined) => void
+  persistDownloadsEmbeddedSettingsOpen: (nextOpen: boolean) => void
   persistDownloadsEmbeddedHistoryOpen: (nextOpen: boolean) => void
   persistDownloadsEmbeddedLogOpen: (nextOpen: boolean) => void
   persistDownloadsHistoryListMode: (nextMode: DownloadsHistoryListMode) => void
@@ -66,6 +68,7 @@ type PanelsStoreActions = {
 
 const initialPanelsState: PanelsStoreState = {
   mainUiPanels: MAIN_WINDOW_UI_PANEL_DEFAULTS,
+  downloadsEmbeddedSettingsOpen: false,
   downloadsEmbeddedHistoryOpen: true,
   downloadsEmbeddedLogOpen: true,
   downloadsHistoryListMode: DEFAULT_HISTORY_LIST_MODE,
@@ -90,7 +93,9 @@ export const usePanelsStore = createRendererStore<PanelsStoreState & PanelsStore
         .catch(console.error)
     },
     hydrateDownloadsWindowUiPanels: (patch) => {
-      set({
+      set((s) => ({
+        downloadsEmbeddedSettingsOpen:
+          typeof patch?.settings === 'boolean' ? patch.settings : s.downloadsEmbeddedSettingsOpen,
         downloadsEmbeddedHistoryOpen: patch?.history !== false,
         downloadsEmbeddedLogOpen: patch?.log !== false,
         downloadsHistoryListMode:
@@ -116,6 +121,14 @@ export const usePanelsStore = createRendererStore<PanelsStoreState & PanelsStore
               : DOWNLOADS_RAIL_PANEL_DEFAULTS.network,
           expert:
             typeof patch?.expert === 'boolean' ? patch.expert : DOWNLOADS_RAIL_PANEL_DEFAULTS.expert
+        }
+      }))
+    },
+    persistDownloadsEmbeddedSettingsOpen: (nextOpen) => {
+      set({ downloadsEmbeddedSettingsOpen: nextOpen })
+      void window.fluxalloy.downloads.mergeUiPanels({ settings: nextOpen }).then((res) => {
+        if (!res.ok) {
+          console.error(res.error)
         }
       })
     },

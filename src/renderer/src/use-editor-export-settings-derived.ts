@@ -4,7 +4,7 @@ import { parseFfmpegExportExtraArgsLine } from '../../shared/ffmpeg-export-extra
 import { resolveFfmpegExportHwaccelForDecode } from '../../shared/ffmpeg-export-hw-decode'
 import {
   isFfmpegHwExportVideoCodec,
-  probeSnapshotOrEmpty,
+  probeRunnableHwSnapshot,
   resolveFfmpegExportVideoCodecForArgv
 } from '../../shared/ffmpeg-export-video-codec'
 import type { AppSettings } from '../../shared/settings-contract'
@@ -106,7 +106,10 @@ export function useEditorExportSettingsDerived(
   )
   const exportVideoCodecResolvedForPreview = useMemo(
     () =>
-      resolveFfmpegExportVideoCodecForArgv(exportVideoCodec, probeSnapshotOrEmpty(hwEncoderProbe)),
+      resolveFfmpegExportVideoCodecForArgv(
+        exportVideoCodec,
+        probeRunnableHwSnapshot(hwEncoderProbe)
+      ),
     [exportVideoCodec, hwEncoderProbe]
   )
   const exportExtraArgsParsed = useMemo(
@@ -162,7 +165,7 @@ export function useEditorExportSettingsDerived(
         if (!isFfmpegHwExportVideoCodec(codec)) {
           return codec
         }
-        if (r.ok === true && r.snapshot[codec]) {
+        if (r.ok === true && probeRunnableHwSnapshot(r)[codec]) {
           return codec
         }
         void window.fluxalloy.settings.setFfmpegExportVideoCodec('libx264').catch(console.error)

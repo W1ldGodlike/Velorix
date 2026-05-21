@@ -28,13 +28,13 @@ npm run check:release
 
 После успешного завершения шага `pack:dir` в корне репозитория появится распакованное приложение **`dist/win-unpacked/`** для быстрого ручного smoke (см. §4). Сразу после этого **`npm run check:release`** вызывает **`npm run verify:win-unpacked`** — автоматическая проверка: `FluxAlloy.exe`, непустые `resources/bin/{yt-dlp,ffmpeg,ffprobe}.exe`, `resources/FLUXALLOY_TZ.md`, `resources/Data/trusted_hashes.json`, каталог `resources/Help/` (без запуска приложения). Пропуск: `FLUXALLOY_SKIP_PACK_VERIFY=1`.
 
-`npm run check` (алиас на `npm run check:quiet`, см. `scripts/run-quiet-check.mjs`) включает в том числе:
+`npm run check` (алиас на `npm run check:quiet`, см. `scripts/gate/run-quiet-check.mjs`) включает в том числе:
 
 - ESLint;
 - TypeScript для main/web/tests;
 - Vitest;
 - `npm run check:trusted-hashes` — структура `Data/trusted_hashes.json` (локально: неизвестные ключи — предупреждение по умолчанию; **`FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1`** — ошибка; **`FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1`** — непустые хеши только 64 hex). В GitHub Actions `ci` обе строгие переменные включены на job;
-- `scripts/check-no-secrets.mjs` по tracked-файлам.
+- `scripts/gate/check-no-secrets.mjs` по tracked-файлам.
 
 ## 2. Runtime-движки
 
@@ -148,7 +148,7 @@ npm run build:win
 
 **§19 signing indexed (SDK sprint + diagnostics):** Help §15 hub + `check:help-packaged-smoke-docs` + `check:help-owner-smoke-docs` + strict signing crosslinks; `continue.txt` / `initial.txt` / `agent-contract.txt` — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock` / `formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause`; Support ZIP — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine` (`check:release` / `check:platform-packaging-scripts`). **Packaging indexed:** `electron-builder.yml` (**9** §19 yaml comments); `formatReleaseCodeSigningRoadmap*ElectronBuilder*` + `formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnosticLine` (J-1520..1539).
 
-Support ZIP (`diagnostics.txt` → `releaseSmoke:`, `terminalHints:`) на любой ОС перечисляет layout win/linux/macos unpacked (present/missing), сводку §21 e2e и dev §8 terminal guards — см. [about-support-logs](../Help/about-support-logs.md), [logging-and-diagnostics](../Help/logging-and-diagnostics.md).
+Support ZIP (`diagnostics.txt` → `releaseSmoke:`, `terminalHints:`) на любой ОС перечисляет layout win/linux/macos unpacked (present/missing), сводку §21 e2e и dev §8 terminal guards — см. [about-support-logs](../Help/ru/about-support-logs.md), [logging-and-diagnostics](../Help/ru/logging-and-diagnostics.md).
 
 Перед публикацией пройдите **ручной smoke** (не заменяет `verify:win-unpacked` / `smoke:packaged-release`):
 
@@ -194,7 +194,7 @@ npm run verify:linux-unpacked
 
 Канон — документация **electron-builder** (linux targets) и политика GPG вашего дистрибутивного канала.
 
-Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatLinuxReleaseCodeSigningRoadmapHelpClause`); `Help/packaged-linux-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.
+Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatLinuxReleaseCodeSigningRoadmapHelpClause`); `Help/ru/packaged-linux-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.
 
 В Support ZIP `releaseSmoke:` — layout `dist/linux-unpacked/` и `resources/*` (present/missing без запуска verify на другой ОС).
 
@@ -223,7 +223,7 @@ npm run verify:mac-unpacked
 
 Канон реализации — официальные разделы Apple (Gatekeeper / notarization / hardened runtime) и раздел mac в документации **electron-builder**; ключи конфигурации обновлять вместе с целевыми платформами Electron.
 
-Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatMacosReleaseCodeSigningRoadmapHelpClause`); `Help/packaged-macos-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.
+Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatMacosReleaseCodeSigningRoadmapHelpClause`); `Help/ru/packaged-macos-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.
 
 В Support ZIP `releaseSmoke:` — кандидаты `dist/mac*/FluxAlloy.app` и layout `Contents/Resources/*` (present/missing без запуска verify на Windows).
 
@@ -236,18 +236,18 @@ Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-co
 - `npm run check:packaged-gui-e2e-playwright-deferred` — §21 Playwright GUI e2e отложен: 8 `planned-gui-e2e`, зарезервирован `test:e2e:gui` (пока **нет** в `package.json`); канон — `packaged-gui-e2e-playwright-meta.ts`; UI — `formatPackagedGuiE2ePlaywrightUiHintSuffix` (`check:owner-visual-smoke-locale`, `check:support-bundle-terminal-hints`).
 - Playwright scaffold (deferred): `tests/e2e/gui/planned-gui-e2e-steps.ts` — `PLANNED_GUI_E2E_STEP_IDS, PLANNED_GUI_E2E_SCENARIOS, PLANNED_GUI_E2E_STEP_BY_ID`; `test:e2e:gui` not in `package.json` until wired.
 - Playwright planned notes (deferred): `PLANNED_GUI_E2E_STEP_BY_ID` in `tests/e2e/gui/planned-gui-e2e-steps.ts`; Copy/releaseSmoke — `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine`.
-- §21 Playwright wiring (when ready): add `@playwright/test` + `playwright.config.ts`; `test:e2e:gui` in `package.json` from `tests/e2e/gui/planned-gui-e2e-steps.ts` (`PLANNED_GUI_E2E_SCENARIOS`); update `check:packaged-gui-e2e-playwright-deferred.mjs` (remove absence check for reserved script); optional CI job after owner-smoke on hardware.
+- §21 Playwright wiring (when ready): add `@playwright/test` + `playwright.config.mjs`; `test:e2e:gui` in `package.json` from `tests/e2e/gui/planned-gui-e2e-steps.ts` (`PLANNED_GUI_E2E_SCENARIOS`); update `check:packaged-gui-e2e-playwright-deferred.mjs` (remove absence check for reserved script); optional CI job after owner-smoke on hardware.
 - `npm run check:help-smoke-guards-package-json` — `PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS` ↔ `package.json`; quiet order; `partition:` в `WORKFLOW_REQUIRED_SNIPPETS`;
 - `npm run check:help-packaged-smoke-docs` / `check:help-owner-smoke-docs` — packaged §19/§21 snippets в Help; packaged win/linux/macos — `formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix` (44 + partition note);
 - `npm run check:help-workflow-smoke-crosslinks` — `packaged-e2e-help-workflow-crosslinks-meta` (44 workflow + 6 packaged + 8 anchors; tail 42 `HelpCrosslinksCountTail`, ffmpeg-terminal `FfmpegTerminalWorkflowClause`, knowledge `KnowledgeHubDevClause`; FAQ в tail, вне 44); `bin/README.md` — `BinReadmeWorkflowPartitionLine`, `BinReadmePartitionGuardLine`; `README.md`/`AGENTS.md` — `RootReadmePartitionLine` / `AgentsMdHelpLine` (partition registry); owner/packaged §21 + `terminalHints:` → logging hub; дублирует guard/count с `check:help-owner-smoke-docs`, `check:help-packaged-smoke-docs`, `check:owner-visual-smoke-locale` (`formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause`).
 - `npm run check:terminal-hints-guards-package-json` — registry §8 terminal guards ↔ `package.json` + порядок в `check:quiet`;
 - `npm run check:help-terminal-hints-docs` — 24 Help (ffmpeg-terminal-hints, tools/about/logging, workflow hubs + downloads + faq/appearance/knowledge + anchors about/planner `HelpCrosslinksCountTail` 44, packaged win/linux/macos, owner-manual-smoke) ↔ `terminal-contract-hints-meta`;
-- `npm run check:terminal-contract-hints-shards` — 35 shard-файлов, snapshot 1056+833 hints;
+- `npm run check:terminal-contract-hints-shards` — 26 shard-файлов, snapshot 839+465 hints;
 - `npm run check:terminal-hints-locale` — `appSettingsTerminalHintsGuardHint` в `locales/{ru,en}/settings.json` (`formatTerminalContractHintsSettingsHelpClause`).
 - `npm run check:support-bundle-terminal-hints` — Support ZIP `diagnostics.txt` блок `terminalHints:` ↔ `formatTerminalContractHintsSupportZipLines` (`support-bundle.ts`, `main-diagnostics-service.ts`).
 - Help sync formatters: `packaged-e2e-help-workflow-crosslinks-meta` — `HelpCrosslinksCountTail` (42 tail + partition), `FfmpegTerminalWorkflowClause` (partition + §8), `AboutSupportReleaseSmokeDevClause`, `OwnerManualSmokeWorkflowArticlesClause`, `KnowledgeHubDevClause`, `LoggingClause`, `PackagedCrosslinksQuietSuffix`, `BinReadmePartitionGuardLine`; guard требует `partition:` во всех 44 workflow; `terminal-contract-hints-meta.ts` — `formatTerminalContractHintsLoggingHelpDevGuardsLine`, `formatTerminalContractHintsAboutSupportZipTerminalHintsBullet`, `formatTerminalContractHintsFfmpegHelpSupportZipLine`, `formatTerminalContractHintsToolsHelpPackagedSmokeLine` — guard `check:help-terminal-hints-docs` сверяет snippet’ы в Help.
 
-Копирование из UI packaged-панели и блока **Ручной smoke** совпадает с форматом Support ZIP (`owner:` / `automated:` / `step [id]:`); packaged **Скопировать** и **Скопировать весь пакет** дописывают один блок **§21 packaged e2e (CI vs owner)** (`appendPackagedManualSmokeE2ePlanLines` в `packaged-manual-smoke-plain-text.ts`). В архиве `releaseSmoke:` — CI pipeline (`smoke:packaged-release`), layout win/linux/macos и тот же §21 appendix. Playwright UI — `formatPackagedGuiE2ePlaywrightUiHintSuffix` (`PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS` + `aboutSupportZipDiagnosticsSectionsHint`). См. `Help/owner-manual-smoke.md`, `Help/about-support-logs.md`, `Help/logging-and-diagnostics.md`.
+Копирование из UI packaged-панели и блока **Ручной smoke** совпадает с форматом Support ZIP (`owner:` / `automated:` / `step [id]:`); packaged **Скопировать** и **Скопировать весь пакет** дописывают один блок **§21 packaged e2e (CI vs owner)** (`appendPackagedManualSmokeE2ePlanLines` в `packaged-manual-smoke-plain-text.ts`). В архиве `releaseSmoke:` — CI pipeline (`smoke:packaged-release`), layout win/linux/macos и тот же §21 appendix. Playwright UI — `formatPackagedGuiE2ePlaywrightUiHintSuffix` (`PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS` + `aboutSupportZipDiagnosticsSectionsHint`). См. `Help/ru/owner-manual-smoke.md`, `Help/ru/about-support-logs.md`, `Help/ru/logging-and-diagnostics.md`.
 
 ### 4.3 Workflows: OS schedulers (watch-folder)
 
@@ -263,7 +263,7 @@ Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-co
 
 URL-сценарий: шаблон «URL → скачать → ffmpeg», `sourceUrl` в JSON; **FFmpeg rail → Сценарий → Запустить URL-сценарий**.
 
-Справка: `Help/workflows-planner-scenarios.md` (RU), `Help/en/workflows-planner-scenarios.md` (EN).
+Справка: `Help/ru/workflows-planner-scenarios.md` (RU), `Help/en/workflows-planner-scenarios.md` (EN).
 
 В UI: **Сервис → Планировщик задач** — блок «Ручной smoke OS scheduler» (копирование чеклиста; тот же текст в Support ZIP как `workflowOsSchedulerSmoke:`).
 

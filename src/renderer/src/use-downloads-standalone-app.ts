@@ -136,10 +136,6 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
       onAddToQueue: () => {
         void handleAddDownloadsFromMain()
       },
-      downloadsNarrowLayout,
-      onScrollToSettings: () => {
-        downloadsSettingsRailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      },
       downloadsStats,
       downloadsStatusFilter,
       setDownloadsStatusFilter,
@@ -181,9 +177,7 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
     }
   }, [
     downloadsMainUrlFieldId,
-    downloadsNarrowLayout,
     downloadsRows,
-    downloadsSettingsRailRef,
     downloadsStats,
     downloadsStatusFilter,
     downloadsUrl,
@@ -202,6 +196,9 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
 
   const downloadsSettingsProps = useMemo(
     (): DownloadsSettingsRailProps => ({
+      stackedLayout: downloadsNarrowLayout,
+      embeddedOpen: downloadsWindowUiPanels.downloadsEmbeddedSettingsOpen,
+      onEmbeddedToggle: downloadsWindowUiPanels.persistDownloadsEmbeddedSettingsOpen,
       downloadsOptionsBusy: downloadsWorkspace.downloadsOptionsBusy,
       downloadsHistoryBusy: downloadsWorkspace.downloadsHistoryBusy,
       downloadsOptions: downloadsWorkspace.downloadsOptions,
@@ -221,7 +218,10 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
       onOpenKnowledgeArticle
     }),
     [
+      downloadsNarrowLayout,
       downloadsWorkspace,
+      downloadsWindowUiPanels.downloadsEmbeddedSettingsOpen,
+      downloadsWindowUiPanels.persistDownloadsEmbeddedSettingsOpen,
       downloadsWindowUiPanels.downloadsRailPanels,
       handleDownloadsRailSectionToggle,
       onOpenKnowledgeArticle,

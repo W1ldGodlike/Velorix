@@ -98,6 +98,11 @@ export type UseAppShellLayoutPropsInput = {
     setOpen: Dispatch<SetStateAction<boolean>>
     onStatus: (message: string) => void
   }
+  mediaFileUtilities: {
+    open: boolean
+    setOpen: Dispatch<SetStateAction<boolean>>
+    onStatus: (message: string) => void
+  }
 }
 
 export type AppShellLayoutChromeProps = {
@@ -123,6 +128,11 @@ export type AppShellLayoutChromeProps = {
     onClose: () => void
     onStatus: (message: string) => void
   }
+  mediaFileUtilities: {
+    open: boolean
+    onClose: () => void
+    onStatus: (message: string) => void
+  }
 }
 
 export function useAppShellLayoutProps(
@@ -136,7 +146,8 @@ export function useAppShellLayoutProps(
     appSettings,
     externalFilterScript,
     workflowPlanner,
-    workflowScenarioBuilder
+    workflowScenarioBuilder,
+    mediaFileUtilities
   } = input
   const {
     setKnowledgeInitialSlug,
@@ -192,8 +203,8 @@ export function useAppShellLayoutProps(
     void handleEnginesDownload()
   }, [handleEnginesDownload])
 
-  const onOpenEnginePaths = useCallback((): void => {
-    setAppSettingsSection('dependencies')
+  const onOpenAppSettings = useCallback((): void => {
+    setAppSettingsSection('general')
     setAppSettingsOpen(true)
   }, [setAppSettingsOpen, setAppSettingsSection])
 
@@ -230,7 +241,7 @@ export function useAppShellLayoutProps(
       onCancelExport,
       onExtractFrames: handleExtractFrames,
       onEnginesDownload,
-      onOpenEnginePaths,
+      onOpenAppSettings,
       onOpenKnowledge,
       onOpenAbout,
       onUiLocaleToggle: handleUiLocaleToggle,
@@ -248,7 +259,7 @@ export function useAppShellLayoutProps(
       onCancelExport,
       onEnginesDownload,
       onOpenAbout,
-      onOpenEnginePaths,
+      onOpenAppSettings,
       onOpenFile,
       onOpenKnowledge,
       onOpenVideoFolder,
@@ -417,6 +428,17 @@ export function useAppShellLayoutProps(
     [workflowScenarioBuilder, setKnowledgeInitialSlug, setKnowledgeOpen]
   )
 
+  const mediaFileUtilitiesProps = useMemo(
+    () => ({
+      open: mediaFileUtilities.open,
+      onClose: () => {
+        mediaFileUtilities.setOpen(false)
+      },
+      onStatus: mediaFileUtilities.onStatus
+    }),
+    [mediaFileUtilities]
+  )
+
   return {
     appChromeBusy,
     topbar: topbarProps,
@@ -426,6 +448,7 @@ export function useAppShellLayoutProps(
     appSettings: appSettingsProps,
     externalFilterScript: externalFilterScriptProps,
     workflowPlanner: workflowPlannerProps,
-    workflowScenarioBuilder: workflowScenarioBuilderProps
+    workflowScenarioBuilder: workflowScenarioBuilderProps,
+    mediaFileUtilities: mediaFileUtilitiesProps
   }
 }

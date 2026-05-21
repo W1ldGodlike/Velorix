@@ -42,4 +42,4 @@ Before distributing an installer:
 
 ## macOS / Linux packaging
 
-Нет `engines:prepare:mac|linux` — бинарники в `bin/` вручную, затем `npm run engines:doctor`, `pack:*:dir`, owner/packaged smoke. См. [`bin/README.md`](../bin/README.md), `Help/packaged-macos-smoke.md`, `Help/packaged-linux-smoke.md`.
+`engines:prepare:mac|linux` — help-only bundled-first (без загрузки); бинарники в `bin/` вручную, затем `npm run engines:doctor`, `pack:*:dir`, owner/packaged smoke. См. [`bin/README.md`](../bin/README.md), `Help/ru/packaged-macos-smoke.md`, `Help/ru/packaged-linux-smoke.md`.

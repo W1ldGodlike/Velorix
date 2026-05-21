@@ -5,6 +5,8 @@ import {
   parseFfmpegEncodersListOutput,
   parseFfmpegHwaccelsOutput
 } from '../shared/ffmpeg-hw-encoder-probe'
+import { nativeMainCurrentPlatform } from '../shared/native-main-platform'
+import { probeGpuAdapterNames } from './gpu-adapter-names-probe'
 import { probeNvidiaSmiGpuInfo } from './nvidia-smi-gpu-info-probe'
 
 const EXEC_OPTS = {
@@ -15,7 +17,9 @@ const EXEC_OPTS = {
 
 /** Запуск `ffmpeg -encoders` и `-hwaccels`, разбор whitelist HW-кодеков (без shell). */
 export function probeFfmpegHwEncoders(ffmpegPath: string): Promise<FfmpegHwEncodersProbeResult> {
+  const osPlatform = nativeMainCurrentPlatform()
   const nvidiaGpuPromise = probeNvidiaSmiGpuInfo()
+  const gpuAdapterNamesPromise = probeGpuAdapterNames(osPlatform)
   return new Promise((resolve) => {
     execFile(ffmpegPath, ['-hide_banner', '-encoders'], EXEC_OPTS, (err, stdout, stderr) => {
       if (err) {
@@ -27,9 +31,11 @@ export function probeFfmpegHwEncoders(ffmpegPath: string): Promise<FfmpegHwEncod
       execFile(ffmpegPath, ['-hide_banner', '-hwaccels'], EXEC_OPTS, (err2, stdout2, stderr2) => {
         const merged = `${String(stdout2 ?? '')}\n${String(stderr2 ?? '')}`
         const hwaccels = err2 ? [] : parseFfmpegHwaccelsOutput(merged)
-        void nvidiaGpuPromise.then((nvidiaGpu) => {
-          resolve({ ok: true, snapshot, hwaccels, nvidiaGpu })
-        })
+        void Promise.all([nvidiaGpuPromise, gpuAdapterNamesPromise]).then(
+          ([nvidiaGpu, gpuAdapterNames]) => {
+            resolve({ ok: true, snapshot, hwaccels, nvidiaGpu, gpuAdapterNames, osPlatform })
+          }
+        )
       })
     })
   })

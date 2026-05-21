@@ -79,6 +79,7 @@ export function parseMainWindowUiPanels(raw: unknown): MainWindowUiPanelState | 
 }
 
 const DOWNLOADS_UI_PANEL_KEYS = [
+  'settings',
   'history',
   'log',
   'format',

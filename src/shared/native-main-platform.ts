@@ -5,6 +5,11 @@
 
 export type NativeMainPlatformFamily = 'windows' | 'macos' | 'linux' | 'other'
 
+/** Текущая ОС main/preload (единственная точка чтения `process.platform` для IPC в about). */
+export function nativeMainCurrentPlatform(): NodeJS.Platform {
+  return process.platform
+}
+
 export function nativeMainPlatformFamily(
   platform: NodeJS.Platform = process.platform
 ): NativeMainPlatformFamily {

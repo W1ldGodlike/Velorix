@@ -6,7 +6,7 @@ import {
 import {
   isFfmpegHwAutoVideoCodec,
   isFfmpegHwExportVideoCodec,
-  probeSnapshotOrEmpty,
+  probeRunnableHwSnapshot,
   resolveFfmpegExportVideoCodecForArgv
 } from '../../shared/ffmpeg-export-video-codec'
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
@@ -45,7 +45,7 @@ export function formatEditorExportHwCodecHint(
 ): string | null {
   const { uiText, uiTextVars } = ui
   const hwaccels = hwEncoderProbe?.ok === true ? hwEncoderProbe.hwaccels : []
-  const snapProbe = probeSnapshotOrEmpty(hwEncoderProbe)
+  const snapProbe = probeRunnableHwSnapshot(hwEncoderProbe)
   const resolved = resolveFfmpegExportVideoCodecForArgv(exportVideoCodec, snapProbe)
 
   if (

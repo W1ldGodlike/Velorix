@@ -293,12 +293,12 @@ export function formatReleaseCodeSigningRoadmapSdkContinuePromptSprintChecklistS
 
 /** `docs/RELEASE.md` §4.1 — Linux Help + formatter pointer. */
 export function formatReleaseCodeSigningRoadmapReleaseLinuxHelpPointer(): string {
-  return 'Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatLinuxReleaseCodeSigningRoadmapHelpClause`); `Help/packaged-linux-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.'
+  return 'Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatLinuxReleaseCodeSigningRoadmapHelpClause`); `Help/ru/packaged-linux-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.'
 }
 
 /** `docs/RELEASE.md` §4.2 — macOS Help + formatter pointer. */
 export function formatReleaseCodeSigningRoadmapReleaseMacosHelpPointer(): string {
-  return 'Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatMacosReleaseCodeSigningRoadmapHelpClause`); `Help/packaged-macos-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.'
+  return 'Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatMacosReleaseCodeSigningRoadmapHelpClause`); `Help/ru/packaged-macos-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.'
 }
 
 /** `scripts/cursor-automation/README.md` — §19 signing index. */

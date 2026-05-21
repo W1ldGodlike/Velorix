@@ -5,7 +5,7 @@ const node = process.execPath
 
 describe('verify-win-unpacked-layout.mjs §19', () => {
   it('--help exits 0', () => {
-    const result = spawnSync(node, ['scripts/verify-win-unpacked-layout.mjs', '--help'], {
+    const result = spawnSync(node, ['scripts/release/verify-win-unpacked-layout.mjs', '--help'], {
       cwd: process.cwd(),
       encoding: 'utf8',
       windowsHide: true

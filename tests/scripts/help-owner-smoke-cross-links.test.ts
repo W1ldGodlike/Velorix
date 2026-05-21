@@ -14,21 +14,21 @@ const OWNER_SMOKE_MD = `${KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE}.md`
 
 describe('Help owner-smoke cross-links §5', () => {
   it('appearance-language-theme links owner-manual-smoke (ru + en)', () => {
-    for (const rel of ['appearance-language-theme.md', 'en/appearance-language-theme.md']) {
+    for (const rel of ['ru/appearance-language-theme.md', 'en/appearance-language-theme.md']) {
       const md = readFileSync(join(HELP_ROOT, rel), 'utf8')
       expect(md, rel).toContain(OWNER_SMOKE_MD)
     }
   })
 
   it('owner-manual-smoke links appearance-language-theme (ru + en)', () => {
-    for (const rel of ['owner-manual-smoke.md', 'en/owner-manual-smoke.md']) {
+    for (const rel of ['ru/owner-manual-smoke.md', 'en/owner-manual-smoke.md']) {
       const md = readFileSync(join(HELP_ROOT, rel), 'utf8')
       expect(md, rel).toContain(APPEARANCE_MD)
     }
   })
 
   it('owner-manual-smoke documents video sprite §7.5 (ru + en)', () => {
-    for (const rel of ['owner-manual-smoke.md', 'en/owner-manual-smoke.md']) {
+    for (const rel of ['ru/owner-manual-smoke.md', 'en/owner-manual-smoke.md']) {
       const md = readFileSync(join(HELP_ROOT, rel), 'utf8')
       expect(md, rel).toMatch(/Video sprite|Спрайт/)
       expect(md, rel).toContain('§7.5')
@@ -36,7 +36,7 @@ describe('Help owner-smoke cross-links §5', () => {
   })
 
   it('owner-manual-smoke documents mini player §4.3 (ru + en)', () => {
-    for (const rel of ['owner-manual-smoke.md', 'en/owner-manual-smoke.md']) {
+    for (const rel of ['ru/owner-manual-smoke.md', 'en/owner-manual-smoke.md']) {
       const md = readFileSync(join(HELP_ROOT, rel), 'utf8')
       expect(md, rel).toMatch(/Mini Player|Мини-плеер/)
       expect(md, rel).toContain('§4.3')
@@ -44,7 +44,7 @@ describe('Help owner-smoke cross-links §5', () => {
   })
 
   it('getting-started links appearance and owner-manual-smoke (ru + en)', () => {
-    for (const rel of ['getting-started.md', 'en/getting-started.md']) {
+    for (const rel of ['ru/getting-started.md', 'en/getting-started.md']) {
       const md = readFileSync(join(HELP_ROOT, rel), 'utf8')
       expect(md, rel).toContain(APPEARANCE_MD)
       expect(md, rel).toContain(OWNER_SMOKE_MD)
@@ -53,9 +53,9 @@ describe('Help owner-smoke cross-links §5', () => {
 
   it('knowledge-base-howto and faq link visual smoke articles (ru + en)', () => {
     for (const rel of [
-      'knowledge-base-howto.md',
+      'ru/knowledge-base-howto.md',
       'en/knowledge-base-howto.md',
-      'faq-troubleshooting.md',
+      'ru/faq-troubleshooting.md',
       'en/faq-troubleshooting.md'
     ]) {
       const md = readFileSync(join(HELP_ROOT, rel), 'utf8')

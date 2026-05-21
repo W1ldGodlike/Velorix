@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 
-import { logExternalProcessLine } from './external-process-log'
+import { formatExternalProcessExitCode, logExternalProcessLine } from './external-process-log'
 
 export function runFfmpegVideoSprite(params: {
   ffmpegPath: string
@@ -51,7 +51,11 @@ export function runFfmpegVideoSprite(params: {
 
     child.on('close', (code) => {
       params.signal.removeEventListener('abort', onAbort)
-      logExternalProcessLine('ffmpeg-video-sprite', 'lifecycle', `closed exitCode=${code ?? '?'}`)
+      logExternalProcessLine(
+        'ffmpeg-video-sprite',
+        'lifecycle',
+        `closed exitCode=${formatExternalProcessExitCode(code)}`
+      )
       if (params.signal.aborted) {
         resolve({ ok: false, cancelled: true })
         return

@@ -13,12 +13,12 @@ export default defineConfig(
       '**/dist',
       '**/out',
       'scripts/cursor-automation/**',
-      'scripts/inject-flux-summary-pole.mjs',
-      'scripts/journal-lib.mjs',
-      'scripts/journal-next-stamp.mjs',
-      'scripts/journal-consolidate.mjs',
-      'scripts/check-journal-numbering.mjs',
-      'scripts/engines-bundled-sha256.mjs'
+      'scripts/maint/inject-flux-summary-pole.mjs',
+      'scripts/maint/journal-lib.mjs',
+      'scripts/maint/journal-next-stamp.mjs',
+      'scripts/maint/journal-consolidate.mjs',
+      'scripts/gate/check-journal-numbering.mjs',
+      'scripts/release/engines-bundled-sha256.mjs'
     ]
   },
   tseslint.configs.recommended,

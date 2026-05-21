@@ -19,7 +19,7 @@ export function formatWindowsShellManualSmokeChecklistLines(): string[] {
     ownerLine: 'ручной smoke Проводника Windows (§14), не автоматизируется в CI UI',
     automatedLine:
       'Vitest windows-file-association / windows-explorer-context-menu (argv/registry only)',
-    docLine: 'Help/windows-shell-integration.md',
+    docLine: 'Help/ru/windows-shell-integration.md',
     uiLine: 'Настройки → Зависимости → Проводник Windows'
   })
 }

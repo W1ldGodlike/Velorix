@@ -1,6 +1,6 @@
 import type { TerminalCommandHintEntry } from './terminal-contract-types'
 
-/** §8 — подсказки вкладки «Загрузки» (часть 01). */
+/** §8 — подсказки Загрузки (часть 1/14; §8 audit prune). */
 export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_01: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
@@ -368,5 +368,61 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_01: TerminalCommandHintEntry
     summary:
       'Соотношение сторон выбранного формата без скачивания (--skip-download --print aspect_ratio); допишите ссылку.',
     fullLine: 'yt-dlp --skip-download --print aspect_ratio '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· плейлист: только 1-й + -F',
+    summary:
+      'Только первый элемент плейлиста и список форматов (--playlist-items 1 -F); допишите ссылку на плейлист.',
+    fullLine: 'yt-dlp --playlist-items 1 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· youtube: клиент веб-сайта -F',
+    summary:
+      'YouTube: принудительно веб-клиент через --extractor-args (обход части ограничений), затем ключ -F для списка форматов; допишите ссылку.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=web -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookie из edge',
+    summary:
+      'Сухой прогон с файлами cookie из Edge (--cookies-from-browser); допишите ссылку (альтернатива Chrome).',
+    fullLine: 'yt-dlp --skip-download --cookies-from-browser edge '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: длительность в секундах (duration)',
+    summary:
+      'Длительность в секундах (число) без скачивания (--skip-download --print duration); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print duration '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: ширина (width)',
+    summary:
+      'Ширина выбранного формата в пикселях без скачивания (--skip-download --print width); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print width '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: высота (height)',
+    summary:
+      'Высота выбранного формата в пикселях без скачивания (--skip-download --print height); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print height '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: сводный битрейт (tbr)',
+    summary:
+      'Сводный битрейт выбранного формата (kbps) без скачивания (--skip-download --print tbr); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print tbr '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· вывод: аудиобитрейт (abr)',
+    summary:
+      'Аудио-битрейт выбранного формата (kbps) без скачивания (--skip-download --print abr); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --print abr '
   }
 ]

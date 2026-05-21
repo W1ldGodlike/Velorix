@@ -23,6 +23,7 @@ export function useAppMainWindowEffectsRuntime(
     setAppSettingsOpen,
     setAppSettingsSection,
     setExternalFilterScriptOpen,
+    setMediaFileUtilitiesOpen,
     setWorkflowPlannerOpen,
     setWorkflowScenarioBuilderOpen,
     setAboutInfo,
@@ -123,6 +124,9 @@ export function useAppMainWindowEffectsRuntime(
     const offExternalFilter = window.fluxalloy.onOpenExternalFilterScript(() => {
       setExternalFilterScriptOpen(true)
     })
+    const offMediaUtilities = window.fluxalloy.onOpenMediaFileUtilities(() => {
+      setMediaFileUtilitiesOpen(true)
+    })
     const offWorkflowPlanner = window.fluxalloy.onOpenWorkflowPlanner(() => {
       setWorkflowPlannerOpen(true)
     })
@@ -135,6 +139,7 @@ export function useAppMainWindowEffectsRuntime(
       offSynced()
       offAbout()
       offExternalFilter()
+      offMediaUtilities()
       offWorkflowPlanner()
       offWorkflowScenarioBuilder()
     }
@@ -145,6 +150,7 @@ export function useAppMainWindowEffectsRuntime(
     setAppSettingsOpen,
     setAppSettingsSection,
     setExternalFilterScriptOpen,
+    setMediaFileUtilitiesOpen,
     setWorkflowPlannerOpen,
     setWorkflowScenarioBuilderOpen
   ])

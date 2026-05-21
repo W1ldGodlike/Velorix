@@ -30,4 +30,8 @@ export type DownloadsSettingsRailProps = {
   appendDownloadsExtraArgsToken: (token: string) => void
   refreshDownloadsOptions: () => Promise<void>
   onOpenKnowledgeArticle?: (slug: string) => void
+  /** Узкая вкладка: панель настроек под очередью, сворачивается как история/журнал. */
+  stackedLayout?: boolean
+  embeddedOpen?: boolean
+  onEmbeddedToggle?: (nextOpen: boolean) => void
 }

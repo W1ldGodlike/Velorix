@@ -26,6 +26,10 @@ import {
   FFMPEG_HW_VIDEO_ENCODER_SELECT_ORDER
 } from '../../shared/ffmpeg-export-hw-codec-ui'
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
+import {
+  buildFfmpegExportBenchmarkHardwareHintsFromHwProbe,
+  isFfmpegHwVideoEncoderRunnableInUi
+} from '../../shared/ffmpeg-export-benchmark-hardware'
 import { isFfmpegHwExportVideoCodec } from '../../shared/ffmpeg-export-video-codec'
 import { uiText, uiTextVars } from './locales/ui-text'
 import type { UiTextKey } from './locales/ui-text-strings'
@@ -58,8 +62,9 @@ export function buildEditorExportSelectOptions(
         { id: 'hw_auto_hevc', label: uiText('editorExportCodecHwAutoHevc') }
       ]
       if (hwEncoderProbe?.ok === true) {
+        const hardware = buildFfmpegExportBenchmarkHardwareHintsFromHwProbe(hwEncoderProbe)
         for (const id of FFMPEG_HW_VIDEO_ENCODER_SELECT_ORDER) {
-          if (hwEncoderProbe.snapshot[id]) {
+          if (isFfmpegHwVideoEncoderRunnableInUi(id, hwEncoderProbe.snapshot, hardware)) {
             const labelKey = FFMPEG_HW_ENCODER_LABEL_UI_KEYS[id]
             v.push({ id, label: uiText(labelKey as UiTextKey) })
           }

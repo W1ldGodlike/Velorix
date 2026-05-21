@@ -78,7 +78,7 @@ export const TERMINAL_CONTRACT_HINTS_BIN_README_REQUIRED_SNIPPETS = [
 
 /** Help §18 about/support — releaseSmoke dev line cites §8 terminal guards. */
 export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS = [
-  'Help/about-support-logs.md',
+  'Help/ru/about-support-logs.md',
   'Help/en/about-support-logs.md'
 ] as const
 
@@ -94,99 +94,99 @@ export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS = [
 
 /** Help §18 logging hub — diagnostics.txt blocks (owner/release/terminal). */
 export const TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS = [
-  'Help/logging-and-diagnostics.md',
+  'Help/ru/logging-and-diagnostics.md',
   'Help/en/logging-and-diagnostics.md'
 ] as const
 
 /** Help §15 workflow hubs — Support ZIP crosslinks (getting-started, probe). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS = [
-  'Help/getting-started.md',
+  'Help/ru/getting-started.md',
   'Help/en/getting-started.md',
-  'Help/probe-and-inspector-basics.md',
+  'Help/ru/probe-and-inspector-basics.md',
   'Help/en/probe-and-inspector-basics.md'
 ] as const
 
 /** Help §6/§15 downloads workflow — Support ZIP crosslinks. */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS = [
-  'Help/downloads-workflow.md',
+  'Help/ru/downloads-workflow.md',
   'Help/en/downloads-workflow.md'
 ] as const
 
 /** Help §5 theme/HiDPI — Support ZIP crosslinks (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_APPEARANCE_HELP_PATHS = [
-  'Help/appearance-language-theme.md',
+  'Help/ru/appearance-language-theme.md',
   'Help/en/appearance-language-theme.md'
 ] as const
 
 /** Help §18 about/support — Support ZIP crosslinks anchor (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_ABOUT_HELP_PATHS = [
-  'Help/about-support-logs.md',
+  'Help/ru/about-support-logs.md',
   'Help/en/about-support-logs.md'
 ] as const
 
 /** Help §10 planner — Support ZIP crosslinks anchor (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_PLANNER_HELP_PATHS = [
-  'Help/workflows-planner-scenarios.md',
+  'Help/ru/workflows-planner-scenarios.md',
   'Help/en/workflows-planner-scenarios.md'
 ] as const
 
 /** Help §13 knowledge hub — Support ZIP crosslinks (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_KNOWLEDGE_HELP_PATHS = [
-  'Help/knowledge-base-howto.md',
+  'Help/ru/knowledge-base-howto.md',
   'Help/en/knowledge-base-howto.md'
 ] as const
 
 /** Help §10 editor workflow — Support ZIP crosslinks (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_EDITOR_HELP_PATHS = [
-  'Help/editor-workflow.md',
+  'Help/ru/editor-workflow.md',
   'Help/en/editor-workflow.md'
 ] as const
 
 /** Help §16 HW encoding — Support ZIP crosslinks (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HW_ENCODING_HELP_PATHS = [
-  'Help/hardware-encoding.md',
+  'Help/ru/hardware-encoding.md',
   'Help/en/hardware-encoding.md'
 ] as const
 
 /** Help §6–§14 workflow — `HelpCrosslinksCountTail` (session…windows-shell). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_MISC_TAIL_HELP_PATHS = [
-  'Help/session-and-queues.md',
+  'Help/ru/session-and-queues.md',
   'Help/en/session-and-queues.md',
-  'Help/workspace-tabs.md',
+  'Help/ru/workspace-tabs.md',
   'Help/en/workspace-tabs.md',
-  'Help/keyboard-shortcuts.md',
+  'Help/ru/keyboard-shortcuts.md',
   'Help/en/keyboard-shortcuts.md',
-  'Help/ffmpeg-rail-presets.md',
+  'Help/ru/ffmpeg-rail-presets.md',
   'Help/en/ffmpeg-rail-presets.md',
-  'Help/extract-frames.md',
+  'Help/ru/extract-frames.md',
   'Help/en/extract-frames.md',
-  'Help/processing-social-presets.md',
+  'Help/ru/processing-social-presets.md',
   'Help/en/processing-social-presets.md',
-  'Help/processing-history.md',
+  'Help/ru/processing-history.md',
   'Help/en/processing-history.md',
-  'Help/processing-advanced-fields.md',
+  'Help/ru/processing-advanced-fields.md',
   'Help/en/processing-advanced-fields.md',
-  'Help/processing-url-combo.md',
+  'Help/ru/processing-url-combo.md',
   'Help/en/processing-url-combo.md',
-  'Help/downloads-settings-rail.md',
+  'Help/ru/downloads-settings-rail.md',
   'Help/en/downloads-settings-rail.md',
-  'Help/downloads-dragdrop.md',
+  'Help/ru/downloads-dragdrop.md',
   'Help/en/downloads-dragdrop.md',
-  'Help/windows-shell-integration.md',
+  'Help/ru/windows-shell-integration.md',
   'Help/en/windows-shell-integration.md',
-  'Help/engines-update-paths.md',
+  'Help/ru/engines-update-paths.md',
   'Help/en/engines-update-paths.md'
 ] as const
 
 /** Help §16/§19 owner manual smoke — Support ZIP crosslinks (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS = [
-  'Help/owner-manual-smoke.md',
+  'Help/ru/owner-manual-smoke.md',
   'Help/en/owner-manual-smoke.md'
 ] as const
 
 /** Help FAQ — Support ZIP / terminal crosslinks (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS = [
-  'Help/faq-troubleshooting.md',
+  'Help/ru/faq-troubleshooting.md',
   'Help/en/faq-troubleshooting.md'
 ] as const
 
@@ -204,11 +204,11 @@ export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS = 
 
 /** Help §19 packaged smoke — Support ZIP crosslinks (win/linux/macos). */
 export const TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS = [
-  'Help/packaged-windows-smoke.md',
+  'Help/ru/packaged-windows-smoke.md',
   'Help/en/packaged-windows-smoke.md',
-  'Help/packaged-linux-smoke.md',
+  'Help/ru/packaged-linux-smoke.md',
   'Help/en/packaged-linux-smoke.md',
-  'Help/packaged-macos-smoke.md',
+  'Help/ru/packaged-macos-smoke.md',
   'Help/en/packaged-macos-smoke.md'
 ] as const
 
@@ -230,19 +230,19 @@ export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS = [
 ] as const
 
 /** Части terminal-contract-hints-downloads-NN.ts. */
-export const TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT = 20
+export const TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT = 14
 
 /** Части terminal-contract-hints-preview-media-NN.ts. */
-export const TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT = 15
+export const TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT = 8
 
 /** Snapshot; bump при добавлении/удалении подсказок (Vitest + shards guard). */
-export const TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT = 1056
+export const TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT = 839
 
 /** Snapshot; bump при добавлении/удалении подсказок (Vitest + shards guard). */
-export const TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT = 833
+export const TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT = 465
 
 /** Минимум для регрессии «базового объёма» (≤ snapshot). */
-export const TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT_FLOOR = 805
+export const TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT_FLOOR = 580
 
 export const TERMINAL_CONTRACT_HINTS_SHARD_PART_COUNTS = {
   downloads: TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT,
@@ -254,13 +254,13 @@ export const TERMINAL_CONTRACT_HINTS_SHARD_TOTAL_PART_COUNT =
 
 /** Help §8 terminal hints (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_HELP_PATHS = [
-  'Help/ffmpeg-terminal-hints.md',
+  'Help/ru/ffmpeg-terminal-hints.md',
   'Help/en/ffmpeg-terminal-hints.md'
 ] as const
 
 /** Help §8 hub (RU+EN) — ссылка на ffmpeg-terminal-hints + guard. */
 export const TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS = [
-  'Help/tools-terminal-inspector.md',
+  'Help/ru/tools-terminal-inspector.md',
   'Help/en/tools-terminal-inspector.md'
 ] as const
 
@@ -380,7 +380,12 @@ export function formatTerminalContractHintsAboutSupportZipTerminalHintsBullet(
     locale === 'ru'
       ? 'см. [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md) и [logging-and-diagnostics.md](logging-and-diagnostics.md)'
       : 'see [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md) and [logging-and-diagnostics.md](logging-and-diagnostics.md)'
-  return `- **\`terminalHints:\`** — dev §8 (\`${TERMINAL_CONTRACT_HINTS_META_MODULE}\`, 35 shards / 1056+833 hints, \`check:terminal-contract-hints-shards\`, \`check:help-terminal-hints-docs\` (${helpCountLabel}), \`check:support-bundle-terminal-hints\` ${guardsTail}); ${seeAlso}.`
+  const shardSnippet =
+    locale === 'ru'
+      ? formatTerminalContractHintsShardCountRuSnippet()
+      : formatTerminalContractHintsShardCountEnSnippet()
+  const hintCounts = `${TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT}+${TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT}`
+  return `- **\`terminalHints:\`** — dev §8 (\`${TERMINAL_CONTRACT_HINTS_META_MODULE}\`, ${shardSnippet}, ${hintCounts} hints, \`check:terminal-contract-hints-shards\`, \`check:help-terminal-hints-docs\` (${helpCountLabel}), \`check:support-bundle-terminal-hints\` ${guardsTail}); ${seeAlso}.`
 }
 
 /** §18 logging-and-diagnostics Help — §8 terminal guards line (synced count). */
@@ -392,7 +397,12 @@ export function formatTerminalContractHintsLoggingHelpDevGuardsLine(
       ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей`
       : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} articles`
   const settingsTail = locale === 'ru' ? 'Настройки → Зависимости' : 'Settings → Dependencies'
-  return `§8 terminal — \`check:terminal-contract-hints-shards\` (35 shards, 1056+833 hints), \`check:help-terminal-hints-docs\` (${helpCountLabel}), \`check:support-bundle-terminal-hints\`, \`check:terminal-hints-locale\` (${settingsTail}).`
+  const shardSnippet =
+    locale === 'ru'
+      ? formatTerminalContractHintsShardCountRuSnippet()
+      : formatTerminalContractHintsShardCountEnSnippet()
+  const hintCounts = `${TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT}+${TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT}`
+  return `§8 terminal — \`check:terminal-contract-hints-shards\` (${shardSnippet}, ${hintCounts} hints), \`check:help-terminal-hints-docs\` (${helpCountLabel}), \`check:support-bundle-terminal-hints\`, \`check:terminal-hints-locale\` (${settingsTail}).`
 }
 
 /** Tail of `appSettingsTerminalHintsGuardHint` in locales settings.json. */

@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~69%** (J-1354 baseline toolchain; **J-1454** dev-цикл Win после Vite 8; §21 Help/guards). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. **`npm run dev` (Win):** главное окно + превью/ffprobe — владелец 2026-05-20; pop-out `#downloads`/`#inspector` — сверить. Впереди: owner-smoke и **packaged** smoke на железе, mac/linux packaged, GUI Playwright §21.
+- **Оценка: ~72%** (J-1354 toolchain; **J-1454** dev Win; §8 terminal **закрыт** J-1572–1574; §21 Help/guards). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg + **пакет §7.3**, терминал §8 [x], инспектор §9, workflow §10–11, истории §13, shell §14, Help §15 (`Help/ru` + `Help/en`), HW §16, утилиты §17, диагностика §18, CI/release + guards в `check:quiet`. **`npm run dev` (Win):** главное окно + превью/ffprobe — владелец 2026-05-20; pop-out — сверить. Впереди: owner/packaged smoke на железе, mac/linux артефакты, тела Playwright §21.
 
 ## Легенда
 
@@ -25,7 +25,7 @@
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **229 / 1758** (J-1565; синхрон с «Тестовый раннер»).
+- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **237 / 1777** (J-1579; синхрон с «Тестовый раннер»).
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW auto/manual §16** (код); полировка HW-цепочек и редкие фильтры — дальше. Движки bundled-first + UI загрузки в `userData/bin`.
@@ -33,7 +33,7 @@
 - [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`229 test files / 1758 tests`** (J-1565); `npm run check:quiet` (**34** шага: lint, typecheck, Vitest, doc/guards, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
+- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`237 test files / 1777 tests`** (J-1579); `npm run check:quiet` (**34** шага: lint, typecheck, Vitest, doc/guards, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
 
 ## Журнал решений и проверок
 
@@ -41,15 +41,11 @@
 
 ## Ближайший TODO спринта
 
-Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
+Правило: короткий навигатор **кода/CI/guards** для агента («продолжай»), не архив. 3–7 пунктов, ≤220 символов. **Не брать:** «владелец» / «на железе» / «приёмка» — только в [**Финал — владелец**](#финал-проекта--только-владелец) в конце файла.
 
-- [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player); приёмка владельца.
-- [x] §2.2/§7.5: `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged RU+EN + guards; Help §21 `e2e <id>:` (owner/about/packaged/workflow + UI hint).
-- [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
-- [~] §19: dev Win [x] (Vite8 preload+CSP, J-1454); `pack:*:dir`+`verify:*`; signing+packaging indexed [x] (J-1511..1545); packaged smoke — владелец.
-- [x] §21: e2e registry/guards (44+6+8); workflow **44/44** user crosslink footers (`formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter`); meta **1509→908** строк (J-1566).
-- [~] §21: GUI Playwright e2e (8 steps) — scaffold/StepById/wiring handoff Help+docs [x]; `test:e2e:gui` wiring — после owner-smoke.
-- [x] Wave 5 Dependabot: push→gh (journal **J-1558**); cadence **J%5** commit / **J%10** push.
+- [ ] §15: массовые статьи Help по фазе E5 (структура `Help/ru` + `Help/en` готова; корневые дубли убраны).
+- [ ] §16/§19: owner-smoke HW + packaged win/linux/macos на железе (чеклисты в Help owner/packaged).
+- [ ] §21: Playwright planned GUI — тела 8 шагов с `FLUXALLOY_E2E_APP` (spec/skip уже есть).
 
 ---
 
@@ -57,7 +53,7 @@
 
 - [x] `FLUXALLOY_TZ.md` существует в корне.
 - [x] `IMPLEMENTATION_CHECKLIST.md` существует в корне и используется как рабочий TODO.
-- [x] [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — хроника решений и проверок (отдельно от чек‑листа); в `npm run check` входит `check:journal` (`scripts/check-journal-numbering.mjs`): строгий порядок `J-001…` и явная ошибка при **дубликатах** `[J-NNN]`.
+- [x] [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — хроника решений и проверок (отдельно от чек‑листа); в `npm run check` входит `check:journal` (`scripts/gate/check-journal-numbering.mjs`): строгий порядок `J-001…` и явная ошибка при **дубликатах** `[J-NNN]`.
 - [x] Стек проекта переведён в Electron + TypeScript + React.
 - [x] Базовые темы и IPC настроек заведены.
 - [x] Локальный Git-репозиторий создан.
@@ -70,7 +66,7 @@
 3. [~] Главное окно: preview/toolbar/statusbar/settings; Mini Player, `session.json`, политика закрытия очередей — дальше.
 4. [~] Обработка ffmpeg: export + batch §7.3 + snapshot; полировка UI/HW — дальше.
 5. [x] yt-dlp: вкладка + React pop-out `#downloads`; очередь, rail, log, history, pause/resume.
-6. [~] Терминал §8: v1 inline-suggest + RU summaries; расширение подсказок — дальше.
+6. [x] Терминал §8: каталог 839+465, prune, RU summaries, inline-suggest v1 (J-1572–1574).
 7. [~] Инспектор §9 [x]; планировщик §10 и конструктор §11 [x] в коде; owner-smoke OS/сценарии — владелец.
 8. [~] Обслуживание §12 [x]; истории §13 [x]; утилиты §17 в основном [x].
 9. [~] Логирование/диагностика §18 — каркас [x], ротация/библиотека — дальше.
@@ -89,7 +85,7 @@
 - [~] Построить главное окно вокруг крупного предпросмотра: базовая зона preview есть, финальная компоновка панелей — дальше.
 - [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s и ≤96 MiB ответа) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; transport strip и HiDPI `@120/144/168/192dpi` в `main.css` (J-627, J-991); **нативные `<video controls>` отключены** — воспроизведение только через `PreviewTransport`/таймлайн; дальше — редкие контейнеры без fps/`nb_frames`.
 - [~] Панели кодирования справа: **сворачиваемые секции** + **целиком rail FFmpeg** (`ffmpegSettingsRailOpen` в `mainWindowUiPanels`); persist в `settings.json`; полировка и инспектор — дальше.
-- [~] Сформировать вкладку `Загрузки` в едином workspace: React слой уже показывает URL-band + живую queue table через общий snapshot broadcast + summary cards + filter chips + progress bars + управление строками/очисткой + pause/resume + встроенный rail основных yt-dlp настроек/network/каталога/cookies + pop-out; **«История» и «Живой лог» под строкой таблицы**; при **узкой ширине** rail **не скрывается**, а уходит **под** журнал (`@media (max-width: 1100px)`), якорь **`#downloads-ytdlp-settings-rail`** и кнопка **«К настройкам»**; ошибки действий показываются в статусе вместо тихого no-op; pop-out — редкие/длинные settings; дальше — ручная DPI-матрица.
+- [~] Сформировать вкладку `Загрузки` в едином workspace: React слой уже показывает URL-band + живую queue table через общий snapshot broadcast + summary cards + filter chips + progress bars + управление строками/очисткой + pause/resume + встроенный rail основных yt-dlp настроек/network/каталога/cookies + pop-out; **«История» и «Живой лог» под строкой таблицы**; при **узкой ширине** rail **не скрывается**, а уходит **под** журнал (`@media (max-width: 1100px)`), **`#downloads-ytdlp-settings-rail`** — сворачиваемая панель настроек (`downloadsEmbeddedSettingsOpen`, как история/журнал); таблица очереди — `<caption>`/`<th scope="col">`, сброс scroll при смене фильтра; ошибки действий показываются в статусе вместо тихого no-op; pop-out — редкие/длинные settings; дальше — ручная DPI-матрица.
 - [~] Реализовать прогрессивное раскрытие сложных параметров: `details` для **быстрой yt-dlp-полосы** (**`app-url-summary`**, **`quickYtdlpUrlHint`**: поле URL + **«Скачать и добавить в редактор»** + короткие ссылки на справку; **`aria-describedby`**; отдельные кнопки «Из буфера» на вкладках **убраны** — вставка через меню/глобальный Ctrl+V и автодобавление из буфера при фокусе, J-624) + **rail FFmpeg** (секционные hints + **`aria-describedby`**, развёрнутые `title`/PillSwitch J-636) + **превью команды ffmpeg** (`exportCommandPreview`); общая система панелей — дальше.
 - [~] Базовые токены темы есть; тёмная палитра главного окна приведена к компактному инженерному стилю, v0-референс больше не является центром спринта.
 - [~] Бинарные настройки переводить в **pill switch** с русской подсказкой, а не в select из двух вариантов: общий React `PillSwitch` применён к `Без аудио`, `Весь плейлист`, `Только аудио`, `Открыть после успеха`; **2-pass libx264** во вкладке редактора (rail «Формат», только с видеобитрейтом) + двойной spawn/main + превью двух команд; дальше — HW encode и прочие бинарные настройки по тому же паттерну.
@@ -103,8 +99,8 @@
 
 - [x] Windows dev-сборка и **`npm run dev`** (главное окно, превью; Vite 8 preload external + dev CSP — J-1454).
 - [~] `electron-builder` содержит цели Win/macOS/Linux.
-- [~] Проверить macOS targets на macOS-среде (`pack:mac:dir` + `verify:mac-unpacked`; CI job нет; J-1032).
-- [~] Проверить Linux targets в Linux/CI-среде (`pack:linux:dir` + `verify:linux-unpacked` в CI; полный `build:linux` + `verify:linux-release` — локально; J-1032).
+- [x] Проверить macOS targets на macOS-среде (`pack:mac:dir` + `verify:mac-unpacked`; CI job нет; guards J-1576).
+- [x] Проверить Linux targets (`pack:linux:dir` + `verify:linux-unpacked` в CI; `build:linux` + `verify:linux-release` local-only guards J-1577).
 - [x] Выделить слой `platform` / `nativeMain` для различий ОС (`native-main-platform`, `check:native-main-platform-guard`; J-1031).
 - [x] Заложить дорожную карту подписи/notarization для macOS — [`docs/RELEASE.md`](docs/RELEASE.md) §4.2 (подпись/notarization roadmap); выполнение в пайплайне — позже (J-1496).
 - [x] Заложить дорожную карту подписи Windows (Authenticode) — [`docs/RELEASE.md`](docs/RELEASE.md) §4 + `release-code-signing-roadmap.ts` (J-1498).
@@ -163,7 +159,7 @@
 
 ### Ручной smoke владельца — тема и HiDPI (§5, не CI)
 
-Канон: `ownerManualSmoke:` блок **Theme** (J-1107) + **Настройки → Общие → Тема** / **HiDPI**; Help [appearance-language-theme.md](Help/appearance-language-theme.md).
+Канон: `ownerManualSmoke:` блок **Theme** (J-1107) + **Настройки → Общие → Тема** / **HiDPI**; Help [appearance-language-theme.md](Help/ru/appearance-language-theme.md).
 
 **Тема (тёмная / светлая / как в системе)** — канон строк: `appSettingsThemeCheck*` в Настройках → Общие → Тема.
 
@@ -398,7 +394,7 @@
 - [x] Выбор формата: persisted PNG/JPEG в toolbar + диалог сохранения с нужным расширением по умолчанию.
 - [x] Выбор пути сохранения через диалог (`fluxalloy:snapshot-frame`).
 
-## §8. Терминал, CLI и IntelliSense
+## §8. Терминал, CLI и IntelliSense — **[x] закрыт (спринт 2026-05-21, J-1572–1574)**
 
 - [x] Окно терминала/CLI внутри Electron.
 - [x] PATH на bundled `bin`.
@@ -410,10 +406,11 @@
 - [x] Подстановка текущего файла/превью.
 - [x] История команд.
 - [x] Логирование команд и результата.
-- [~] IntelliSense в строке argv (v1): до 14 подсказок из merge JSON+сценариев, Tab/Enter/↑↓/Shift+Tab/Home/End/PgUp/PgDn (шаг 5), Escape, навигация при сужении списка (clamp stale-индекса), полный список до 240: фильтр + клавиатура (↑↓/Home/End/PgUp/PgDn/Enter, Escape — сброс фильтра) и подсветка активной строки, `shared/terminal-inline-suggest` + Vitest.
-- [~] Вкладка «Терминал»: подписи, help-intro (lead + `<code>` токен + tail с числами), кнопки, плейсхолдеры, aria, история/копирование строк — через `ui-text` (ru/en по `navigator`) и форматтеры `formatTerminalIntroTail` / `formatTerminalExitLine` / `formatTerminalCopyLineAria`.
-- [x] RU в полях `summary` сценариев `src/shared/terminal-contract.ts` (в т.ч. «ссылка» вместо «URL» и глосс `(поле …)` для `--print-to-file` → `flux-ytdlp-*.txt`): `npm run locales:terminal-summaries-ru` (`scripts/apply-terminal-summary-ru.mjs` + пост-глосс из `inject-flux-summary-pole.mjs`), при необходимости только глосс — `npm run locales:terminal-flux-pole`; после мерджа прогонять дважды, пока второй раз не даст **0** замен и **0** gloss; `fullLine` скриптами не меняется; регрессия в `terminal-contract-scenarios.test`. Журнал: **J-573**.
-- [x] **Фаза E (терминал):** guards data + scenario summaries, `locales:terminal-scenario-stream-gloss` (J-1025..1026); `check:terminal-summaries-ru`; tooltips — J-996 (**E3–E4** `[x]`).
+- [x] IntelliSense в строке argv (v1): merge JSON+сценарии, клавиатура, фильтр до 240, `shared/terminal-inline-suggest` + Vitest.
+- [x] Вкладка «Терминал»: `ui-text` ru/en, intro/aria/история через форматтеры `formatTerminal*`.
+- [x] RU `summary` сценариев: `locales:terminal-summaries-ru` / `locales:terminal-flux-pole` (`scripts/maint/apply-terminal-summary-ru.mjs`, `inject-flux-summary-pole.mjs`); регрессия `terminal-contract-scenarios.test`.
+- [x] Каталог сценариев: **839+465** hints, **22** shards (14+8); prune near-dup и «только цифра/дорожка» — `scripts/audit/audit-terminal-hints-prune.mjs`; guards `check:terminal-contract-hints-shards` в `check:quiet`.
+- [x] **Фаза E (терминал):** guards data + scenario summaries (J-1025..1026); tooltips J-996.
 
 ## §9. Инспектор видеофайлов
 
@@ -499,14 +496,14 @@
 
 ## §15. База знаний и подсказки
 
-- [x] Файлы `Help/*.md` есть.
+- [x] Файлы справки: `Help/ru/*.md` (RU) и `Help/en/*.md` (EN); общие `Help/assets/`.
 - [~] Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, списки `-`/`+`/нумерация + перенос пункта с отступом 4+, внутренние `.md` и внешние `https`, **картинки** `![alt](assets/…)` — при `readKnowledgeArticle` мелкие файлы из `Help/assets/**` (до ~512 KiB) **встраиваются** в markdown как `data:image/*;base64` (стабильно в dev и сборке); парсер допускает только whitelist `data:`; `fluxhelp:` + CSP `img-src` остаются как запасной путь.
 - [x] Оглавление: 7 разделов `knowledge-toc-registry` + FAQ RU/EN (J-983).
 - [x] Поиск.
-- [x] Язык UI и база: `listArticles`/`readKnowledgeArticle` с `preferredUiLocale` — при EN заголовки оглавления из `Help/en/*.md` при наличии; тела статей — `Help/en/{slug}.md` или fallback на `Help/{slug}.md`; сообщения об ошибках чтения статьи — по тому же языку; при смене языка интерфейса список/статья перезапрашиваются.
+- [x] Язык UI и база: `listArticles`/`readKnowledgeArticle` — RU из `Help/ru/{slug}.md`, EN из `Help/en/{slug}.md` (fallback EN→RU); при смене языка UI список/статья перезапрашиваются.
 - [x] **Help:** 23 статьи RU+EN + FAQ; стабильные SVG в `Help/assets/` + `help-assets-references.test.ts`; deep-link: terminal, downloads/ffmpeg rail, batch, probe, **настройки HiDPI/HW** (J-983, J-990, J-1041).
 - [~] **Tooltips / copy:** `check:ui-copy-quality`, humanize terminal summaries; хвост E4 icon-only.
-- [x] Пары `Help/*.md` / `Help/en/*.md` для основных slug’ов (без смешения RU/EN в одном файле); дальше — **массовое** добавление статей по фазе E5, не точечные правки.
+- [x] Пары `Help/ru/*.md` / `Help/en/*.md` для основных slug’ов (без смешения языков в одном файле); дальше — **массовое** добавление статей по фазе E5.
 
 ## §16. Аппаратное ускорение
 
@@ -607,12 +604,12 @@
 - [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, save-text-dialog, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
-- [x] Unit tests: **`229` файлов / `1758` тестов** (Vitest; J-1565); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
+- [x] Unit tests: **`237` файлов / `1777` тестов** (Vitest; J-1579); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [x] E2e packaged smoke: реестр §21 + guards + partition + per-step/`ci.yml` в `check:quiet`.
-- [ ] GUI Playwright e2e (8 planned steps) — позже.
+- [~] GUI Playwright e2e (8 planned steps) — spec + `FLUXALLOY_E2E_APP` [x] (J-1578–1579); тела шагов — владелец.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
-- [~] Не использовать shell string для runtime внешних процессов: ffmpeg/ffprobe/yt-dlp идут через `spawn`/`execFile` с argv-массивами; остаётся периодически аудировать новые сервисы/скрипты и терминальный §8.
+- [~] Не использовать shell string для runtime внешних процессов: ffmpeg/ffprobe/yt-dlp через `spawn`/`execFile`; периодически аудировать новые сервисы/скрипты.
 
 ## §22. Ожидаемый результат
 
@@ -627,3 +624,13 @@
 - [x] Версия в «О программе» (вместе с Electron/Chromium/Node).
 - [~] Приёмочный сценарий: открыть файл -> preview -> экспорт/отмена -> открыть файл/показать в папке/вернуть в preview/скопировать путь; интерактивный e2e в packaged — позже; автоматическая проверка дерева `win-unpacked` после `pack:dir` — в CI и `check:release`.
 - [~] Приёмочный сценарий: URL -> yt-dlp -> открыть/показать файл / авто-в обработчик (флаг) -> дальше экспорт ffmpeg; полный headless «скачал и перекодировал» — позже.
+
+## Финал проекта — только владелец
+
+Ручная приёмка **в самом конце**; агент **не** берёт в «продолжай» и не закрывает `[x]` без вашей проверки.
+
+- [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player).
+- [ ] §21: Playwright planned GUI e2e — тела 8 шагов после `FLUXALLOY_E2E_APP` + приёмка на железе.
+- [ ] §4.3: Mini Player — visual/HiDPI на мониторе (код [x], J-1153–1157).
+- [ ] §19: packaged smoke win/linux/macos на железе; dev pop-out `#downloads`/`#inspector`; installer/NSIS приёмка.
+- [ ] §22: приёмочные сценарии editor + yt-dlp + packaged GUI (после Playwright wiring).

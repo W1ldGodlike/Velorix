@@ -18,7 +18,9 @@ describe('editor-export-codec-tooltip', () => {
         ok: true,
         snapshot: snap,
         hwaccels: ['d3d11va'],
-        nvidiaGpu: null
+        nvidiaGpu: null,
+        gpuAdapterNames: ['AMD Radeon RX 580'],
+        osPlatform: 'win32'
       },
       exportHwDecode: false,
       exportHwaccelDecode: null,

@@ -1,5 +1,5 @@
 /**
- * §21 deferred Playwright GUI e2e — canonical planned step ids (runner not wired).
+ * §21 Playwright GUI e2e — canonical planned step ids (`npm run test:e2e:gui` scaffold runner).
  * Re-export only; Vitest locks order against `PACKAGED_E2E_SMOKE_REGISTRY`.
  */
 import {

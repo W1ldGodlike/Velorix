@@ -46,7 +46,8 @@ describe('knowledge-service', () => {
 
   it('listKnowledgeArticles читает только безопасные markdown статьи с заголовком', () => {
     withHelpDir((help) => {
-      writeFileSync(join(help, 'start.md'), '# Quick start\n\nBody', 'utf8')
+      mkdirSync(join(help, 'ru'))
+      writeFileSync(join(help, 'ru', 'start.md'), '# Quick start\n\nBody', 'utf8')
       writeFileSync(join(help, 'bad name.md'), '# Bad', 'utf8')
       writeFileSync(join(help, 'script.js'), 'no', 'utf8')
 
@@ -59,8 +60,9 @@ describe('knowledge-service', () => {
 
   it('listKnowledgeArticles с preferredUiLocale=en берёт заголовок из Help/en при наличии', () => {
     withHelpDir((help) => {
+      mkdirSync(join(help, 'ru'))
       mkdirSync(join(help, 'en'))
-      writeFileSync(join(help, 'demo.md'), '# Русский заголовок\n\nru', 'utf8')
+      writeFileSync(join(help, 'ru', 'demo.md'), '# Русский заголовок\n\nru', 'utf8')
       writeFileSync(join(help, 'en', 'demo.md'), '# English title\n\nen', 'utf8')
 
       expect(listKnowledgeArticles([help], 'en')).toEqual({
@@ -76,7 +78,8 @@ describe('knowledge-service', () => {
 
   it('readKnowledgeArticle валидирует slug и возвращает markdown', () => {
     withHelpDir((help) => {
-      writeFileSync(join(help, 'keyboard-shortcuts.md'), '# Hotkeys\n\nCtrl+O', 'utf8')
+      mkdirSync(join(help, 'ru'))
+      writeFileSync(join(help, 'ru', 'keyboard-shortcuts.md'), '# Hotkeys\n\nCtrl+O', 'utf8')
 
       expect(readKnowledgeArticle([help], '../secret')).toEqual({
         ok: false,
@@ -86,7 +89,7 @@ describe('knowledge-service', () => {
         ok: true,
         article: {
           slug: 'keyboard-shortcuts',
-          fileName: 'keyboard-shortcuts.md',
+          fileName: 'ru/keyboard-shortcuts.md',
           title: 'Hotkeys'
         },
         markdown: '# Hotkeys\n\nCtrl+O'
@@ -96,8 +99,9 @@ describe('knowledge-service', () => {
 
   it('readKnowledgeArticle с preferredUiLocale=en берёт Help/en/*.md при наличии', () => {
     withHelpDir((help) => {
+      mkdirSync(join(help, 'ru'))
       mkdirSync(join(help, 'en'))
-      writeFileSync(join(help, 'demo.md'), '# RU Title\n\nru', 'utf8')
+      writeFileSync(join(help, 'ru', 'demo.md'), '# RU Title\n\nru', 'utf8')
       writeFileSync(join(help, 'en', 'demo.md'), '# EN Title\n\nen body', 'utf8')
 
       expect(readKnowledgeArticle([help], { slug: 'demo', preferredUiLocale: 'en' })).toEqual({
@@ -108,14 +112,15 @@ describe('knowledge-service', () => {
     })
   })
 
-  it('readKnowledgeArticle en UI без en-файла падает обратно на корень Help', () => {
+  it('readKnowledgeArticle en UI без en-файла падает обратно на Help/ru', () => {
     withHelpDir((help) => {
+      mkdirSync(join(help, 'ru'))
       mkdirSync(join(help, 'en'))
-      writeFileSync(join(help, 'only-ru.md'), '# Ru\n\nx', 'utf8')
+      writeFileSync(join(help, 'ru', 'only-ru.md'), '# Ru\n\nx', 'utf8')
 
       expect(readKnowledgeArticle([help], { slug: 'only-ru', preferredUiLocale: 'en' })).toEqual({
         ok: true,
-        article: { slug: 'only-ru', fileName: 'only-ru.md', title: 'Ru' },
+        article: { slug: 'only-ru', fileName: 'ru/only-ru.md', title: 'Ru' },
         markdown: '# Ru\n\nx'
       })
     })
@@ -129,7 +134,8 @@ describe('knowledge-service', () => {
         '<svg xmlns="http://www.w3.org/2000/svg"/>',
         'utf8'
       )
-      writeFileSync(join(help, 'with-pic.md'), '# Pic\n\n![t](assets/tiny.svg)\n', 'utf8')
+      mkdirSync(join(help, 'ru'))
+      writeFileSync(join(help, 'ru', 'with-pic.md'), '# Pic\n\n![t](assets/tiny.svg)\n', 'utf8')
 
       const res = readKnowledgeArticle([help], 'with-pic')
       expect(res.ok).toBe(true)
@@ -144,13 +150,14 @@ describe('knowledge-service', () => {
 
   it('readKnowledgeArticle не читает en без preferredUiLocale=en', () => {
     withHelpDir((help) => {
+      mkdirSync(join(help, 'ru'))
       mkdirSync(join(help, 'en'))
-      writeFileSync(join(help, 'x.md'), '# Root\n\nroot', 'utf8')
+      writeFileSync(join(help, 'ru', 'x.md'), '# Root\n\nroot', 'utf8')
       writeFileSync(join(help, 'en', 'x.md'), '# Enonly\n\nen', 'utf8')
 
       expect(readKnowledgeArticle([help], 'x')).toEqual({
         ok: true,
-        article: { slug: 'x', fileName: 'x.md', title: 'Root' },
+        article: { slug: 'x', fileName: 'ru/x.md', title: 'Root' },
         markdown: '# Root\n\nroot'
       })
     })

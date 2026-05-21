@@ -7,6 +7,8 @@
   "topbarActionsToolbarAria": "Actions toolbar: files, tools, and help",
   "topbarEnginePathsLabel": "Engine paths",
   "topbarEnginePathsTitle": "Point the app to custom tool locations if you do not want the bundled copies or auto-discovery.",
+  "topbarOpenSettingsLabel": "Settings",
+  "topbarOpenSettingsTitle": "Open application settings: theme, language, engine paths, and diagnostics.",
   "topbarEnginesDownloadBusy": "Downloading…",
   "topbarEnginesDownloadReady": "Download engines",
   "topbarEnginesDownloadTitle": "Download missing built-in tools into your user app folder — handy on a fresh machine.",

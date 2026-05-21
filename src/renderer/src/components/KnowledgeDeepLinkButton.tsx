@@ -1,5 +1,7 @@
 import type { JSX } from 'react'
 
+import { IconCircleHelp } from './LucideMiniIcons'
+
 export function KnowledgeDeepLinkButton({
   label,
   tooltip,
@@ -16,14 +18,14 @@ export function KnowledgeDeepLinkButton({
   return (
     <button
       type="button"
-      className="app-knowledge-link"
+      className="app-icon-btn app-knowledge-help-btn"
       disabled={disabled}
       title={tooltip}
       aria-label={label}
       aria-describedby={ariaDescribedBy}
       onClick={onOpen}
     >
-      {label}
+      <IconCircleHelp title="" size={18} />
     </button>
   )
 }

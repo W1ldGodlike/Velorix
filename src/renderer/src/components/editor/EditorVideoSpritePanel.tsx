@@ -94,7 +94,7 @@ export function EditorVideoSpritePanel(props: EditorFfmpegSettingsRailProps): JS
         <label className="app-field" title={uiText('editorVideoSpriteColumnsTitle')}>
           <span className="app-field-label">{uiText('editorVideoSpriteColumnsLabel')}</span>
           <input
-            className="app-input"
+            className="app-control"
             type="number"
             min={1}
             max={20}
@@ -109,7 +109,7 @@ export function EditorVideoSpritePanel(props: EditorFfmpegSettingsRailProps): JS
         <label className="app-field" title={uiText('editorVideoSpriteRowsTitle')}>
           <span className="app-field-label">{uiText('editorVideoSpriteRowsLabel')}</span>
           <input
-            className="app-input"
+            className="app-control"
             type="number"
             min={1}
             max={20}

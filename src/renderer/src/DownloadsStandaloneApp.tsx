@@ -46,10 +46,7 @@ export function DownloadsStandaloneApp(): JSX.Element {
           <p id="downloads-standalone-surface-hint" className="app-visually-hidden">
             {uiText('downloadsStandalonePageHint')}
           </p>
-          <DownloadsWorkspaceMain
-            {...downloadsMainProps}
-            onScrollToSettings={downloadsMainProps.onScrollToSettings}
-          />
+          <DownloadsWorkspaceMain {...downloadsMainProps} />
           <DownloadsSettingsRail ref={downloadsSettingsRailRef} {...downloadsSettingsProps} />
         </main>
         <footer

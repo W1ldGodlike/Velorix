@@ -161,6 +161,7 @@ export function useAppShellPropsInputHooks(state: RendererAppState): AppShellPro
     setAppSettingsSection: state.setAppSettingsSection,
     setEnginePathsDraft: state.setEnginePathsDraft,
     setExternalFilterScriptOpen: state.setExternalFilterScriptOpen,
+    setMediaFileUtilitiesOpen: state.setMediaFileUtilitiesOpen,
     setWorkflowPlannerOpen: state.setWorkflowPlannerOpen,
     setWorkflowScenarioBuilderOpen: state.setWorkflowScenarioBuilderOpen,
     setAboutInfo: state.setAboutInfo,

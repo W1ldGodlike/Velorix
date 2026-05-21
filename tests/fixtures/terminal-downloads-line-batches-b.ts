@@ -28,7 +28,6 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_B: readonly TerminalDownloadsLineBa
       'yt-dlp --geo-bypass-country PL -F ',
       'yt-dlp --geo-bypass-country SE -F ',
       'yt-dlp --no-embed-metadata ',
-      'yt-dlp --playlist-items 1:10 -F ',
       'yt-dlp --merge-output-format webm ',
       'yt-dlp --ignore-no-formats-error -F ',
       'yt-dlp --no-write-thumbnail -F ',

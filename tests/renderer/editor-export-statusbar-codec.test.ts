@@ -38,7 +38,9 @@ describe('editor-export-statusbar-codec', () => {
         ok: true,
         snapshot: snap,
         hwaccels: ['cuda', 'dxva2'],
-        nvidiaGpu: { name: 'NVIDIA GeForce RTX 3060', driverVersion: '551.61' }
+        nvidiaGpu: { name: 'NVIDIA GeForce RTX 3060', driverVersion: '551.61' },
+        gpuAdapterNames: ['NVIDIA GeForce RTX 3060'],
+        osPlatform: 'win32'
       },
       exportHwDecode: true,
       exportHwaccelDecode: 'cuda',

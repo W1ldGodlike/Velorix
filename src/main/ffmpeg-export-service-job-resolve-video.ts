@@ -13,7 +13,8 @@ import {
   ffmpegExportVideoCodecRequiresMov,
   parseFfmpegExportVideoCodec,
   pickFfmpegHwAutoEncoder,
-  pickFfmpegHwAutoHevcEncoder
+  pickFfmpegHwAutoHevcEncoder,
+  probeRunnableHwSnapshot
 } from '../shared/ffmpeg-export-video-codec'
 import { createEmptyFfmpegHwEncodersSnapshot } from '../shared/ffmpeg-hw-encoder-probe'
 import {
@@ -51,7 +52,7 @@ export async function resolveFfmpegExportJobVideo(
     try {
       const pr = await probeFfmpegHwEncoders(params.ffmpegPath)
       if (pr.ok) {
-        snap = pr.snapshot
+        snap = probeRunnableHwSnapshot(pr)
         hwaccels = pr.hwaccels
       }
     } catch {

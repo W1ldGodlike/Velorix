@@ -162,6 +162,7 @@ export const mainWindowIpc = {
   /** Main → renderer: полная замена settings.json после импорта из меню «Сервис». */
   settingsBackupImported: 'fluxalloy:settings-backup-imported',
   openAbout: 'fluxalloy:open-about',
+  openMediaFileUtilities: 'fluxalloy:open-media-file-utilities',
   openExternalFilterScript: 'fluxalloy:open-external-filter-script',
   externalFilterScriptPickFile: 'fluxalloy:external-filter-script-pick-file',
   externalFilterScriptApply: 'fluxalloy:external-filter-script-apply',

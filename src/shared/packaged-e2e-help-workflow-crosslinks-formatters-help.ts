@@ -16,12 +16,27 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH
 } from './packaged-e2e-help-workflow-crosslinks-registry.ts'
 import type { PackagedE2eHelpWorkflowCrosslinksLocale } from './packaged-e2e-help-workflow-crosslinks-registry.ts'
+import { formatTerminalContractHintsLoggingHelpDevGuardsLine } from './terminal-contract-hints-meta.ts'
 
 import {
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote,
   formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiScaffoldExportsInline,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale
 } from './packaged-e2e-help-workflow-crosslinks-formatters-readme.ts'
+import {
+  PACKAGED_GUI_E2E_APP_ENV_VAR,
+  PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE
+} from './packaged-gui-e2e-playwright-meta.ts'
+
+function formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiNpmRunClause(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  const guard = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD
+  const script = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT
+  return locale === 'ru'
+    ? `\`npm run ${script}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` (8 skip без \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`; \`${guard}\`).`
+    : `\`npm run ${script}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` (8 skipped without \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`; \`${guard}\`).`
+}
 
 export function formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
@@ -84,13 +99,13 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdC
     : ` Copy/releaseSmoke includes \`PLANNED_GUI_E2E_STEP_BY_ID\` (registry \`note\` per step; \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`).`
 }
 
-/** Owner/about/logging hub Help — Playwright wiring handoff (§21 deferred). */
+/** Owner/about/logging hub Help — Playwright specs handoff (§21). */
 export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHandoffClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
-    ? ` Wiring: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\` (после owner-smoke)`
-    : ` Wiring: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\` (after owner-smoke on hardware)`
+    ? ` Specs: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\``
+    : ` Specs: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\``
 }
 
 export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiParagraph(
@@ -109,13 +124,13 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGu
   )
 }
 
-/** §21 Playwright deferred suffix (about/logging/packaged Help dev lines). */
+/** §21 Playwright GUI e2e suffix (about/logging/packaged Help dev lines). */
 export function formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
-    ? ` §21 Playwright: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\` (reserved \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\`).`
-    : ` §21 Playwright: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\` (reserved \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\`).`
+    ? ` §21 Playwright: ${formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiNpmRunClause('ru')}`
+    : ` §21 Playwright: ${formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiNpmRunClause('en')}`
 }
 
 /** Packaged windows Help — §21 automation groups in Copy paragraph (`2/8/2`). */
@@ -148,9 +163,7 @@ const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE =
 export function formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiReservedClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
-  return locale === 'ru'
-    ? `Зарезервировано \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` (\`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\`; пока нет в \`package.json\`).`
-    : `Reserved \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` (\`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD}\`; not in \`package.json\` yet).`
+  return formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiNpmRunClause(locale)
 }
 
 /** Packaged smoke Help — planned GUI e2e clause (Playwright deferred). */
@@ -261,9 +274,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeD
 export function formatPackagedE2eHelpWorkflowCrosslinksLoggingTerminalShardClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
-  return locale === 'ru'
-    ? ' §8 terminal — `check:terminal-contract-hints-shards` (35 shards, 1056+833 hints), `check:help-terminal-hints-docs` (24 статей), `check:support-bundle-terminal-hints`, `check:terminal-hints-locale` (Настройки → Зависимости).'
-    : ' §8 terminal — `check:terminal-contract-hints-shards` (35 shards, 1056+833 hints), `check:help-terminal-hints-docs` (24 articles), `check:support-bundle-terminal-hints`, `check:terminal-hints-locale` (Settings → Dependencies).'
+  const line = formatTerminalContractHintsLoggingHelpDevGuardsLine(locale === 'ru' ? 'ru' : 'en')
+  return ` ${line}`
 }
 
 /** Logging Help — UI Copy §21 appendix before planned GUI scope clause. */

@@ -12,6 +12,7 @@ import { isKnowledgeSafeAssetImageHref } from '../shared/knowledge-markdown'
 
 const HELP_FILE_RE = /^[a-z0-9][a-z0-9-]*\.md$/i
 const MAX_ARTICLE_BYTES = 256 * 1024
+const HELP_RU_SUBDIR = 'ru'
 const HELP_EN_SUBDIR = 'en'
 
 function parseReadArticleRequest(raw: unknown): {
@@ -145,16 +146,22 @@ export function listKnowledgeArticles(
   }
   const articles: KnowledgeArticleListItem[] = []
   const listLocale: AppUiLocale = locale
+  const ruDir = normalize(join(helpDir, HELP_RU_SUBDIR))
   const enDir = normalize(join(helpDir, HELP_EN_SUBDIR))
-  const enRoot = normalize(helpDir)
-  const hasEnDir = enDir.startsWith(enRoot) && existsSync(enDir) && statSync(enDir).isDirectory()
+  const helpRoot = normalize(helpDir)
+  const hasRuDir = ruDir.startsWith(helpRoot) && existsSync(ruDir) && statSync(ruDir).isDirectory()
+  const hasEnDir = enDir.startsWith(helpRoot) && existsSync(enDir) && statSync(enDir).isDirectory()
+  const listDir = listLocale === 'en' && hasEnDir ? enDir : hasRuDir ? ruDir : helpRoot
 
-  for (const fileName of readdirSync(helpDir)
+  for (const fileName of readdirSync(listDir)
     .filter((f) => HELP_FILE_RE.test(f))
     .sort()) {
     let markdown: string | null = null
     if (listLocale === 'en' && hasEnDir) {
       markdown = readHelpMarkdown(enDir, fileName)
+    }
+    if (markdown === null && hasRuDir) {
+      markdown = readHelpMarkdown(ruDir, fileName)
     }
     if (markdown === null) {
       markdown = readHelpMarkdown(helpDir, fileName)
@@ -190,14 +197,23 @@ export function readKnowledgeArticle(
   let markdown: string | null = null
   let resolvedFileName = fileName
 
-  if (preferredUiLocale === 'en') {
-    const enDir = normalize(join(helpDir, HELP_EN_SUBDIR))
-    const enRoot = normalize(helpDir)
-    if (enDir.startsWith(enRoot) && existsSync(enDir) && statSync(enDir).isDirectory()) {
-      markdown = readHelpMarkdown(enDir, fileName)
-      if (markdown !== null) {
-        resolvedFileName = `${HELP_EN_SUBDIR}/${fileName}`
-      }
+  const ruDir = normalize(join(helpDir, HELP_RU_SUBDIR))
+  const enDir = normalize(join(helpDir, HELP_EN_SUBDIR))
+  const helpRoot = normalize(helpDir)
+  const hasRuDir = ruDir.startsWith(helpRoot) && existsSync(ruDir) && statSync(ruDir).isDirectory()
+  const hasEnDir = enDir.startsWith(helpRoot) && existsSync(enDir) && statSync(enDir).isDirectory()
+
+  if (preferredUiLocale === 'en' && hasEnDir) {
+    markdown = readHelpMarkdown(enDir, fileName)
+    if (markdown !== null) {
+      resolvedFileName = `${HELP_EN_SUBDIR}/${fileName}`
+    }
+  }
+
+  if (markdown === null && hasRuDir) {
+    markdown = readHelpMarkdown(ruDir, fileName)
+    if (markdown !== null) {
+      resolvedFileName = `${HELP_RU_SUBDIR}/${fileName}`
     }
   }
 

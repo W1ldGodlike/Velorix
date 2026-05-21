@@ -38,7 +38,7 @@ export type AppWorkspaceTopbarProps = {
   onCancelExport: () => void
   onExtractFrames: () => Promise<void>
   onEnginesDownload: () => void
-  onOpenEnginePaths: () => void
+  onOpenAppSettings: () => void
   onOpenKnowledge: () => void
   onOpenAbout: () => void
   onUiLocaleToggle: () => void
@@ -62,7 +62,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
     onCancelExport,
     onExtractFrames,
     onEnginesDownload,
-    onOpenEnginePaths,
+    onOpenAppSettings,
     onOpenKnowledge,
     onOpenAbout,
     onUiLocaleToggle,
@@ -285,12 +285,12 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
             className="app-icon-btn"
             aria-describedby={workspaceTabDescId}
             onClick={() => {
-              onOpenEnginePaths()
+              onOpenAppSettings()
             }}
-            title={uiText('topbarEnginePathsTitle')}
+            title={uiText('topbarOpenSettingsTitle')}
           >
             <IconSettings />
-            <span className="app-visually-hidden">{uiText('topbarEnginePathsLabel')}</span>
+            <span className="app-visually-hidden">{uiText('topbarOpenSettingsLabel')}</span>
           </button>
           <button
             type="button"

@@ -9,10 +9,11 @@ import {
 } from '../../src/shared/knowledge-toc-registry'
 
 const HELP_DIR = join(process.cwd(), 'Help')
+const HELP_RU_DIR = join(HELP_DIR, 'ru')
 
 describe('knowledge-toc-registry', () => {
-  it('covers every Help/*.md slug (7 sections E5)', () => {
-    const helpSlugs = readdirSync(HELP_DIR)
+  it('covers every Help/ru/*.md slug (7 sections E5)', () => {
+    const helpSlugs = readdirSync(HELP_RU_DIR)
       .filter((name) => /^[a-z0-9][a-z0-9-]*\.md$/i.test(name))
       .map((name) => name.replace(/\.md$/i, ''))
       .sort()

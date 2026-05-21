@@ -85,7 +85,6 @@ export const TERMINAL_DOWNLOADS_EXTRA_SCENARIO_LINES = [
   'yt-dlp --flat-playlist --simulate ',
   'yt-dlp --skip-download --print filepath ',
   'yt-dlp --skip-download --print epoch ',
-  'yt-dlp -6 -F ',
   'yt-dlp --flat-playlist --print url ',
   'yt-dlp --write-pages --skip-download ',
   'yt-dlp --skip-download --print heatmap ',

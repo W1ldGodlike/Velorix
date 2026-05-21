@@ -18,7 +18,7 @@ export function formatWorkflowScenarioManualSmokeChecklistLines(): string[] {
   return formatPackagedManualSmokeChecklistLines(WORKFLOW_SCENARIO_MANUAL_SMOKE_CHECKLIST, {
     ownerLine: 'ручной smoke конструктора сценариев (§11), не автоматизируется в CI UI',
     automatedLine: 'Vitest workflow-scenario-* / edge-mutations / layout',
-    docLine: 'Help/workflows-planner-scenarios.md',
+    docLine: 'Help/ru/workflows-planner-scenarios.md',
     uiLine: 'Сервис → Конструктор сценариев'
   })
 }

@@ -1,6 +1,7 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
   "include": ["tests/**/*.ts", "vitest.config.ts", "src/main/**/*", "src/shared/**/*"],
+  "exclude": ["tests/e2e/gui/*.spec.ts"],
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,

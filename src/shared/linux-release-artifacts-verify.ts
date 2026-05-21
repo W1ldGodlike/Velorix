@@ -3,7 +3,7 @@
  */
 import { join } from 'node:path'
 
-import { formatElectronViteEsmShimFixDiagnosticLine } from './electron-vite-build-meta'
+import { formatElectronViteEsmShimFixDiagnosticLine } from './electron-vite-build-meta.ts'
 
 export function distDirectory(repoRoot: string): string {
   return join(repoRoot, 'dist')

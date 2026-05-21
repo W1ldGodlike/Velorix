@@ -79,6 +79,8 @@ export type DownloadsHistoryListMode = 'compact' | 'full'
 
 /** §4.1 / v0 — раскрытие секций окна загрузок (React `#downloads`). */
 export interface DownloadsWindowUiPanelState {
+  /** Узкая вкладка «Загрузки»: свёрнутая панель «Настройки yt-dlp» под очередью (как история/журнал). */
+  settings?: boolean
   history?: boolean
   log?: boolean
   format?: boolean

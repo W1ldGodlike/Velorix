@@ -95,10 +95,10 @@ function resolvePackagedConfig(platform: NodeJS.Platform): PackagedPlatformConfi
   return PACKAGED_BY_FAMILY[family]
 }
 
-/** Чеклист packaged smoke для UI locale (renderer owner bundle copy). */
+/** Чеклист packaged smoke для UI locale (renderer: `platform` из `AppAboutInfo.osPlatform`). */
 export function getOwnerManualSmokePackagedSectionForUiLocale(
   locale: AppUiLocale,
-  platform: NodeJS.Platform = process.platform
+  platform: NodeJS.Platform
 ): OwnerManualSmokePackagedSection | null {
   const config = resolvePackagedConfig(platform)
   if (!config) {

@@ -13,7 +13,11 @@ describe('buildFfmpegExportBenchmarkCandidates', () => {
     snap.h264_nvenc = true
     snap.h264_amf = true
     snap.hevc_nvenc = true
-    const ids = buildFfmpegExportBenchmarkCandidates(snap)
+    const ids = buildFfmpegExportBenchmarkCandidates(snap, {
+      osPlatform: 'win32',
+      nvidiaGpuPresent: true,
+      gpuAdapterNames: ['NVIDIA GeForce', 'AMD Radeon', 'Intel UHD Graphics']
+    })
     expect(ids[0]).toBe('libx264')
     expect(ids).toContain('h264_nvenc')
     expect(ids).toContain('h264_amf')

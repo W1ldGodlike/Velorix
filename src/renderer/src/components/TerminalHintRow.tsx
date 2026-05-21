@@ -5,8 +5,12 @@ import {
   formatTerminalHintTooltip,
   primaryTerminalHintExample
 } from '../../../shared/terminal-hint-json-display'
+import {
+  formatTerminalHintRowLabel,
+  formatTerminalHintRowSummary
+} from '../../../shared/terminal-hint-ui-copy'
 import { terminalHintInsertAccessibleDescription } from '../app-terminal-hint-ui'
-import { uiText } from '../locales/ui-text'
+import { getUiLocale, uiText } from '../locales/ui-text'
 
 export function TerminalHintRow(props: {
   hint: TerminalCommandHintEntry
@@ -29,9 +33,10 @@ export function TerminalHintRow(props: {
     onMouseEnter
   } = props
 
+  const locale = getUiLocale()
   const example = primaryTerminalHintExample(hint)
-  const displayToken =
-    hint.fullLine !== undefined && hint.fullLine.length > 0 ? hint.fullLine.trimEnd() : hint.token
+  const displayToken = formatTerminalHintRowLabel(hint, locale)
+  const displaySummary = formatTerminalHintRowSummary(hint, locale)
 
   return (
     <div className="app-terminal-hint-card" role={role === 'option' ? 'presentation' : undefined}>
@@ -43,13 +48,13 @@ export function TerminalHintRow(props: {
         aria-selected={ariaSelected}
         aria-describedby={describedById}
         aria-label={terminalHintInsertAccessibleDescription(hint)}
-        title={formatTerminalHintTooltip(hint)}
+        title={formatTerminalHintTooltip(hint, locale)}
         onMouseEnter={onMouseEnter}
         onClick={onActivate}
       >
         <code>{displayToken}</code>
         <span>{hint.tool}</span>
-        <small>{hint.summary}</small>
+        {displaySummary.length > 0 ? <small>{displaySummary}</small> : null}
         {example !== undefined ? (
           <small className="app-terminal-hint-example">
             <span className="app-terminal-hint-example-label">

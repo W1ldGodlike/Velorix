@@ -157,7 +157,7 @@ export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps): 
         <label className="app-field" title={uiText('editorExtractFramesModeTitle')}>
           <span className="app-field-label">{uiText('editorExtractFramesModeLabel')}</span>
           <select
-            className="app-select"
+            className="app-control"
             value={mode}
             disabled={chromeBusy}
             onChange={(e) => {
@@ -173,7 +173,7 @@ export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps): 
           <label className="app-field" title={uiText('editorExtractFramesIntervalTitle')}>
             <span className="app-field-label">{uiText('editorExtractFramesIntervalLabel')}</span>
             <input
-              className="app-input"
+              className="app-control"
               type="number"
               min={0.25}
               step={0.25}
@@ -189,7 +189,7 @@ export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps): 
           <label className="app-field" title={uiText('editorExtractFramesCountTitle')}>
             <span className="app-field-label">{uiText('editorExtractFramesCountLabel')}</span>
             <input
-              className="app-input"
+              className="app-control"
               type="number"
               min={1}
               max={200}
@@ -210,7 +210,7 @@ export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps): 
         >
           <span className="app-field-label">{uiText('editorExtractFramesManualLabel')}</span>
           <textarea
-            className="app-input app-input-multiline"
+            className="app-control app-input-multiline"
             rows={3}
             value={manualTimesText}
             disabled={chromeBusy}

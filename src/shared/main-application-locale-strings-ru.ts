@@ -56,6 +56,7 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
   settingsBackupImportConfirm: 'Импортировать',
   settingsBackupImportCancel: 'Отмена',
   menuTools: 'Инструменты',
+  menuMediaFileUtilities: 'Обслуживание файлов…',
   menuInspector: 'Инспектор медиа (ffprobe)…',
   menuMiniPlayer: 'Мини-плеер (прогресс задач)…',
   menuOpenFolder: 'Открыть папку…',

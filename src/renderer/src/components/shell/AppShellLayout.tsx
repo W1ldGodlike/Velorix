@@ -8,6 +8,7 @@ import { AppStatusbar } from './AppStatusbar'
 import { AppWorkspaceMain } from './AppWorkspaceMain'
 import { AppWorkspaceTopbar } from './AppWorkspaceTopbar'
 import { AppSettingsDialog } from './AppSettingsDialog'
+import { MediaFileUtilitiesDialog } from '../MediaFileUtilitiesDialog'
 import { ExternalFilterScriptDialog } from './ExternalFilterScriptDialog'
 import { WorkflowPlannerDialog } from './WorkflowPlannerDialog'
 import { WorkflowScenarioBuilderDialog } from './WorkflowScenarioBuilderDialog'
@@ -27,7 +28,8 @@ export function AppShellLayout({
   appSettings,
   externalFilterScript,
   workflowPlanner,
-  workflowScenarioBuilder
+  workflowScenarioBuilder,
+  mediaFileUtilities
 }: AppShellLayoutProps): JSX.Element {
   return (
     <div className="app-shell" aria-label={uiText('appMainShellAria')} aria-busy={appChromeBusy}>
@@ -38,6 +40,7 @@ export function AppShellLayout({
       <ExportPresetNameDialog {...exportPreset} />
       <AppSettingsDialog {...appSettings} />
       <ExternalFilterScriptDialog {...externalFilterScript} />
+      <MediaFileUtilitiesDialog {...mediaFileUtilities} />
       <WorkflowPlannerDialog {...workflowPlanner} />
       <WorkflowScenarioBuilderDialog {...workflowScenarioBuilder} />
     </div>

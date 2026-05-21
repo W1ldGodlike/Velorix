@@ -11,6 +11,7 @@ export function buildAppShellPropsInputLayout(
     appSettingsSection,
     settingsResetBusy,
     externalFilterScriptOpen,
+    mediaFileUtilitiesOpen,
     workflowPlannerOpen,
     workflowScenarioBuilderOpen,
     setWorkspaceTab,
@@ -26,6 +27,7 @@ export function buildAppShellPropsInputLayout(
     editorUrlPasteBehavior,
     setUiLocaleRenderTick,
     setExternalFilterScriptOpen,
+    setMediaFileUtilitiesOpen,
     setWorkflowPlannerOpen,
     setWorkflowScenarioBuilderOpen,
     handleOpenVideoFolderToolbar,
@@ -140,6 +142,11 @@ export function buildAppShellPropsInputLayout(
     workflowScenarioBuilder: {
       open: workflowScenarioBuilderOpen,
       setOpen: setWorkflowScenarioBuilderOpen,
+      onStatus: setStatusHint
+    },
+    mediaFileUtilities: {
+      open: mediaFileUtilitiesOpen,
+      setOpen: setMediaFileUtilitiesOpen,
       onStatus: setStatusHint
     }
   }

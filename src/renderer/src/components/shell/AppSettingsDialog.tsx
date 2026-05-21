@@ -30,9 +30,7 @@ import {
   APP_SETTINGS_SECTION_HINT_KEYS as SECTION_HINT_KEYS,
   APP_SETTINGS_SECTION_LABEL_KEYS as SECTION_LABEL_KEYS
 } from './app-settings-dialog-section-labels'
-import { AppSettingsHwManualSmokePanel } from './AppSettingsHwManualSmokePanel'
 import { AppSettingsOwnerSmokeBundlePanel } from './AppSettingsOwnerSmokeBundlePanel'
-import { AppSettingsPackagedSmokePanel } from './AppSettingsPackagedSmokePanel'
 import { EnginePathsSettingsSection } from './EnginePathsSettingsSection'
 
 export type AppSettingsDialogProps = {
@@ -266,34 +264,17 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                   onCheckEngineUpdates={onCheckEngineUpdates}
                   onSave={onSaveEnginePaths}
                 />
-                <p className="app-modal-hint">{uiText('appSettingsTerminalHintsGuardHint')}</p>
-                <AppSettingsOwnerSmokeBundlePanel
-                  sectionHintId={sectionHintId}
-                  settingsSection={section}
-                  onSettingsSectionChange={onSectionChange}
-                  {...(onOpenWorkflowPlanner ? { onOpenWorkflowPlanner } : {})}
-                  {...(onOpenWorkflowScenarioBuilder ? { onOpenWorkflowScenarioBuilder } : {})}
-                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
-                />
-                <AppSettingsHwManualSmokePanel
-                  sectionHintId={sectionHintId}
-                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
-                />
-                <AppSettingsPackagedSmokePanel
-                  platform="win"
-                  sectionHintId={sectionHintId}
-                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
-                />
-                <AppSettingsPackagedSmokePanel
-                  platform="linux"
-                  sectionHintId={sectionHintId}
-                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
-                />
-                <AppSettingsPackagedSmokePanel
-                  platform="macos"
-                  sectionHintId={sectionHintId}
-                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
-                />
+                <details className="app-settings-qa-block">
+                  <summary className="app-settings-qa-summary">
+                    {uiText('appSettingsQaReleaseChecklistsSummary')}
+                  </summary>
+                  <AppSettingsOwnerSmokeBundlePanel
+                    sectionHintId={sectionHintId}
+                    {...(onOpenWorkflowPlanner ? { onOpenWorkflowPlanner } : {})}
+                    {...(onOpenWorkflowScenarioBuilder ? { onOpenWorkflowScenarioBuilder } : {})}
+                    {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
+                  />
+                </details>
               </div>
             ) : null}
 

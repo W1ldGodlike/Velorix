@@ -7,6 +7,8 @@
   "topbarActionsToolbarAria": "Панель действий: файлы, инструменты и справка",
   "topbarEnginePathsLabel": "Пути к движкам",
   "topbarEnginePathsTitle": "Указать вручную, где лежат программы сжатия и загрузки, если не хотите пользоваться встроенными или автопоиском.",
+  "topbarOpenSettingsLabel": "Настройки",
+  "topbarOpenSettingsTitle": "Открыть настройки приложения: тема, язык, пути и диагностика.",
   "topbarEnginesDownloadBusy": "Загрузка…",
   "topbarEnginesDownloadReady": "Скачать движки",
   "topbarEnginesDownloadTitle": "Скачать недостающие встроенные инструменты в служебную папку пользователя — удобно на чистой системе.",

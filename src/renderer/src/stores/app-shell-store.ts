@@ -24,6 +24,7 @@ export type AppShellState = {
   appSettingsSection: AppSettingsDialogSection
   settingsResetBusy: boolean
   externalFilterScriptOpen: boolean
+  mediaFileUtilitiesOpen: boolean
   workflowPlannerOpen: boolean
   workflowScenarioBuilderOpen: boolean
   uiLocaleRenderTick: number
@@ -77,6 +78,7 @@ export const initialAppShellState: AppShellState = {
   appSettingsSection: DEFAULT_APP_SETTINGS_DIALOG_SECTION,
   settingsResetBusy: false,
   externalFilterScriptOpen: false,
+  mediaFileUtilitiesOpen: false,
   workflowPlannerOpen: false,
   workflowScenarioBuilderOpen: false,
   uiLocaleRenderTick: 0,
@@ -126,6 +128,7 @@ export const useAppShellStore = createRendererStore<AppShellStore>('AppShell', (
   setAppSettingsSection: setter('appSettingsSection', set, get),
   setSettingsResetBusy: setter('settingsResetBusy', set, get),
   setExternalFilterScriptOpen: setter('externalFilterScriptOpen', set, get),
+  setMediaFileUtilitiesOpen: setter('mediaFileUtilitiesOpen', set, get),
   setWorkflowPlannerOpen: setter('workflowPlannerOpen', set, get),
   setWorkflowScenarioBuilderOpen: setter('workflowScenarioBuilderOpen', set, get),
   setUiLocaleRenderTick: setter('uiLocaleRenderTick', set, get),

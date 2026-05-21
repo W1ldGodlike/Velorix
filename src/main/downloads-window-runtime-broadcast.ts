@@ -133,6 +133,7 @@ export function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWi
     return {}
   }
   const keys = [
+    'settings',
     'history',
     'log',
     'format',

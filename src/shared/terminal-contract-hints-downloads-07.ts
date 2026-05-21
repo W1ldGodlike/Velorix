@@ -1,349 +1,392 @@
 import type { TerminalCommandHintEntry } from './terminal-contract-types'
 
-/** §8 — подсказки вкладки «Загрузки» (часть 07). */
+/** §8 — подсказки Загрузки (часть 7/14; §8 audit prune). */
 export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_07: TerminalCommandHintEntry[] = [
-  {
-    tool: 'yt-dlp',
-    token: '· вывод: аннотации (annotations)',
-    summary:
-      'Сырые аннотации метаданных без скачивания (--skip-download --print annotations); допишите ссылку.',
-    fullLine: 'yt-dlp --skip-download --print annotations '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· вывод: раскадровки (storyboards)',
-    summary:
-      'Доски storyboard (если отдаёт площадка) без скачивания (--skip-download --print storyboards); допишите ссылку.',
-    fullLine: 'yt-dlp --skip-download --print storyboards '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· заголовки глав sponsorblock',
-    summary:
-      'Сервис SponsorBlock: главы и шаблон заголовка сегмента (--sponsorblock-mark all --sponsorblock-chapter-title %(category)s); допишите ссылку.',
-    fullLine: 'yt-dlp --sponsorblock-mark all --sponsorblock-chapter-title %(category)s '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· склейка плейлиста: никогда -F',
-    summary:
-      'Политика склейки плейлиста в один поток (--concat-playlist never -F); допишите ссылку.',
-    fullLine: 'yt-dlp --concat-playlist never -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· постправка контейнера: только предупреждения -F',
-    summary: 'Политика постправок контейнера после скачивания (--fixup warn -F); допишите ссылку.',
-    fullLine: 'yt-dlp --fixup warn -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· только модуль youtube -F',
-    summary: 'Ограничить набор модулей извлечения (--use-extractors youtube -F); допишите ссылку.',
-    fullLine: 'yt-dlp --use-extractors youtube -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· поиск по умолчанию -F',
-    summary:
-      'Поиск по умолчанию, если ввод не похож на ссылку (--default-search auto: -F); допишите запрос.',
-    fullLine: 'yt-dlp --default-search auto: -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· игнор динамики mpd -F',
-    summary:
-      'Игнорировать динамическое обновление манифеста DASH (MPD) (--ignore-dynamic-mpd -F); стабильнее на коротком окне; допишите ссылку.',
-    fullLine: 'yt-dlp --ignore-dynamic-mpd -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· запасной api sponsorblock -F',
-    summary:
-      'Альтернативный адрес веб-API сервиса SponsorBlock (--sponsorblock-api https://sponsor.ajay.app -F) при сбоях сервера по умолчанию; допишите ссылку.',
-    fullLine: 'yt-dlp --sponsorblock-api https://sponsor.ajay.app -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· пути к конфигам -F',
-    summary:
-      'Доп. файл конфигурации рядом с задачей (--config-locations yt-dlp.conf -F); создайте yt-dlp.conf при необходимости; допишите ссылку.',
-    fullLine: 'yt-dlp --config-locations yt-dlp.conf -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео mx (Мексика) -F',
-    summary: 'Гео-обход с кодом страны MX (--geo-bypass-country MX -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country MX -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео kr (Корея) -F',
-    summary: 'Гео-обход с кодом страны KR (--geo-bypass-country KR -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country KR -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео in (Индия) -F',
-    summary: 'Гео-обход с кодом страны IN (--geo-bypass-country IN -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country IN -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео tr (Турция) -F',
-    summary: 'Гео-обход с кодом страны TR (--geo-bypass-country TR -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country TR -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео no (Норвегия) -F',
-    summary: 'Гео-обход с кодом страны NO (--geo-bypass-country NO -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country NO -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео ch (Швейцария) -F',
-    summary: 'Гео-обход с кодом страны CH (--geo-bypass-country CH -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country CH -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· заголовки клиента за прокси -F',
-    summary:
-      'Добавить заголовки X-Forwarded-For и X-Forwarded-Proto к HTTP (--xfwd -F); для обратного прокси и отладки запросов; допишите ссылку.',
-    fullLine: 'yt-dlp --xfwd -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· без cookie из браузера -F',
-    summary:
-      'Явно отключить подстановку cookie из браузера (--no-cookies-from-browser -F); если мешают профили браузера и переменные среды; допишите ссылку.',
-    fullLine: 'yt-dlp --no-cookies-from-browser -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· аргументы ffmpeg для загрузчика -F',
-    summary:
-      'Доп. аргументы встроенному загрузчику на базе FFmpeg (--downloader-args ffmpeg:-nostdin -F); -nostdin отключает stdin у утилиты FFmpeg; допишите ссылку.',
-    fullLine: 'yt-dlp --downloader-args ffmpeg:-nostdin -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· с рекламой -F',
-    summary: 'Не вырезать рекламные вставки в плейлистах (--include-ads -F); допишите ссылку.',
-    fullLine: 'yt-dlp --include-ads -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· двухфакторный код',
-    summary:
-      'TV Everywhere (ТВ по подписке провайдера) и двухфакторная проверка (2FA): одноразовый код (--twofactor 123456); замените на актуальный код TOTP (одноразовый по времени); допишите ссылку.',
-    fullLine: 'yt-dlp --twofactor 123456 '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· пароль к видео',
-    summary:
-      'Пароль возрастного или закрытого видео (--video-password PASSWORD); замените PASSWORD на реальный; допишите ссылку.',
-    fullLine: 'yt-dlp --video-password PASSWORD '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· tv everywhere — rogers -F',
-    summary:
-      'Идентификатор MSO в Adobe Pass для TV Everywhere (--ap-mso Rogers -F); подставьте своего провайдера; допишите ссылку.',
-    fullLine: 'yt-dlp --ap-mso Rogers -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· tv everywhere — логин -F',
-    summary:
-      'Логин TV Everywhere (--ap-username user@example.com -F); замените на свой аккаунт; допишите ссылку.',
-    fullLine: 'yt-dlp --ap-username user@example.com -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· параллельно загрузок 2 -F',
-    summary:
-      'Параллельные загрузки фрагментов и потоков (--concurrent-downloads 2 -F); подстройте число; допишите ссылку.',
-    fullLine: 'yt-dlp --concurrent-downloads 2 -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео nz (Новая Зеландия) -F',
-    summary: 'Гео-обход с кодом страны NZ (--geo-bypass-country NZ -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country NZ -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео za (ЮАР) -F',
-    summary: 'Гео-обход с кодом страны ZA (--geo-bypass-country ZA -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country ZA -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· tv everywhere — пароль',
-    summary:
-      'Пароль TV Everywhere и Adobe Pass (--ap-password PASSWORD); замените PASSWORD на реальный; допишите ссылку.',
-    fullLine: 'yt-dlp --ap-password PASSWORD '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· клиентский сертификат (pem)',
-    summary:
-      'Клиентский TLS-сертификат (--client-certificate client.pem); положите PEM рядом с рабочим каталогом или укажите абсолютный путь без кавычек; допишите ссылку.',
-    fullLine: 'yt-dlp --client-certificate client.pem '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео: прокси проверки -F',
-    summary:
-      'Прокси только для гео-проверки (--geo-verification-proxy … -F); замените хост и порт при необходимости; допишите ссылку.',
-    fullLine: 'yt-dlp --geo-verification-proxy http://127.0.0.1:8888 -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео at (Австрия) -F',
-    summary: 'Гео-обход с кодом страны AT (--geo-bypass-country AT -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country AT -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео dk (Дания) -F',
-    summary: 'Гео-обход с кодом страны DK (--geo-bypass-country DK -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country DK -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео fi (Финляндия) -F',
-    summary: 'Гео-обход с кодом страны FI (--geo-bypass-country FI -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country FI -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео gr (Греция) -F',
-    summary: 'Гео-обход с кодом страны GR (--geo-bypass-country GR -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country GR -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео pt (Португалия) -F',
-    summary: 'Гео-обход с кодом страны PT (--geo-bypass-country PT -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country PT -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео be (Бельгия) -F',
-    summary: 'Гео-обход с кодом страны BE (--geo-bypass-country BE -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country BE -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео ie (Ирландия) -F',
-    summary: 'Гео-обход с кодом страны IE (--geo-bypass-country IE -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country IE -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· ключ к сертификату (pem)',
-    summary:
-      'Приватный ключ к клиентскому TLS-сертификату (--client-certificate-key key.pem); положите PEM рядом с рабочим каталогом или укажите путь без кавычек; допишите ссылку.',
-    fullLine: 'yt-dlp --client-certificate-key key.pem '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· tls как у firefox -F',
-    summary:
-      'TLS и HTTP: отпечаток как у Firefox (--impersonate firefox -F); помогает обходить антибот-защиту; допишите ссылку.',
-    fullLine: 'yt-dlp --impersonate firefox -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· tls как у edge -F',
-    summary:
-      'TLS и HTTP: отпечаток как у Edge (--impersonate edge -F); помогает обходить антибот-защиту; допишите ссылку.',
-    fullLine: 'yt-dlp --impersonate edge -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео cz (Чехия) -F',
-    summary: 'Гео-обход с кодом страны CZ (--geo-bypass-country CZ -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country CZ -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео hu (Венгрия) -F',
-    summary: 'Гео-обход с кодом страны HU (--geo-bypass-country HU -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country HU -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео ro (Румыния) -F',
-    summary: 'Гео-обход с кодом страны RO (--geo-bypass-country RO -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country RO -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео bg (Болгария) -F',
-    summary: 'Гео-обход с кодом страны BG (--geo-bypass-country BG -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country BG -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео hr (Хорватия) -F',
-    summary: 'Гео-обход с кодом страны HR (--geo-bypass-country HR -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country HR -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео lv (Латвия) -F',
-    summary: 'Гео-обход с кодом страны LV (--geo-bypass-country LV -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country LV -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео lt (Литва) -F',
-    summary: 'Гео-обход с кодом страны LT (--geo-bypass-country LT -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country LT -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео ee (Эстония) -F',
-    summary: 'Гео-обход с кодом страны EE (--geo-bypass-country EE -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country EE -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· гео is (Исландия) -F',
-    summary: 'Гео-обход с кодом страны IS (--geo-bypass-country IS -F); допишите ссылку.',
-    fullLine: 'yt-dlp --geo-bypass-country IS -F '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· превью png',
-    summary:
-      'Конвертировать обложку в PNG при скачивании (--convert-thumbnails png); допишите ссылку и ключи вывода.',
-    fullLine: 'yt-dlp --convert-thumbnails png '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· аудио opus',
-    summary:
-      'Извлечь аудио в Opus (--extract-audio --audio-format opus); допишите ссылку и ключи вывода.',
-    fullLine: 'yt-dlp --extract-audio --audio-format opus '
-  },
-  {
-    tool: 'yt-dlp',
-    token: '· аудио flac',
-    summary:
-      'Извлечь аудио в FLAC без потерь (--extract-audio --audio-format flac); допишите ссылку и ключи вывода.',
-    fullLine: 'yt-dlp --extract-audio --audio-format flac '
-  },
   {
     tool: 'yt-dlp',
     token: '· аудио wav',
     summary:
       'Извлечь аудио в WAV (--extract-audio --audio-format wav); допишите ссылку и ключи вывода.',
     fullLine: 'yt-dlp --extract-audio --audio-format wav '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· аудио m4a',
+    summary:
+      'Извлечь аудио в M4A или AAC (--extract-audio --audio-format m4a); допишите ссылку и ключи вывода.',
+    fullLine: 'yt-dlp --extract-audio --audio-format m4a '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· без «просмотрено» -F',
+    summary:
+      'Не отмечать видео просмотренным на платформе (--no-mark-watched -F); допишите ссылку.',
+    fullLine: 'yt-dlp --no-mark-watched -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· без комментариев в json -F',
+    summary: 'Не сохранять JSON комментариев (--no-write-comments -F); допишите ссылку.',
+    fullLine: 'yt-dlp --no-write-comments -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· без .description -F',
+    summary:
+      'Не сохранять .description рядом с файлом (--no-write-description -F); допишите ссылку.',
+    fullLine: 'yt-dlp --no-write-description -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео my (Малайзия) -F',
+    summary: 'Гео-обход с кодом страны MY (--geo-bypass-country MY -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country MY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео sg (Сингапур) -F',
+    summary: 'Гео-обход с кодом страны SG (--geo-bypass-country SG -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country SG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео th (Таиланд) -F',
+    summary: 'Гео-обход с кодом страны TH (--geo-bypass-country TH -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country TH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео vn (Вьетнам) -F',
+    summary: 'Гео-обход с кодом страны VN (--geo-bypass-country VN -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country VN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ar (Аргентина) -F',
+    summary: 'Гео-обход с кодом страны AR (--geo-bypass-country AR -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country AR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ua (Украина) -F',
+    summary: 'Гео-обход с кодом страны UA (--geo-bypass-country UA -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country UA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ph (Филиппины) -F',
+    summary: 'Гео-обход с кодом страны PH (--geo-bypass-country PH -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country PH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео id (Индонезия) -F',
+    summary: 'Гео-обход с кодом страны ID (--geo-bypass-country ID -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country ID -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео pk (Пакистан) -F',
+    summary: 'Гео-обход с кодом страны PK (--geo-bypass-country PK -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country PK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео bd (Бангладеш) -F',
+    summary: 'Гео-обход с кодом страны BD (--geo-bypass-country BD -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country BD -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео eg (Египет) -F',
+    summary: 'Гео-обход с кодом страны EG (--geo-bypass-country EG -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country EG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео cl (Чили) -F',
+    summary: 'Гео-обход с кодом страны CL (--geo-bypass-country CL -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country CL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео pe (Перу) -F',
+    summary: 'Гео-обход с кодом страны PE (--geo-bypass-country PE -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country PE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ke (Кения) -F',
+    summary: 'Гео-обход с кодом страны KE (--geo-bypass-country KE -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country KE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео co (Колумбия) -F',
+    summary: 'Гео-обход с кодом страны CO (--geo-bypass-country CO -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country CO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ng (Нигерия) -F',
+    summary: 'Гео-обход с кодом страны NG (--geo-bypass-country NG -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country NG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· экстрактор generic: не плейлист -F',
+    summary:
+      'Общий модуль (generic): не разворачивать плейлист (--extractor-args generic:noplaylist -F); допишите ссылку.',
+    fullLine: 'yt-dlp --extractor-args generic:noplaylist -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· до 10 ош. плейлиста -F',
+    summary:
+      'Пропустить до 10 ошибок подряд в плейлисте (--skip-playlist-after-errors 10 -F); допишите ссылку на плейлист.',
+    fullLine: 'yt-dlp --skip-playlist-after-errors 10 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· повторы запроса 15 -F',
+    summary:
+      'Больше повторов HTTP (--retries 15 -F); нестабильные сети доставки (CDN); допишите ссылку.',
+    fullLine: 'yt-dlp --retries 15 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· повторы фрагментов 15 -F',
+    summary:
+      'Повторы для обрывов фрагментов HLS и DASH (--fragment-retries 15 -F); допишите ссылку.',
+    fullLine: 'yt-dlp --fragment-retries 15 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· обход двунаправл. текста -F',
+    summary:
+      'Обход багов RTL и двунаправленного текста (BiDi) в именах файлов и метаданных (--bidi-workaround -F); допишите ссылку.',
+    fullLine: 'yt-dlp --bidi-workaround -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· даты: широкий диапазон -F',
+    summary:
+      'Ограничить по дате загрузки и релиза (--daterange 20000101-20991231 -F); подстройте диапазон; допишите ссылку.',
+    fullLine: 'yt-dlp --daterange 20000101-20991231 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· плейлист с 2-го -F',
+    summary:
+      'Плейлист начиная со 2-го элемента (--playlist-start 2 -F); допишите ссылку на плейлист.',
+    fullLine: 'yt-dlp --playlist-start 2 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео sk (Словакия) -F',
+    summary: 'Гео-обход с кодом страны SK (--geo-bypass-country SK -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country SK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео si (Словения) -F',
+    summary: 'Гео-обход с кодом страны SI (--geo-bypass-country SI -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country SI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео lu (Люксембург) -F',
+    summary: 'Гео-обход с кодом страны LU (--geo-bypass-country LU -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country LU -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео mt (Мальта) -F',
+    summary: 'Гео-обход с кодом страны MT (--geo-bypass-country MT -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country MT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео cy (Кипр) -F',
+    summary: 'Гео-обход с кодом страны CY (--geo-bypass-country CY -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country CY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ba (Босния и Герцеговина) -F',
+    summary: 'Гео-обход с кодом страны BA (--geo-bypass-country BA -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country BA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео rs (Сербия) -F',
+    summary: 'Гео-обход с кодом страны RS (--geo-bypass-country RS -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country RS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео mn (Монголия) -F',
+    summary: 'Гео-обход с кодом страны MN (--geo-bypass-country MN -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country MN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео kz (Казахстан) -F',
+    summary: 'Гео-обход с кодом страны KZ (--geo-bypass-country KZ -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country KZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ge (Грузия) -F',
+    summary: 'Гео-обход с кодом страны GE (--geo-bypass-country GE -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country GE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео am (Армения) -F',
+    summary: 'Гео-обход с кодом страны AM (--geo-bypass-country AM -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country AM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео az (Азербайджан) -F',
+    summary: 'Гео-обход с кодом страны AZ (--geo-bypass-country AZ -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country AZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео iq (Ирак) -F',
+    summary: 'Гео-обход с кодом страны IQ (--geo-bypass-country IQ -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country IQ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео lk (Шри-Ланка) -F',
+    summary: 'Гео-обход с кодом страны LK (--geo-bypass-country LK -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country LK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео tn (Тунис) -F',
+    summary: 'Гео-обход с кодом страны TN (--geo-bypass-country TN -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country TN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео ma (Марокко) -F',
+    summary: 'Гео-обход с кодом страны MA (--geo-bypass-country MA -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country MA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео dz (Алжир) -F',
+    summary: 'Гео-обход с кодом страны DZ (--geo-bypass-country DZ -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country DZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео gh (Гана) -F',
+    summary: 'Гео-обход с кодом страны GH (--geo-bypass-country GH -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country GH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео et (Эфиопия) -F',
+    summary: 'Гео-обход с кодом страны ET (--geo-bypass-country ET -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country ET -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео uy (Уругвай) -F',
+    summary: 'Гео-обход с кодом страны UY (--geo-bypass-country UY -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country UY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео bo (Боливия) -F',
+    summary: 'Гео-обход с кодом страны BO (--geo-bypass-country BO -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country BO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео cr (Коста-Рика) -F',
+    summary: 'Гео-обход с кодом страны CR (--geo-bypass-country CR -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country CR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· гео pa (Панама) -F',
+    summary: 'Гео-обход с кодом страны PA (--geo-bypass-country PA -F); допишите ссылку.',
+    fullLine: 'yt-dlp --geo-bypass-country PA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· загрузчик ffmpeg -F',
+    summary:
+      'Явно качать через встроенный загрузчик на базе FFmpeg (--downloader ffmpeg -F); потоки HLS и DASH; допишите ссылку.',
+    fullLine: 'yt-dlp --downloader ffmpeg -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· загрузчик aria2 -F',
+    summary:
+      'Внешний aria2c как загрузчик (--downloader aria2c -F; aria2c должен быть в каталогах из PATH); допишите ссылку.',
+    fullLine: 'yt-dlp --downloader aria2c -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· не ждать эфир -F',
+    summary:
+      'Не ждать появления трансляции (--no-wait-for-video -F); быстрый -F для стримов; допишите ссылку.',
+    fullLine: 'yt-dlp --no-wait-for-video -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· подробный вывод -F',
+    summary:
+      'Подробный журнал yt-dlp при списке форматов (--verbose -F); диагностика модуля извлечения (extractor); допишите ссылку.',
+    fullLine: 'yt-dlp --verbose -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· обрезка длинных имён -F',
+    summary:
+      'Обрезать слишком длинные имена файлов (--trim-filenames 180 -F); сетевые хранилища (NAS) и ограничение длины полного пути в Windows (около 260 символов, MAX_PATH); допишите ссылку.',
+    fullLine: 'yt-dlp --trim-filenames 180 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· hls по разрывам -F',
+    summary:
+      'HLS: резать плейлист по границам разрыва (метка разрыва discontinuity в плейлисте, --hls-split-discontinuity -F); стабильнее MPEG-TS-сегменты; допишите ссылку.',
+    fullLine: 'yt-dlp --hls-split-discontinuity -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· буфер динам. mpd -F',
+    summary:
+      'DASH: буфер динамического манифеста MPD в секундах (--dynamic-mpd-buffer-size 100 -F); «живые» манифесты; допишите ссылку.',
+    fullLine: 'yt-dlp --dynamic-mpd-buffer-size 100 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· без сырой разметки html -F',
+    summary:
+      'Не сохранять сырые HTML-страницы модуля извлечения (extractor) (--no-write-pages -F); чище диск при -F; допишите ссылку.',
+    fullLine: 'yt-dlp --no-write-pages -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· таймаут сокета 120 с -F',
+    summary:
+      'Таймаут сокета 120 с (--socket-timeout 120 -F); очень медленные сети доставки (CDN) и прокси; допишите ссылку.',
+    fullLine: 'yt-dlp --socket-timeout 120 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· сорт -S: ~1080p av1 -F',
+    summary:
+      'Сортировка форматов: приоритет ~1080p и AV1 (-S +res:1080,+codec:av01 -F); подстройте res и codec; допишите ссылку.',
+    fullLine: 'yt-dlp -S +res:1080,+codec:av01 -F '
   }
 ]

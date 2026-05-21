@@ -23,8 +23,6 @@ import {
 } from '../locales/ui-text'
 import { DiagnosticsFoldersPanel } from './DiagnosticsFoldersPanel'
 import { KnowledgeDeepLinkButton } from './KnowledgeDeepLinkButton'
-import { MediaFileUtilitiesPanel } from './MediaFileUtilitiesPanel'
-
 type MaintenanceCleanChoice = 'all' | DiagnosticsMaintenanceTargetId
 
 function maintenanceSnapshotTargetLabel(id: DiagnosticsMaintenanceTargetId): string {
@@ -198,11 +196,6 @@ export function AboutDialog({
         )}
         <DiagnosticsFoldersPanel
           busy={aboutShellBusy}
-          describedById="about-dialog-desc"
-          onStatus={pushStatus}
-        />
-        <MediaFileUtilitiesPanel
-          disabled={aboutShellBusy || maintenanceBusy}
           describedById="about-dialog-desc"
           onStatus={pushStatus}
         />

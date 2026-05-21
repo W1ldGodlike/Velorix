@@ -92,7 +92,7 @@ describe('createSupportBundleZip', () => {
       ],
       terminalHintsLines: [
         'meta: terminal-contract-hints-meta',
-        'npm run check:terminal-contract-hints-shards (20 downloads + 15 preview shards (35 files); 1056+833 hints)',
+        'npm run check:terminal-contract-hints-shards (14 downloads + 8 preview shards (22 files); 839+465 hints)',
         'npm run check:terminal-hints-locale'
       ],
       releaseSmokeLines: [

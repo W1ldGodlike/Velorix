@@ -22,7 +22,6 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
     lines: [
       'yt-dlp --quiet -F ',
       'yt-dlp --no-cookies -F ',
-      'yt-dlp --compat-options 2025 -F ',
       'yt-dlp --break-on-existing -F ',
       'yt-dlp --mtime ',
       'yt-dlp --check-formats-threshold 1.5 -F ',
@@ -120,15 +119,14 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
     ] as const
   },
   {
-    label: 'geo AF/AO/HK/IL/KW -F + --clean-info-json -F + --update-to stable',
+    label: 'geo AF/AO/HK/IL/KW -F + --clean-info-json -F',
     lines: [
       'yt-dlp --geo-bypass-country AF -F ',
       'yt-dlp --geo-bypass-country AO -F ',
       'yt-dlp --geo-bypass-country HK -F ',
       'yt-dlp --geo-bypass-country IL -F ',
       'yt-dlp --geo-bypass-country KW -F ',
-      'yt-dlp --clean-info-json -F ',
-      'yt-dlp --update-to stable'
+      'yt-dlp --clean-info-json -F '
     ] as const
   },
   {
@@ -212,7 +210,6 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
       'yt-dlp --lazy-playlist -J ',
       'yt-dlp --skip-download --print season_number ',
       'yt-dlp --remux-video mkv ',
-      'yt-dlp --force-ipv6 -F ',
       'yt-dlp --dateafter 20240101 -F ',
       'yt-dlp --max-downloads 5 ',
       'yt-dlp --match-title trailer -F ',
@@ -249,7 +246,6 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
       'yt-dlp --encoding utf-8 ',
       'yt-dlp --break-per-input -F ',
       'yt-dlp --check-all-formats -F ',
-      'yt-dlp --socket-timeout 60 ',
       'yt-dlp --xattrs ',
       'yt-dlp -U ',
       'yt-dlp --compat-options no-youtube-unavailable-videos -F ',

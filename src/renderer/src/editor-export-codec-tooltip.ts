@@ -1,5 +1,9 @@
 import type { FfmpegExportVideoCodecId } from '../../shared/ffmpeg-export-contract'
 import {
+  buildFfmpegExportBenchmarkHardwareHintsFromHwProbe,
+  isFfmpegHwVideoEncoderRunnableInUi
+} from '../../shared/ffmpeg-export-benchmark-hardware'
+import {
   FFMPEG_HW_ENCODER_FAMILY_HINT_UI_KEYS,
   getFfmpegHwEncoderFamily,
   type FfmpegHwEncoderFamily
@@ -84,6 +88,7 @@ export function buildEditorExportCodecDetailTooltip(
 
   if (params.hwEncoderProbe?.ok === true) {
     const probe = params.hwEncoderProbe
+    const hardware = buildFfmpegExportBenchmarkHardwareHintsFromHwProbe(probe)
     if (probe.nvidiaGpu) {
       titleParts.push(
         uiTextVars('editorStatusbarTitleGpu', {
@@ -93,7 +98,8 @@ export function buildEditorExportCodecDetailTooltip(
       )
     }
     const hasNvenc = FFMPEG_HW_VIDEO_ENCODER_IDS.some(
-      (id) => id.endsWith('_nvenc') && probe.snapshot[id]
+      (id) =>
+        id.endsWith('_nvenc') && isFfmpegHwVideoEncoderRunnableInUi(id, probe.snapshot, hardware)
     )
     if (
       hasNvenc &&
@@ -101,7 +107,9 @@ export function buildEditorExportCodecDetailTooltip(
     ) {
       titleParts.push(uiText('editorStatusbarTitleNvencSessions'))
     }
-    const available = FFMPEG_HW_VIDEO_ENCODER_IDS.filter((id) => probe.snapshot[id])
+    const available = FFMPEG_HW_VIDEO_ENCODER_IDS.filter((id) =>
+      isFfmpegHwVideoEncoderRunnableInUi(id, probe.snapshot, hardware)
+    )
     if (available.length > 0) {
       const names = available.map((id) =>
         resolveEditorExportCodecDisplayName(id as FfmpegHwVideoEncoderId, uiText)

@@ -2,6 +2,7 @@
   "downloadsRailAria": "Настройки загрузок",
   "downloadsSettingsSectionsStackAria": "Сворачиваемые секции настроек yt-dlp",
   "downloadsRailTitle": "Настройки yt-dlp",
+  "downloadsSettingsPanelDetailsAria": "Сворачиваемая панель настроек yt-dlp",
   "downloadsRailSubtitle": "Качество ролика, папка на диске, субтитры, поведение после загрузки и сеть. Секции можно сворачивать; те же значения используются в отдельном окне загрузок.",
   "downloadsRailIntroTooltip": "Все поля здесь влияют на следующие загрузки из очереди. Наведите курсор на любой переключатель, список или кнопку — появится развёрнутая подсказка простыми словами.",
   "downloadsRailFormatSummary": "Формат",

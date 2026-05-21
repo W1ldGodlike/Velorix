@@ -834,19 +834,33 @@
   flex-direction: column;
 }
 
-/** Центральная колонка v0: очередь таблицей занимает высоту, блоки история→лог — под ней на всю ширину. */
+/** Центральная колонка v0: очередь с прокруткой, история/журнал под ней (без растягивания строк таблицы). */
 .app-downloads-table-zone {
   flex: 1;
   min-height: 0;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
 .app-downloads-table-zone > .app-downloads-table-wrap {
+  flex: 1 1 0;
   min-height: 0;
+  max-height: 100%;
   min-width: 0;
   overflow: auto;
+}
+
+/** Обёртка shrink-to-fit: таблица не растягивается на высоту скролл-контейнера (пустота между шапкой и строками). */
+.app-downloads-table-fit {
+  display: inline-block;
+  width: 100%;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+.app-downloads-table-zone > .app-downloads-lower-stack {
+  flex: 0 0 auto;
 }
 
 .app-downloads-lower-stack {
@@ -1254,6 +1268,56 @@ button.app-downloads-hint-token:disabled {
   white-space: nowrap;
 }
 
+.app-downloads-settings-panel {
+  border-radius: var(--fa-radius-control);
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface) 96%, transparent);
+  overflow: hidden;
+}
+
+.app-downloads-settings-panel-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fa-space-2);
+  cursor: pointer;
+  padding: var(--fa-space-inline) var(--fa-space-row);
+  color: var(--fa-text-secondary);
+  font-size: var(--fa-font-size-sm);
+  font-weight: 800;
+  list-style: none;
+  user-select: none;
+}
+
+.app-downloads-settings-panel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.app-downloads-settings-panel-summary::before {
+  display: inline-block;
+  margin-right: var(--fa-space-snug);
+  color: var(--fa-text-muted);
+  transition: transform 0.12s ease;
+  content: '▸';
+}
+
+.app-downloads-settings-panel[open] > .app-downloads-settings-panel-summary::before {
+  transform: rotate(90deg);
+}
+
+.app-downloads-settings-panel-summary:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+}
+
+.app-downloads-settings-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-stack);
+  padding: 0 var(--fa-space-gutter) var(--fa-space-gutter);
+  border-top: 1px solid var(--fa-border-subtle);
+}
+
 .app-downloads-log-panel {
   border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
@@ -1322,12 +1386,32 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-downloads-actions,
-.app-downloads-url-actions,
-.app-downloads-row-actions {
+.app-downloads-url-actions {
   display: flex;
   align-items: center;
   gap: var(--fa-space-snug);
   flex-wrap: wrap;
+}
+
+/* v0: иконки очереди — одна строка; общий flex-wrap: wrap раздувал высоту строки. */
+.app-downloads-row-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--fa-space-snug);
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.app-downloads-table th:last-child,
+.app-downloads-table td:last-child {
+  width: 1%;
+  min-width: 0;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .app-downloads-row-actions .app-btn-compact {
@@ -1338,6 +1422,7 @@ button.app-downloads-hint-token:disabled {
 
 .app-downloads-row-actions .app-icon-btn {
   box-sizing: border-box;
+  flex: 0 0 auto;
   min-width: 26px;
   width: 26px;
   height: 26px;
@@ -1458,6 +1543,8 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-table {
   width: 100%;
   border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: auto;
   font-size: var(--fa-font-size-ui);
 }
 
@@ -1467,6 +1554,10 @@ button.app-downloads-hint-token:disabled {
   border-bottom: 1px solid var(--fa-border-subtle);
   vertical-align: top;
   text-align: left;
+}
+
+.app-downloads-table tbody td {
+  height: 1px;
 }
 
 .app-downloads-table th {
@@ -1585,28 +1676,39 @@ button.app-downloads-hint-token:disabled {
 }
 
 @media (max-width: 1100px) {
-  /* §6/v0: на узком окне rail не исчезает — уходит под очередь/журнал с собственным скроллом. */
+  /* §6/v0: очередь + история/журнал сверху, настройки снизу в <details> (как история); прокрутка всей вкладки. */
   .app-downloads-workspace {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
     gap: var(--fa-space-inline);
     min-height: 0;
-    /* Вертикальная прокрутка всей вкладки: `scrollIntoView` к `#downloads-ytdlp-settings-rail` из шапки. */
     overflow-x: hidden;
     overflow-y: auto;
   }
 
   .app-downloads-main {
     min-height: 0;
+    overflow: visible;
   }
 
-  .app-downloads-rail {
-    display: flex;
-    max-height: min(40vh, 22rem);
-    min-height: 10rem;
+  .app-downloads-table-zone {
+    flex: 0 1 auto;
+    max-height: none;
+  }
+
+  .app-downloads-table-zone > .app-downloads-table-wrap {
+    flex: 0 1 auto;
+    max-height: min(42vh, 22rem);
+  }
+
+  .app-downloads-rail--stacked {
+    min-height: 0;
+    height: auto;
     flex-shrink: 0;
-    overflow: auto;
-    border-top: 1px solid var(--fa-border-subtle);
+    overflow: visible;
+    padding: 0;
+    border: none;
+    background: transparent;
     scroll-margin: var(--fa-space-snug);
   }
 
@@ -2107,6 +2209,73 @@ button.app-downloads-hint-token:disabled {
 
 .app-field-benchmark {
   grid-column: 1 / -1;
+}
+
+/* Узкий рельс FFmpeg (320–380px): одна колонка полей; тяжёлые блоки — на всю ширину. */
+.app-settings-panel [role='region'] .app-settings-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.app-settings-benchmark,
+.app-settings-extract-frames,
+.app-settings-video-sprite,
+.app-settings-media-tools {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-row);
+  min-width: 0;
+  padding-top: var(--fa-space-compact);
+  border-top: 1px solid var(--fa-border-subtle);
+}
+
+.app-settings-media-tools {
+  gap: var(--fa-space-stack);
+  padding-top: var(--fa-space-compact);
+  border-top: 1px solid var(--fa-border-subtle);
+}
+
+.app-settings-media-tools > .app-settings-extract-frames {
+  border-top: none;
+  padding-top: 0;
+}
+
+.app-settings-extract-frames-source {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-compact);
+  min-width: 0;
+}
+
+.app-settings-extract-frames-source-path {
+  margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-settings-grid--tight {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--fa-space-row) var(--fa-space-3);
+  width: 100%;
+}
+
+.app-settings-grid--tight .app-field-checkbox {
+  grid-column: 1 / -1;
+}
+
+.app-field--full {
+  grid-column: 1 / -1;
+}
+
+.app-settings-panel .app-field > span:first-child,
+.app-settings-panel .app-field-label {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-benchmark-toolbar,
@@ -3319,6 +3488,79 @@ button.app-downloads-hint-token:disabled {
   align-self: flex-start;
 }
 
+.media-file-utilities-dialog {
+  display: flex;
+  flex-direction: column;
+  max-height: min(90vh, 720px);
+  overflow: hidden;
+}
+
+.media-file-utilities-dialog-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 var(--fa-space-inline) var(--fa-space-inline);
+}
+
+.app-settings-qa-block {
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: var(--fa-radius-panel);
+  padding: 0;
+  margin: 0;
+  background: color-mix(in srgb, var(--fa-bg-elevated) 72%, transparent);
+}
+
+.app-settings-qa-summary {
+  cursor: pointer;
+  padding: var(--fa-space-snug) var(--fa-space-inline);
+  font-size: var(--fa-font-size-md);
+  font-weight: 600;
+  color: var(--fa-text-secondary);
+  list-style: none;
+}
+
+.app-settings-qa-summary::-webkit-details-marker {
+  display: none;
+}
+
+.app-settings-qa-summary::before {
+  content: '▸ ';
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.app-settings-qa-block[open] > .app-settings-qa-summary::before {
+  transform: rotate(90deg);
+}
+
+.app-settings-qa-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-inline);
+  padding: 0 var(--fa-space-inline) var(--fa-space-inline);
+}
+
+.app-settings-qa-lead {
+  margin: 0;
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.app-settings-qa-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fa-space-compact);
+}
+
+.app-settings-qa-previews {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-compact);
+  max-height: min(40vh, 320px);
+  overflow: auto;
+  padding-right: var(--fa-space-tight);
+}
+
 .workflow-scenario-flow-wrap {
   margin: var(--fa-space-2) 0 var(--fa-space-3);
 }
@@ -3887,6 +4129,15 @@ button.app-downloads-hint-token:disabled {
 .app-knowledge-link:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
+}
+
+/* Панели настроек / рельсы: компактная справка (иконка «?», подпись — в title и aria-label). */
+.app-knowledge-help-btn {
+  color: var(--fa-text-muted);
+}
+
+.app-knowledge-help-btn:hover:not(:disabled) {
+  color: var(--fa-accent);
 }
 
 .app-knowledge-link-denied {

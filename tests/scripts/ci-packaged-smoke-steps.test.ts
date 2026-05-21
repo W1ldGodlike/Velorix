@@ -29,6 +29,16 @@ describe('ci packaged smoke steps §19', () => {
     expect(workflow).toContain('run: npm run smoke:packaged-ffmpeg')
   })
 
+  it('does not run pack:mac:dir in CI (mac pack is local/manual on darwin)', () => {
+    expect(workflow).not.toMatch(/run:\s*npm run pack:mac:dir/)
+    expect(workflow).toMatch(/macOS electron-builder.*local/i)
+  })
+
+  it('does not run build:linux or verify:linux-release in CI (full linux release is local)', () => {
+    expect(workflow).not.toMatch(/run:\s*npm run build:linux/)
+    expect(workflow).not.toMatch(/run:\s*npm run verify:linux-release/)
+  })
+
   it('linux-packaging job runs pack:linux:dir and verify:linux-unpacked', () => {
     const linuxJob = workflow.slice(workflow.indexOf('linux-packaging:'))
     expect(linuxJob).toContain('runs-on: ubuntu-latest')

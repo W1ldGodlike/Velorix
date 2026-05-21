@@ -14,6 +14,10 @@ import {
   FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR
 } from './ffmpeg-export-contract'
 import {
+  buildFfmpegExportBenchmarkHardwareHintsFromHwProbe,
+  filterFfmpegHwEncodersSnapshotForHardware
+} from './ffmpeg-export-benchmark-hardware'
+import {
   createEmptyFfmpegHwEncodersSnapshot,
   FFMPEG_HW_VIDEO_ENCODER_IDS,
   type FfmpegHwEncodersProbeResult,
@@ -201,4 +205,17 @@ export function probeSnapshotOrEmpty(
     return probe.snapshot
   }
   return createEmptyFfmpegHwEncodersSnapshot()
+}
+
+/** HW-кодеки без GPU под семейство отключены (`false`); CPU/`hw_auto` — по полному снимку. */
+export function probeRunnableHwSnapshot(
+  probe: FfmpegHwEncodersProbeResult | null
+): FfmpegHwEncodersSnapshot {
+  if (probe?.ok !== true) {
+    return createEmptyFfmpegHwEncodersSnapshot()
+  }
+  return filterFfmpegHwEncodersSnapshotForHardware(
+    probe.snapshot,
+    buildFfmpegExportBenchmarkHardwareHintsFromHwProbe(probe)
+  )
 }

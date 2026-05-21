@@ -49,6 +49,7 @@ export type FluxAlloyApiEventsBlock = {
   onSettingsBackupImported: (listener: () => void) => () => void
   onProcessingHistoryChanged: (listener: () => void) => () => void
   onOpenAbout: (listener: () => void) => () => void
+  onOpenMediaFileUtilities: (listener: () => void) => () => void
   onOpenExternalFilterScript: (listener: () => void) => () => void
   onOpenWorkflowPlanner: (listener: () => void) => () => void
   onOpenWorkflowScenarioBuilder: (listener: () => void) => () => void

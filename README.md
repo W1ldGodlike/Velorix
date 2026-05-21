@@ -62,7 +62,7 @@ npm run build:linux
 
 - `scripts/cursor-automation/.env` — **CURSOR_API_KEY**, не в Git.
 - Пример: `scripts/cursor-automation/.env.example`.
-- Guard: `node scripts/check-no-secrets.mjs` (tracked файлы).
+- Guard: `node scripts/gate/check-no-secrets.mjs` (tracked файлы).
 
 ## Зависимости приложения (движки)
 
@@ -111,7 +111,7 @@ npm run engines:doctor
 
 - Агент: [`AGENTS.md`](./AGENTS.md), [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md).
 - `Data/`, `Help/` — конфиги и подсказки UI.
-- Русские `summary` терминала: **`npm run locales:terminal-summaries-ru`** (дважды до 0 замен) — [`Help/ffmpeg-terminal-hints.md`](./Help/ffmpeg-terminal-hints.md).
+- Русские `summary` терминала: **`npm run locales:terminal-summaries-ru`** (дважды до 0 замен) — [`Help/ru/ffmpeg-terminal-hints.md`](./Help/ru/ffmpeg-terminal-hints.md).
 - Help §21: `npm run check:help-workflow-smoke-crosslinks` (44 workflow; user footer (owner-manual-smoke + packaged-windows-smoke); 44/44 workflow user crosslink footers).
 - §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](./src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](./docs/RELEASE.md) §4/§4.1/§4.2; Help packaged win/linux/macos + §15 hub — `check:help-packaged-smoke-docs`, `check:help-owner-smoke-docs`, strict signing in `check:help-workflow-smoke-crosslinks`.
 - §19 signing indexed: Help §15 hub + `check:help-packaged-smoke-docs` + `check:help-owner-smoke-docs` + strict signing crosslinks; SDK `continue.txt` / `initial.txt` / `agent-contract.txt` — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock` / `formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause`; diagnostics — `check:release` / `check:platform-packaging-scripts` (`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine`). Packaging indexed: `electron-builder.yml` (**9** §19 yaml comments; J-1520..1539).

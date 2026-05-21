@@ -56,6 +56,7 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   settingsBackupImportConfirm: 'Import',
   settingsBackupImportCancel: 'Cancel',
   menuTools: 'Tools',
+  menuMediaFileUtilities: 'File maintenance…',
   menuInspector: 'Media inspector (ffprobe)…',
   menuMiniPlayer: 'Mini Player (task progress)…',
   menuOpenFolder: 'Open folder…',

@@ -6,6 +6,7 @@ import {
   DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP
 } from '../../../shared/terminal-inline-suggest'
 import { formatTerminalIntroTail, uiText } from '../locales/ui-text'
+import { KnowledgeDeepLinkButton } from './KnowledgeDeepLinkButton'
 import type { TerminalWorkspacePanelProps } from './terminal-workspace-panel-props'
 
 export function TerminalWorkspacePanelIntroBand(
@@ -43,18 +44,15 @@ export function TerminalWorkspacePanelIntroBand(
           aria-describedby="terminal-intro-hint"
           aria-busy={terminalBusy}
         >
-          <button
-            type="button"
-            className="app-knowledge-link"
-            title={uiText('terminalKnowledgeDeepLinkTooltip')}
-            aria-label={uiText('knowledgeArticleTerminalHintsLink')}
-            aria-describedby="terminal-intro-hint"
-            onClick={() => {
+          <KnowledgeDeepLinkButton
+            label={uiText('knowledgeArticleTerminalHintsLink')}
+            tooltip={uiText('terminalKnowledgeDeepLinkTooltip')}
+            ariaDescribedBy="terminal-intro-hint"
+            disabled={terminalBusy}
+            onOpen={() => {
               onOpenTerminalKnowledge()
             }}
-          >
-            {uiText('knowledgeArticleTerminalHintsLink')}
-          </button>
+          />
         </nav>
       </div>
     </div>

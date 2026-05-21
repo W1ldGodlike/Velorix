@@ -11,7 +11,7 @@ import {
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds
 } from '../shared/ffmpeg-export-progress-parse'
-import { logExternalProcessLine } from './external-process-log'
+import { formatExternalProcessExitCode, logExternalProcessLine } from './external-process-log'
 import { appendProcessStreamBuffer } from './process-stream-buffer'
 
 /**
@@ -131,7 +131,11 @@ export function runFfmpegExportOnce(params: {
     })
 
     child.on('close', (code) => {
-      logExternalProcessLine('ffmpeg-export', 'lifecycle', `closed exitCode=${code ?? '?'}`)
+      logExternalProcessLine(
+        'ffmpeg-export',
+        'lifecycle',
+        `closed exitCode=${formatExternalProcessExitCode(code)}`
+      )
       if (stderrTail.trim().length > 0) {
         emitLine(stderrTail)
         stderrTail = ''
