@@ -23,10 +23,14 @@ const FORBIDDEN_TEXT = [
   { pattern: /fluxalloy-program-gate/, label: 'fluxalloy-program-gate' },
   { pattern: /check-program-gate/, label: 'check-program-gate' },
   { pattern: /UI_CONSOLIDATION_AND_COPY_PROGRAM/, label: 'UI_CONSOLIDATION_AND_COPY_PROGRAM' },
-  { pattern: /continue_count\s*%\s*5/, label: 'continue_count % 5 (use J-NNN cadence)' },
-  { pattern: /continue_count\s*%\s*10/, label: 'continue_count % 10 (use J-NNN cadence)' },
+  { pattern: /continue_count\s*%\s*5/, label: 'continue_count % 5 (use git по J-NNN)' },
+  { pattern: /continue_count\s*%\s*10/, label: 'continue_count % 10 (use git по J-NNN)' },
   { pattern: /fluxalloy-marathon/, label: 'fluxalloy-marathon (renamed fluxalloy-continue)' },
-  { pattern: /не коммитить|не пушить/, label: 'cadence override removed (J-1570)' }
+  { pattern: /не коммитить|не пушить/, label: 'git override «не коммитить» removed (J-1570)' },
+  {
+    pattern: /Cadence Git|Следующий cadence|marathon cadence/i,
+    label: 'legacy «cadence» — use «Git по J-NNN» / «commit по J»'
+  }
 ]
 
 /** Paths removed in GOV B / J-984 — must not appear as markdown link targets */

@@ -5,7 +5,7 @@ import {
   downloadsWindowMinLogicalSize,
   mainEditorMinLogicalSize,
   inspectorWindowMinLogicalSize
-} from '../../src/main/window-hidpi'
+} from '../../src/main/windows/window-hidpi'
 
 describe('window-hidpi', () => {
   it('повышает min-размеры загрузок при 125% и 150% (логический scaleFactor)', () => {

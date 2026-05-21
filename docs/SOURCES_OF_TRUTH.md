@@ -9,10 +9,10 @@
 | 1         | [`.cursor/rules/`](../.cursor/rules/) + [`.cursor/skills/`](../.cursor/skills/)                                   | **alwaysApply:** `fluxalloy-rules-explicit`, `fluxalloy-core`, `fluxalloy-agent`, `fluxalloy-simplicity`. **Workflows:** skills `fluxalloy-*`. **Запрещено:** копировать в `.mdc` целиком ТЗ, тело чеклиста или журнала — агент **открывает файл** и читает нужный фрагмент; в rules только **исполняемые** запреты и команды. |
 | 2         | Шапка [`IMPLEMENTATION_JOURNAL.md`](../IMPLEMENTATION_JOURNAL.md)                                                 | Канон **формата** журнала (`J-NNN`, время, одна сводная за итерацию).                                                                                                           |
 | 3         | Шапка [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md)                                             | Канон **формата** чеклиста и блока «Ближайший TODO спринта».                                                                                                                    |
-| 4         | [`.cursor/skills/fluxalloy-continue/`](../.cursor/skills/fluxalloy-continue/SKILL.md) + [`fluxalloy-agent.mdc`](../.cursor/rules/fluxalloy-agent.mdc) | «продолжай» / `+`: текущая задача или спринт; **Cadence Git** — глоссарий + **Следующий cadence** в `fluxalloy-agent.mdc` (**J-1570** commit; **J-1580** commit + push).                                                                                                            |
+| 4         | [`.cursor/skills/fluxalloy-continue/`](../.cursor/skills/fluxalloy-continue/SKILL.md) + [`fluxalloy-agent.mdc`](../.cursor/rules/fluxalloy-agent.mdc) | «продолжай» / `+`: текущая задача или спринт; **Git по J-NNN** — глоссарий + **следующий commit/push по J** в `fluxalloy-agent.mdc` (**J-1580**).                                                                                                            |
 | 4b        | [`fluxalloy-agent.mdc`](../.cursor/rules/fluxalloy-agent.mdc) + `check:ui-surfaces-guard`                           | UI, audit, среда; один renderer; `ui-text` / `locales/**`; без HTML-pop-out.                                                                                                   |
 | 5         | [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md)                                                                           | Канон **продукта** (требования). В rules **не** копируется целиком — только чтение нужного §. **Не редактировать** без явной просьбы владельца.                                 |
-| 6         | [`scripts/cursor-automation/prompts/agent-contract.txt`](../scripts/cursor-automation/prompts/agent-contract.txt) | SDK-агент; синхронизировать с 1–4 при смене процесса; cadence — **Следующий cadence** **J-1570** commit (`fluxalloy-agent.mdc`).                                                                                                      |
+| 6         | [`scripts/cursor-automation/prompts/agent-contract.txt`](../scripts/cursor-automation/prompts/agent-contract.txt) | SDK-агент; синхронизировать с 1–4 при смене процесса; git по J — **следующий commit по J** **J-1580** (`fluxalloy-agent.mdc`).                                                                                                      |
 | 7         | [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) · [`docs/RELEASE.md`](RELEASE.md)                                       | IPC/renderer, npm/toolchain, packaging, release/build; отладка CSP/медиа — § в ARCHITECTURE.                                                                                    |
 
 ## При расхождении
@@ -23,7 +23,7 @@
 
 ## Карта синхронизации (сжатая группировка)
 
-При правке темы обнови **все перечисленные в строке** в **одном коммите** (или ближайшем cadence commit по `J-NNN`).
+При правке темы обнови **все перечисленные в строке** в **одном коммите** (или ближайшем `git commit` по `J-NNN`, `NNN % 5 === 0`).
 
 | Тема | Обновить вместе |
 | --- | --- |
@@ -33,7 +33,7 @@
 | §19 signing roadmap (win/linux/mac) | `src/shared/release-code-signing-roadmap.ts`, `electron-builder.yml`, `docs/RELEASE.md` §4/§4.1/§4.2, Help packaged/owner + strict crosslinks guards; SDK prompts |
 | Baseline handoff (на main) | `toolchain-baseline-wip-handoff-meta.ts`, `RELEASE.md` §1, `ARCHITECTURE.md` § npm, `AGENTS.md`, `README.md`, SDK prompts; lock majors — `toolchain-baseline-package.test.ts` |
 | Продолжай / + | [`.cursor/skills/fluxalloy-continue/SKILL.md`](../.cursor/skills/fluxalloy-continue/SKILL.md), `fluxalloy-agent.mdc`, `fluxalloy-rules-explicit.mdc`, `continue.txt`, `initial.txt`, `agent-contract.txt` |
-| Cadence Git (J-NNN) | глоссарий `fluxalloy-rules-explicit.mdc`, `fluxalloy-agent.mdc`, `agent-contract.txt`, `continue.txt`, `initial.txt` |
+| Git по J-NNN | глоссарий `fluxalloy-rules-explicit.mdc`, `fluxalloy-agent.mdc`, `agent-contract.txt`, `continue.txt`, `initial.txt` |
 | Итерация / микро-J / пакет | `fluxalloy-agent.mdc`, skill `fluxalloy-continue`, `fluxalloy-journal.mdc`, skills `fluxalloy-journal-entry` |
 | Язык правил / глоссарий | `fluxalloy-rules-explicit.mdc`, все `.mdc` где термин; строка иерархии §1 выше; `npm run check:rules-explicit` |
 | Простота governance | `fluxalloy-simplicity.mdc`, `AGENTS.md`, `agent-contract.txt` |
@@ -46,7 +46,7 @@
 | Docs / legacy links | `npm run check:docs-governance` в `check:quiet`; `audit:orphan-scripts` при чистке `scripts/` |
 | Приоритет rules vs шапка | `fluxalloy-rules-explicit.mdc` → синхрон шапок `IMPLEMENTATION_*` при смене формата |
 | Среда агента / ответ в чате | `fluxalloy-agent.mdc`, `agent-contract.txt` |
-| Toolchain baseline (выполнен) | `package.json` / `package-lock.json`, [`tests/shared/toolchain-baseline-package.test.ts`](../tests/shared/toolchain-baseline-package.test.ts), [`AGENTS.md`](../AGENTS.md), [`fluxalloy-core.mdc`](../.cursor/rules/fluxalloy-core.mdc), корневой [`README.md`](../README.md), [`.npmrc`](../.npmrc), [`docs/RELEASE.md`](RELEASE.md) §1, [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) § npm (**J-1354**, **J-1559** — план; **J-1562** — удалён AGENT_MARATHON; **J-1563** — ops/handoff; **J-1564** — срез тестов/guards; **J-1570** — cadence без override) |
+| Toolchain baseline (выполнен) | `package.json` / `package-lock.json`, [`tests/shared/toolchain-baseline-package.test.ts`](../tests/shared/toolchain-baseline-package.test.ts), [`AGENTS.md`](../AGENTS.md), [`fluxalloy-core.mdc`](../.cursor/rules/fluxalloy-core.mdc), корневой [`README.md`](../README.md), [`.npmrc`](../.npmrc), [`docs/RELEASE.md`](RELEASE.md) §1, [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) § npm (**J-1354**, **J-1559** — план; **J-1562** — удалён AGENT_MARATHON; **J-1563** — ops/handoff; **J-1564** — срез тестов/guards; **J-1570** — git по J обязателен) |
 
 Help UiHintSuffix (4 §15 anchors, 6 packaged) — `formatPackagedGuiE2ePlaywright*HelpUiHintSuffix`; AGENTS — slim domains pointer only
 

@@ -184,7 +184,7 @@ function main() {
         errors.push(`program ended: legacy product file still present: ${rel}`)
       }
     }
-    const mainDownloads = readRepoOptional('src/main/downloads-window.ts')
+    const mainDownloads = readRepoOptional('src/main/windows/downloads-window.ts')
     if (mainDownloads && /buildDownloadsHtml|data:text\/html/i.test(mainDownloads)) {
       errors.push(
         'program ended: downloads-window.ts still uses buildDownloadsHtml or data:text/html'

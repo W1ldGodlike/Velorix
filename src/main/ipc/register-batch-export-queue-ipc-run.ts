@@ -1,21 +1,21 @@
 import { BrowserWindow, ipcMain } from 'electron'
 
-import { sendExportProgress } from '../export-progress-broadcast'
+import { sendExportProgress } from '../core/export-progress-broadcast'
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import type { FfmpegExportBatchStartResult } from '../../shared/ffmpeg-export-batch-contract'
 import {
   getFfmpegExportBatchSnapshot,
   markWaitingFfmpegExportBatchRowsCancelled,
   retryFailedFfmpegExportBatchRows
-} from '../ffmpeg-export-batch-queue'
+} from '../services/ffmpeg/ffmpeg-export-batch-queue'
 import {
   cancelFfmpegExportBatchRunner,
   isFfmpegExportBatchActive,
   runFfmpegExportBatchQueue
-} from '../ffmpeg-export-batch-runner'
-import { openFfmpegExportBatchInputPath } from '../ffmpeg-export-batch-open-input'
-import { resolveAppPaths } from '../app-paths'
-import { resolveEngineExecutablePath } from '../engine-service'
+} from '../services/ffmpeg/ffmpeg-export-batch-runner'
+import { openFfmpegExportBatchInputPath } from '../services/ffmpeg/ffmpeg-export-batch-open-input'
+import { resolveAppPaths } from '../core/app-paths'
+import { resolveEngineExecutablePath } from '../services/engines/engine-service'
 import type { ExportBatchIpcContext } from './export-batch-ipc-context'
 
 export function registerBatchExportQueueIpcRunHandlers(ctx: ExportBatchIpcContext): void {

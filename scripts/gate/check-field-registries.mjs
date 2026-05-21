@@ -30,21 +30,24 @@ if (/export function formatFfprobe\w+ExportLine/.test(containerRegistry)) {
   }
 }
 
-const exportService = readFileSync('src/main/ffmpeg-export-service.ts', 'utf8')
+const exportService = readFileSync('src/main/services/ffmpeg/ffmpeg-export-service.ts', 'utf8')
 if (/if\s*\(\s*raw\s*===\s*'light'\s*\|\|\s*raw\s*===\s*'medium'/.test(exportService)) {
   failures.push(
     'ffmpeg-export-service.ts: whitelist-парсеры — только ffmpeg-export-parse-registry.ts'
   )
 }
 
-const settingsStore = readFileSync('src/main/settings-store.ts', 'utf8')
+const settingsStore = readFileSync('src/main/services/settings/settings-store.ts', 'utf8')
 if (/if\s*\(\s*raw\s*===\s*'[^']+'\s*\|\|/.test(settingsStore)) {
   failures.push(
     'settings-store.ts: whitelist stored — только settings-stored-parse.ts / parseWhitelistEnum'
   )
 }
 
-const ytdlpDownloadOptions = readFileSync('src/main/ytdlp-download-options.ts', 'utf8')
+const ytdlpDownloadOptions = readFileSync(
+  'src/main/services/ytdlp/ytdlp-download-options.ts',
+  'utf8'
+)
 if (/if\s*\(\s*raw\s*===\s*'[^']+'\s*\|\|/.test(ytdlpDownloadOptions)) {
   failures.push(
     'ytdlp-download-options.ts: whitelist stored — только ytdlp-download-stored-parse.ts'
@@ -54,7 +57,10 @@ if (/export function parseYtdlp/.test(ytdlpDownloadOptions)) {
   failures.push('ytdlp-download-options.ts: parse — только ytdlp-download-stored-parse.ts')
 }
 
-const ffmpegExportService = readFileSync('src/main/ffmpeg-export-service.ts', 'utf8')
+const ffmpegExportService = readFileSync(
+  'src/main/services/ffmpeg/ffmpeg-export-service.ts',
+  'utf8'
+)
 if (/export function parseFfmpegExport/.test(ffmpegExportService)) {
   failures.push(
     'ffmpeg-export-service.ts: parse — только ffmpeg-export-*-parse.ts / parse-registry'
@@ -100,7 +106,10 @@ for (const testFile of walkTests(testsDir)) {
   }
 }
 
-const resolveFromSettings = readFileSync('src/main/ffmpeg-export-resolve-from-settings.ts', 'utf8')
+const resolveFromSettings = readFileSync(
+  'src/main/services/ffmpeg/ffmpeg-export-resolve-from-settings.ts',
+  'utf8'
+)
 const resolveRawBlocks = [...resolveFromSettings.matchAll(/const \w+Raw = raw\['([^']+)'\]/g)].map(
   (m) => m[1]
 )

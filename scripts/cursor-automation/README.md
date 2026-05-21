@@ -9,7 +9,7 @@ cd scripts/cursor-automation
 npm install
 ```
 
-Корень репозитория содержит [`.npmrc`](../../.npmrc) (`legacy-peer-deps=true` для основного приложения); при `npm install` из этой папки npm обычно подхватывает его при обходе родительских каталогов. Канон baseline — `package.json` (lock — `tests/shared/toolchain-baseline-package.test.ts`). **Wave 5 Dependabot** — [x] на **`main`** (журнал **J-1558**). **Следующий cadence** **J-1570** (commit) — [`fluxalloy-agent.mdc`](../../.cursor/rules/fluxalloy-agent.mdc).
+Корень репозитория содержит [`.npmrc`](../../.npmrc) (`legacy-peer-deps=true` для основного приложения); при `npm install` из этой папки npm обычно подхватывает его при обходе родительских каталогов. Канон baseline — `package.json` (lock — `tests/shared/toolchain-baseline-package.test.ts`). **Wave 5 Dependabot** — [x] на **`main`** (журнал **J-1558**). **Следующий commit по J** **J-1580** — [`fluxalloy-agent.mdc`](../../.cursor/rules/fluxalloy-agent.mdc).
 
 Ключ API (личный или service account): обычно **Dashboard → Integrations**.
 Если ключ был отправлен в чат/лог, лучше сразу отозвать его и создать новый.

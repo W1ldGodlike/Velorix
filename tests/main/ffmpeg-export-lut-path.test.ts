@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { resolveFfmpegExportLutCubeAbsPath } from '../../src/main/ffmpeg-export-lut-path'
+import { resolveFfmpegExportLutCubeAbsPath } from '../../src/main/services/ffmpeg/ffmpeg-export-lut-path'
 
 describe('resolveFfmpegExportLutCubeAbsPath', () => {
   it('находит bundled .cube от корня репозитория (dev resolveAppPaths.resources)', () => {

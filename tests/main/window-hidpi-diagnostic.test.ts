@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   formatWindowHidpiDiagnosticLines,
   WINDOW_LOGICAL_SCALE_TIERS
-} from '../../src/main/window-hidpi'
+} from '../../src/main/windows/window-hidpi'
 
 describe('window-hidpi diagnostics §2.2', () => {
   it('formatWindowHidpiDiagnosticLines', () => {

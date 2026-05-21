@@ -27,17 +27,17 @@ import type {
   MediaUtilitiesRepairRequestPayload,
   MediaUtilitiesRepairResult
 } from '../../shared/media-utilities-contract'
-import { resolveAppPaths } from '../app-paths'
-import { resolveEngineExecutablePath } from '../engine-service'
+import { resolveAppPaths } from '../core/app-paths'
+import { resolveEngineExecutablePath } from '../services/engines/engine-service'
 import {
   runFfmpegConvertImage,
   runFfmpegGenerateNoise,
   runFfmpegIntegrityCheck,
   runFfmpegRepairRemux
-} from '../ffmpeg-media-utilities-runner'
-import { logInfo } from '../logger-service'
-import { computeMediaFileHashes } from '../media-file-hash-runner'
-import { isGrantedMediaPath } from '../media-protocol'
+} from '../services/ffmpeg/ffmpeg-media-utilities-runner'
+import { logInfo } from '../core/logger-service'
+import { computeMediaFileHashes } from '../services/media/media-file-hash-runner'
+import { isGrantedMediaPath } from '../core/media-protocol'
 import type { ExportBatchIpcHost } from './export-batch-ipc-host'
 
 let ipcRegistered = false

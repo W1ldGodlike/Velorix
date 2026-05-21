@@ -1,5 +1,5 @@
-import type { AppSettings } from '../../src/main/settings-store'
-import type { YtdlpCommandPreviewContext } from '../../src/main/ytdlp-download-options-preview'
+import type { AppSettings } from '../../src/main/services/settings/settings-store'
+import type { YtdlpCommandPreviewContext } from '../../src/main/services/ytdlp/ytdlp-download-options-preview'
 
 export type YtdlpCommandPreviewCase = {
   name: string

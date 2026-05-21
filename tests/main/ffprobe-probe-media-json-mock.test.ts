@@ -12,8 +12,8 @@ vi.mock('child_process', async (importOriginal) => {
   return { ...actual, execFile: execFileMock }
 })
 
-import type { AppPaths } from '../../src/main/app-paths'
-import { probeMediaFile } from '../../src/main/ffprobe-service'
+import type { AppPaths } from '../../src/main/core/app-paths'
+import { probeMediaFile } from '../../src/main/services/ffprobe/ffprobe-service'
 
 function tmpAppPaths(): { paths: AppPaths; cleanup: () => void } {
   const root = mkdtempSync(join(tmpdir(), 'flux-probe-json-'))

@@ -1,4 +1,4 @@
-import type { YtdlpDownloadProgressParts } from '../../src/main/ytdlp-progress-parser'
+import type { YtdlpDownloadProgressParts } from '../../src/main/services/ytdlp/ytdlp-progress-parser'
 
 type PostProcessProgressCase = {
   label: string

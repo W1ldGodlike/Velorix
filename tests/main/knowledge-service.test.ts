@@ -7,7 +7,7 @@ import {
   buildKnowledgeHelpDirCandidates,
   listKnowledgeArticles,
   readKnowledgeArticle
-} from '../../src/main/knowledge-service'
+} from '../../src/main/services/knowledge/knowledge-service'
 
 function withHelpDir(fn: (dir: string) => void): void {
   const root = mkdtempSync(join(tmpdir(), 'fluxalloy-help-'))

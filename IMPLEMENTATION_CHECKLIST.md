@@ -588,21 +588,20 @@
 
 ## §20. Пресеты
 
-- [ ] Формат пользовательских пресетов.
-- [ ] Папка `Presets`.
-- [~] Системные пресеты экспорта: **11 платформенных** built-in в `shared/builtin-ffmpeg-export-user-presets.ts` (слияние при загрузке настроек); отдельный каталог файлов `Presets`/импорт/экспорт — позже.
-- [ ] Клонировать системный в пользовательский.
-- [ ] Импорт пресетов.
-- [ ] Экспорт пресетов.
-- [ ] Применение пресета к ffmpeg.
-- [ ] Пресеты yt-dlp если нужны.
+- [x] Формат пользовательских пресетов: `fluxalloy.export-preset.v1` / bundle `fluxalloy.export-presets-bundle.v1` (`presets-export-file-v1.ts`, `presets-export-disk-parse.ts`).
+- [x] Папка `Presets/export/` рядом с install root (`resolveInstallRoot`); legacy из `settings.json` мигрирует при загрузке; в `settings.json` пресеты не пишутся.
+- [x] Системные пресеты: **11** built-in в `builtin-ffmpeg-export-user-presets.ts`, merge при hydrate.
+- [x] Клонировать встроенный → пользовательский: IPC `presetsExportCloneBuiltin` + кнопка в rail пресетов.
+- [x] Импорт / экспорт пресетов: меню «Сервис» + IPC `presetsExportImport` / `presetsExportExport`.
+- [x] Применение пресета к ffmpeg: §7.2 (`applyFfmpegExportSnapshot`, выпадающий список в rail).
+- [~] Пресеты yt-dlp: не требуются по ТЗ §20 (отдельные format presets в settings §7).
 
 ## §21. Архитектура и качество
 
 - [~] Есть структура main/preload/renderer.
 - [x] Включить/проверить strict TypeScript политику: базовый `@electron-toolkit/tsconfig` уже с `strict`; дополнительно явно включены `noImplicitAny`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noPropertyAccessFromIndexSignature` и `useUnknownInCatchVariables` в `tsconfig.node.json`, `tsconfig.web.json`, `tsconfig.tests.json`.
 - [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, save-text-dialog, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
-- [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
+- [x] Вынести сервисы main: **202** модуля из корня `src/main/` → `bootstrap/`, `windows/`, `menu/`, `core/`, `ipc/downloads/`, `services/*` (J-1578); `platform/` без изменений.
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
 - [x] Unit tests: **`237` файлов / `1780` тестов** (Vitest; J-1576); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).

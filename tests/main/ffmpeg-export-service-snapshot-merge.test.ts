@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { AppSettings } from '../../src/shared/settings-contract'
-import { mergeFfmpegExportSnapshotIntoAppSettings } from '../../src/main/ffmpeg-export-service'
+import { mergeFfmpegExportSnapshotIntoAppSettings } from '../../src/main/services/ffmpeg/ffmpeg-export-service'
 
 describe('ffmpeg export pure helpers', () => {
   it('mergeFfmpegExportSnapshotIntoAppSettings повторяет правила delete для дефолтов', () => {

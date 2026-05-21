@@ -19,8 +19,8 @@ import {
   retryFailedFfmpegExportBatchRows,
   retryFfmpegExportBatchRows,
   setFfmpegExportBatchConcurrency
-} from '../ffmpeg-export-batch-queue'
-import { isFfmpegExportBatchActive } from '../ffmpeg-export-batch-runner'
+} from '../services/ffmpeg/ffmpeg-export-batch-queue'
+import { isFfmpegExportBatchActive } from '../services/ffmpeg/ffmpeg-export-batch-runner'
 import type { ExportBatchIpcContext } from './export-batch-ipc-context'
 
 export function registerBatchExportQueueIpcMutateHandlers(ctx: ExportBatchIpcContext): void {

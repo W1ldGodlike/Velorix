@@ -11,10 +11,10 @@ const MAIN_ROOT = join(REPO_ROOT, 'src', 'main')
 
 /** Файлы, где допустим сырой process.platform (диагностика / install root). */
 const ALLOWLIST = new Set([
-  'src/main/app-data-root-paths.ts',
-  'src/main/app-data-root.ts',
-  'src/main/logger-service.ts',
-  'src/main/main-diagnostics-service.ts'
+  'src/main/core/app-data-root-paths.ts',
+  'src/main/core/app-data-root.ts',
+  'src/main/core/logger-service.ts',
+  'src/main/services/diagnostics/main-diagnostics-service.ts'
 ])
 
 const PLATFORM_RE = /\bprocess\.platform\b/

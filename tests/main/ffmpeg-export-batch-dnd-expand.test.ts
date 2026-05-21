@@ -3,7 +3,7 @@ import { join } from 'path'
 import { tmpdir } from 'os'
 import { describe, expect, it } from 'vitest'
 
-import { expandFfmpegExportBatchDnDPaths } from '../../src/main/ffmpeg-export-batch-folder-scan'
+import { expandFfmpegExportBatchDnDPaths } from '../../src/main/services/ffmpeg/ffmpeg-export-batch-folder-scan'
 
 describe('expandFfmpegExportBatchDnDPaths', () => {
   it('expands directory to sorted video paths and dedupes', () => {

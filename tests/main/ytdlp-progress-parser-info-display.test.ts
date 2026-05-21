@@ -14,7 +14,7 @@ import {
   parseYtdlpProgressPercentNumber,
   parseYtdlpQueueFormatHint,
   parseYtdlpSpeedToBytesPerSec
-} from '../../src/main/ytdlp-progress-parser'
+} from '../../src/main/services/ytdlp/ytdlp-progress-parser'
 
 describe('parseYtdlpInfoDownloadingTitlePrefix', () => {
   it('достаёт человекочитаемый префикс до Downloading format', () => {

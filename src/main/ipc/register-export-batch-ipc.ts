@@ -4,12 +4,12 @@ import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import {
   getFfmpegExportBatchSnapshot,
   markWaitingFfmpegExportBatchRowsCancelled
-} from '../ffmpeg-export-batch-queue'
+} from '../services/ffmpeg/ffmpeg-export-batch-queue'
 import {
   cancelFfmpegExportBatchRunner,
   isFfmpegExportBatchActive,
   setFfmpegExportBatchRunnerNotifier
-} from '../ffmpeg-export-batch-runner'
+} from '../services/ffmpeg/ffmpeg-export-batch-runner'
 import { createExportBatchIpcContext } from './export-batch-ipc-context'
 import type { ExportBatchIpcHost } from './export-batch-ipc-host'
 import { registerBatchExportQueueIpcHandlers } from './register-batch-export-queue-ipc'

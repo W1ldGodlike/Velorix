@@ -2,7 +2,7 @@ import type { BrowserWindow } from 'electron'
 
 import type { AppUiLocale } from '../../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../../shared/main-application-locale'
-import type { AppSettings } from '../settings-store'
+import type { AppSettings } from '../services/settings/settings-store'
 
 export type ExportBatchIpcHost = {
   getActiveExportAbort: () => AbortController | null

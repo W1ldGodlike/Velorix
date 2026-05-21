@@ -4,9 +4,9 @@ import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import type { WorkflowScenarioDocument } from '../../shared/workflow-scenario-contract'
 import { parseWorkflowScenarioDocument } from '../../shared/workflow-scenario-parse'
 import { parseScheduledTaskDocument } from '../../shared/scheduled-task-parse'
-import { runWorkflowScenarioOnFile } from '../workflow-run-scenario-on-file'
-import { runWorkflowScenarioOnUrl } from '../workflow-run-scenario-on-url'
-import { clearWatchFolderTaskState } from '../workflow-watch-folder-state'
+import { runWorkflowScenarioOnFile } from '../services/workflow/workflow-run-scenario-on-file'
+import { runWorkflowScenarioOnUrl } from '../services/workflow/workflow-run-scenario-on-url'
+import { clearWatchFolderTaskState } from '../services/workflow/workflow-watch-folder-state'
 import {
   isNativeMainLinux,
   isNativeMainMacos,
@@ -22,11 +22,11 @@ import {
   saveScheduledTask,
   saveWorkflowScenario,
   setScheduledTaskEnabled
-} from '../workflow-registry-service'
+} from '../services/workflow/workflow-registry-service'
 import {
   deleteScheduledTaskOsSchedulers,
   syncScheduledTaskOsScheduler
-} from '../scheduled-task-os-sync'
+} from '../services/platform/scheduled-task-os-sync'
 
 let ipcRegistered = false
 

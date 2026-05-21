@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { isYtdlpOsPauseSupported } from '../../src/main/ytdlp-os-pause-support'
+import { isYtdlpOsPauseSupported } from '../../src/main/services/ytdlp/ytdlp-os-pause-support'
 
 describe('isYtdlpOsPauseSupported', () => {
   it('на Windows — false, иначе true (POSIX SIGSTOP/SIGCONT)', () => {

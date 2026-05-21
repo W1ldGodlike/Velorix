@@ -6,6 +6,6 @@
 
 Журнал: последние 30–50 строк `IMPLEMENTATION_JOURNAL.md` — последний `J-NNN`, без дубля. Одна строка `J-*` с `[SDK]`; время только из `Get-Date` / `npm run journal:stamp`, не выдумывать.
 
-Конец итерации: `check:quiet` → journal (если diff). Cadence Git: `NNN % 5` → commit, `NNN % 10` → push при зелёном quiet. **Следующий cadence** **J-1570** — `fluxalloy-agent.mdc`.
+Конец итерации: `check:quiet` → journal (если diff). Git по J-NNN: `NNN % 5` → commit, `NNN % 10` → push при зелёном quiet. **Следующий commit по J** **J-1580** — `fluxalloy-agent.mdc`.
 
 `FLUXALLOY_TZ.md` — не редактировать без явной просьбы пользователя.

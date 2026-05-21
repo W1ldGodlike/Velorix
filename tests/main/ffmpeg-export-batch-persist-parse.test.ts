@@ -8,7 +8,7 @@ import {
   FFMPEG_EXPORT_BATCH_QUEUE_PERSIST_SCHEMA,
   parsePersistedFfmpegExportBatchRow,
   sanitizePersistedFfmpegExportBatchPayload
-} from '../../src/main/ffmpeg-export-batch-persist-parse'
+} from '../../src/main/services/ffmpeg/ffmpeg-export-batch-persist-parse'
 
 describe('ffmpeg-export-batch-persist-parse', () => {
   it('parsePersistedFfmpegExportBatchRow', () => {

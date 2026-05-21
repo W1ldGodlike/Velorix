@@ -33,7 +33,7 @@ import {
   validateYtdlpRateLimit,
   validateYtdlpRetriesLine,
   YTDLP_DEFAULT_FILENAME_TEMPLATE
-} from '../../src/main/ytdlp-download-options'
+} from '../../src/main/services/ytdlp/ytdlp-download-options'
 import { YTDLP_COMMAND_PREVIEW_CASES } from '../fixtures/ytdlp-command-preview-cases'
 import {
   YTDLP_RATE_LIMIT_CASES,

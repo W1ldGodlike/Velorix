@@ -15,7 +15,7 @@ vi.mock('@electron-toolkit/utils', () => ({
   is: { dev: true }
 }))
 
-import { getTerminalCommandHints } from '../../src/main/terminal-service-hints'
+import { getTerminalCommandHints } from '../../src/main/services/terminal/terminal-service-hints'
 
 describe('getTerminalCommandHints §8', () => {
   it('читает ffmpeg/ffprobe/ytdlp_commands.json из Data/', () => {

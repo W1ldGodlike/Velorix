@@ -7,19 +7,19 @@ import type { SaveTextDialogResult } from '../../shared/save-text-dialog-contrac
 import type { TerminalCommandHintEntry, TerminalRunResult } from '../../shared/terminal-contract'
 import type { AppUiLocale } from '../../shared/app-ui-locale'
 import { parseAppUiLocale } from '../../shared/app-ui-locale'
-import { resolveAppPaths } from '../app-paths'
-import type { EnginePathOverrides } from '../engine-service'
-import { getAppAboutInfo } from '../about-info'
-import { logError } from '../logger-service'
+import { resolveAppPaths } from '../core/app-paths'
+import type { EnginePathOverrides } from '../services/engines/engine-service'
+import { getAppAboutInfo } from '../services/about/about-info'
+import { logError } from '../core/logger-service'
 import {
   clearProcessingHistory,
   findProcessingHistoryEntryById,
   getProcessingHistoryWeeklySummary,
   readProcessingHistoryNewestFirst
-} from '../processing-history'
-import { repeatWorkflowScenarioFromHistoryId } from '../processing-history-repeat-workflow'
+} from '../services/history/processing-history'
+import { repeatWorkflowScenarioFromHistoryId } from '../services/history/processing-history-repeat-workflow'
 import type { ProcessingHistoryFilter } from '../../shared/processing-history-contract'
-import { getTerminalCommandHints, runTerminalCommand } from '../terminal-service'
+import { getTerminalCommandHints, runTerminalCommand } from '../services/terminal/terminal-service'
 
 let ipcRegistered = false
 

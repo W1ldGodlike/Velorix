@@ -8,7 +8,7 @@ import {
   resolveAllowedYtdlpDownloadOutputFile,
   resolveYtdlpFolderRevealTarget,
   syncYtdlpDownloadDirectoryFromSettings
-} from '../../src/main/ytdlp-download-output'
+} from '../../src/main/services/ytdlp/ytdlp-download-output'
 import {
   YTDLP_QUEUE_STATUS_DONE,
   YTDLP_QUEUE_STATUS_RUNNING,

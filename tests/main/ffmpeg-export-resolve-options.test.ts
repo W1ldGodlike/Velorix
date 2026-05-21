@@ -6,7 +6,7 @@ import {
   resolveFfmpegExportBatchOutputDirectoryFromSettings,
   resolveFfmpegExportBatchOutputSuffixFromSettings,
   resolveFfmpegExportJobOptionsFromAppSettings
-} from '../../src/main/ffmpeg-export-resolve-from-settings'
+} from '../../src/main/services/ffmpeg/ffmpeg-export-resolve-from-settings'
 import {
   buildFfmpegExportBatchOutputBasename,
   DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX

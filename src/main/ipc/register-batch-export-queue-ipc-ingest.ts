@@ -5,19 +5,19 @@ import { BrowserWindow, ipcMain, shell } from 'electron'
 
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import { collectDownloadsQueueVideoPaths } from '../../shared/ffmpeg-export-batch-collect-paths'
-import { addFfmpegExportBatchPaths } from '../ffmpeg-export-batch-queue'
-import { isFfmpegExportBatchActive } from '../ffmpeg-export-batch-runner'
+import { addFfmpegExportBatchPaths } from '../services/ffmpeg/ffmpeg-export-batch-queue'
+import { isFfmpegExportBatchActive } from '../services/ffmpeg/ffmpeg-export-batch-runner'
 import {
   pickFfmpegExportBatchInputFiles,
   pickFfmpegExportBatchInputFolder,
   pickFfmpegExportBatchOutputFolder
-} from '../ffmpeg-export-batch-pick'
-import { expandFfmpegExportBatchDnDPaths } from '../ffmpeg-export-batch-folder-scan'
-import { filterExistingVideoPathsForBatch } from '../ffmpeg-export-batch-grant-paths'
-import { getDownloadsQueueSnapshot } from '../downloads-queue'
-import { resolveAppPaths } from '../app-paths'
-import { findProcessingHistoryEntryById } from '../processing-history'
-import { grantMediaPath } from '../media-protocol'
+} from '../services/ffmpeg/ffmpeg-export-batch-pick'
+import { expandFfmpegExportBatchDnDPaths } from '../services/ffmpeg/ffmpeg-export-batch-folder-scan'
+import { filterExistingVideoPathsForBatch } from '../services/ffmpeg/ffmpeg-export-batch-grant-paths'
+import { getDownloadsQueueSnapshot } from '../services/downloads/downloads-queue'
+import { resolveAppPaths } from '../core/app-paths'
+import { findProcessingHistoryEntryById } from '../services/history/processing-history'
+import { grantMediaPath } from '../core/media-protocol'
 import type { ExportBatchIpcContext } from './export-batch-ipc-context'
 
 export function registerBatchExportQueueIpcIngestHandlers(ctx: ExportBatchIpcContext): void {

@@ -3,12 +3,18 @@ import type { IpcMainInvokeEvent } from 'electron'
 
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import {
+  cloneBuiltinExportPreset,
+  exportUserPresetsWithDialog,
+  importUserPresetsWithDialog
+} from '../services/presets/presets-export-service'
+import {
   exportSettingsBackupWithDialog,
   importSettingsBackupWithDialog,
   resetAppSettingsToDefaultsKeepingWindowBounds
-} from '../settings-backup-service'
-import type { AppSettings, AppSettingsView, AppTheme } from '../settings-store'
-import type { EnginePathOverridesPatch } from '../engine-service'
+} from '../services/settings/settings-backup-service'
+import type { PresetsExportCloneBuiltinRequest } from '../../shared/presets-export-contract'
+import type { AppSettings, AppSettingsView, AppTheme } from '../services/settings/settings-store'
+import type { EnginePathOverridesPatch } from '../services/engines/engine-service'
 
 let ipcRegistered = false
 
@@ -166,5 +172,24 @@ export function registerSettingsIpcHandlers(deps: SettingsIpcDeps): void {
 
   ipcMain.handle(mw.settingsResetToDefaults, (): AppSettings => {
     return resetAppSettingsToDefaultsKeepingWindowBounds()
+  })
+
+  ipcMain.handle(mw.presetsExportExport, async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender) ?? undefined
+    return exportUserPresetsWithDialog(win)
+  })
+
+  ipcMain.handle(mw.presetsExportImport, async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender) ?? undefined
+    return importUserPresetsWithDialog(win)
+  })
+
+  ipcMain.handle(mw.presetsExportCloneBuiltin, (_, raw: unknown) => {
+    const req = raw as PresetsExportCloneBuiltinRequest
+    const id =
+      req && typeof req === 'object' && typeof req.builtinPresetId === 'string'
+        ? req.builtinPresetId
+        : ''
+    return cloneBuiltinExportPreset(id, deps.copyCachedSettings())
   })
 }

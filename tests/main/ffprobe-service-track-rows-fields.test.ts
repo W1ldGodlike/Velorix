@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildTrackRows } from '../../src/main/ffprobe-service'
+import { buildTrackRows } from '../../src/main/services/ffprobe/ffprobe-service'
 
 describe('ffprobe-service buildTrackRows', () => {
   it('video/audio/subtitle detail: nb_frames как N frm при положительном значении', () => {

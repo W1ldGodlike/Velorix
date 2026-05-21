@@ -6,21 +6,21 @@ import type {
   DiagnosticsSupportZipResult
 } from '../../shared/diagnostics-contract'
 import type { AppUiLocale } from '../../shared/app-ui-locale'
-import { resolveAppPaths } from '../app-paths'
+import { resolveAppPaths } from '../core/app-paths'
 import {
   cleanDiagnosticsMaintenance,
   getDiagnosticsMaintenanceSnapshot
-} from '../diagnostics-maintenance'
+} from '../services/diagnostics/diagnostics-maintenance'
 import {
   isDiagnosticsFolderId,
   listDiagnosticsFolders,
   openDiagnosticsFolder
-} from '../diagnostics-paths'
+} from '../services/diagnostics/diagnostics-paths'
 import {
   buildKnowledgeHelpDirCandidates,
   listKnowledgeArticles,
   readKnowledgeArticle
-} from '../knowledge-service'
+} from '../services/knowledge/knowledge-service'
 
 let ipcRegistered = false
 

@@ -8,7 +8,7 @@ import { YTDLP_PROGRESS_RARE_CASES } from '../fixtures/ytdlp-progress-parser-rar
 import {
   parseYtdlpDownloadProgressLine,
   parseYtdlpQueueFormatHint
-} from '../../src/main/ytdlp-progress-parser'
+} from '../../src/main/services/ytdlp/ytdlp-progress-parser'
 
 describe('parseYtdlpDownloadProgressLine', () => {
   it.each(YTDLP_PROGRESS_NULL_LINES)('null для %s', (line) => {

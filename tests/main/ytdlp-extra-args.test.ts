@@ -4,7 +4,7 @@ import {
   buildYtdlpSpawnArgvTokens,
   formatArgvTokensForPreview,
   parseExtraYtdlpArgsLine
-} from '../../src/main/ytdlp-extra-args'
+} from '../../src/main/services/ytdlp/ytdlp-extra-args'
 
 describe('parseExtraYtdlpArgsLine', () => {
   it('возвращает пустой массив для пустой строки', () => {

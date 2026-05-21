@@ -16,7 +16,7 @@ import {
   formatYtdlpQueueFailureStatus,
   shouldSkipQueueRetriesForFailureKind,
   shouldSkipYtdlpQueueRetriesAfterFailure
-} from '../../src/main/ytdlp-progress-parser'
+} from '../../src/main/services/ytdlp/ytdlp-progress-parser'
 
 describe('formatYtdlpQueueFailureStatus', () => {
   it.each(YTDLP_QUEUE_FAILURE_STATUS_CASES)(

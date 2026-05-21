@@ -5,12 +5,12 @@ import {
   clearDownloadsQueue,
   getDownloadsQueueSnapshot,
   replaceDownloadsQueueState
-} from '../../src/main/downloads-queue'
+} from '../../src/main/services/downloads/downloads-queue'
 import {
   parsePersistedDownloadsQueueRow,
   sanitizePersistedQueuePayload,
   YTDLP_DOWNLOAD_QUEUE_PERSIST_SCHEMA
-} from '../../src/main/ytdlp-download-queue-persist-parse'
+} from '../../src/main/services/ytdlp/ytdlp-download-queue-persist-parse'
 
 afterEach(() => {
   clearDownloadsQueue()

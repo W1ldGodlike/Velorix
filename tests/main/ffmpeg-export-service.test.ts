@@ -20,7 +20,7 @@ import {
   parseFfmpegTimeSeconds,
   resolveExportEncodeParams,
   resolveExportSegmentDurationSec
-} from '../../src/main/ffmpeg-export-service'
+} from '../../src/main/services/ffmpeg/ffmpeg-export-service'
 
 describe('ffmpeg export pure helpers', () => {
   it('разбирает time= из строки прогресса ffmpeg', () => {

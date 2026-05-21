@@ -6,7 +6,7 @@ import {
   resolveAppDataDirectoryFromInstallRoot,
   resolveAppTempDirectory,
   resolveInstallRootFromProcess
-} from '../../src/main/app-data-root-paths'
+} from '../../src/main/core/app-data-root-paths'
 
 describe('app-data-root-paths', () => {
   it('dev install root is app path', () => {

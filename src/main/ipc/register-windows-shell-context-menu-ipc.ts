@@ -3,20 +3,20 @@ import { ipcMain } from 'electron'
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import { isNativeMainWindows } from '../../shared/native-main-platform'
 import { getMainApplicationStrings } from '../../shared/main-runtime-locale'
-import type { AppSettings } from '../settings-store'
+import type { AppSettings } from '../services/settings/settings-store'
 import {
   isWindowsExplorerContextMenuRegistered,
   registerWindowsExplorerContextMenu,
   syncWindowsExplorerContextMenuEnabled,
   unregisterWindowsExplorerContextMenu
-} from '../windows-explorer-context-menu-sync'
+} from '../services/platform/windows-explorer-context-menu-sync'
 import {
   isWindowsFileAssociationRegistered,
   registerWindowsFileAssociation,
   syncWindowsFileAssociationEnabled,
   unregisterWindowsFileAssociation
-} from '../windows-file-association-sync'
-import { openWindowsDefaultAppsSettings } from '../windows-default-apps-settings'
+} from '../services/platform/windows-file-association-sync'
+import { openWindowsDefaultAppsSettings } from '../services/platform/windows-default-apps-settings'
 
 let ipcRegistered = false
 

@@ -23,7 +23,7 @@ import {
   setFfmpegExportBatchRunnerBusy,
   takeNextFfmpegExportBatchWaitingRow,
   updateFfmpegExportBatchRow
-} from '../../src/main/ffmpeg-export-batch-queue'
+} from '../../src/main/services/ffmpeg/ffmpeg-export-batch-queue'
 
 describe('ffmpeg-export-batch-queue', () => {
   beforeEach(() => {

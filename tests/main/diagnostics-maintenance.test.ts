@@ -3,11 +3,11 @@ import { tmpdir } from 'os'
 import { join } from 'path'
 import { describe, expect, it } from 'vitest'
 
-import type { AppPaths } from '../../src/main/app-paths'
+import type { AppPaths } from '../../src/main/core/app-paths'
 import {
   cleanDiagnosticsMaintenance,
   getDiagnosticsMaintenanceSnapshot
-} from '../../src/main/diagnostics-maintenance'
+} from '../../src/main/services/diagnostics/diagnostics-maintenance'
 
 function tmpPaths(): { paths: AppPaths; cleanup: () => void } {
   const root = mkdtempSync(join(tmpdir(), 'flux-maint-'))

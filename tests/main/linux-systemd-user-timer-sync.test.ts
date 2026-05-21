@@ -5,7 +5,7 @@ import {
   buildLinuxSystemdTimerUnit,
   linuxSystemdTimerUnitPath,
   linuxSystemdWatchUnitBase
-} from '../../src/main/linux-systemd-user-timer-sync'
+} from '../../src/main/services/platform/linux-systemd-user-timer-sync'
 import { SCHEDULED_TASK_TEMPLATE_V1 } from '../../src/shared/scheduled-task-contract'
 
 describe('linux-systemd-user-timer-sync §10', () => {

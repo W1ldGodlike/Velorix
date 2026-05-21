@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { extractYtdlpOutputPath } from '../../src/main/ytdlp-progress-parser'
+import { extractYtdlpOutputPath } from '../../src/main/services/ytdlp/ytdlp-progress-parser'
 
 describe('extractYtdlpOutputPath', () => {
   it('извлекает путь из Destination строк', () => {

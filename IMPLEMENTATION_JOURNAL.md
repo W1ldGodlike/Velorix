@@ -25,58 +25,6 @@
 
 ---
 
-<!-- journal-toc: auto -->
-## Оглавление (последние записи)
-
-- [J-1150](#j-1150)
-- [J-1149](#j-1149)
-- [J-1148](#j-1148)
-- [J-1147](#j-1147)
-- [J-1146](#j-1146)
-- [J-1145](#j-1145)
-- [J-1144](#j-1144)
-- [J-1143](#j-1143)
-- [J-1142](#j-1142)
-- [J-1141](#j-1141)
-- [J-1140](#j-1140)
-- [J-1139](#j-1139)
-- [J-1138](#j-1138)
-- [J-1137](#j-1137)
-- [J-1136](#j-1136)
-- [J-1135](#j-1135)
-- [J-1134](#j-1134)
-- [J-1133](#j-1133)
-- [J-1132](#j-1132)
-- [J-1131](#j-1131)
-- [J-1130](#j-1130)
-- [J-1129](#j-1129)
-- [J-1128](#j-1128)
-- [J-1127](#j-1127)
-- [J-1126](#j-1126)
-- [J-1125](#j-1125)
-- [J-1124](#j-1124)
-- [J-1123](#j-1123)
-- [J-1122](#j-1122)
-- [J-1121](#j-1121)
-- [J-1120](#j-1120)
-- [J-1119](#j-1119)
-- [J-1118](#j-1118)
-- [J-1117](#j-1117)
-- [J-1116](#j-1116)
-- [J-1115](#j-1115)
-- [J-1114](#j-1114)
-- [J-1113](#j-1113)
-- [J-1112](#j-1112)
-- [J-1111](#j-1111)
-
-<!-- /journal-toc -->
-
-
-
-
-
-
-
 ## Записи
 - [J-001] 2026-05-11 19:54:45 [Assistant]: повторно проверено окружение перед разработкой. Node/npm/Git доступны через установленный Node.js/Git; `npm install`, `npm run check`, `npm run build`, `npm audit --audit-level=moderate` проходят, уязвимостей `0`.
 - [J-002] 2026-05-11 19:55:45 [Assistant]: `dist/`, `out/`, `.eslintcache` — только сгенерированные артефакты проверок/сборки; удалены из рабочей папки после аудита, остаются в `.gitignore`.
@@ -1654,3 +1602,7 @@
 - [J-1574] 2026-05-21 07:34:45 [Assistant]: §8 закрыт в чеклисте; prune **839+465**, **22** shards (14+8), orphan shards удалены; meta formatters из констант; Help **ru/en** (корневые `Help/*.md` убраны); `scripts/{gate,audit,release,maint,e2e,lib,data}` + README; `playwright.config.mjs` (вне tsc); удалён одноразовый fix-emit; checklist/sprint 3 пункта. `npm run check:quiet` (237/1776).
 - [J-1575] 2026-05-21 08:12:54 [Assistant]: §21 e2e — `@playwright/test@1.52.0` + `playwright install chromium`; раннер через `node_modules/@playwright/test/cli.js` (fix Win `npx.cmd` EINVAL); `npm run test:e2e:gui` **8 passed** при `dist/win-unpacked/FluxAlloy.exe`. `npm run check:quiet`.
 - [J-1576] 2026-05-21 08:34:44 [Assistant]: scripts/tests аудит — `scripts-inventory-meta` + `check:scripts-wiring` (71 wired, 9 exempt); `sync:help-playwright-paragraphs`, `audit:terminal-hints-prune`; Vitest `scripts-inventory.test.ts` (слияние run-planned-gui-e2e-gui.test); `.gitignore` Playwright artifacts; CI hashFiles `scripts/release/*`; `audit:inventory` **1142**. `npm run check:quiet` (237/1780); `test:e2e:gui` 8 passed.
+- [J-1577] 2026-05-21 19:37:37 [Assistant]: §20 пресеты — `Presets/export/*.json` (v1 + bundle), `presets-export-disk-store` + `presets-export-service`; legacy из settings.json мигрирует; IPC import/export/clone + меню «Сервис»; кнопка «Клонировать» в rail; §20 в чеклисте [x]. `npm run check:quiet` (238/1783).
+- [J-1578] 2026-05-21 20:09:22 [Assistant]: §21 main — `restructure-main-services.mjs`: **202** файла из корня `src/main/` → `bootstrap/`, `windows/`, `menu/`, `core/`, `ipc/downloads/`, `services/*`; импорты src/tests/gate; renderer откат (сломанные `shared` пути); `ARCHITECTURE.md` + `audit-manifest` **1149**; чеклист «Вынести сервисы main» [x]. `npm run check:quiet` (238/1783).
+- [J-1579] 2026-05-21 20:36:29 [Assistant]: governance — убрано имя «cadence»; канон **Git по J-NNN** (`NNN%5` commit, `NNN%10` push); глоссарий/rules/skills/AGENTS/SOURCES/SDK; `check:docs-governance` запрет `Cadence Git`/`Следующий cadence`; **следующий commit/push по J** **J-1580**. `npm run check:quiet` (238/1783).
+- [J-1580] 2026-05-21 20:40:25 [Assistant]: журнал — удалено оглавление «последние записи»; убраны `journal:toc` и `scripts/maint/journal-toc.mjs`; `audit:inventory` **1148**. `npm run check:quiet` (238/1783).

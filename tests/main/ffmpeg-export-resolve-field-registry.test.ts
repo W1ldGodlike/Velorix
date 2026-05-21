@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   FFMPEG_EXPORT_RESOLVE_FIELD_SPECS,
   resolveFfmpegExportFieldFromSettings
-} from '../../src/main/ffmpeg-export-resolve-field-registry'
+} from '../../src/main/services/ffmpeg/ffmpeg-export-resolve-field-registry'
 import type { ResolvedFfmpegExportJobOptions } from '../../src/shared/ffmpeg-export-resolve-contract'
 import { createAppSettingsBase } from '../fixtures/app-settings-base'
 

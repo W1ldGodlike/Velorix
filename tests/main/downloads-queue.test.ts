@@ -9,7 +9,7 @@ import {
   getDownloadsQueueSnapshot,
   resetDownloadsQueueRowForRetry,
   updateDownloadsRow
-} from '../../src/main/downloads-queue'
+} from '../../src/main/services/downloads/downloads-queue'
 
 afterEach(() => {
   clearDownloadsQueue()

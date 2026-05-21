@@ -15,7 +15,7 @@ import {
   buildStoredZipBuffer,
   createSupportBundleZip,
   pruneOldDiagnosticFiles
-} from '../../src/main/support-bundle'
+} from '../../src/main/services/diagnostics/support-bundle'
 
 const tempRoots: string[] = []
 

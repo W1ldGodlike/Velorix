@@ -28,6 +28,11 @@ import type {
 import type { AppUiLocale } from '../shared/app-ui-locale'
 import type { EngineId, EnginePathOverridesPatch } from '../shared/engine-contract'
 import type {
+  PresetsExportCloneBuiltinRequest,
+  PresetsExportCloneBuiltinResult,
+  PresetsExportDialogResult
+} from '../shared/presets-export-contract'
+import type {
   AppSettings,
   AppSettingsView,
   AppTheme,
@@ -131,6 +136,14 @@ export const fluxalloySettings = {
   importBackup: (): Promise<
     { ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }
   > => ipcRenderer.invoke(mw.settingsBackupImport),
+  exportPresets: (): Promise<PresetsExportDialogResult> =>
+    ipcRenderer.invoke(mw.presetsExportExport),
+  importPresets: (): Promise<PresetsExportDialogResult> =>
+    ipcRenderer.invoke(mw.presetsExportImport),
+  cloneBuiltinExportPreset: (
+    request: PresetsExportCloneBuiltinRequest
+  ): Promise<PresetsExportCloneBuiltinResult> =>
+    ipcRenderer.invoke(mw.presetsExportCloneBuiltin, request),
   resetToDefaults: (): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsResetToDefaults),
   windowsExplorerContextMenuStatus: (): Promise<{
     supported: boolean

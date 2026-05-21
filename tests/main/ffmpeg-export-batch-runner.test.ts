@@ -12,17 +12,18 @@ import {
   addFfmpegExportBatchPaths,
   clearFfmpegExportBatchQueue,
   getFfmpegExportBatchSnapshot
-} from '../../src/main/ffmpeg-export-batch-queue'
+} from '../../src/main/services/ffmpeg/ffmpeg-export-batch-queue'
 import {
   cancelFfmpegExportBatchRunner,
   runFfmpegExportBatchQueue
-} from '../../src/main/ffmpeg-export-batch-runner'
-import { readProcessingHistoryNewestFirst } from '../../src/main/processing-history'
+} from '../../src/main/services/ffmpeg/ffmpeg-export-batch-runner'
+import { readProcessingHistoryNewestFirst } from '../../src/main/services/history/processing-history'
 
 const runJob = vi.fn()
 
-vi.mock('../../src/main/ffmpeg-export-service', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../src/main/ffmpeg-export-service')>()
+vi.mock('../../src/main/services/ffmpeg/ffmpeg-export-service', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('../../src/main/services/ffmpeg/ffmpeg-export-service')>()
   return {
     ...actual,
     runFfmpegExportJob: (...args: unknown[]) => runJob(...args)

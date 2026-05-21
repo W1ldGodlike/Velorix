@@ -4,23 +4,23 @@ import { join } from 'path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { WorkflowScenarioDocument } from '../../src/shared/workflow-scenario-contract'
-import { repeatWorkflowFromHistoryEntry } from '../../src/main/processing-history-repeat-workflow'
+import { repeatWorkflowFromHistoryEntry } from '../../src/main/services/history/processing-history-repeat-workflow'
 
-vi.mock('../../src/main/workflow-run-scenario-on-file', () => ({
+vi.mock('../../src/main/services/workflow/workflow-run-scenario-on-file', () => ({
   runWorkflowScenarioOnFile: vi.fn(() => ({ ok: true }))
 }))
 
-vi.mock('../../src/main/workflow-run-scenario-on-url', () => ({
+vi.mock('../../src/main/services/workflow/workflow-run-scenario-on-url', () => ({
   runWorkflowScenarioOnUrl: vi.fn(async () => ({ ok: true, rowId: 1, started: true }))
 }))
 
-vi.mock('../../src/main/workflow-registry-service', () => ({
+vi.mock('../../src/main/services/workflow/workflow-registry-service', () => ({
   getWorkflowScenario: vi.fn()
 }))
 
-import { runWorkflowScenarioOnFile } from '../../src/main/workflow-run-scenario-on-file'
-import { runWorkflowScenarioOnUrl } from '../../src/main/workflow-run-scenario-on-url'
-import { getWorkflowScenario } from '../../src/main/workflow-registry-service'
+import { runWorkflowScenarioOnFile } from '../../src/main/services/workflow/workflow-run-scenario-on-file'
+import { runWorkflowScenarioOnUrl } from '../../src/main/services/workflow/workflow-run-scenario-on-url'
+import { getWorkflowScenario } from '../../src/main/services/workflow/workflow-registry-service'
 
 const fileScenario: WorkflowScenarioDocument = {
   formatVersion: 1,

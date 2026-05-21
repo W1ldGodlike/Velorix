@@ -10,7 +10,7 @@ vi.mock('electron', () => ({
 import {
   formatExternalProcessLogMessage,
   sanitizeExternalProcessLogLine
-} from '../../src/main/external-process-log'
+} from '../../src/main/core/external-process-log'
 
 describe('external process log formatting', () => {
   it('заменяет control chars пробелами', () => {

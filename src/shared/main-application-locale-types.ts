@@ -38,6 +38,8 @@ export type MainApplicationStrings = {
   menuWorkflowScenarioBuilder: string
   menuExportSettings: string
   menuImportSettings: string
+  menuExportPresets: string
+  menuImportPresets: string
   settingsBackupExportTitle: string
   settingsBackupExportFilter: string
   settingsBackupImportTitle: string
@@ -52,6 +54,22 @@ export type MainApplicationStrings = {
   settingsBackupImportConfirmMessage: string
   settingsBackupImportConfirm: string
   settingsBackupImportCancel: string
+  presetsExportTitle: string
+  presetsExportFilter: string
+  presetsImportTitle: string
+  presetsImportFilter: string
+  presetsExportOkTitle: string
+  presetsExportOkMessage: string
+  presetsImportOkTitle: string
+  presetsImportOkMessage: string
+  presetsParseErrorTitle: string
+  presetsParseErrorMessage: string
+  presetsImportConfirmTitle: string
+  presetsImportConfirmMessage: string
+  presetsImportConfirm: string
+  presetsImportCancel: string
+  presetsCloneBuiltinCopySuffix: string
+  presetsExportUserMax: string
   menuTools: string
   menuMediaFileUtilities: string
   menuInspector: string

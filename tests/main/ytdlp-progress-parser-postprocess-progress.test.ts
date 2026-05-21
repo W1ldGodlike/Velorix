@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseYtdlpQueuePostProcessProgressLine } from '../../src/main/ytdlp-progress-parser-postprocess-progress'
+import { parseYtdlpQueuePostProcessProgressLine } from '../../src/main/services/ytdlp/ytdlp-progress-parser-postprocess-progress'
 import { YTDLP_PROGRESS_POST_PROCESS_CASES } from '../fixtures/ytdlp-progress-parser-postprocess-cases'
 
 describe('parseYtdlpQueuePostProcessProgressLine §6.4', () => {

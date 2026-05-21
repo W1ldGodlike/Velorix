@@ -9,7 +9,7 @@
 ## Каталоги на диске (single-root)
 
 - **Установка / распаковка:** `FluxAlloy.exe`, `resources/` (в т.ч. bundled `bin`, `Data`, `Help`).
-- **Runtime-данные:** только `<installRoot>/app-data/` — настройки, логи, очереди, история, кэш превью, загрузки yt-dlp по умолчанию, `app-data/bin`, временные каталоги ffmpeg (`app-data/temp`). Задаётся в [`app-data-root.ts`](../src/main/app-data-root.ts) (`configurePortableAppDataPaths` до `app.whenReady`).
+- **Runtime-данные:** только `<installRoot>/app-data/` — настройки, логи, очереди, история, кэш превью, загрузки yt-dlp по умолчанию, `app-data/bin`, временные каталоги ffmpeg (`app-data/temp`). Задаётся в [`app-data-root.ts`](../src/main/core/app-data-root.ts) (`configurePortableAppDataPaths` до `app.whenReady`).
 - **Код** по-прежнему обращается к полю `AppPaths.userData` — это путь к `app-data/`, не `%AppData%`.
 - **Штатные JSON:** `Data/` в репо → `resources/Data` в сборке; с `app-data/` не смешиваются.
 
@@ -20,7 +20,7 @@
 | Слой | Вход | Роль |
 | --- | --- | --- |
 | Сборка / runtime Electron | [`package.json`](../package.json) → `main`: `./out/main/index.js` | После `electron-vite build` загружается **main process**. Linux/CI: [`electron-vite-build-meta.ts`](../src/shared/electron-vite-build-meta.ts) + плагин `fix:esm-shim` в [`electron.vite.config.ts`](../electron.vite.config.ts) (false-positive `vite:esm-shim` на `renderer-state-approach.ts`). |
-| Main | [`src/main/index.ts`](../src/main/index.ts) → [`main-application-bootstrap.ts`](../src/main/main-application-bootstrap.ts) | `app.whenReady` → окна, меню, IPC (`src/main/ipc/register-*`, `register-downloads-*`). |
+| Main | [`src/main/index.ts`](../src/main/index.ts) → [`main-application-bootstrap.ts`](../src/main/bootstrap/main-application-bootstrap.ts) | `app.whenReady` → окна, меню, IPC (`src/main/ipc/register-*`, `ipc/downloads/register-downloads-*`). |
 | Preload (один бандл) | [`src/preload/index.ts`](../src/preload/index.ts) + [`preload-fluxalloy-*.ts`](../src/preload/) + [`fluxalloy-api-block-*.d.ts`](../src/preload/) | `contextBridge` → `window.fluxalloy`; без Node в renderer. |
 | Renderer | [`src/renderer/src/main.tsx`](../src/renderer/src/main.tsx) | По hash: **`App`** (главное окно), **`#downloads`** → [`DownloadsStandaloneApp`](../src/renderer/src/DownloadsStandaloneApp.tsx), **`#inspector`** → [`InspectorStandaloneApp`](../src/renderer/src/InspectorStandaloneApp.tsx), **`#mini-player`** → [`MiniPlayerStandaloneApp`](../src/renderer/src/MiniPlayerStandaloneApp.tsx). |
 | SDK automation (вне IDE) | [`scripts/cursor-automation/src/run-loop.ts`](../scripts/cursor-automation/src/run-loop.ts) | [@cursor/sdk](https://cursor.com/docs/api/sdk/typescript); контракт — [`prompts/agent-contract.txt`](../scripts/cursor-automation/prompts/agent-contract.txt). |
@@ -30,7 +30,7 @@
 - В корне репозитория — [`.npmrc`](../.npmrc): **`legacy-peer-deps=true`** (Vite 8 vs peer `electron-vite` ^7). Канон baseline — `package.json` / `package-lock.json`; lock — `tests/shared/toolchain-baseline-package.test.ts` (журнал **J-1354**).
 - GitHub Actions ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)): в job **`check`** (Windows) и **`linux-packaging`** (Ubuntu) шаг **Install** — **`npm ci`** (оба читают корневой `.npmrc`).
 - **Dependabot (wave 5):** [x] на **`main`** — журнал **J-1558**; операционно — [`RELEASE.md`](RELEASE.md) §1.
-- **Toolchain baseline:** `main` @ `ff89765`, journal **J-1353..1571** — [`toolchain-baseline-wip-handoff-meta.ts`](../src/shared/toolchain-baseline-wip-handoff-meta.ts); план удалён **J-1559**; **Следующий cadence** **J-1570** commit.
+- **Toolchain baseline:** `main` @ `ff89765`, journal **J-1353..1571** — [`toolchain-baseline-wip-handoff-meta.ts`](../src/shared/toolchain-baseline-wip-handoff-meta.ts); план удалён **J-1559**; **следующий commit по J** **J-1580**.
 - **Packaging config:** [`electron-builder.yml`](../electron-builder.yml) — win **nsis** + **zip** (no `portable`); mac **dmg** + `notarize: false`; linux AppImage + deb; `publish: null`; **9** §19 yaml comments (`getReleaseCodeSigningElectronBuilderYmlComments`) — §19 в [`docs/RELEASE.md`](RELEASE.md) §4.
 - **`npm run build`:** пишет `src/shared/app-build-info.json`. Перед `check` / commit после build — **`{"buildId":"dev","builtAtUtc":null}`** (**J-1386**); см. [`RELEASE.md`](RELEASE.md) §1.
 - **LF в исходниках:** только LF; `npm run check:line-endings`; правки — `npm run format` / prettier, не `Set-Content` с CRLF.
@@ -39,14 +39,23 @@
 
 ### Pop-out окна (не отдельный HTML UI)
 
-- Main: [`downloads-window.ts`](../src/main/downloads-window.ts) + [`downloads-window-runtime.ts`](../src/main/downloads-window-runtime.ts) — `BrowserWindow` с тем же preload/renderer, URL с hash `#downloads` или `#inspector`.
+- Main: [`downloads-window.ts`](../src/main/windows/downloads-window.ts) + [`downloads-window-runtime.ts`](../src/main/windows/downloads-window-runtime.ts) — `BrowserWindow` с тем же preload/renderer, URL с hash `#downloads` или `#inspector`.
 - Renderer: [`renderer-surface.ts`](../src/renderer/src/renderer-surface.ts) выбирает поверхность (`#downloads`, `#inspector`, `#mini-player`); общие Zustand-сторы где нужно (очередь, тема, локаль).
-- **§4.3 Mini Player:** [`mini-player-window.ts`](../src/main/mini-player-window.ts) + [`MiniPlayerStandaloneApp.tsx`](../src/renderer/src/MiniPlayerStandaloneApp.tsx); persist `app-data/session.json` ([`app-session-store.ts`](../src/main/app-session-store.ts), [`app-session-contract.ts`](../src/shared/app-session-contract.ts)); IPC `miniPlayerShow` / `miniPlayerFocusMain` / push `fluxalloy:mini-player-snapshot` (включая `alwaysOnTop`, прогресс ffmpeg %/speed через [`export-progress-broadcast.ts`](../src/main/export-progress-broadcast.ts)). ПКМ на плашке — [`MiniPlayerContextMenu.tsx`](../src/renderer/src/components/MiniPlayerContextMenu.tsx) (topmost / restore / close). При активном export/yt-dlp закрытие главного окна — диалог «Остаться / Мини-плеер / Закрыть и прервать» ([`main-window.ts`](../src/main/main-window.ts)): «Мини-плеер» скрывает main (`hide`) и открывает компактное окно.
+- **§4.3 Mini Player:** [`mini-player-window.ts`](../src/main/windows/mini-player-window.ts) + [`MiniPlayerStandaloneApp.tsx`](../src/renderer/src/MiniPlayerStandaloneApp.tsx); persist `app-data/session.json` ([`app-session-store.ts`](../src/main/core/app-session-store.ts), [`app-session-contract.ts`](../src/shared/app-session-contract.ts)); IPC `miniPlayerShow` / `miniPlayerFocusMain` / push `fluxalloy:mini-player-snapshot` (включая `alwaysOnTop`, прогресс ffmpeg %/speed через [`export-progress-broadcast.ts`](../src/main/core/export-progress-broadcast.ts)). ПКМ на плашке — [`MiniPlayerContextMenu.tsx`](../src/renderer/src/components/MiniPlayerContextMenu.tsx) (topmost / restore / close). При активном export/yt-dlp закрытие главного окна — диалог «Остаться / Мини-плеер / Закрыть и прервать» ([`main-window.ts`](../src/main/windows/main-window.ts)): «Мини-плеер» скрывает main (`hide`) и открывает компактное окно.
 - **Запрещено** возвращать `buildDownloadsHtml` / отдельные `*-window-ui-strings-*` (guard `check:ui-surfaces-guard`).
 
 ## Структура каталогов (логика, не полный список)
 
-- **`src/main/`** — движки, `settings-store`, yt-dlp queue/runner, ffprobe, ffmpeg export/batch, терминал, `media-protocol`, diagnostics, knowledge; pop-out — только runtime окна (см. выше).
+- **`src/main/`** — доменные сервисы (§21, J-1578):
+  - `index.ts` — вход Electron;
+  - `bootstrap/` — `app.whenReady`, hosts, IPC bootstrap;
+  - `windows/` — `BrowserWindow` (main, downloads, inspector, mini-player);
+  - `menu/` — шаблон меню приложения;
+  - `core/` — app-data, logger, protocols, export paths;
+  - `ipc/` — `register-*-ipc` (+ `ipc/downloads/` для yt-dlp окна);
+  - `platform/` — фасад `nativeMain` (реэкспорт shared);
+  - `services/{settings,presets,ytdlp,ffmpeg,ffprobe,terminal,engines,workflow,downloads,diagnostics,history,knowledge,platform,preview,about,media}/` — spawn, FS, persist;
+  pop-out renderer — только runtime в `windows/` + `services/downloads`.
 - **`src/renderer/src/`** — React UI: [`AppRoot`](../src/renderer/src/components/shell/AppRoot.tsx) + [`stores/`](../src/renderer/src/stores/) + layout [`useAppShellLayoutController`](../src/renderer/src/use-app-shell-layout-controller.ts); workspace **Редактор / Загрузки / Терминал** (`*Connected` + доменные хуки); строки — [`locales/ui-text.ts`](../src/renderer/src/locales/ui-text.ts) + `locales/{ru,en}/*.json`.
 - **`src/shared/`** — типы и константы IPC/домена, общие для main и preload/renderer (без импорта Electron в «чистых» модулях); main UI strings — [`main-application-locale.ts`](../src/shared/main-application-locale.ts) (`main-application-locale-types` + `main-application-locale-strings-ru|en`); ffmpeg argv — [`ffmpeg-export-argv.ts`](../src/shared/ffmpeg-export-argv.ts) + [`ffmpeg-export-argv-build.ts`](../src/shared/ffmpeg-export-argv-build.ts) (`ffmpeg-export-argv-build-types|encode|vf-chain|codec-audio`); lucide stroke data — [`lucide-downloads-icons.ts`](../src/shared/lucide-downloads-icons.ts) (`lucide-downloads-icons-types|queue|clusters|editor|emit.ts`).
 - **`src/preload/`** — мост и типы для `window.fluxalloy`: [`index.d.ts`](../src/preload/index.d.ts) (сборка `FluxAlloyApi` из [`fluxalloy-api-block-*.d.ts`](../src/preload/)); при новом IPC — править блок с методами + `index.ts` + `audit:ipc-architecture`, без отдельного codegen.
@@ -93,7 +102,7 @@
 ## Медиа и доступ к файлам
 
 - **CSP:** [`src/renderer/index.html`](../src/renderer/index.html) — `media-src` / `connect-src`; при падении `<video>` / `fetch` — CSP и способ отдачи файла в main.
-- Кастомная схема **`fluxmedia://`** и множество **`allowedMediaPaths`** (реальный путь после `realpath`): см. [`src/main/media-protocol.ts`](../src/main/media-protocol.ts). Renderer не может открыть произвольный `file://` без регистрации пути через main.
+- Кастомная схема **`fluxmedia://`** и множество **`allowedMediaPaths`** (реальный путь после `realpath`): см. [`src/main/core/media-protocol.ts`](../src/main/core/media-protocol.ts). Renderer не может открыть произвольный `file://` без регистрации пути через main.
 - **ffprobe** и экспорт допускаются только для путей, прошедших **`isGrantedMediaPath`** (открытие через диалог / явная выдача доступа из main).
 - **§7.5 спрайт:** renderer `EditorVideoSpritePanel` → preload `export.generateVideoSprite` → IPC `fluxalloy:generate-video-sprite` ([`register-export-video-sprite-ipc.ts`](../src/main/ipc/register-export-video-sprite-ipc.ts)); argv `fps` + optional `drawtext` (PTS hms) + `scale` + `tile`; save dialog; история `ffmpegSnapshot`.
 
@@ -105,7 +114,7 @@
 - **Смена языка без reload:** main `settings.setUiLocale` → `uiLocaleChanged` на все окна → `setUiLocaleForSession` + `uiLocaleRenderTick` (см. [`ui-locale-runtime.ts`](../src/shared/ui-locale-runtime.ts)); заголовки окон — `syncBrowserWindowTitlesToLocale`.
 - **Dev hot-reload JSON:** Vite alias `@locales` → корень `locales/` ([`electron.vite.config.ts`](../electron.vite.config.ts)). Правка любого `locales/**/*.json` инвалидирует [`ui-text-strings.ts`](../src/renderer/src/locales/ui-text-strings.ts): `import.meta.hot.accept` → `reloadUiTextTablesFromModules()` → `notifyUiTextShardsUpdated()` → хук [`use-ui-text-hot-reload-bump.ts`](../src/renderer/src/locales/use-ui-text-hot-reload-bump.ts) увеличивает `uiLocaleRenderTick` (главное окно, `#downloads`, `#inspector`). Перезапуск Electron не нужен.
 - **Main/preload UI** (меню, диалоги ОС): отдельные таблицы [`main-application-locale-strings-*`](../src/shared/main-application-locale.ts), не `locales/**`.
-- **Guards:** `check:locales-ts-overlap` (запрет дублей TS+JSON); `check:export-preview-hints-locale` (ключи `editorExportPreviewHint*` в `editor-ffmpeg.json`, канон [`editor-export-preview-hint-keys.ts`](../src/shared/editor-export-preview-hint-keys.ts), логика [`editor-export-preview-hint-resolve.ts`](../src/shared/editor-export-preview-hint-resolve.ts), без inline-ключей в `use-editor-export-pipeline-preview.ts`); §8 terminal — [`terminal-contract-hints-meta.ts`](../src/shared/terminal-contract-hints-meta.ts), `check:terminal-hints-guards-package-json`, `check:help-terminal-hints-docs` (24 Help + meta `formatTerminalContractHints*Help*` sync), `check:terminal-contract-hints-shards`, `check:terminal-hints-locale`, `check:support-bundle-terminal-hints` (`appSettingsTerminalHintsGuardHint`, `aboutSupportZipDiagnosticsSectionsHint` в `settings.json` / `about.json`). Support ZIP §18: [`main-diagnostics-service.ts`](../src/main/main-diagnostics-service.ts) → `formatTerminalContractHintsSupportZipLines()` → блок `terminalHints:` в `diagnostics.txt` ([`support-bundle.ts`](../src/main/support-bundle.ts)).
+- **Guards:** `check:locales-ts-overlap` (запрет дублей TS+JSON); `check:export-preview-hints-locale` (ключи `editorExportPreviewHint*` в `editor-ffmpeg.json`, канон [`editor-export-preview-hint-keys.ts`](../src/shared/editor-export-preview-hint-keys.ts), логика [`editor-export-preview-hint-resolve.ts`](../src/shared/editor-export-preview-hint-resolve.ts), без inline-ключей в `use-editor-export-pipeline-preview.ts`); §8 terminal — [`terminal-contract-hints-meta.ts`](../src/shared/terminal-contract-hints-meta.ts), `check:terminal-hints-guards-package-json`, `check:help-terminal-hints-docs` (24 Help + meta `formatTerminalContractHints*Help*` sync), `check:terminal-contract-hints-shards`, `check:terminal-hints-locale`, `check:support-bundle-terminal-hints` (`appSettingsTerminalHintsGuardHint`, `aboutSupportZipDiagnosticsSectionsHint` в `settings.json` / `about.json`). Support ZIP §18: [`main-diagnostics-service.ts`](../src/main/services/diagnostics/main-diagnostics-service.ts) → `formatTerminalContractHintsSupportZipLines()` → блок `terminalHints:` в `diagnostics.txt` ([`support-bundle.ts`](../src/main/services/diagnostics/support-bundle.ts)).
 
 ## Состояние renderer (§2.2)
 
@@ -158,7 +167,7 @@
 
 ## Внешние процессы
 
-- yt-dlp: **`spawn`** с массивом аргументов, без shell (см. [`src/main/ytdlp-download-service.ts`](../src/main/ytdlp-download-service.ts)).
+- yt-dlp: **`spawn`** с массивом аргументов, без shell (см. [`src/main/services/ytdlp/ytdlp-download-service.ts`](../src/main/services/ytdlp/ytdlp-download-service.ts)).
 - ffmpeg/ffprobe: разрешённые пути к бинарникам через `engine-service`; автозагрузка Windows с проверкой SHA256 опционально по [`Data/trusted_hashes.json`](../Data/trusted_hashes.json).
 
 ## Связка с процессом разработки документации

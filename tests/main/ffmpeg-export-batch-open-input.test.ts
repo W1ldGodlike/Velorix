@@ -8,8 +8,8 @@ import { getMainApplicationStrings } from '../../src/shared/main-application-loc
 import {
   addFfmpegExportBatchPaths,
   clearFfmpegExportBatchQueue
-} from '../../src/main/ffmpeg-export-batch-queue'
-import { openFfmpegExportBatchInputPath } from '../../src/main/ffmpeg-export-batch-open-input'
+} from '../../src/main/services/ffmpeg/ffmpeg-export-batch-queue'
+import { openFfmpegExportBatchInputPath } from '../../src/main/services/ffmpeg/ffmpeg-export-batch-open-input'
 
 describe('openFfmpegExportBatchInputPath', () => {
   const S = getMainApplicationStrings('ru')

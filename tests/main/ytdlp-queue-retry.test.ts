@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   parseYtdlpQueueRetryProfile,
   resolveYtdlpQueueRetryPlan
-} from '../../src/main/ytdlp-queue-retry'
+} from '../../src/main/services/ytdlp/ytdlp-queue-retry'
 
 describe('parseYtdlpQueueRetryProfile', () => {
   it('распознаёт корректные значения', () => {

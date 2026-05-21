@@ -1,5 +1,5 @@
 ---
-description: Исполняемое — продолжай/+, audit, UI, cadence Git, среда агента
+description: Исполняемое — продолжай/+, audit, UI, git по J-NNN, среда агента
 alwaysApply: true
 ---
 
@@ -18,9 +18,9 @@ Skills: [`.cursor/skills/fluxalloy-continue/SKILL.md`](../../.cursor/skills/flux
 - **Если** только обсуждение без diff **то** журнал **не** дописывать.
 - **Запрещено:** **микро-J**, **микро-срез** (глоссарий).
 
-## Cadence Git
+## Git по номеру J
 
-- **Следующий cadence:** **J-1570** (commit); **J-1580** (commit + push).
+- **Следующий commit по J:** **J-1580** (`NNN % 5 === 0`). **Следующий push по J:** **J-1580** (`NNN % 10 === 0`).
 - **Если** в итерации записана новая `J-NNN` и **check:quiet зелёный** **то:** `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push` (без force `main`/`master`). Cursor, SDK, обычный чат — без исключений.
 - **Запрещено:** пропускать `git commit` / `git push` при выполнении условий выше.
 
@@ -30,7 +30,7 @@ Skills: [`.cursor/skills/fluxalloy-continue/SKILL.md`](../../.cursor/skills/flux
 
 ## Audit
 
-**Обязательно:** `npm run check:quiet` перед cadence-commit. Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs). **Запрещено:** файл в scope **>500** строк без **логического** split **или** `{ glob, reason }` в `AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED` (`npm run audit:structural`; **запрещено:** дробление только ради лимита — [`fluxalloy-simplicity.mdc`](fluxalloy-simplicity.mdc)). Реестры вместо копипасты `parseX` — `npm run check:field-registries`.
+**Обязательно:** `npm run check:quiet` перед `git commit` по J. Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs). **Запрещено:** файл в scope **>500** строк без **логического** split **или** `{ glob, reason }` в `AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED` (`npm run audit:structural`; **запрещено:** дробление только ради лимита — [`fluxalloy-simplicity.mdc`](fluxalloy-simplicity.mdc)). Реестры вместо копипасты `parseX` — `npm run check:field-registries`.
 
 ## Среда (Windows)
 

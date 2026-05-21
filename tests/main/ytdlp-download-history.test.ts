@@ -11,7 +11,7 @@ import {
   outcomeFromQueueStatus,
   readYtdlpDownloadHistoryNewestFirst,
   YTDLP_DOWNLOAD_HISTORY_SCHEMA
-} from '../../src/main/ytdlp-download-history'
+} from '../../src/main/services/ytdlp/ytdlp-download-history'
 
 const tempRoots: string[] = []
 

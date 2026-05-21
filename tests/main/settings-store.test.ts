@@ -3,7 +3,11 @@ import { tmpdir } from 'os'
 import { join } from 'path'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { loadSettings, saveSettings, type AppSettings } from '../../src/main/settings-store'
+import {
+  loadSettings,
+  saveSettings,
+  type AppSettings
+} from '../../src/main/services/settings/settings-store'
 
 const tempRoots: string[] = []
 

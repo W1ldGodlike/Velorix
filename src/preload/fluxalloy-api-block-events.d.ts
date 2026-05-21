@@ -47,6 +47,7 @@ export type FluxAlloyApiEventsBlock = {
   ) => () => void
   onEnginePathsChanged: (listener: () => void) => () => void
   onSettingsBackupImported: (listener: () => void) => () => void
+  onExportPresetsDiskChanged: (listener: () => void) => () => void
   onProcessingHistoryChanged: (listener: () => void) => () => void
   onOpenAbout: (listener: () => void) => () => void
   onOpenMediaFileUtilities: (listener: () => void) => () => void

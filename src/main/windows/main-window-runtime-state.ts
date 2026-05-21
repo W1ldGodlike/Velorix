@@ -1,0 +1,92 @@
+import { BrowserWindow } from 'electron'
+
+import {
+  cancelDownloadsRunner,
+  isDownloadsRunnerBusy
+} from '../services/downloads/downloads-queue-runner'
+import { getMainWindowTitle } from '../../shared/app-ui-locale'
+import {
+  clearRendererLogBucket,
+  mainAppStr,
+  mainDownloadsUiLocale
+} from '../bootstrap/main-bootstrap-ipc-helpers'
+import {
+  attachMainWindowBoundsPersistence,
+  getCachedSettings
+} from '../services/settings/main-cached-settings-host'
+import { buildApplicationMenu } from '../menu/main-application-menu'
+import { clearMiniPlayerExportProgress } from '../core/export-progress-broadcast'
+import { focusOrCreateMiniPlayerWindow } from './mini-player-window'
+import { createMainWindow } from './main-window'
+import { setMainWindowFocusAccessor } from './main-window-focus'
+import { tryFulfillPendingWindowsExplorerShellLaunch } from '../services/platform/windows-explorer-shell-launch-schedule'
+
+setMainWindowFocusAccessor(() => mainWindowRef)
+
+export let mainWindowRef: BrowserWindow | null = null
+
+export let mainWindowWebContentsId: number | null = null
+
+/** Обход диалога §4.2 после явного подтверждения «Закрыть и прервать». */
+export let allowMainWindowClose = false
+
+export let activeExportAbort: AbortController | null = null
+
+/** §7.4 — push `batchExportSnapshot` после enqueue из downloads-runner (до createWindow IPC). */
+export let broadcastFfmpegExportBatchSnapshot: ((win?: BrowserWindow | null) => void) | null = null
+
+export function setActiveExportAbort(ac: AbortController | null): void {
+  activeExportAbort = ac
+  if (ac === null) {
+    clearMiniPlayerExportProgress()
+  }
+}
+
+export function bindFfmpegExportBatchSnapshotBroadcast(
+  fn: ((win?: BrowserWindow | null) => void) | null
+): void {
+  broadcastFfmpegExportBatchSnapshot = fn
+}
+
+export function createMainApplicationWindow(): void {
+  createMainWindow({
+    mainDirname: __dirname,
+    getSavedMainBounds: () => getCachedSettings().windowBounds?.main,
+    attachBoundsPersistence: attachMainWindowBoundsPersistence,
+    onMainWindowCreated: (win, webContentsId) => {
+      mainWindowRef = win
+      allowMainWindowClose = false
+      mainWindowWebContentsId = webContentsId
+      win.setTitle(getMainWindowTitle(mainDownloadsUiLocale()))
+      void tryFulfillPendingWindowsExplorerShellLaunch()
+    },
+    onMainWindowClosed: (win, webContentsId) => {
+      if (mainWindowRef?.id === win.id) {
+        mainWindowRef = null
+      }
+      if (mainWindowWebContentsId === webContentsId) {
+        mainWindowWebContentsId = null
+      }
+      clearRendererLogBucket(webContentsId)
+    },
+    getAllowMainWindowClose: () => allowMainWindowClose,
+    setAllowMainWindowClose: (value) => {
+      allowMainWindowClose = value
+    },
+    isExportBusy: () => activeExportAbort !== null,
+    isDownloadsBusy: () => isDownloadsRunnerBusy(),
+    onQuitAbortConfirmed: () => {
+      activeExportAbort?.abort()
+      cancelDownloadsRunner()
+    },
+    onQuitMiniPlayerChosen: () => {
+      const win = mainWindowRef
+      if (win && !win.isDestroyed()) {
+        win.hide()
+      }
+      focusOrCreateMiniPlayerWindow()
+    },
+    mainAppStr,
+    buildApplicationMenu
+  })
+}

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   appendProcessStreamBuffer,
   MAX_PROCESS_STREAM_BUFFER_CHARS
-} from '../../src/main/process-stream-buffer'
+} from '../../src/main/core/process-stream-buffer'
 
 describe('process-stream-buffer §6.2', () => {
   it('appends within limit', () => {

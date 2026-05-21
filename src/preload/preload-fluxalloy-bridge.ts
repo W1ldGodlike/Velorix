@@ -397,6 +397,8 @@ export const fluxalloy = {
     subscribeVoidIpc(mw.enginePathsChanged, listener),
   onSettingsBackupImported: (listener: () => void): (() => void) =>
     subscribeVoidIpc(mw.settingsBackupImported, listener),
+  onExportPresetsDiskChanged: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.exportPresetsDiskChanged, listener),
   onProcessingHistoryChanged: (listener: () => void): (() => void) =>
     subscribeVoidIpc(mw.processingHistoryChanged, listener),
   onOpenAbout: (listener: () => void): (() => void) => subscribeVoidIpc(mw.openAbout, listener),

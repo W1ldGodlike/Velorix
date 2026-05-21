@@ -32,6 +32,11 @@ import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
 import type {
+  PresetsExportCloneBuiltinRequest,
+  PresetsExportCloneBuiltinResult,
+  PresetsExportDialogResult
+} from '../shared/presets-export-contract'
+import type {
   AppSettings,
   AppSettingsView,
   AppTheme,
@@ -93,6 +98,11 @@ export type FluxAlloyApiSettingsBlock = {
     importBackup: () => Promise<
       { ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }
     >
+    exportPresets: () => Promise<PresetsExportDialogResult>
+    importPresets: () => Promise<PresetsExportDialogResult>
+    cloneBuiltinExportPreset: (
+      request: PresetsExportCloneBuiltinRequest
+    ) => Promise<PresetsExportCloneBuiltinResult>
     resetToDefaults: () => Promise<AppSettings>
     windowsExplorerContextMenuStatus: () => Promise<{
       supported: boolean

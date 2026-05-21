@@ -10,7 +10,7 @@ alwaysApply: false
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
 Синхронизация: шапка [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) + этот rule + `agent-contract.txt` — [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).
 
-**Если** меняете **Cadence Git (J-NNN)** **то** в **одном** `git commit`: `fluxalloy-agent.mdc`, `fluxalloy-rules-explicit.mdc`, [`.cursor/skills/fluxalloy-continue/SKILL.md`](../../.cursor/skills/fluxalloy-continue/SKILL.md), `agent-contract.txt`, `continue.txt`, `initial.txt`, `docs/SOURCES_OF_TRUTH.md`.
+**Если** меняете **Git по J-NNN** **то** в **одном** `git commit`: `fluxalloy-agent.mdc`, `fluxalloy-rules-explicit.mdc`, [`.cursor/skills/fluxalloy-continue/SKILL.md`](../../.cursor/skills/fluxalloy-continue/SKILL.md), `agent-contract.txt`, `continue.txt`, `initial.txt`, `docs/SOURCES_OF_TRUTH.md`.
 
 **Если** правите `IMPLEMENTATION_JOURNAL.md` **то** сначала прочитать раздел «Правило записей» в шапке файла.
 

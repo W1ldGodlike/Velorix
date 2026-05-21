@@ -111,8 +111,8 @@ for (const file of files) {
 }
 
 const protectedFiles = [
-  ['src/main/ffmpeg-export-service.ts', WHITELIST_IF_CHAIN],
-  ['src/main/settings-store.ts', WHITELIST_IF_CHAIN],
+  ['src/main/services/ffmpeg/ffmpeg-export-service.ts', WHITELIST_IF_CHAIN],
+  ['src/main/services/settings/settings-store.ts', WHITELIST_IF_CHAIN],
   ['src/shared/ffprobe-container-format.ts', /export function parseFfprobeFormat/]
 ]
 

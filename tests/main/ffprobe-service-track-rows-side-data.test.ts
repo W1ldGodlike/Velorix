@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildTrackRows } from '../../src/main/ffprobe-service'
+import { buildTrackRows } from '../../src/main/services/ffprobe/ffprobe-service'
 
 describe('ffprobe-service buildTrackRows', () => {
   it('audio detail включает ReplayGain track/album из тегов (нижний/верхний регистр ключей)', () => {

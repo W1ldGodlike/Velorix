@@ -3,7 +3,7 @@ import { join } from 'path'
 import { tmpdir } from 'os'
 import { describe, expect, it } from 'vitest'
 
-import { pickUniqueAutoExportOutputPath } from '../../src/main/ffmpeg-export-resolve-from-settings'
+import { pickUniqueAutoExportOutputPath } from '../../src/main/services/ffmpeg/ffmpeg-export-resolve-from-settings'
 
 describe('pickUniqueAutoExportOutputPath', () => {
   it('возвращает …-export.ext если файла ещё нет', () => {

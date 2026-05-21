@@ -23,8 +23,8 @@ export const TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING = 'terminalHint
 
 /** Sources wired by `check:support-bundle-terminal-hints`. */
 export const TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_SOURCE_PATHS = [
-  'src/main/support-bundle.ts',
-  'src/main/main-diagnostics-service.ts'
+  'src/main/services/diagnostics/support-bundle.ts',
+  'src/main/services/diagnostics/main-diagnostics-service.ts'
 ] as const
 
 /** Renderer UI — Support ZIP aria hints (`aboutSupportZipDiagnosticsSectionsHint`). */

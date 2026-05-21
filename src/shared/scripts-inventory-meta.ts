@@ -27,6 +27,7 @@ export const SCRIPTS_WIRING_EXEMPT_REL_PATHS = [
   'scripts/maint/apply-theme-line-height-tokenize.mjs',
   'scripts/maint/apply-theme-spacing-rem-tokenize.mjs',
   'scripts/maint/sync-help-workflow-user-footers.mjs',
+  'scripts/maint/restructure-main-services.mjs',
   'scripts/release/engines-bundled-sha256.mjs',
   'scripts/release/engines-exe-version-line.mjs'
 ] as const

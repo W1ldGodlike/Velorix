@@ -1,4 +1,4 @@
-import { buildTrackRows } from '../../src/main/ffprobe-service'
+import { buildTrackRows } from '../../src/main/services/ffprobe/ffprobe-service'
 
 /** Минимальный stream-объект для `buildTrackRows` в unit-тестах. */
 export type FfprobeStreamFixture = Record<string, unknown> & {

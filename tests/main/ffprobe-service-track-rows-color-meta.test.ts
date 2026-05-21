@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildTrackRows } from '../../src/main/ffprobe-service'
+import { buildTrackRows } from '../../src/main/services/ffprobe/ffprobe-service'
 
 describe('ffprobe-service buildTrackRows', () => {
   it('video detail включает компактную HDR-метку из color_transfer/color_primaries', () => {

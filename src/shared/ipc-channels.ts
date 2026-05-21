@@ -161,6 +161,14 @@ export const mainWindowIpc = {
   settingsResetToDefaults: 'fluxalloy:settings-reset-to-defaults',
   /** Main → renderer: полная замена settings.json после импорта из меню «Сервис». */
   settingsBackupImported: 'fluxalloy:settings-backup-imported',
+  /** §20 — экспорт пользовательских пресетов ffmpeg (JSON bundle). */
+  presetsExportExport: 'fluxalloy:presets-export-export',
+  /** §20 — импорт пользовательских пресетов ffmpeg. */
+  presetsExportImport: 'fluxalloy:presets-export-import',
+  /** §20 — клонировать встроенный пресет в пользовательский. */
+  presetsExportCloneBuiltin: 'fluxalloy:presets-export-clone-builtin',
+  /** Main → renderer: изменился каталог `Presets/export` или список пресетов. */
+  exportPresetsDiskChanged: 'fluxalloy:export-presets-disk-changed',
   openAbout: 'fluxalloy:open-about',
   openMediaFileUtilities: 'fluxalloy:open-media-file-utilities',
   openExternalFilterScript: 'fluxalloy:open-external-filter-script',

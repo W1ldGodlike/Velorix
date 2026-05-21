@@ -10,7 +10,7 @@ alwaysApply: false
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
 Синхронизация: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).
 
-**Если** меняете **Cadence Git (J-NNN)** **то** в **одном** `git commit`: `fluxalloy-agent.mdc`, `fluxalloy-rules-explicit.mdc`, [`.cursor/skills/fluxalloy-continue/SKILL.md`](../../.cursor/skills/fluxalloy-continue/SKILL.md), `agent-contract.txt`, `continue.txt`, `initial.txt`, `docs/SOURCES_OF_TRUTH.md`.
+**Если** меняете **Git по J-NNN** **то** в **одном** `git commit`: `fluxalloy-agent.mdc`, `fluxalloy-rules-explicit.mdc`, [`.cursor/skills/fluxalloy-continue/SKILL.md`](../../.cursor/skills/fluxalloy-continue/SKILL.md), `agent-contract.txt`, `continue.txt`, `initial.txt`, `docs/SOURCES_OF_TRUTH.md`.
 
 **Если** правите `IMPLEMENTATION_CHECKLIST.md` **то** сначала прочитать шапку и блок `## Ближайший TODO спринта` в этом файле.
 
@@ -19,7 +19,7 @@ alwaysApply: false
 - **Запрещено:** правки [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md) без **явной просьбы владельца**.
 - Блок **`## Ближайший TODO спринта`:** ровно **3–7** пунктов; каждый пункт ≤ **220** символов; только навигатор спринта (не архив, не changelog).
 - `[x]` — **только если** поведение работает end-to-end; есть тест **или** ручная проверка в J; **если** пункт требует IPC — цепочка `ipc-channels` + preload + main (глоссарий **вертикальный срез**). `[~]` — часть критериев; остаток в том же пункте.
-- **Если** итерация закрыла пункт sprint TODO **то** обновить этот блок в том же `git commit` **или** в ближайшем commit по **Cadence Git** (`J-NNN`, `NNN % 5 === 0`).
+- **Если** итерация закрыла пункт sprint TODO **то** обновить этот блок в том же `git commit` **или** в ближайшем commit по **Git по J-NNN** (`NNN % 5 === 0`).
 - **Запрещено:** длинные описания в `## Ближайший TODO спринта` — детали только в тематических § файла или в `IMPLEMENTATION_JOURNAL.md`.
 
 ## Проверка

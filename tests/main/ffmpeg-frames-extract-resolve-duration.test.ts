@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { MediaProbeSuccess } from '../../src/shared/ffprobe-contract'
-import { resolveFfmpegFramesExtractDurationSec } from '../../src/main/ffmpeg-frames-extract-resolve-duration'
+import { resolveFfmpegFramesExtractDurationSec } from '../../src/main/services/ffmpeg/ffmpeg-frames-extract-resolve-duration'
 
 function probeSuccess(durationSec: number): MediaProbeSuccess {
   return {

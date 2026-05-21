@@ -3,14 +3,14 @@ import { join } from 'path'
 import { tmpdir } from 'os'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { shortUrlLabel } from '../../src/main/downloads-queue'
+import { shortUrlLabel } from '../../src/main/services/downloads/downloads-queue'
 import {
   looksLikeYtdlpTechnicalShortLabel,
   pickYtdlpQueueShortLabelForOutputPath,
   shouldApplyYtdlpInfoTitleShortLabel,
   shouldPreferYtdlpOutputPathShortLabel
-} from '../../src/main/ytdlp-queue-short-label'
-import { displayLabelFromYtdlpOutputPath } from '../../src/main/ytdlp-progress-parser-download'
+} from '../../src/main/services/ytdlp/ytdlp-queue-short-label'
+import { displayLabelFromYtdlpOutputPath } from '../../src/main/services/ytdlp/ytdlp-progress-parser-download'
 
 const VK_URL = 'https://vkvideo.ru/video-12875570_456240933'
 

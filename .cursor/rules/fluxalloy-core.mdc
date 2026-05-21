@@ -19,7 +19,7 @@ alwaysApply: true
 | [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) | Sprint `## Ближайший TODO спринта`; `npm run check:checklist` |
 | [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) | Хроника; J при diff — skill journal-entry |
 | [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC/renderer; обновлять при новом канале |
-| [`.cursor/skills/fluxalloy-continue/SKILL.md`](../../.cursor/skills/fluxalloy-continue/SKILL.md) | «продолжай» / `+` → спринт; cadence — [`fluxalloy-agent.mdc`](fluxalloy-agent.mdc) |
+| [`.cursor/skills/fluxalloy-continue/SKILL.md`](../../.cursor/skills/fluxalloy-continue/SKILL.md) | «продолжай» / `+` → спринт; git по J — [`fluxalloy-agent.mdc`](fluxalloy-agent.mdc) |
 
 **Стек:** Electron + React + TypeScript; main/preload/renderer; Zustand — [`renderer-state-approach.ts`](../../src/shared/renderer-state-approach.ts).
 

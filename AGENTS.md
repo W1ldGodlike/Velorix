@@ -12,7 +12,7 @@
 
 **Проверки:** `npm run check:quiet` — **35** шагов (lint, typecheck, Vitest, doc guards, `check:scripts-wiring`); снимок **237** test files / **1780** tests — [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md). Help §15: 44 workflow — user footer (`formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter`); dev §21 — owner/about/logging; sync `node scripts/maint/sync-help-workflow-user-footers.mjs`. После локального `npm run build` — вернуть `src/shared/app-build-info.json` → `dev` ([`docs/RELEASE.md`](docs/RELEASE.md) §1). `npm run audit:moderate` не в `check:quiet` — [`docs/RELEASE.md`](docs/RELEASE.md) §1.
 
-**Cadence Git:** `J-NNN` — `NNN % 5` commit, `NNN % 10` push (любой чат); **Следующий cadence** **J-1570** (commit), **J-1580** (commit + push) — [`fluxalloy-agent.mdc`](.cursor/rules/fluxalloy-agent.mdc).
+**Git по J-NNN:** `NNN % 5` → commit, `NNN % 10` → push (любой чат); **следующий commit по J** **J-1580**, **следующий push по J** **J-1580** — [`fluxalloy-agent.mdc`](.cursor/rules/fluxalloy-agent.mdc).
 
 **§19 signing · §21 Help:** канон — [`docs/RELEASE.md`](docs/RELEASE.md) §1/§4; карта — [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md); lock — `tests/shared/toolchain-baseline-package.test.ts`.
 

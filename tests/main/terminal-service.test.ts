@@ -22,7 +22,7 @@ vi.mock('child_process', () => ({
   execFile: execFileMock
 }))
 
-vi.mock('../../src/main/engine-service', () => ({
+vi.mock('../../src/main/services/engines/engine-service', () => ({
   resolveEngineExecutablePath: (): string | null => resolveEnginePathMock() as string | null
 }))
 
@@ -31,7 +31,7 @@ import {
   runTerminalCommand,
   resolveTerminalCliSessionLogPath,
   resolveTerminalCurrentFileArgs
-} from '../../src/main/terminal-service'
+} from '../../src/main/services/terminal/terminal-service'
 import { TERMINAL_CURRENT_FILE_PLACEHOLDER } from '../../src/shared/terminal-contract'
 
 describe('appendTerminalCliSessionLog', () => {

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   focusMainBrowserWindow,
   setMainWindowFocusAccessor
-} from '../../src/main/main-window-focus'
+} from '../../src/main/windows/main-window-focus'
 
 describe('focusMainBrowserWindow', () => {
   it('shows, restores, and focuses a hidden minimized main window', () => {

@@ -3,7 +3,7 @@ import { basename, normalize, resolve } from 'path'
 
 import { BrowserWindow, dialog, ipcMain } from 'electron'
 
-import { sendExportProgress } from '../export-progress-broadcast'
+import { sendExportProgress } from '../core/export-progress-broadcast'
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import {
   FFMPEG_EXPORT_CANCELLED_ERROR,
@@ -20,13 +20,13 @@ import {
 } from '../../shared/processing-history-status-locale'
 import { parseAppUiLocale } from '../../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../../shared/main-application-locale'
-import { resolveAppPaths } from '../app-paths'
+import { resolveAppPaths } from '../core/app-paths'
 import {
   ensureFfmpegSnapshotExtension,
   parseFfmpegSnapshotFormat,
   runFfmpegSnapshotFrame
-} from '../ffmpeg-frame-snapshot-service'
-import { ensureFfmpegExportExtension } from '../ffmpeg-export-app-settings-merge'
+} from '../services/ffmpeg/ffmpeg-frame-snapshot-service'
+import { ensureFfmpegExportExtension } from '../services/ffmpeg/ffmpeg-export-app-settings-merge'
 import {
   parseFfmpegExportBenchmarkRequest,
   type FfmpegExportBenchmarkProgressPayload,
@@ -37,23 +37,23 @@ import type {
   FfmpegFramesExtractProgressPayload,
   FfmpegFramesExtractResult
 } from '../../shared/ffmpeg-frames-extract-contract'
-import { runFfmpegFramesExtract } from '../ffmpeg-frames-extract-runner'
-import { resolveFfmpegFramesExtractDurationSec } from '../ffmpeg-frames-extract-resolve-duration'
+import { runFfmpegFramesExtract } from '../services/ffmpeg/ffmpeg-frames-extract-runner'
+import { resolveFfmpegFramesExtractDurationSec } from '../services/ffmpeg/ffmpeg-frames-extract-resolve-duration'
 import { registerExportVideoSpriteIpc } from './register-export-video-sprite-ipc'
-import { probeMediaFile } from '../ffprobe-service'
+import { probeMediaFile } from '../services/ffprobe/ffprobe-service'
 import {
   parseFfmpegExportTrim,
   parseFfmpegExportVideoLut3d,
   runFfmpegExportJob
-} from '../ffmpeg-export-service'
-import { runFfmpegExportBenchmark } from '../ffmpeg-export-benchmark-runner'
-import { resolveFfmpegExportJobOptionsFromAppSettings } from '../ffmpeg-export-resolve-from-settings'
-import { resolveFfmpegExportLutCubeAbsPath } from '../ffmpeg-export-lut-path'
-import { resolveEngineExecutablePath } from '../engine-service'
-import { isGrantedMediaPath } from '../media-protocol'
-import { appendProcessingHistoryEntry } from '../processing-history'
-import { focusOrCreateDownloadsWindow } from '../downloads-window'
-import { isFfmpegExportBatchActive } from '../ffmpeg-export-batch-runner'
+} from '../services/ffmpeg/ffmpeg-export-service'
+import { runFfmpegExportBenchmark } from '../services/ffmpeg/ffmpeg-export-benchmark-runner'
+import { resolveFfmpegExportJobOptionsFromAppSettings } from '../services/ffmpeg/ffmpeg-export-resolve-from-settings'
+import { resolveFfmpegExportLutCubeAbsPath } from '../services/ffmpeg/ffmpeg-export-lut-path'
+import { resolveEngineExecutablePath } from '../services/engines/engine-service'
+import { isGrantedMediaPath } from '../core/media-protocol'
+import { appendProcessingHistoryEntry } from '../services/history/processing-history'
+import { focusOrCreateDownloadsWindow } from '../windows/downloads-window'
+import { isFfmpegExportBatchActive } from '../services/ffmpeg/ffmpeg-export-batch-runner'
 import type { ExportBatchIpcContext } from './export-batch-ipc-context'
 
 export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): void {

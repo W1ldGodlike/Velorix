@@ -4,8 +4,8 @@ import { execPath } from 'node:process'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-import type { AppPaths } from '../../src/main/app-paths'
-import { probeMediaFile } from '../../src/main/ffprobe-service'
+import type { AppPaths } from '../../src/main/core/app-paths'
+import { probeMediaFile } from '../../src/main/services/ffprobe/ffprobe-service'
 
 function tmpAppPaths(): { paths: AppPaths; cleanup: () => void } {
   const root = mkdtempSync(join(tmpdir(), 'flux-probe-'))

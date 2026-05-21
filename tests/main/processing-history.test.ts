@@ -11,7 +11,7 @@ import {
   onProcessingHistoryChanged,
   PROCESSING_HISTORY_SCHEMA,
   readProcessingHistoryNewestFirst
-} from '../../src/main/processing-history'
+} from '../../src/main/services/history/processing-history'
 
 const tempRoots: string[] = []
 

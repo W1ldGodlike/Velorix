@@ -5,7 +5,7 @@ import {
   escapeLaunchdPlistXml,
   macosLaunchAgentLabel,
   macosLaunchAgentPlistPath
-} from '../../src/main/macos-launchd-sync'
+} from '../../src/main/services/platform/macos-launchd-sync'
 import { SCHEDULED_TASK_TEMPLATE_V1 } from '../../src/shared/scheduled-task-contract'
 
 describe('macos-launchd-sync §10', () => {

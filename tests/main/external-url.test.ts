@@ -10,7 +10,7 @@ import {
   isAllowedExternalUrl,
   openAllowedExternalUrl,
   shouldAllowElectronWindowNavigation
-} from '../../src/main/external-url'
+} from '../../src/main/core/external-url'
 import { shell } from 'electron'
 
 describe('external-url guard', () => {

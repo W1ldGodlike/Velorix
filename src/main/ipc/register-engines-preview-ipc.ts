@@ -7,24 +7,27 @@ import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
 import type { AppUiLocale } from '../../shared/app-ui-locale'
 import { formatPickEngineExecutableTitle } from '../../shared/main-application-locale'
-import { resolveAppPaths } from '../app-paths'
+import { resolveAppPaths } from '../core/app-paths'
 import type { EngineDownloadProgress } from '../../shared/engine-download-contract'
-import { downloadEnginesWindows, isAnyEngineMissing } from '../engine-download'
-import { runEnginesCheckUpdatesAndDownload } from '../engine-update-check'
-import { loadTrustedHashes, resolveTrustedHashesPath } from '../trusted-hashes-store'
+import { downloadEnginesWindows, isAnyEngineMissing } from '../services/engines/engine-download'
+import { runEnginesCheckUpdatesAndDownload } from '../services/engines/engine-update-check'
+import { loadTrustedHashes, resolveTrustedHashesPath } from '../core/trusted-hashes-store'
 import {
   ENGINE_IDS,
   getEnginesStatus,
   resolveEngineExecutablePath,
   type EnginePathOverrides,
   type EnginesStatusSnapshot
-} from '../engine-service'
-import { probeFfmpegHwEncoders } from '../ffmpeg-hw-encoder-probe-main'
-import { probeMediaFile } from '../ffprobe-service'
-import { grantMediaPath, isGrantedMediaPath } from '../media-protocol'
-import { nativeMainEngineExecutableSuffix, nativeMainEngineOpenDialogFilters } from '../platform'
+} from '../services/engines/engine-service'
+import { probeFfmpegHwEncoders } from '../services/ffmpeg/ffmpeg-hw-encoder-probe-main'
+import { probeMediaFile } from '../services/ffprobe/ffprobe-service'
+import { grantMediaPath, isGrantedMediaPath } from '../core/media-protocol'
+import {
+  nativeMainEngineExecutableSuffix,
+  nativeMainEngineOpenDialogFilters
+} from '../platform/index'
 import type { EnginesCheckUpdatesAndDownloadResult } from '../../shared/engine-update-check-contract'
-import { openVideoFolderWithDialog, openVideoWithDialog } from '../preview-dialog'
+import { openVideoFolderWithDialog, openVideoWithDialog } from '../services/preview/preview-dialog'
 
 let ipcRegistered = false
 

@@ -93,7 +93,6 @@
     "test:watch": "vitest",
     "test:e2e:gui": "node scripts/e2e/run-planned-gui-e2e-playwright.mjs",
     "check:tz-artifacts": "node scripts/gate/check-tz-artifacts.mjs",
-    "journal:toc": "node scripts/maint/journal-toc.mjs --write",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck:tests": "tsc --noEmit -p tsconfig.tests.json",

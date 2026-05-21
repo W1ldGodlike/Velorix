@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   ensureFfmpegSnapshotExtension,
   parseFfmpegSnapshotFormat
-} from '../../src/main/ffmpeg-frame-snapshot-service'
+} from '../../src/main/services/ffmpeg/ffmpeg-frame-snapshot-service'
 
 describe('ffmpeg-frame-snapshot-service helpers', () => {
   it('нормализует формат снимка к png/jpg', () => {

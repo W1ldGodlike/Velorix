@@ -8,7 +8,7 @@ import {
 import {
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList
-} from '../../src/main/ffmpeg-export-service'
+} from '../../src/main/services/ffmpeg/ffmpeg-export-service'
 
 describe('ffmpeg export pure helpers', () => {
   it('parses preset hint and caps list length', () => {
