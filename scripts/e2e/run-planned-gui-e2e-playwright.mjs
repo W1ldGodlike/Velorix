@@ -7,10 +7,7 @@ import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
-import {
-  PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE,
-  PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE
-} from '../../src/shared/packaged-gui-e2e-playwright-meta.ts'
+import { PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE } from '../../src/shared/packaged-gui-e2e-playwright-meta.ts'
 
 const rootDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const require = createRequire(import.meta.url)
@@ -36,13 +33,13 @@ function runScaffold() {
 }
 
 function runPlaywright() {
-  const specPath = join(rootDir, PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE)
-  const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx'
-  const result = spawnSync(
-    npx,
-    ['playwright', 'test', specPath, '--config', join(rootDir, 'playwright.config.mjs')],
-    { cwd: rootDir, stdio: 'inherit', env: process.env }
-  )
+  const configPath = join(rootDir, 'playwright.config.mjs')
+  const pwCli = join(rootDir, 'node_modules', '@playwright', 'test', 'cli.js')
+  const result = spawnSync(process.execPath, [pwCli, 'test', '--config', configPath], {
+    cwd: rootDir,
+    stdio: 'inherit',
+    env: process.env
+  })
   if (result.error) {
     console.error(`[${LOG_PREFIX}] playwright spawn failed:`, result.error.message)
     console.error(
