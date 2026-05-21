@@ -5,6 +5,9 @@ node_modules
 dist
 out
 coverage
+test-results/
+playwright-report/
+blob-report/
 .DS_Store
 
 # Runtime-движки кладём в bin/ перед релизной сборкой, но сами бинарники в Git не храним.

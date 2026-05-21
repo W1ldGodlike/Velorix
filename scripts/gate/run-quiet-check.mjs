@@ -9,6 +9,7 @@ const steps = [
   ['lint', ['run', 'lint']],
   ['line-endings', ['run', 'check:line-endings']],
   ['maint-scripts-layout', ['run', 'check:maint-scripts-layout']],
+  ['scripts-wiring', ['run', 'check:scripts-wiring']],
   ['typecheck', ['run', 'typecheck']],
   ['test', ['run', 'test']],
   ['trusted-hashes', ['run', 'check:trusted-hashes']],
