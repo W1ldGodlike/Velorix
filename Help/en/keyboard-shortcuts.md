@@ -16,4 +16,4 @@ The **inspector** window opens from the **Tools** menu. A full user-rebindable s
 
 ## See also
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` verification).

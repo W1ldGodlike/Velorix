@@ -67,8 +67,16 @@ export const KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS = 'workflows-planner-sce
 /** §13 — история обработки в правой FFmpeg-панели. */
 export const KNOWLEDGE_SLUG_PROCESSING_HISTORY = 'processing-history'
 
-/** §16/§1.1/§10 — единый ручной smoke владельца (HiDPI + HW + OS scheduler). */
+/** §16/§1.1/§10 — ручная проверка владельца; в UI справки не показывается (см. IMPLEMENTATION_MANUAL_VERIFICATION.md). */
 export const KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE = 'owner-manual-smoke'
+
+/** Не в оглавлении и не в listArticles — только dev/Help guards и Support ZIP. */
+export const KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS = [
+  KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE,
+  'packaged-windows-smoke',
+  'packaged-linux-smoke',
+  'packaged-macos-smoke'
+] as const
 
 /** §14 — меню Проводника и Open with (Windows). */
 export const KNOWLEDGE_SLUG_WINDOWS_SHELL_INTEGRATION = 'windows-shell-integration'

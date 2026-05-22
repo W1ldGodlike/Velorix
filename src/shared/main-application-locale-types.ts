@@ -93,9 +93,13 @@ export type MainApplicationStrings = {
   quitConfirmBoth: string
   quitConfirmExport: string
   quitConfirmDownloads: string
+  quitConfirmIdle: string
+  quitConfirmIdleWithQueue: string
   quitStay: string
   quitMiniPlayer: string
   quitAbort: string
+  quitYes: string
+  quitNo: string
   quitDialogTitle: string
   previewWebmNotCreated: string
   previewFfmpegMissingForWebm: string
@@ -159,7 +163,18 @@ export type MainApplicationStrings = {
   mediaUtilitiesImageSaveFilterJpeg: string
   mediaUtilitiesImageSaveFilterPng: string
   mediaUtilitiesImageSaveFilterWebp: string
+  mediaUtilitiesImageSaveFilterBmp: string
+  mediaUtilitiesImageSaveFilterTiff: string
   mediaUtilitiesImageNotImage: string
+  mediaUtilitiesSlideshowPickTitle: string
+  mediaUtilitiesSlideshowPickFilter: string
+  mediaUtilitiesSlideshowSaveTitle: string
+  mediaUtilitiesSlideshowSaveFilter: string
+  mediaUtilitiesSlideshowTooFewImages: string
+  mediaUtilitiesSlideshowTooManyImages: string
+  mediaUtilitiesSlideshowInvalidDuration: string
+  mediaUtilitiesSlideshowInvalidTransition: string
+  mediaUtilitiesHeifUnsupported: string
   downloadsCoverSaveTitle: string
   downloadsCoverSaveFilterJpg: string
   downloadsCoverSaveFilterPng: string

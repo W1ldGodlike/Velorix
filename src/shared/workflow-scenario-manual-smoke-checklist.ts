@@ -1,5 +1,5 @@
 /**
- * §11 — ручной smoke конструктора сценариев (не CI UI).
+ * §11 — ручная проверка конструктора сценариев (не CI UI).
  * Канон: locales/ru/workflow-scenario-manual-smoke.json + Help workflows-planner-scenarios.
  */
 
@@ -16,7 +16,7 @@ export const WORKFLOW_SCENARIO_MANUAL_SMOKE_CHECKLIST =
 
 export function formatWorkflowScenarioManualSmokeChecklistLines(): string[] {
   return formatPackagedManualSmokeChecklistLines(WORKFLOW_SCENARIO_MANUAL_SMOKE_CHECKLIST, {
-    ownerLine: 'ручной smoke конструктора сценариев (§11), не автоматизируется в CI UI',
+    ownerLine: 'ручная проверка конструктора сценариев (§11), не автоматизируется в CI UI',
     automatedLine: 'Vitest workflow-scenario-* / edge-mutations / layout',
     docLine: 'Help/ru/workflows-planner-scenarios.md',
     uiLine: 'Сервис → Конструктор сценариев'

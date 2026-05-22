@@ -12,7 +12,7 @@ function t(shard: WindowsShellManualSmokeLocaleShard, key: string): string {
   return val
 }
 
-/** §14 — ручной smoke Проводника Windows из locales windows-shell-manual-smoke.json. */
+/** §14 — ручная проверка Проводника Windows из locales windows-shell-manual-smoke.json. */
 export function buildWindowsShellManualSmokeChecklistFromLocaleShard(
   shard: WindowsShellManualSmokeLocaleShard
 ): readonly FfmpegHwManualSmokeChecklistSection[] {

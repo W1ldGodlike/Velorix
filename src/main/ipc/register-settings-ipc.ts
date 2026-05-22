@@ -112,6 +112,7 @@ export type SettingsIpcDeps = {
   getSettingsView: () => AppSettingsView
   copyCachedSettings: () => AppSettings
   persistUiLocale: (raw: unknown) => AppSettings
+  persistConfirmCloseOnQuit: (raw: unknown) => AppSettings
   persistThemePreference: (pref: AppTheme) => AppSettingsView
   persistEnginePathOverridesPatch: (patch: EnginePathOverridesPatch) => AppSettings
   persistMainWindowUiPanelsMerge: (raw: unknown) => AppSettings
@@ -130,6 +131,11 @@ export function registerSettingsIpcHandlers(deps: SettingsIpcDeps): void {
   ipcMain.handle(
     mw.settingsSetUiLocale,
     (_, raw: unknown): AppSettings => deps.persistUiLocale(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetConfirmCloseOnQuit,
+    (_, raw: unknown): AppSettings => deps.persistConfirmCloseOnQuit(raw)
   )
 
   ipcMain.handle(mw.settingsSetTheme, (_, theme: unknown): AppSettingsView => {

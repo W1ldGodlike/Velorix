@@ -78,6 +78,8 @@ export const fluxalloySettings = {
   setEditorUrlPasteBehavior: (
     behavior: 'downloads_window' | 'download_open_editor'
   ): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsSetEditorUrlPasteBehavior, behavior),
+  setConfirmCloseOnQuit: (enabled: boolean): Promise<AppSettings> =>
+    ipcRenderer.invoke(mw.settingsSetConfirmCloseOnQuit, enabled),
   setFfmpegExportAudioMode: (mode: FfmpegExportAudioModeId): Promise<AppSettings> =>
     ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioMode, mode),
   setFfmpegExportAudioBitrate: (bitrate: string | null): Promise<AppSettings> =>

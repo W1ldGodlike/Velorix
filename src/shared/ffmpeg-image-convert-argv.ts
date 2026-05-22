@@ -13,5 +13,11 @@ export function buildFfmpegConvertImageArgv(
   if (format === 'webp') {
     return [...base, '-c:v', 'libwebp', '-quality', '85', '-y', outputPath]
   }
+  if (format === 'bmp') {
+    return [...base, '-y', outputPath]
+  }
+  if (format === 'tiff') {
+    return [...base, '-y', outputPath]
+  }
   return [...base, '-y', outputPath]
 }

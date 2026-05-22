@@ -7,6 +7,16 @@
     "ffmpeg-master-latest-win64-gpl.zip": "",
     "ffmpeg-release-essentials.zip": ""
   },
+  "darwin": {
+    "yt-dlp": "",
+    "ffmpeg": "",
+    "ffprobe": ""
+  },
+  "linux-x64": {
+    "yt-dlp": "",
+    "ffmpeg": "",
+    "ffprobe": ""
+  },
   "YtDlpSha256": "",
   "YtDlpVersion": "",
   "FfmpegSha256": "",

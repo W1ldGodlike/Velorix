@@ -1,5 +1,5 @@
 /**
- * §4.3 — ручной smoke Mini Player (не CI UI).
+ * §4.3 — ручная проверка Mini Player (не CI UI).
  * Канон: locales/ru/mini-player-manual-smoke.json
  */
 
@@ -16,7 +16,7 @@ export const MINI_PLAYER_MANUAL_SMOKE_CHECKLIST =
 
 export function formatMiniPlayerManualSmokeChecklistLines(): string[] {
   return formatPackagedManualSmokeChecklistLines(MINI_PLAYER_MANUAL_SMOKE_CHECKLIST, {
-    ownerLine: 'ручной smoke Mini Player §4.3 (owner, не CI UI)',
+    ownerLine: 'ручная проверка Mini Player §4.3 (owner, не CI UI)',
     automatedLine: 'Vitest mini-player-snapshot-build / main-window-focus',
     docLine: 'Help/ru/owner-manual-smoke.md',
     uiLine: 'Сервис → Мини-плеер; Настройки → Owner smoke'

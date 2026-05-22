@@ -45,8 +45,10 @@ export type MediaUtilitiesFileHashResult =
   | { ok: true; fileName: string; md5: string; sha256: string }
   | { ok: false; error: string }
 
-/** §7.5 — целевой формат конвертации одного изображения. */
-export type MediaUtilitiesImageFormatId = 'jpg' | 'png' | 'webp'
+import type { FfmpegSnapshotFormatId } from './ffmpeg-snapshot-contract'
+
+/** §7.5 — целевой формат конвертации одного изображения / спрайта. */
+export type MediaUtilitiesImageFormatId = FfmpegSnapshotFormatId
 
 export type MediaUtilitiesConvertImageRequestPayload = {
   inputPath: string
@@ -58,3 +60,9 @@ export type MediaUtilitiesConvertImageResult =
   | { ok: true; outputPath: string }
   | { ok: false; cancelled: true }
   | { ok: false; error: string }
+
+export type {
+  MediaUtilitiesCreateImageSlideshowRequestPayload,
+  MediaUtilitiesCreateImageSlideshowResult,
+  MediaUtilitiesPickSlideshowImagesResult
+} from './ffmpeg-image-slideshow-contract'

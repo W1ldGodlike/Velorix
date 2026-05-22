@@ -12,7 +12,7 @@ function t(shard: WorkflowScenarioManualSmokeLocaleShard, key: string): string {
   return val
 }
 
-/** §11 — ручной smoke конструктора сценариев из locales workflow-scenario-manual-smoke.json. */
+/** §11 — ручная проверка конструктора сценариев из locales workflow-scenario-manual-smoke.json. */
 export function buildWorkflowScenarioManualSmokeChecklistFromLocaleShard(
   shard: WorkflowScenarioManualSmokeLocaleShard
 ): readonly FfmpegHwManualSmokeChecklistSection[] {

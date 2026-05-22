@@ -6,7 +6,7 @@ import {
 
 export type WinPackagedManualSmokeLocaleShard = PackagedManualSmokeLocaleShard
 
-/** §3 — ручной smoke `dist/win-unpacked/` из locales win-packaged-manual-smoke.json. */
+/** §3 — ручная проверка `dist/win-unpacked/` из locales win-packaged-manual-smoke.json. */
 export function buildWinPackagedManualSmokeChecklistFromLocaleShard(
   shard: WinPackagedManualSmokeLocaleShard
 ): readonly FfmpegHwManualSmokeChecklistSection[] {

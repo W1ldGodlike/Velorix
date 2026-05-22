@@ -26,8 +26,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
-    ? '[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (smoke после `pack:dir`).'
-    : '[owner-manual-smoke.md](owner-manual-smoke.md) (manual smoke on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` smoke).'
+    ? '[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).'
+    : '[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` verification).'
 }
 
 /** EN vs RU crosslinks count snippet for a Help path (`Help/en/…` → EN). */

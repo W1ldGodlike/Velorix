@@ -154,7 +154,7 @@ export function formatPackagedE2eSmokeDiagnosticLines(): string[] {
     `ciSmokeScript npm (${PACKAGED_E2E_CI_SMOKE_SCRIPTS.length}): ${PACKAGED_E2E_CI_SMOKE_SCRIPTS.join(', ')}`,
     ...formatPackagedE2ePerStepDiagnosticLines(),
     'manual owner-smoke: Help/ru/owner-manual-smoke.md + Settings copy (not automated GUI yet)',
-    `planned GUI e2e scope: ${PACKAGED_E2E_PLANNED_GUI_STEP_IDS.join(', ')} (Playwright later; ytdlp/export have partial CLI smokes)`,
+    `planned GUI e2e scope: ${PACKAGED_E2E_PLANNED_GUI_STEP_IDS.join(', ')} (Playwright: planned-gui-e2e-step-runners.ts; ytdlp/export have partial CLI smokes)`,
     formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine(),
     formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine(),
     formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine(),

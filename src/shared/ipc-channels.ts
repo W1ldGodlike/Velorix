@@ -26,6 +26,7 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportBatchOutputDirectory:
     'fluxalloy:settings-set-ffmpeg-export-batch-output-dir',
   settingsSetEditorUrlPasteBehavior: 'fluxalloy:settings-set-editor-url-paste-behavior',
+  settingsSetConfirmCloseOnQuit: 'fluxalloy:settings-set-confirm-close-on-quit',
   settingsSetFfmpegExportFps: 'fluxalloy:settings-set-ffmpeg-export-fps',
   settingsSetFfmpegExportScalePreset: 'fluxalloy:settings-set-ffmpeg-export-scale-preset',
   settingsSetFfmpegExportVideoTransform: 'fluxalloy:settings-set-ffmpeg-export-video-transform',
@@ -119,6 +120,8 @@ export const mainWindowIpc = {
   mediaUtilitiesGenerateNoise: 'fluxalloy:media-utilities-generate-noise',
   mediaUtilitiesComputeFileHash: 'fluxalloy:media-utilities-compute-file-hash',
   mediaUtilitiesConvertImage: 'fluxalloy:media-utilities-convert-image',
+  mediaUtilitiesPickSlideshowImages: 'fluxalloy:media-utilities-pick-slideshow-images',
+  mediaUtilitiesCreateImageSlideshow: 'fluxalloy:media-utilities-create-image-slideshow',
   exportResolveBundledLutCubePath: 'fluxalloy:export-resolve-bundled-lut-cube-path',
   exportCancel: 'fluxalloy:export-cancel',
   exportOpenOutput: 'fluxalloy:export-open-output',

@@ -6,7 +6,7 @@ import {
 
 export type MacosPackagedManualSmokeLocaleShard = PackagedManualSmokeLocaleShard
 
-/** §3 — ручной smoke FluxAlloy.app (dist/mac-arm64 и др.) из locales macos-packaged-manual-smoke.json. */
+/** §3 — ручная проверка FluxAlloy.app (dist/mac-arm64 и др.) из locales macos-packaged-manual-smoke.json. */
 export function buildMacosPackagedManualSmokeChecklistFromLocaleShard(
   shard: MacosPackagedManualSmokeLocaleShard
 ): readonly FfmpegHwManualSmokeChecklistSection[] {

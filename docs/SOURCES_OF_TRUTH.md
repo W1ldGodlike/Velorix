@@ -9,6 +9,7 @@
 | 1         | [`.cursor/rules/`](../.cursor/rules/) + [`.cursor/skills/`](../.cursor/skills/)                                   | **alwaysApply:** `fluxalloy-rules-explicit`, `fluxalloy-core`, `fluxalloy-agent`, `fluxalloy-simplicity`. **Workflows:** skills `fluxalloy-*`. **Запрещено:** копировать в `.mdc` целиком ТЗ, тело чеклиста или журнала — агент **открывает файл** и читает нужный фрагмент; в rules только **исполняемые** запреты и команды. |
 | 2         | Шапка [`IMPLEMENTATION_JOURNAL.md`](../IMPLEMENTATION_JOURNAL.md)                                                 | Канон **формата** журнала (`J-NNN`, время, одна сводная за итерацию).                                                                                                           |
 | 3         | Шапка [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md)                                             | Канон **формата** чеклиста и блока «Ближайший TODO спринта».                                                                                                                    |
+| 3b        | [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](../IMPLEMENTATION_MANUAL_VERIFICATION.md)                               | Ручная проверка на железе (владелец); агент **не** берёт в спринт.                                                                                                             |
 | 4         | [`.cursor/skills/fluxalloy-continue/`](../.cursor/skills/fluxalloy-continue/SKILL.md) + [`fluxalloy-agent.mdc`](../.cursor/rules/fluxalloy-agent.mdc) | «продолжай» / `+`: текущая задача или спринт; **Git по J-NNN** — глоссарий + **следующий commit/push по J** в `fluxalloy-agent.mdc` (**J-1580**).                                                                                                            |
 | 4b        | [`fluxalloy-agent.mdc`](../.cursor/rules/fluxalloy-agent.mdc) + `check:ui-surfaces-guard`                           | UI, audit, среда; один renderer; `ui-text` / `locales/**`; без HTML-pop-out.                                                                                                   |
 | 5         | [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md)                                                                           | Канон **продукта** (требования). В rules **не** копируется целиком — только чтение нужного §. **Не редактировать** без явной просьбы владельца.                                 |
@@ -50,8 +51,8 @@
 
 Help UiHintSuffix (4 §15 anchors, 6 packaged) — `formatPackagedGuiE2ePlaywright*HelpUiHintSuffix`; AGENTS — slim domains pointer only
 
-Playwright scaffold (deferred): `tests/e2e/gui/planned-gui-e2e-steps.ts` — `PLANNED_GUI_E2E_STEP_IDS, PLANNED_GUI_E2E_SCENARIOS, PLANNED_GUI_E2E_STEP_BY_ID`; `test:e2e:gui` not in package.json yet
+Playwright: `tests/e2e/gui/planned-gui-e2e-steps.ts` + `planned-gui-e2e-step-runners.ts` + `planned-gui-e2e.spec.ts`; `npm run test:e2e:gui` → `scripts/e2e/run-planned-gui-e2e-playwright.mjs`
 
 PLANNED_GUI_E2E_STEP_BY_ID — `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine` in Copy/releaseSmoke (registry `note` per planned-gui-e2e step)
 
-Playwright wiring (deferred): `docs/RELEASE.md` — `formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet` (`@playwright/test`, `test:e2e:gui`; after owner-smoke on hardware)
+Playwright run: `docs/RELEASE.md` — `formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet` (`test:e2e:gui`; manual **21.x** on hardware)

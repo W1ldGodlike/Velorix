@@ -1,7 +1,8 @@
-import { appendFileSync, existsSync, mkdirSync, renameSync, statSync, unlinkSync } from 'fs'
+import { appendFileSync, existsSync, mkdirSync, renameSync, statSync } from 'fs'
 import { dirname, join } from 'path'
 import { app } from 'electron'
 
+import { rotateLogFileIfTooLarge } from './logger-rotate-file'
 import { pruneOldDiagnosticFiles } from '../services/diagnostics/support-bundle'
 
 /**
@@ -16,9 +17,9 @@ import { pruneOldDiagnosticFiles } from '../services/diagnostics/support-bundle'
  *   `session.log` переносится в `logs/sessions/session-*.log` (лимит файлов через prune);
  * - не блокирует стартап, если каталог недоступен — отвечает заглушками и пишет в `console`.
  *
- * Полноценный structured-logging / electron-log можно подключить позже, когда станет ясна
- * политика поддержки (support ZIP, удалённая отправка и т.д.). До этого момента нам важно
- * иметь стабильный текстовый лог с временной меткой и scope.
+ * **Политика §18 (J-1589):** остаёмся на `logger-service` без `electron-log`/`pino` — меньше
+ * зависимостей, предсказуемый Support ZIP (`main.log` + `main.log.1` + `session.log`).
+ * Structured remote logging — отдельный спринт при необходимости.
  */
 
 export type LogLevel = 'info' | 'warn' | 'error'
@@ -176,26 +177,7 @@ function ensureSessionRunInitialized(mainLogPath: string): void {
 }
 
 function rotateIfTooLarge(filePath: string): void {
-  try {
-    if (!existsSync(filePath)) {
-      return
-    }
-    const sz = statSync(filePath).size
-    if (sz < LOG_ROTATION_BYTES) {
-      return
-    }
-    const backup = join(dirname(filePath), LOG_BACKUP_NAME)
-    if (existsSync(backup)) {
-      try {
-        unlinkSync(backup)
-      } catch {
-        /* старый бэкап мог быть открыт другим процессом — оставляем */
-      }
-    }
-    renameSync(filePath, backup)
-  } catch {
-    /* любая проблема ротации не должна ронять запись новых строк */
-  }
+  rotateLogFileIfTooLarge(filePath, LOG_BACKUP_NAME, LOG_ROTATION_BYTES)
 }
 
 function sanitizeRendererText(raw: string, maxChars: number): string {

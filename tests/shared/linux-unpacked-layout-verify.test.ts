@@ -18,6 +18,7 @@ describe('linux-unpacked-layout-verify §19', () => {
     const checks = listLinuxUnpackedLayoutChecks(unpacked)
     expect(checks.some((c) => c.label === 'resources/bin')).toBe(true)
     expect(checks.some((c) => c.label === 'resources/Help')).toBe(true)
+    expect(checks.some((c) => c.label.includes('trusted_hashes.json'))).toBe(true)
   })
 
   it('collectLinuxUnpackedLayoutFailures reports missing executable', async () => {
@@ -54,5 +55,6 @@ describe('linux-unpacked-layout-verify §19', () => {
     const lines = formatLinuxUnpackedLayoutVerifyDiagnosticLines(repo, (p) => p === exe)
     expect(lines[0]).toContain('verify:linux-unpacked')
     expect(lines.some((l) => l.includes('pack:linux:dir'))).toBe(true)
+    expect(lines.some((l) => l.includes('trusted_hashes.json'))).toBe(true)
   })
 })

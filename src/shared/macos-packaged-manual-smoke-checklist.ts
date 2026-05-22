@@ -1,5 +1,5 @@
 /**
- * §3 — ручной smoke packaged macOS (не CI UI).
+ * §3 — ручная проверка packaged macOS (не CI UI).
  * Канон: locales/ru/macos-packaged-manual-smoke.json + docs/RELEASE.md §4.2.
  */
 

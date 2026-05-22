@@ -26,6 +26,7 @@ export function createSettingsShellPersist(
 ): Pick<
   import('./settings-ipc-persist-core').SettingsIpcPersistApi,
   | 'persistUiLocale'
+  | 'persistConfirmCloseOnQuit'
   | 'persistThemePreference'
   | 'persistEnginePathOverridesPatch'
   | 'persistMainWindowUiPanelsMerge'
@@ -159,8 +160,20 @@ export function createSettingsShellPersist(
     return snapshot(access)
   }
 
+  function persistConfirmCloseOnQuit(raw: unknown): AppSettings {
+    const enabled = raw !== false
+    const next = { ...access.get() }
+    if (enabled) {
+      delete next.confirmCloseOnQuit
+    } else {
+      next.confirmCloseOnQuit = false
+    }
+    return commit(access, next)
+  }
+
   return {
     persistUiLocale,
+    persistConfirmCloseOnQuit,
     persistThemePreference,
     persistEnginePathOverridesPatch,
     persistMainWindowUiPanelsMerge

@@ -276,7 +276,15 @@ export const fluxalloy = {
     convertImage: (
       payload: import('../shared/media-utilities-contract').MediaUtilitiesConvertImageRequestPayload
     ): Promise<import('../shared/media-utilities-contract').MediaUtilitiesConvertImageResult> =>
-      ipcRenderer.invoke(mw.mediaUtilitiesConvertImage, payload)
+      ipcRenderer.invoke(mw.mediaUtilitiesConvertImage, payload),
+    pickSlideshowImages: (): Promise<
+      import('../shared/media-utilities-contract').MediaUtilitiesPickSlideshowImagesResult
+    > => ipcRenderer.invoke(mw.mediaUtilitiesPickSlideshowImages),
+    createImageSlideshow: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesCreateImageSlideshowRequestPayload
+    ): Promise<
+      import('../shared/media-utilities-contract').MediaUtilitiesCreateImageSlideshowResult
+    > => ipcRenderer.invoke(mw.mediaUtilitiesCreateImageSlideshow, payload)
   },
   diagnostics: {
     listFolders: (): Promise<DiagnosticsFolderEntry[]> =>

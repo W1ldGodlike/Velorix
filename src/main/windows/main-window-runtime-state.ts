@@ -1,9 +1,11 @@
 import { BrowserWindow } from 'electron'
 
+import { countDownloadsQueueWaitingRows } from '../services/downloads/downloads-queue'
 import {
   cancelDownloadsRunner,
   isDownloadsRunnerBusy
 } from '../services/downloads/downloads-queue-runner'
+import { closeSecondaryAppWindows } from './app-secondary-windows-close'
 import { getMainWindowTitle } from '../../shared/app-ui-locale'
 import {
   clearRendererLogBucket,
@@ -73,8 +75,13 @@ export function createMainApplicationWindow(): void {
     setAllowMainWindowClose: (value) => {
       allowMainWindowClose = value
     },
+    getConfirmCloseOnQuit: () => getCachedSettings().confirmCloseOnQuit !== false,
     isExportBusy: () => activeExportAbort !== null,
     isDownloadsBusy: () => isDownloadsRunnerBusy(),
+    countDownloadsQueueWaiting: () => countDownloadsQueueWaitingRows(),
+    onPrepareMainWindowQuit: () => {
+      closeSecondaryAppWindows()
+    },
     onQuitAbortConfirmed: () => {
       activeExportAbort?.abort()
       cancelDownloadsRunner()

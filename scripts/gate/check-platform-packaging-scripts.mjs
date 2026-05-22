@@ -11,9 +11,11 @@ import {
 } from '../../src/shared/electron-vite-build-meta.ts'
 import {
   BUILD_LINUX_NPM_SCRIPT,
+  PACK_LINUX_DIR_NPM_SCRIPT,
   PACK_MAC_DIR_NPM_SCRIPT,
   PLATFORM_PACKAGING_NPM_SCRIPTS,
   VERIFY_LINUX_RELEASE_NPM_SCRIPT,
+  VERIFY_LINUX_UNPACKED_NPM_SCRIPT,
   VERIFY_MAC_UNPACKED_NPM_SCRIPT
 } from '../../src/shared/platform-packaging-npm-scripts.ts'
 import { REPO_ROOT } from '../lib/repo-root.mjs'
@@ -52,6 +54,68 @@ if (/\brun:\s*npm run pack:mac:dir\b/.test(ciWorkflowText)) {
     `[check:platform-packaging-scripts] ${ciWorkflowPath} must not run pack:mac:dir (local macOS only)`
   )
   process.exit(1)
+}
+
+const packLinux = scripts[PACK_LINUX_DIR_NPM_SCRIPT]
+const verifyLinuxUnpacked = scripts[VERIFY_LINUX_UNPACKED_NPM_SCRIPT]
+if (typeof packLinux !== 'string' || !packLinux.includes('electron-builder --linux --dir')) {
+  console.error(
+    `[check:platform-packaging-scripts] ${PACK_LINUX_DIR_NPM_SCRIPT} must run electron-builder --linux --dir`
+  )
+  process.exit(1)
+}
+if (
+  typeof verifyLinuxUnpacked !== 'string' ||
+  !verifyLinuxUnpacked.includes('verify-linux-unpacked-layout.mjs')
+) {
+  console.error(
+    `[check:platform-packaging-scripts] ${VERIFY_LINUX_UNPACKED_NPM_SCRIPT} must invoke verify-linux-unpacked-layout.mjs`
+  )
+  process.exit(1)
+}
+
+const linuxUnpackedVerifyPath = path.join(
+  REPO_ROOT,
+  'scripts/release/verify-linux-unpacked-layout.mjs'
+)
+const linuxUnpackedVerifyText = fs.readFileSync(linuxUnpackedVerifyPath, 'utf8')
+if (!linuxUnpackedVerifyText.includes("process.platform !== 'linux'")) {
+  console.error(
+    `[check:platform-packaging-scripts] ${linuxUnpackedVerifyPath} must skip verify on non-linux hosts`
+  )
+  process.exit(1)
+}
+
+if (!/\brun:\s*npm run pack:linux:dir\b/.test(ciWorkflowText)) {
+  console.error(
+    `[check:platform-packaging-scripts] ${ciWorkflowPath} must run pack:linux:dir in linux-packaging job`
+  )
+  process.exit(1)
+}
+if (!/\brun:\s*npm run verify:linux-unpacked\b/.test(ciWorkflowText)) {
+  console.error(
+    `[check:platform-packaging-scripts] ${ciWorkflowPath} must run verify:linux-unpacked in linux-packaging job`
+  )
+  process.exit(1)
+}
+
+const electronBuilderYmlPath = path.join(REPO_ROOT, 'electron-builder.yml')
+const electronBuilderYmlText = fs.readFileSync(electronBuilderYmlPath, 'utf8')
+for (const needle of [
+  'mac:',
+  'linux:',
+  'dmg:',
+  'appImage:',
+  'AppImage',
+  'deb',
+  'notarize: false'
+]) {
+  if (!electronBuilderYmlText.includes(needle)) {
+    console.error(
+      `[check:platform-packaging-scripts] ${electronBuilderYmlPath} must include non-Windows target marker: ${needle}`
+    )
+    process.exit(1)
+  }
 }
 
 const buildLinux = scripts[BUILD_LINUX_NPM_SCRIPT]

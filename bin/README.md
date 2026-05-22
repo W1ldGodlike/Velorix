@@ -33,7 +33,7 @@ Unpack smoke output (`electron-builder --dir`): **`dist/win-unpacked/`** after `
 
 Full Windows release artifacts (see `docs/RELEASE.md`): `npm run release:win` or `npm run release:win:force` from repo root.
 
-`npm run dev` runs **`engines:prepare:win`** via npm **`predev`** before starting Electron (not **`engines:doctor`** — run manually if needed).
+`npm run dev` runs **`predev`** (`scripts/release/predev-engines.mjs`): on Windows — `engines:prepare:win`; on macOS/Linux — `engines:doctor` verify when `bin/ffmpeg`, `bin/ffprobe`, `bin/yt-dlp` exist (otherwise a one-line hint).
 
 Runtime resolution order is:
 
@@ -41,10 +41,11 @@ Runtime resolution order is:
 2. Bundled `resources/bin`.
 3. Downloaded/updated `app-data/bin` next to the application.
 
-### macOS / Linux (gap)
+### macOS / Linux
 
-- `engines:prepare:mac` / `engines:prepare:linux` — help-only bundled-first (без сетевой загрузки; только `engines:prepare:win` качает exe).
-- **Порядок владельца:** (1) положить `ffmpeg`, `ffprobe`, `yt-dlp` в этот `bin/` (без `.exe`); (2) `npm run engines:doctor`; (3) `build` + `pack:*:dir` + `verify:*`; (4) UI packaged smoke + [owner-manual-smoke](../Help/ru/owner-manual-smoke.md) (§21 e2e в Support ZIP).
+- `engines:prepare:mac` / `engines:prepare:linux` — на **целевом** хосте: скачивание `yt-dlp` + BtbN `ffmpeg`/`ffprobe` в `bin/` (`prepare-engines-unix.mjs`); с другой ОС — подсказки.
+- **`engines:doctor`** на darwin/linux — presence + `--version` (опционально SHA256 в `trusted_hashes.json` → `darwin` / `linux-x64`).
+- **Порядок:** (1) `npm run engines:prepare:mac|linux` на macOS/Linux; (2) `npm run engines:doctor`; (3) `build` + `pack:*:dir` + `verify:*`; (4) packaged smoke — [owner-manual-smoke](../Help/ru/owner-manual-smoke.md).
 - **macOS (локально):** `npm run build && npm run pack:mac:dir` → `npm run verify:mac-unpacked` (проверка `dist/mac*/FluxAlloy.app`).
 - **Linux (локально):** быстрый smoke — `pack:linux:dir` + `verify:linux-unpacked` (как в CI); полный релиз — `npm run build:linux` → `npm run verify:linux-release` (`.AppImage` + `.deb` в `dist/`).
 - GitHub Actions: **windows-latest** — `engines:prepare:win` + packaged smokes; **ubuntu-latest** — `check:quiet` + `build` + `pack:linux:dir` + `verify:linux-unpacked` (движки в `bin/` для CI не обязательны). `electron-vite build` на Linux — плагин `fix:esm-shim` (`electron-vite-build-meta.ts`). См. `docs/ARCHITECTURE.md` § Bundled engines и CI.

@@ -1,5 +1,5 @@
 {
-  "linuxPackagedSmokeSectionTitle": "Ручной smoke Linux (pack:linux:dir)",
+  "linuxPackagedSmokeSectionTitle": "Ручная проверка Linux (pack:linux:dir)",
   "linuxPackagedSmokePrereq0": "На Linux: npm run build && npm run pack:linux:dir, затем npm run verify:linux-unpacked (движки в bin/ могут быть добавлены перед релизом).",
   "linuxPackagedSmokePrereq1": "Каталог dist/linux-unpacked/ с fluxalloy или FluxAlloy и resources/bin/{yt-dlp,ffmpeg,ffprobe}.",
   "linuxPackagedSmokePrereq2": "Чистый профиль userData (первый запуск) или осознанный тест поверх существующего.",
@@ -18,9 +18,9 @@
   "linuxPackagedSmokePass0": "Нет crash при закрытии главного окна и повторном запуске бинарника.",
   "linuxPackagedSmokePass1": "Нет пустых колонок прогресса на post-processing merge/embed в загрузках.",
   "linuxPackagedSmokePass2": "Логи userData/logs без токенов/паролей; артефакты dist/ без .env.",
-  "linuxPackagedSmokeOwnerLine": "ручной smoke packaged Linux (dist/linux-unpacked), не автоматизируется в CI UI",
+  "linuxPackagedSmokeOwnerLine": "Ручная проверка packaged Linux (dist/linux-unpacked), не автоматизируется в CI UI",
   "linuxPackagedSmokeAutomatedLine": "npm run verify:linux-unpacked",
   "linuxPackagedSmokeDocLine": "docs/RELEASE.md §4.1",
-  "linuxPackagedSmokeUiLine": "Настройки → Зависимости → Ручной smoke Linux (pack:linux:dir)",
+  "linuxPackagedSmokeUiLine": "Настройки → Зависимости → Ручная проверка Linux (pack:linux:dir)",
   "linuxPackagedSmokeBundleHeading": "=== Packaged Linux (pack:linux:dir) ==="
 }

@@ -1,5 +1,5 @@
 /**
- * §3 — ручной smoke packaged Linux (не CI UI).
+ * §3 — ручная проверка packaged Linux (не CI UI).
  * Канон: locales/ru/linux-packaged-manual-smoke.json + docs/RELEASE.md §4.1.
  */
 

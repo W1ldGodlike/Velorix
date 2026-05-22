@@ -1,15 +1,18 @@
-import type { JSX } from 'react'
+import { Suspense, type JSX } from 'react'
 
-import { DownloadsWorkspaceConnected } from '../downloads/DownloadsWorkspaceConnected'
+import {
+  AppLazyPanelFallback,
+  LazyDownloadsWorkspaceConnected,
+  LazyEditorFfmpegSettingsRail,
+  LazyTerminalWorkspacePanelConnected
+} from '../../app-lazy-panels'
 import { EditorBatchExportBar } from '../editor/EditorBatchExportBar'
 import type { EditorBatchExportBarProps } from '../editor/EditorBatchExportBar'
-import { EditorFfmpegSettingsRail } from '../editor/EditorFfmpegSettingsRail'
 import type { EditorFfmpegSettingsRailProps } from '../editor/EditorFfmpegSettingsRail'
 import { EditorPreviewSection } from '../editor/EditorPreviewSection'
 import type { EditorPreviewSectionProps } from '../editor/EditorPreviewSection'
 import { EditorQuickYtdlpBar } from '../editor/EditorQuickYtdlpBar'
 import type { EditorQuickYtdlpBarProps } from '../editor/EditorQuickYtdlpBar'
-import { TerminalWorkspacePanelConnected } from '../TerminalWorkspacePanelConnected'
 import type { WorkspaceTab } from '../../app-terminal-hint-ui'
 import type { MainWindowUiPanelKey } from '../../stores/panels-store'
 
@@ -79,20 +82,26 @@ export function AppWorkspaceMain({
             }}
           />
           {panelOpen('ffmpegSettingsRailOpen') ? (
-            <EditorFfmpegSettingsRail
-              panelOpen={panelOpen}
-              persistMainWindowUiPanelToggle={persistMainWindowUiPanelToggle}
-              onCollapseRail={() => {
-                persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', false)
-              }}
-              {...editorFfmpeg}
-            />
+            <Suspense fallback={<AppLazyPanelFallback />}>
+              <LazyEditorFfmpegSettingsRail
+                panelOpen={panelOpen}
+                persistMainWindowUiPanelToggle={persistMainWindowUiPanelToggle}
+                onCollapseRail={() => {
+                  persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', false)
+                }}
+                {...editorFfmpeg}
+              />
+            </Suspense>
           ) : null}
         </main>
       ) : workspaceTab === 'terminal' ? (
-        <TerminalWorkspacePanelConnected />
+        <Suspense fallback={<AppLazyPanelFallback />}>
+          <LazyTerminalWorkspacePanelConnected />
+        </Suspense>
       ) : (
-        <DownloadsWorkspaceConnected />
+        <Suspense fallback={<AppLazyPanelFallback />}>
+          <LazyDownloadsWorkspaceConnected />
+        </Suspense>
       )}
     </>
   )

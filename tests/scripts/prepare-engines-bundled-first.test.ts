@@ -27,5 +27,10 @@ describe('prepare-engines-bundled-first §2.1', () => {
     )
     expect(out).toContain('engines:doctor')
     expect(out).toContain('pack:mac:dir')
+    expect(out).toMatch(/отсутствуют:|все три бинарника|unix engines ready/)
+  })
+
+  it('predev uses predev-engines.mjs', () => {
+    expect(scripts['predev']).toContain('predev-engines.mjs')
   })
 })

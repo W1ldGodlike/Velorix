@@ -1,7 +1,7 @@
-import type { Dispatch, JSX, SetStateAction } from 'react'
+import { Suspense, type Dispatch, type JSX, type SetStateAction } from 'react'
 
+import { AppLazyPanelFallback, LazyKnowledgeDialog } from '../../app-lazy-panels'
 import { AboutDialog } from '../AboutDialog'
-import { KnowledgeDialog } from '../KnowledgeDialog'
 export type AppOverlayDialogsProps = {
   aboutOpen: boolean
   aboutInfo: Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null
@@ -41,16 +41,20 @@ export function AppOverlayDialogs({
         }}
       />
 
-      <KnowledgeDialog
-        open={knowledgeOpen}
-        initialSlug={knowledgeInitialSlug}
-        localeVersion={uiLocaleRenderTick}
-        onClose={() => {
-          setKnowledgeOpen(false)
-          setKnowledgeInitialSlug(null)
-        }}
-        onStatus={onStatusHint}
-      />
+      {knowledgeOpen ? (
+        <Suspense fallback={<AppLazyPanelFallback />}>
+          <LazyKnowledgeDialog
+            open={knowledgeOpen}
+            initialSlug={knowledgeInitialSlug}
+            localeVersion={uiLocaleRenderTick}
+            onClose={() => {
+              setKnowledgeOpen(false)
+              setKnowledgeInitialSlug(null)
+            }}
+            onStatus={onStatusHint}
+          />
+        </Suspense>
+      ) : null}
     </>
   )
 }

@@ -50,6 +50,7 @@ describe('win-unpacked-layout-verify §19', () => {
     expect(lines[0]).toContain('verify:win-unpacked')
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_PACK_VERIFY'))).toBe(true)
     expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
+    expect(lines.some((l) => l.includes('trusted_hashes.json'))).toBe(true)
     expect(lines).toContain('layout: FluxAlloy.exe (present)')
     expect(lines).toContain('layout: resources/bin (missing)')
   })

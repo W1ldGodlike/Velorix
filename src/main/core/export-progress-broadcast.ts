@@ -2,6 +2,7 @@ import type { WebContents } from 'electron'
 
 import type { FfmpegExportProgressPayload } from '../../shared/ffmpeg-export-contract'
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
+import { pushMiniPlayerSnapshotIfOpen } from '../windows/mini-player-window'
 
 let miniPlayerExportProgress: FfmpegExportProgressPayload | null = null
 
@@ -20,4 +21,5 @@ export function sendExportProgress(
 ): void {
   miniPlayerExportProgress = payload
   webContents.send(mw.exportProgress, payload)
+  pushMiniPlayerSnapshotIfOpen()
 }

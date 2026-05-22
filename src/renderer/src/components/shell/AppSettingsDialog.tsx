@@ -30,7 +30,6 @@ import {
   APP_SETTINGS_SECTION_HINT_KEYS as SECTION_HINT_KEYS,
   APP_SETTINGS_SECTION_LABEL_KEYS as SECTION_LABEL_KEYS
 } from './app-settings-dialog-section-labels'
-import { AppSettingsOwnerSmokeBundlePanel } from './AppSettingsOwnerSmokeBundlePanel'
 import { EnginePathsSettingsSection } from './EnginePathsSettingsSection'
 
 export type AppSettingsDialogProps = {
@@ -73,8 +72,6 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     setEditorUrlPasteBehavior,
     setWorkspaceTab,
     onOpenAbout,
-    onOpenWorkflowPlanner,
-    onOpenWorkflowScenarioBuilder,
     onOpenKnowledgeArticle,
     enginePathsSaving,
     engineDownloadBusy,
@@ -94,6 +91,7 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
   const [batchOutputPath, setBatchOutputPath] = useState<string | null>(null)
   const [resetConfirm, setResetConfirm] = useState(false)
   const [themePref, setThemePref] = useState<AppTheme>('dark')
+  const [confirmCloseOnQuit, setConfirmCloseOnQuit] = useState(true)
   const shellBusy = enginePathsSaving || resetBusy
 
   const onThemePrefChange = useMemo(
@@ -112,6 +110,7 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     }
     void window.fluxalloy.settings.get().then((s) => {
       setThemePref(s.theme)
+      setConfirmCloseOnQuit(s.confirmCloseOnQuit !== false)
     })
     void window.fluxalloy.downloads.getOutputDirectory().then((dir) => {
       setDownloadsOutputPath(dir.path)
@@ -231,6 +230,8 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                 themePref={themePref}
                 onThemePrefChange={onThemePrefChange}
                 onUiLocalePersisted={onUiLocalePersisted}
+                confirmCloseOnQuit={confirmCloseOnQuit}
+                setConfirmCloseOnQuit={setConfirmCloseOnQuit}
                 editorUrlPasteBehavior={editorUrlPasteBehavior}
                 setEditorUrlPasteBehavior={setEditorUrlPasteBehavior}
                 onStatus={onStatus}
@@ -264,17 +265,6 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                   onCheckEngineUpdates={onCheckEngineUpdates}
                   onSave={onSaveEnginePaths}
                 />
-                <details className="app-settings-qa-block">
-                  <summary className="app-settings-qa-summary">
-                    {uiText('appSettingsQaReleaseChecklistsSummary')}
-                  </summary>
-                  <AppSettingsOwnerSmokeBundlePanel
-                    sectionHintId={sectionHintId}
-                    {...(onOpenWorkflowPlanner ? { onOpenWorkflowPlanner } : {})}
-                    {...(onOpenWorkflowScenarioBuilder ? { onOpenWorkflowScenarioBuilder } : {})}
-                    {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
-                  />
-                </details>
               </div>
             ) : null}
 

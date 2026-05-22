@@ -12,7 +12,7 @@ function t(shard: MiniPlayerManualSmokeLocaleShard, key: string): string {
   return val
 }
 
-/** §4.3 — ручной smoke Mini Player из locales mini-player-manual-smoke.json. */
+/** §4.3 — ручная проверка Mini Player из locales mini-player-manual-smoke.json. */
 export function buildMiniPlayerManualSmokeChecklistFromLocaleShard(
   shard: MiniPlayerManualSmokeLocaleShard
 ): readonly FfmpegHwManualSmokeChecklistSection[] {

@@ -1,5 +1,7 @@
 appId: com.fluxalloy.app
 productName: FluxAlloy
+# §19.3 — installer/taskbar icon (electron-builder derives .ico/.icns from PNG in buildResources).
+icon: resources/icon.png
 # §19 publish signing (dev pack:*:dir may skip): release-code-signing-roadmap.ts + docs/RELEASE.md §4 (win Authenticode/CSC), §4.2 (mac notarize), §4.1 (linux GPG).
 directories:
   buildResources: build

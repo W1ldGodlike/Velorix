@@ -15,6 +15,9 @@ function snapshotEncodeTail(format: FfmpegSnapshotFormatId, outputPath: string):
   if (format === 'webp') {
     return ['-c:v', 'libwebp', '-quality', '85', '-y', outputPath]
   }
+  if (format === 'bmp' || format === 'tiff') {
+    return ['-y', outputPath]
+  }
   return ['-y', outputPath]
 }
 

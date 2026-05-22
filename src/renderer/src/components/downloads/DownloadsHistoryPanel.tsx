@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, type JSX } from 'react'
 
+import { isFfmpegExportBatchVideoPath } from '../../../../shared/ffmpeg-export-batch-video-ext'
 import { KNOWLEDGE_SLUG_DOWNLOADS_WORKFLOW } from '../../../../shared/knowledge-contract'
 import type { DownloadsHistoryListMode } from '../../../../shared/settings-contract'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
@@ -29,6 +30,7 @@ export function DownloadsHistoryPanel({
   onRepeat,
   onOpenOutput,
   onOpenInEditor,
+  onBatchAddOutputPath,
   onOpenKnowledgeArticle
 }: {
   open: boolean
@@ -52,6 +54,7 @@ export function DownloadsHistoryPanel({
   onRepeat: (url: string) => void
   onOpenOutput: (id: string, mode: 'file' | 'folder') => void
   onOpenInEditor: (id: string) => void
+  onBatchAddOutputPath: (outputPath: string) => void
   onOpenKnowledgeArticle?: (slug: string) => void
 }): JSX.Element {
   const downloadsHistoryOutcomeFilterId = useId()
@@ -356,6 +359,18 @@ export function DownloadsHistoryPanel({
                   >
                     {uiText('downloadsHistoryOpenInEditor')}
                   </button>
+                  {entry.outputPath && isFfmpegExportBatchVideoPath(entry.outputPath) ? (
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      aria-describedby="downloads-page-hint"
+                      title={uiText('batchExportAddToBatch')}
+                      disabled={busy}
+                      onClick={() => onBatchAddOutputPath(entry.outputPath!)}
+                    >
+                      {uiText('batchExportAddToBatch')}
+                    </button>
+                  ) : null}
                 </div>
               ) : null}
             </article>

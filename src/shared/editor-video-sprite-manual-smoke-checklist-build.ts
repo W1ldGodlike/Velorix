@@ -12,7 +12,7 @@ function t(shard: EditorVideoSpriteManualSmokeLocaleShard, key: string): string 
   return val
 }
 
-/** §7.5 — ручной smoke спрайта из locales editor-video-sprite-manual-smoke.json. */
+/** §7.5 — ручная проверка спрайта из locales editor-video-sprite-manual-smoke.json. */
 export function buildEditorVideoSpriteManualSmokeChecklistFromLocaleShard(
   shard: EditorVideoSpriteManualSmokeLocaleShard
 ): readonly FfmpegHwManualSmokeChecklistSection[] {

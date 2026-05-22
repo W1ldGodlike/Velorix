@@ -164,6 +164,9 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
   if (parsed.editorUrlPasteBehavior === 'download_open_editor') {
     base.editorUrlPasteBehavior = 'download_open_editor'
   }
+  if (parsed.confirmCloseOnQuit === false) {
+    base.confirmCloseOnQuit = false
+  }
   if (
     typeof parsed.ffmpegExportExtraArgsLine === 'string' &&
     parsed.ffmpegExportExtraArgsLine.trim().length > 0

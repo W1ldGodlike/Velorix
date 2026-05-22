@@ -42,6 +42,8 @@ export function AppSettingsGeneralPane(props: {
   themePref: AppTheme
   onThemePrefChange: (pref: AppTheme) => void
   onUiLocalePersisted: (locale: AppUiLocale) => void
+  confirmCloseOnQuit: boolean
+  setConfirmCloseOnQuit: Dispatch<SetStateAction<boolean>>
   editorUrlPasteBehavior: EditorUrlPasteBehaviorId
   setEditorUrlPasteBehavior: Dispatch<SetStateAction<EditorUrlPasteBehaviorId>>
   onOpenKnowledgeArticle?: (slug: string) => void
@@ -53,6 +55,8 @@ export function AppSettingsGeneralPane(props: {
     themePref,
     onThemePrefChange,
     onUiLocalePersisted,
+    confirmCloseOnQuit,
+    setConfirmCloseOnQuit,
     editorUrlPasteBehavior,
     setEditorUrlPasteBehavior,
     onOpenKnowledgeArticle,
@@ -100,6 +104,22 @@ export function AppSettingsGeneralPane(props: {
           ))}
         </div>
       </div>
+
+      <label className="app-settings-row app-settings-row-checkbox">
+        <input
+          type="checkbox"
+          checked={confirmCloseOnQuit}
+          disabled={shellBusy}
+          aria-describedby={sectionHintId}
+          onChange={(e) => {
+            const enabled = e.target.checked
+            setConfirmCloseOnQuit(enabled)
+            void window.fluxalloy.settings.setConfirmCloseOnQuit(enabled).catch(console.error)
+          }}
+        />
+        <span className="app-settings-row-label">{uiText('appSettingsConfirmCloseLabel')}</span>
+        <span className="app-modal-hint">{uiText('appSettingsConfirmCloseHint')}</span>
+      </label>
 
       <label className="app-settings-row">
         <span className="app-settings-row-label">{uiText('editorUrlPasteBehaviorLabel')}</span>

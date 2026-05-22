@@ -6,7 +6,7 @@ import {
 
 export type LinuxPackagedManualSmokeLocaleShard = PackagedManualSmokeLocaleShard
 
-/** §3 — ручной smoke `dist/linux-unpacked/` из locales linux-packaged-manual-smoke.json. */
+/** §3 — ручная проверка `dist/linux-unpacked/` из locales linux-packaged-manual-smoke.json. */
 export function buildLinuxPackagedManualSmokeChecklistFromLocaleShard(
   shard: LinuxPackagedManualSmokeLocaleShard
 ): readonly FfmpegHwManualSmokeChecklistSection[] {

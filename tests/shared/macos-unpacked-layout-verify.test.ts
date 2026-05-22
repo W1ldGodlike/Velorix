@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import {
   collectMacosUnpackedLayoutFailures,
   formatMacosUnpackedLayoutVerifyDiagnosticLines,
+  listMacosUnpackedLayoutChecks,
   macosAppBundleCandidates,
   resolveMacosAppBundleRoot,
   resolveMacosAppBundleRootSync
@@ -25,6 +26,14 @@ describe('macos-unpacked-layout-verify §2.1', () => {
       dirExists: (p) => p === candidates[1]
     })
     expect(root).toBe(candidates[1])
+  })
+
+  it('listMacosUnpackedLayoutChecks includes trusted_hashes.json', () => {
+    const resources = join(bundle, 'Contents', 'Resources')
+    const checks = listMacosUnpackedLayoutChecks(bundle)
+    expect(
+      checks.some((c) => c.label.includes('trusted_hashes.json') && c.path.includes(resources))
+    ).toBe(true)
   })
 
   it('collectMacosUnpackedLayoutFailures OK when bundle complete', async () => {
@@ -51,6 +60,7 @@ describe('macos-unpacked-layout-verify §2.1', () => {
       (p) => p === bundle || p === binDir
     )
     expect(lines.some((l) => l.includes('verify:mac-unpacked'))).toBe(true)
+    expect(lines.some((l) => l.includes('trusted_hashes.json'))).toBe(true)
     expect(lines.some((l) => l.includes('FluxAlloy.app') && l.includes(bundle))).toBe(true)
     expect(lines.some((l) => l.includes('Contents/Resources/bin') && l.includes('present'))).toBe(
       true

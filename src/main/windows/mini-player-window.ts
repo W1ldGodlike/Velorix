@@ -44,6 +44,11 @@ function pushMiniPlayerSnapshot(): void {
   win.webContents.send(MINI_PLAYER_SNAPSHOT_PUSH_CHANNEL, buildMiniPlayerSnapshotFromMain())
 }
 
+/** §4.3.2 — немедленный push при смене прогресса экспорта (дополняет interval 500 ms). */
+export function pushMiniPlayerSnapshotIfOpen(): void {
+  pushMiniPlayerSnapshot()
+}
+
 function startMiniPlayerSnapshotPush(): void {
   stopMiniPlayerSnapshotPush()
   pushMiniPlayerSnapshot()

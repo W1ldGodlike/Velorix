@@ -103,6 +103,17 @@ export function findFirstWaitingRow(): DownloadsQueueRow | undefined {
   return rows.find((r) => isYtdlpQueueStatusWaiting(r.status))
 }
 
+/** §4.2.3 — число строк «Ожидание» для текста диалога закрытия (без running/cancelled). */
+export function countDownloadsQueueWaitingRows(): number {
+  let n = 0
+  for (const r of rows) {
+    if (isYtdlpQueueStatusWaiting(r.status)) {
+      n += 1
+    }
+  }
+  return n
+}
+
 /** Копия строки по id для main-сервисов (очередь мутируется только через этот модуль). */
 export function getDownloadsQueueRowById(id: number): DownloadsQueueRow | undefined {
   const row = rows.find((r) => r.id === id)

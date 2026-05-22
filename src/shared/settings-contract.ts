@@ -97,6 +97,8 @@ export interface AppSettings {
   theme: AppTheme
   /** Язык интерфейса (main-меню, строки IPC, окно загрузок по умолчанию); при отсутствии — эвристика как в renderer. */
   uiLocale?: AppUiLocale
+  /** §4.2 / §4.6 — диалог перед закрытием главного окна; по умолчанию включён (`!== false`). */
+  confirmCloseOnQuit?: boolean
   /** §4.1: последний успешно открытый локальный файл для мягкого восстановления сессии. */
   lastOpenedSourcePath?: string
   /** §3: полные пути к exe движков; имеют приоритет над bundled и app-data/bin. */
@@ -234,7 +236,7 @@ export interface AppSettings {
   /** §7.6: последняя папка успешного снимка кадра; используется как defaultPath save dialog. */
   ffmpegSnapshotDirectory?: string
   /** §7.6: формат снимка кадра по умолчанию. */
-  ffmpegSnapshotFormat?: 'png' | 'jpg' | 'webp'
+  ffmpegSnapshotFormat?: 'png' | 'jpg' | 'webp' | 'bmp' | 'tiff'
   /** §17: AviSynth/VapourSynth скрипт в `-vf` экспорта (`off` — поле не пишем). */
   ffmpegExportExternalFilterKind?: 'off' | 'avisynth' | 'vapoursynth'
   /** §17: абсолютный путь к `.avs` / `.vpy`. */

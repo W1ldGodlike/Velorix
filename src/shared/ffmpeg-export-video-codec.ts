@@ -4,6 +4,7 @@
  */
 
 import type { FfmpegExportVideoCodecId } from './ffmpeg-export-contract'
+import type { FfmpegExportArgvParams } from './ffmpeg-export-argv-build-types'
 import {
   FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR,
@@ -131,6 +132,38 @@ export function pickFfmpegHwAutoEncoder(
   return 'libx264'
 }
 
+/** CPU-замена выбранного HW-кодека, если его нет в снимке `-encoders` (§16 export resolve). */
+export function ffmpegHwEncoderCpuFallback(codec: FfmpegHwVideoEncoderId): 'libx264' | 'libx265' {
+  if (codec.startsWith('hevc_')) {
+    return 'libx265'
+  }
+  return 'libx264'
+}
+
+/** stderr ffmpeg похож на сбой HW-энкодера (§16 — один повтор с CPU в `runFfmpegExportJob`). */
+export function ffmpegExportSpawnFailureLooksLikeHwEncoder(error: string): boolean {
+  const e = error.toLowerCase()
+  return (
+    /unknown encoder|encoder .* not found|error selecting an encoder|could not open encoder|cannot create encoder|no capable devices found|no device available|failed to initialize .*encoder|invalid data found when processing input.*nvenc/i.test(
+      e
+    ) || /\b(nvenc|amf|qsv|vaapi|videotoolbox)\b.*\b(error|failed|not found)\b/i.test(e)
+  )
+}
+
+/** argv для повтора экспорта на CPU после сбоя HW (без `-hwaccel` и HW `-c:v`). */
+export function ffmpegExportArgvParamsWithCpuFallback(
+  base: FfmpegExportArgvParams,
+  fallbackCodec: 'libx264' | 'libx265'
+): FfmpegExportArgvParams {
+  const { hwaccelDecode: _hwaccel, videoCodec: _codec, ...rest } = base
+  void _hwaccel
+  void _codec
+  if (fallbackCodec === 'libx264') {
+    return rest
+  }
+  return { ...rest, videoCodec: fallbackCodec }
+}
+
 export function pickFfmpegHwAutoHevcEncoder(
   snap: FfmpegHwEncodersSnapshot
 ): FfmpegHwVideoEncoderId | 'libx265' {
@@ -157,6 +190,9 @@ export function resolveFfmpegExportVideoCodecForArgv(
   }
   if (requested === 'hw_auto_hevc') {
     return pickFfmpegHwAutoHevcEncoder(snap)
+  }
+  if (isFfmpegHwExportVideoCodec(requested) && !snap[requested]) {
+    return ffmpegHwEncoderCpuFallback(requested)
   }
   return requested
 }

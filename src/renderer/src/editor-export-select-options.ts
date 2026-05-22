@@ -206,7 +206,9 @@ export function buildEditorExportSelectOptions(
     snapshotFormats: [
       { id: 'png', label: uiText('editorExportSnapshotPng') },
       { id: 'jpg', label: uiText('editorExportSnapshotJpg') },
-      { id: 'webp', label: uiText('editorExportSnapshotWebp') }
+      { id: 'webp', label: uiText('editorExportSnapshotWebp') },
+      { id: 'bmp', label: uiText('editorExportSnapshotBmp') },
+      { id: 'tiff', label: uiText('editorExportSnapshotTiff') }
     ] as Array<{ id: FfmpegSnapshotFormatId; label: string }>
   }
 }

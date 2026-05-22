@@ -27,9 +27,9 @@ export const SCRIPTS_WIRING_EXEMPT_REL_PATHS = [
   'scripts/maint/apply-theme-line-height-tokenize.mjs',
   'scripts/maint/apply-theme-spacing-rem-tokenize.mjs',
   'scripts/maint/sync-help-workflow-user-footers.mjs',
-  'scripts/maint/restructure-main-services.mjs',
   'scripts/release/engines-bundled-sha256.mjs',
-  'scripts/release/engines-exe-version-line.mjs'
+  'scripts/release/engines-exe-version-line.mjs',
+  'scripts/release/prepare-engines-unix.mjs'
 ] as const
 
 /** Vitest: только tests `*.test.ts`; Playwright — tests/e2e/gui `*.spec.ts` через test:e2e:gui. */
@@ -41,7 +41,7 @@ export const TESTS_LAYOUT_BUCKETS = [
   { dir: 'tests/shared', role: 'contracts, parsers, argv tables (no Electron)' },
   { dir: 'tests/main', role: 'main process, IPC, services (mocks/integration)' },
   { dir: 'tests/renderer', role: 'renderer helpers, ui-text, stores' },
-  { dir: 'tests/scripts', role: 'npm scripts, Help/smoke wiring guards' },
+  { dir: 'tests/scripts', role: 'npm scripts, release/engines smoke wiring' },
   { dir: 'tests/fixtures', role: 'shared terminal/ffmpeg/ytdlp fixture data' },
   { dir: TESTS_E2E_PLAYWRIGHT_DIR, role: 'Playwright GUI (not in Vitest)' }
 ] as const

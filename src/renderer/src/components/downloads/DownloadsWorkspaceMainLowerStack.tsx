@@ -26,6 +26,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
     setDownloadsHistory,
     exportVisibleDownloadsHistory,
     onOpenKnowledgeArticle,
+    onBatchAddOutputPath,
     downloadsEmbeddedLogOpen,
     persistDownloadsEmbeddedLogOpen,
     downloadsLogTargetRowId,
@@ -101,6 +102,9 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
             }
             setStatusHint(uiText('downloadsHistoryOpenHandlerDone'))
           })
+        }}
+        onBatchAddOutputPath={(outputPath) => {
+          onBatchAddOutputPath(outputPath)
         }}
       />
       <DownloadsLogPanel

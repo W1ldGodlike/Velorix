@@ -25,7 +25,8 @@ import {
 } from './packaged-e2e-help-workflow-crosslinks-formatters-readme.ts'
 import {
   PACKAGED_GUI_E2E_APP_ENV_VAR,
-  PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE
+  PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE,
+  PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE
 } from './packaged-gui-e2e-playwright-meta.ts'
 
 function formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiNpmRunClause(
@@ -34,8 +35,8 @@ function formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiNpmRunClause(
   const guard = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD
   const script = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT
   return locale === 'ru'
-    ? `\`npm run ${script}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` (8 skip без \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`; \`${guard}\`).`
-    : `\`npm run ${script}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` (8 skipped without \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`; \`${guard}\`).`
+    ? `\`npm run ${script}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (skip без \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`; \`${guard}\`).`
+    : `\`npm run ${script}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (skipped without \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`; \`${guard}\`).`
 }
 
 export function formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(
@@ -87,7 +88,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeScaffoldC
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   void locale
-  return ` Playwright scaffold: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_SCENARIOS_MODULE}\` (${formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiScaffoldExportsInline()}).`
+  return ` Playwright: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_SCENARIOS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiScaffoldExportsInline()}).`
 }
 
 /** Owner manual smoke Help — planned step notes map (Copy/releaseSmoke diagnostic). */
@@ -153,8 +154,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxPlannedGu
   const stepById = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdClause(locale)
   const wiring = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHandoffClause(locale)
   return locale === 'ru'
-    ? `§21 planned GUI e2e (${count} шагов) — [owner-manual-smoke.md](owner-manual-smoke.md); канон stepId: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; scaffold: \`${module}\` (${exportsInline}).${stepById}${wiring}.`
-    : `§21 planned GUI e2e (${count} steps) — [owner-manual-smoke.md](owner-manual-smoke.md); canonical ids: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; scaffold: \`${module}\` (${exportsInline}).${stepById}${wiring}.`
+    ? `§21 planned GUI e2e (${count} шагов) — [owner-manual-smoke.md](owner-manual-smoke.md); канон stepId: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; \`${module}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${exportsInline}).${stepById}${wiring}.`
+    : `§21 planned GUI e2e (${count} steps) — [owner-manual-smoke.md](owner-manual-smoke.md); canonical ids: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; \`${module}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${exportsInline}).${stepById}${wiring}.`
 }
 
 const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE =
@@ -176,8 +177,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClau
   const stepById = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdClause(locale)
   const wiring = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHandoffClause(locale)
   return locale === 'ru'
-    ? `**Planned GUI e2e** (${count} шагов, Playwright позже) — ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}${scaffold}${stepById}${wiring}.`
-    : `**Planned GUI e2e** (${count} steps, Playwright later): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}${scaffold}${stepById}${wiring}.`
+    ? `**Planned GUI e2e** (${count} шагов, Playwright wired) — ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}${scaffold}${stepById}${wiring}.`
+    : `**Planned GUI e2e** (${count} steps, Playwright wired): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}${scaffold}${stepById}${wiring}.`
 }
 
 /** Packaged windows Help — Dev guards on Copy line (`npm run` prefix). */
@@ -221,8 +222,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGu
   const count = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_E2E_COUNT
   const reserved = formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiReservedClause(locale)
   return locale === 'ru'
-    ? `**Planned GUI e2e** (${count} шагов, Playwright позже, сейчас — ручной smoke): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}`
-    : `**Planned GUI e2e** (${count} steps, Playwright later; manual smoke today): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}`
+    ? `**Planned GUI e2e** (${count} шагов; код — Playwright, приёмка — ручная): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}`
+    : `**Planned GUI e2e** (${count} steps; code — Playwright, acceptance — manual): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}`
 }
 
 /** `docs/RELEASE.md` — `check:help-workflow-smoke-crosslinks` guard bullet. */
@@ -283,8 +284,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksLoggingCopyE2eClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
-    ? ' UI **Скопировать** (packaged + owner bundle) дописывает **§21 packaged e2e (CI vs owner)**; '
-    : ' UI **Copy** (packaged + owner bundle) appends **§21 packaged e2e (CI vs owner)**; '
+    ? ' Support ZIP `ownerManualSmoke:` / `releaseSmoke:` дописывает **§21 packaged e2e (CI vs owner)**; '
+    : ' Support ZIP `ownerManualSmoke:` / `releaseSmoke:` appends **§21 packaged e2e (CI vs owner)**; '
 }
 
 /** Logging Help — full Dev line (inject planned GUI scope + UI hints from `packaged-gui-e2e-playwright-meta`). */

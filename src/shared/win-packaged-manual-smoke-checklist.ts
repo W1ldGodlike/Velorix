@@ -1,5 +1,5 @@
 /**
- * §3 — ручной smoke packaged Windows (не CI UI).
+ * §3 — ручная проверка packaged Windows (не CI UI).
  * Канон: locales/ru/win-packaged-manual-smoke.json + docs/RELEASE.md §4.
  */
 

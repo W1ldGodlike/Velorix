@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs'
+
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -11,16 +13,26 @@ import { PACKAGED_E2E_PLANNED_GUI_STEP_IDS } from '../../../src/shared/packaged-
 import {
   PLANNED_GUI_E2E_SCENARIOS,
   PLANNED_GUI_E2E_STEP_BY_ID,
-  PLANNED_GUI_E2E_STEP_IDS
+  PLANNED_GUI_E2E_STEP_IDS,
+  plannedGuiE2eStepNeedsSampleMp4
 } from './planned-gui-e2e-steps'
 
-describe('planned-gui-e2e-steps scaffold (§21 deferred Playwright)', () => {
+describe('planned-gui-e2e-steps (§21 Playwright registry)', () => {
   it('re-exports registry planned-gui-e2e step ids', () => {
     expect(PLANNED_GUI_E2E_STEP_IDS).toEqual(PACKAGED_E2E_PLANNED_GUI_STEP_IDS)
     expect(PLANNED_GUI_E2E_STEP_IDS).toHaveLength(PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT)
   })
 
-  it('scaffold module path matches crosslinks-meta sync constant', () => {
+  it('step runners module exists for planned-gui-e2e.spec', () => {
+    expect(existsSync('tests/e2e/gui/planned-gui-e2e-step-runners.ts')).toBe(true)
+  })
+
+  it('plannedGuiE2eStepNeedsSampleMp4 flags media steps', () => {
+    expect(plannedGuiE2eStepNeedsSampleMp4('open-file')).toBe(true)
+    expect(plannedGuiE2eStepNeedsSampleMp4('ytdlp')).toBe(false)
+  })
+
+  it('registry module path matches crosslinks-meta sync constant', () => {
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_SCENARIOS_MODULE).toBe(
       PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE
     )

@@ -11,6 +11,8 @@ describe('ffmpeg-image-convert', () => {
   it('parseMediaUtilitiesImageFormatId', () => {
     expect(parseMediaUtilitiesImageFormatId('jpeg')).toBe('jpg')
     expect(parseMediaUtilitiesImageFormatId('webp')).toBe('webp')
+    expect(parseMediaUtilitiesImageFormatId('bmp')).toBe('bmp')
+    expect(parseMediaUtilitiesImageFormatId('tif')).toBe('tiff')
     expect(parseMediaUtilitiesImageFormatId('gif')).toBeNull()
   })
 

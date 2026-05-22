@@ -9,7 +9,9 @@ const IMAGE_INPUT_EXTENSIONS = new Set([
   '.bmp',
   '.gif',
   '.tif',
-  '.tiff'
+  '.tiff',
+  '.heic',
+  '.heif'
 ])
 
 export function parseMediaUtilitiesImageFormatId(raw: unknown): MediaUtilitiesImageFormatId | null {
@@ -21,6 +23,12 @@ export function parseMediaUtilitiesImageFormatId(raw: unknown): MediaUtilitiesIm
   }
   if (raw === 'webp') {
     return 'webp'
+  }
+  if (raw === 'bmp') {
+    return 'bmp'
+  }
+  if (raw === 'tiff' || raw === 'tif') {
+    return 'tiff'
   }
   return null
 }
@@ -36,6 +44,12 @@ export function mediaUtilitiesImageOutputExtension(format: MediaUtilitiesImageFo
   }
   if (format === 'webp') {
     return '.webp'
+  }
+  if (format === 'bmp') {
+    return '.bmp'
+  }
+  if (format === 'tiff') {
+    return '.tiff'
   }
   return '.png'
 }

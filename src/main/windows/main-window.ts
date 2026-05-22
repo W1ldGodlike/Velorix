@@ -3,7 +3,7 @@ import { join } from 'path'
 import { BrowserWindow, dialog } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
-import icon from '../../resources/icon.png?asset'
+import icon from '../../../resources/icon.png?asset'
 import { installExternalNavigationGuard, openAllowedExternalUrl } from '../core/external-url'
 import { resolvePreloadOutFile } from '../core/preload-resolve'
 import type { WindowBoundsConfig } from '../services/settings/settings-store'
@@ -16,6 +16,20 @@ import {
 import { isNativeMainBrowserWindowNeedsIcon } from '../platform'
 import { rectifyBoundsForRestore } from './window-bounds'
 
+export type MainWindowQuitStrings = {
+  quitConfirmBoth: string
+  quitConfirmExport: string
+  quitConfirmDownloads: string
+  quitConfirmIdle: string
+  quitConfirmIdleWithQueue: string
+  quitStay: string
+  quitMiniPlayer: string
+  quitAbort: string
+  quitYes: string
+  quitNo: string
+  quitDialogTitle: string
+}
+
 export type MainWindowCreateDeps = {
   mainDirname: string
   getSavedMainBounds: () => WindowBoundsConfig['main'] | undefined
@@ -24,20 +38,36 @@ export type MainWindowCreateDeps = {
   onMainWindowClosed: (win: BrowserWindow, webContentsId: number) => void
   getAllowMainWindowClose: () => boolean
   setAllowMainWindowClose: (value: boolean) => void
+  getConfirmCloseOnQuit: () => boolean
   isExportBusy: () => boolean
   isDownloadsBusy: () => boolean
+  countDownloadsQueueWaiting: () => number
+  onPrepareMainWindowQuit: () => void
   onQuitAbortConfirmed: () => void
   onQuitMiniPlayerChosen: () => void
-  mainAppStr: () => {
-    quitConfirmBoth: string
-    quitConfirmExport: string
-    quitConfirmDownloads: string
-    quitStay: string
-    quitMiniPlayer: string
-    quitAbort: string
-    quitDialogTitle: string
-  }
+  mainAppStr: () => MainWindowQuitStrings
   buildApplicationMenu: () => void
+}
+
+function formatIdleQuitMessage(q: MainWindowQuitStrings, waitingCount: number): string {
+  if (waitingCount <= 0) {
+    return q.quitConfirmIdle
+  }
+  return q.quitConfirmIdleWithQueue.replace('{n}', String(waitingCount))
+}
+
+function busyQuitMessage(
+  q: MainWindowQuitStrings,
+  exportBusy: boolean,
+  downloadsBusy: boolean
+): string {
+  if (exportBusy && downloadsBusy) {
+    return q.quitConfirmBoth
+  }
+  if (exportBusy) {
+    return q.quitConfirmExport
+  }
+  return q.quitConfirmDownloads
 }
 
 export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
@@ -79,45 +109,71 @@ export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
 
   deps.setAllowMainWindowClose(false)
 
+  const finishConfirmedQuit = (): void => {
+    deps.onPrepareMainWindowQuit()
+    deps.setAllowMainWindowClose(true)
+    mainWindow.close()
+  }
+
   mainWindow.on('close', (e) => {
     if (deps.getAllowMainWindowClose()) {
       return
     }
     const exportBusy = deps.isExportBusy()
     const downloadsBusy = deps.isDownloadsBusy()
-    if (!exportBusy && !downloadsBusy) {
+    const confirmOnQuit = deps.getConfirmCloseOnQuit()
+    const needsBusyDialog = exportBusy || downloadsBusy
+    const needsIdleConfirm = confirmOnQuit && !needsBusyDialog
+
+    if (!needsBusyDialog && !needsIdleConfirm) {
+      deps.onPrepareMainWindowQuit()
       return
     }
+
     e.preventDefault()
     const q = deps.mainAppStr()
-    const msg =
-      exportBusy && downloadsBusy
-        ? q.quitConfirmBoth
-        : exportBusy
-          ? q.quitConfirmExport
-          : q.quitConfirmDownloads
 
+    if (needsBusyDialog) {
+      void dialog
+        .showMessageBox(mainWindow, {
+          type: 'warning',
+          buttons: [q.quitStay, q.quitMiniPlayer, q.quitAbort],
+          defaultId: 0,
+          cancelId: 0,
+          title: q.quitDialogTitle,
+          message: busyQuitMessage(q, exportBusy, downloadsBusy),
+          noLink: true
+        })
+        .then(({ response }) => {
+          if (response === 1) {
+            deps.onQuitMiniPlayerChosen()
+            return
+          }
+          if (response !== 2) {
+            return
+          }
+          deps.onQuitAbortConfirmed()
+          finishConfirmedQuit()
+        })
+      return
+    }
+
+    const waitingCount = deps.countDownloadsQueueWaiting()
     void dialog
       .showMessageBox(mainWindow, {
-        type: 'warning',
-        buttons: [q.quitStay, q.quitMiniPlayer, q.quitAbort],
+        type: 'question',
+        buttons: [q.quitNo, q.quitYes],
         defaultId: 0,
         cancelId: 0,
         title: q.quitDialogTitle,
-        message: msg,
+        message: formatIdleQuitMessage(q, waitingCount),
         noLink: true
       })
       .then(({ response }) => {
-        if (response === 1) {
-          deps.onQuitMiniPlayerChosen()
+        if (response !== 1) {
           return
         }
-        if (response !== 2) {
-          return
-        }
-        deps.onQuitAbortConfirmed()
-        deps.setAllowMainWindowClose(true)
-        mainWindow.close()
+        finishConfirmedQuit()
       })
   })
 

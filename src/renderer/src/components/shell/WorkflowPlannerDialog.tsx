@@ -9,7 +9,6 @@ import { KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS } from '../../../../shared/k
 import type { ScheduledTaskBackend } from '../../../../shared/scheduled-task-contract'
 import { parseScheduledTaskDocument } from '../../../../shared/scheduled-task-parse'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
-import { WorkflowOsSchedulerManualSmokePanel } from './WorkflowOsSchedulerManualSmokePanel'
 import { uiText } from '../../locales/ui-text'
 
 function newTaskId(): string {
@@ -436,15 +435,6 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
             </tbody>
           </table>
         </div>
-        <WorkflowOsSchedulerManualSmokePanel
-          capabilities={{
-            windowsTaskScheduler,
-            macosLaunchd,
-            linuxSystemdUserTimer
-          }}
-          sectionHintId="workflow-planner-hint"
-          {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
-        />
         <div className="app-modal-actions" role="toolbar" aria-orientation="horizontal">
           <button type="button" className="app-btn" disabled={busy || addOpen} onClick={openAdd}>
             {uiText('workflowPlannerAddTask')}

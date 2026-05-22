@@ -1,5 +1,13 @@
-import type { JSX } from 'react'
+import { Suspense, type JSX } from 'react'
 
+import {
+  AppLazyPanelFallback,
+  LazyAppSettingsDialog,
+  LazyExternalFilterScriptDialog,
+  LazyMediaFileUtilitiesDialog,
+  LazyWorkflowPlannerDialog,
+  LazyWorkflowScenarioBuilderDialog
+} from '../../app-lazy-panels'
 import { uiText } from '../../locales/ui-text'
 import type { AppShellLayoutChromeProps } from '../../use-app-shell-layout-props'
 import type { AppWorkspaceMainProps } from './AppWorkspaceMain'
@@ -7,11 +15,6 @@ import { AppOverlayDialogs } from './AppOverlayDialogs'
 import { AppStatusbar } from './AppStatusbar'
 import { AppWorkspaceMain } from './AppWorkspaceMain'
 import { AppWorkspaceTopbar } from './AppWorkspaceTopbar'
-import { AppSettingsDialog } from './AppSettingsDialog'
-import { MediaFileUtilitiesDialog } from '../MediaFileUtilitiesDialog'
-import { ExternalFilterScriptDialog } from './ExternalFilterScriptDialog'
-import { WorkflowPlannerDialog } from './WorkflowPlannerDialog'
-import { WorkflowScenarioBuilderDialog } from './WorkflowScenarioBuilderDialog'
 import { ExportPresetNameDialog } from './ExportPresetNameDialog'
 
 export type AppShellLayoutProps = AppShellLayoutChromeProps & {
@@ -32,17 +35,41 @@ export function AppShellLayout({
   mediaFileUtilities
 }: AppShellLayoutProps): JSX.Element {
   return (
-    <div className="app-shell" aria-label={uiText('appMainShellAria')} aria-busy={appChromeBusy}>
+    <div
+      className={`app-shell${appChromeBusy ? ' app-shell-busy' : ''}`}
+      aria-label={uiText('appMainShellAria')}
+      aria-busy={appChromeBusy}
+    >
       <AppWorkspaceTopbar {...topbar} />
       <AppWorkspaceMain {...workspaceMain} />
       <AppStatusbar {...statusbar} />
       <AppOverlayDialogs {...overlay} />
       <ExportPresetNameDialog {...exportPreset} />
-      <AppSettingsDialog {...appSettings} />
-      <ExternalFilterScriptDialog {...externalFilterScript} />
-      <MediaFileUtilitiesDialog {...mediaFileUtilities} />
-      <WorkflowPlannerDialog {...workflowPlanner} />
-      <WorkflowScenarioBuilderDialog {...workflowScenarioBuilder} />
+      {appSettings.open ? (
+        <Suspense fallback={<AppLazyPanelFallback />}>
+          <LazyAppSettingsDialog {...appSettings} />
+        </Suspense>
+      ) : null}
+      {externalFilterScript.open ? (
+        <Suspense fallback={<AppLazyPanelFallback />}>
+          <LazyExternalFilterScriptDialog {...externalFilterScript} />
+        </Suspense>
+      ) : null}
+      {mediaFileUtilities.open ? (
+        <Suspense fallback={<AppLazyPanelFallback />}>
+          <LazyMediaFileUtilitiesDialog {...mediaFileUtilities} />
+        </Suspense>
+      ) : null}
+      {workflowPlanner.open ? (
+        <Suspense fallback={<AppLazyPanelFallback />}>
+          <LazyWorkflowPlannerDialog {...workflowPlanner} />
+        </Suspense>
+      ) : null}
+      {workflowScenarioBuilder.open ? (
+        <Suspense fallback={<AppLazyPanelFallback />}>
+          <LazyWorkflowScenarioBuilderDialog {...workflowScenarioBuilder} />
+        </Suspense>
+      ) : null}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 /**
- * §7.5 — ручной smoke спрайта превью (не CI UI).
+ * §7.5 — ручная проверка спрайта превью (не CI UI).
  * Канон: locales/ru/editor-video-sprite-manual-smoke.json
  */
 
@@ -19,7 +19,7 @@ export function formatEditorVideoSpriteManualSmokeChecklistLines(): string[] {
   const lines = formatPackagedManualSmokeChecklistLines(
     EDITOR_VIDEO_SPRITE_MANUAL_SMOKE_CHECKLIST,
     {
-      ownerLine: 'ручной smoke спрайта §7.5 (owner, не CI UI)',
+      ownerLine: 'ручная проверка спрайта §7.5 (owner, не CI UI)',
       automatedLine: 'Vitest ffmpeg-video-sprite-* / packaged-video-sprite-smoke',
       docLine: 'Help/ru/owner-manual-smoke.md',
       uiLine: 'Редактор → FFmpeg rail → EditorVideoSpritePanel'

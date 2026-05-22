@@ -7,5 +7,11 @@ export function parseFfmpegSnapshotFormatId(raw: unknown): FfmpegSnapshotFormatI
   if (raw === 'webp') {
     return 'webp'
   }
+  if (raw === 'bmp') {
+    return 'bmp'
+  }
+  if (raw === 'tiff' || raw === 'tif') {
+    return 'tiff'
+  }
   return 'png'
 }

@@ -35,6 +35,7 @@ const snap: FfmpegExportBatchSnapshot = {
 describe('ffmpeg-export-batch-report', () => {
   it('formatFfmpegExportBatchInputPathsText', () => {
     expect(formatFfmpegExportBatchInputPathsText(['a.mp4', 'b.mkv'])).toBe('a.mp4\r\nb.mkv')
+    expect(formatFfmpegExportBatchInputPathsText([])).toBe('')
   })
 
   it('formatFfmpegExportBatchReportText ru', () => {
@@ -74,6 +75,36 @@ describe('ffmpeg-export-batch-report', () => {
     expect(text).toContain('encoder exit 1')
     const cols = text.trim().split('\n').pop()!.split('\t')
     expect(cols[cols.length - 1]).toBe('encoder exit 1')
+  })
+
+  it('пустой список строк — только заголовок и сводка без data-строк', () => {
+    const empty: FfmpegExportBatchSnapshot = {
+      rows: [],
+      running: false,
+      concurrency: 1,
+      completedOk: 0,
+      completedError: 0,
+      completedCancelled: 0
+    }
+    const text = formatFfmpegExportBatchReportText(empty, 'en')
+    expect(text).toContain('error_detail')
+    expect(text).toContain('ok=0')
+    const bodyLines = text
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0 && !l.startsWith('#') && !l.startsWith('running='))
+    expect(bodyLines).toEqual(['status\tinput\toutput\tprogress\terror_detail'])
+  })
+
+  it('колонка error_detail — последнее поле TSV для строки с ошибкой', () => {
+    const text = formatFfmpegExportBatchReportText(snap, 'en')
+    expect(text).toContain('error_detail\r\n')
+    const dataLine = text
+      .split('\r\n')
+      .find((l) => l.includes('b.mkv') && l.includes('codec failed'))
+    expect(dataLine).toBeDefined()
+    const cols = dataLine!.split('\t')
+    expect(cols[cols.length - 1]).toBe('codec failed')
   })
 
   it('санитизирует табы и переносы в ячейках', () => {

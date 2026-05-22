@@ -1,5 +1,5 @@
 /**
- * §10 — ручной smoke OS scheduler watch-folder (не CI).
+ * §10 — ручная проверка OS scheduler watch-folder (не CI).
  * Канон: locales/ru/workflow-os-scheduler-manual-smoke.json + docs/RELEASE.md §4.3.
  */
 
@@ -16,7 +16,7 @@ export const WORKFLOW_OS_SCHEDULER_MANUAL_SMOKE_CHECKLIST =
 
 export function formatWorkflowOsSchedulerManualSmokeChecklistLines(): string[] {
   return formatPackagedManualSmokeChecklistLines(WORKFLOW_OS_SCHEDULER_MANUAL_SMOKE_CHECKLIST, {
-    ownerLine: 'ручной smoke OS scheduler watch-folder (§10), не автоматизируется в CI UI',
+    ownerLine: 'ручная проверка OS scheduler watch-folder (§10), не автоматизируется в CI UI',
     automatedLine:
       'n/a — owner-only; Vitest buildWorkflowOsSchedulerManualSmokeChecklistFromLocaleShard',
     docLine: 'docs/RELEASE.md §4.3',

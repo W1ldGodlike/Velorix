@@ -22,7 +22,7 @@ function t(shard: WorkflowOsSchedulerManualSmokeLocaleShard, key: string): strin
   return val
 }
 
-/** §10 — ручной smoke OS scheduler (watch-folder) из locales workflow-os-scheduler-manual-smoke.json. */
+/** §10 — ручная проверка OS scheduler (watch-folder) из locales workflow-os-scheduler-manual-smoke.json. */
 export function buildWorkflowOsSchedulerManualSmokeChecklistFromLocaleShard(
   shard: WorkflowOsSchedulerManualSmokeLocaleShard,
   opts?: { platforms?: readonly OsSchedulerSmokePlatform[] }

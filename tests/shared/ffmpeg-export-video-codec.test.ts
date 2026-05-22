@@ -1,17 +1,25 @@
 import { describe, expect, it } from 'vitest'
 
+import { buildFfmpegExportArgv } from '../../src/shared/ffmpeg-export-argv'
 import {
   cpuFfmpegVideoCodecRequiresMkv,
   exportCpuCodecMkvOnlyErrorMessage,
   exportMovOnlyCodecErrorMessage,
   ffmpegExportVideoCodecRequiresMov,
+  ffmpegHwEncoderCpuFallback,
   isFfmpegHwExportVideoCodec,
   parseFfmpegExportVideoCodec,
+  ffmpegExportArgvParamsWithCpuFallback,
+  ffmpegExportSpawnFailureLooksLikeHwEncoder,
   pickFfmpegHwAutoEncoder,
   pickFfmpegHwAutoHevcEncoder,
+  probeRunnableHwSnapshot,
   resolveFfmpegExportVideoCodecForArgv
 } from '../../src/shared/ffmpeg-export-video-codec'
-import { createEmptyFfmpegHwEncodersSnapshot } from '../../src/shared/ffmpeg-hw-encoder-probe'
+import {
+  createEmptyFfmpegHwEncodersSnapshot,
+  type FfmpegHwEncodersProbeResult
+} from '../../src/shared/ffmpeg-hw-encoder-probe'
 
 describe('ffmpeg-export-video-codec', () => {
   it('parse: hw_auto, hw_auto_hevc, libx265 и HW whitelist, иначе libx264', () => {
@@ -110,10 +118,90 @@ describe('ffmpeg-export-video-codec', () => {
     snap.hevc_qsv = true
     expect(resolveFfmpegExportVideoCodecForArgv('hw_auto_hevc', snap)).toBe('hevc_qsv')
     expect(resolveFfmpegExportVideoCodecForArgv('libx265', snap)).toBe('libx265')
+    expect(resolveFfmpegExportVideoCodecForArgv('h264_nvenc', snap)).toBe('libx264')
+    snap.h264_nvenc = true
+    expect(resolveFfmpegExportVideoCodecForArgv('h264_nvenc', snap)).toBe('h264_nvenc')
+    expect(resolveFfmpegExportVideoCodecForArgv('hevc_amf', snap)).toBe('libx265')
+    snap.hevc_amf = true
+    expect(resolveFfmpegExportVideoCodecForArgv('hevc_amf', snap)).toBe('hevc_amf')
   })
 
   it('isFfmpegHwExportVideoCodec', () => {
     expect(isFfmpegHwExportVideoCodec('h264_qsv')).toBe(true)
     expect(isFfmpegHwExportVideoCodec('libx264')).toBe(false)
+  })
+
+  it('ffmpegExportSpawnFailureLooksLikeHwEncoder', () => {
+    expect(ffmpegExportSpawnFailureLooksLikeHwEncoder('Unknown encoder h264_nvenc')).toBe(true)
+    expect(ffmpegExportSpawnFailureLooksLikeHwEncoder('No capable devices found')).toBe(true)
+    expect(ffmpegExportSpawnFailureLooksLikeHwEncoder('Invalid data')).toBe(false)
+  })
+
+  it('probeRunnableHwSnapshot returns empty snapshot when probe failed', () => {
+    const failed: FfmpegHwEncodersProbeResult = { ok: false, error: 'spawn failed' }
+    expect(probeRunnableHwSnapshot(failed)).toEqual(createEmptyFfmpegHwEncodersSnapshot())
+  })
+
+  it('probeRunnableHwSnapshot disables AMF without AMD adapter names', () => {
+    const snap = createEmptyFfmpegHwEncodersSnapshot()
+    snap.h264_amf = true
+    const probe: FfmpegHwEncodersProbeResult = {
+      ok: true,
+      snapshot: snap,
+      hwaccels: [],
+      nvidiaGpu: null,
+      gpuAdapterNames: [],
+      osPlatform: 'win32'
+    }
+    expect(probeRunnableHwSnapshot(probe).h264_amf).toBe(false)
+    probe.gpuAdapterNames = ['AMD Radeon RX 7900']
+    expect(probeRunnableHwSnapshot(probe).h264_amf).toBe(true)
+  })
+
+  it('ffmpegHwEncoderCpuFallback maps HEVC HW to libx265 and H264 HW to libx264', () => {
+    expect(ffmpegHwEncoderCpuFallback('h264_nvenc')).toBe('libx264')
+    expect(ffmpegHwEncoderCpuFallback('hevc_amf')).toBe('libx265')
+    expect(ffmpegHwEncoderCpuFallback('av1_qsv')).toBe('libx264')
+  })
+
+  it('buildFfmpegExportArgv after CPU fallback omits nvenc and hwaccel', () => {
+    const base = {
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance' as const,
+      crf: 23,
+      videoBitrate: null,
+      audioMode: 'aac' as const,
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source' as const,
+      videoCodec: 'h264_nvenc' as const,
+      hwaccelDecode: 'cuda' as const
+    }
+    const argv = buildFfmpegExportArgv(ffmpegExportArgvParamsWithCpuFallback(base, 'libx264'))
+    const joined = argv.join(' ')
+    expect(joined).toMatch(/-c:v libx264/)
+    expect(joined).not.toMatch(/nvenc|hwaccel/i)
+  })
+
+  it('ffmpegExportArgvParamsWithCpuFallback strips hwaccel and sets CPU codec', () => {
+    const base = {
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance' as const,
+      crf: 23,
+      videoBitrate: null,
+      audioMode: 'aac' as const,
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source' as const,
+      videoCodec: 'h264_nvenc' as const,
+      hwaccelDecode: 'cuda' as const
+    }
+    expect(ffmpegExportArgvParamsWithCpuFallback(base, 'libx264').videoCodec).toBeUndefined()
+    expect(ffmpegExportArgvParamsWithCpuFallback(base, 'libx264').hwaccelDecode).toBeUndefined()
+    expect(ffmpegExportArgvParamsWithCpuFallback(base, 'libx265').videoCodec).toBe('libx265')
   })
 })

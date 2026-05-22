@@ -3,11 +3,17 @@ import { basename, extname, normalize, resolve } from 'path'
 
 import { BrowserWindow, dialog, ipcMain } from 'electron'
 
+import { grantMediaPath } from '../core/media-protocol'
+
 import {
   isMediaUtilitiesImageInputPath,
   mediaUtilitiesImageOutputExtension,
   parseMediaUtilitiesImageFormatId
 } from '../../shared/ffmpeg-image-convert-parse'
+import {
+  isMediaUtilitiesHeifInputPath,
+  mediaUtilitiesSlideshowPickExtensions
+} from '../../shared/ffmpeg-heif-decoder-probe'
 import {
   parseMediaUtilitiesNoiseDurationSec,
   parseMediaUtilitiesNoiseKind
@@ -15,15 +21,20 @@ import {
 import { parseAppUiLocale } from '../../shared/app-ui-locale'
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import { getMainApplicationStrings } from '../../shared/main-application-locale'
+import { parseImageSlideshowRequest } from '../../shared/ffmpeg-image-slideshow-parse'
 import type {
   MediaUtilitiesConvertImageRequestPayload,
   MediaUtilitiesConvertImageResult,
+  MediaUtilitiesCreateImageSlideshowRequestPayload,
+  MediaUtilitiesCreateImageSlideshowResult,
   MediaUtilitiesFileHashRequestPayload,
   MediaUtilitiesFileHashResult,
   MediaUtilitiesGenerateNoiseRequestPayload,
   MediaUtilitiesGenerateNoiseResult,
+  MediaUtilitiesImageFormatId,
   MediaUtilitiesIntegrityRequestPayload,
   MediaUtilitiesIntegrityResult,
+  MediaUtilitiesPickSlideshowImagesResult,
   MediaUtilitiesRepairRequestPayload,
   MediaUtilitiesRepairResult
 } from '../../shared/media-utilities-contract'
@@ -32,9 +43,11 @@ import { resolveEngineExecutablePath } from '../services/engines/engine-service'
 import {
   runFfmpegConvertImage,
   runFfmpegGenerateNoise,
+  runFfmpegImageSlideshow,
   runFfmpegIntegrityCheck,
   runFfmpegRepairRemux
 } from '../services/ffmpeg/ffmpeg-media-utilities-runner'
+import { probeFfmpegHeifDecoderAvailable } from '../services/ffmpeg/ffmpeg-heif-decoder-probe-main'
 import { logInfo } from '../core/logger-service'
 import { computeMediaFileHashes } from '../services/media/media-file-hash-runner'
 import { isGrantedMediaPath } from '../core/media-protocol'
@@ -47,6 +60,25 @@ function parseInputPath(raw: unknown): string | null {
     return null
   }
   return raw.trim()
+}
+
+function resolveMediaUtilitiesImageSaveFilter(
+  M: ReturnType<typeof getMainApplicationStrings>,
+  format: MediaUtilitiesImageFormatId
+): string {
+  if (format === 'jpg') {
+    return M.mediaUtilitiesImageSaveFilterJpeg
+  }
+  if (format === 'webp') {
+    return M.mediaUtilitiesImageSaveFilterWebp
+  }
+  if (format === 'bmp') {
+    return M.mediaUtilitiesImageSaveFilterBmp
+  }
+  if (format === 'tiff') {
+    return M.mediaUtilitiesImageSaveFilterTiff
+  }
+  return M.mediaUtilitiesImageSaveFilterPng
 }
 
 export function registerMediaUtilitiesIpcHandlers(host: ExportBatchIpcHost): void {
@@ -228,18 +260,28 @@ export function registerMediaUtilitiesIpcHandlers(host: ExportBatchIpcHost): voi
       if (!isMediaUtilitiesImageInputPath(absIn)) {
         return { ok: false, error: M.mediaUtilitiesImageNotImage }
       }
+      const paths = resolveAppPaths()
+      const ffmpegConvert = resolveEngineExecutablePath(
+        paths,
+        'ffmpeg',
+        host.getSettings().engineExecutablePaths
+      )
+      if (!ffmpegConvert) {
+        return { ok: false, error: M.exportFfmpegMissing }
+      }
+      if (isMediaUtilitiesHeifInputPath(absIn)) {
+        const heifOk = await probeFfmpegHeifDecoderAvailable(ffmpegConvert)
+        if (!heifOk) {
+          return { ok: false, error: M.mediaUtilitiesHeifUnsupported }
+        }
+      }
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) {
         return { ok: false, error: M.exportNoActiveWindow }
       }
       const outExt = mediaUtilitiesImageOutputExtension(targetFormat)
       const stem = basename(absIn, extname(absIn))
-      const saveFilter =
-        targetFormat === 'jpg'
-          ? M.mediaUtilitiesImageSaveFilterJpeg
-          : targetFormat === 'webp'
-            ? M.mediaUtilitiesImageSaveFilterWebp
-            : M.mediaUtilitiesImageSaveFilterPng
+      const saveFilter = resolveMediaUtilitiesImageSaveFilter(M, targetFormat)
       const pick = await dialog.showSaveDialog(win, {
         title: M.mediaUtilitiesImageSaveTitle,
         defaultPath: `${stem}_converted${outExt}`,
@@ -253,20 +295,128 @@ export function registerMediaUtilitiesIpcHandlers(host: ExportBatchIpcHost): voi
       if (pick.canceled || !pick.filePath) {
         return { ok: false, cancelled: true }
       }
-      const paths = resolveAppPaths()
-      const ffmpeg = resolveEngineExecutablePath(
-        paths,
-        'ffmpeg',
-        host.getSettings().engineExecutablePaths
-      )
-      if (!ffmpeg) {
-        return { ok: false, error: M.exportFfmpegMissing }
-      }
       return runFfmpegConvertImage({
-        ffmpegPath: ffmpeg,
+        ffmpegPath: ffmpegConvert,
         inputPath: absIn,
         outputPath: pick.filePath,
         targetFormat
+      })
+    }
+  )
+
+  ipcMain.handle(
+    mw.mediaUtilitiesPickSlideshowImages,
+    async (event): Promise<MediaUtilitiesPickSlideshowImagesResult> => {
+      const uiLocale = host.mainDownloadsUiLocale()
+      const M = getMainApplicationStrings(uiLocale)
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return { ok: false, error: M.exportNoActiveWindow }
+      }
+      const pathsPick = resolveAppPaths()
+      const ffmpegPick = resolveEngineExecutablePath(
+        pathsPick,
+        'ffmpeg',
+        host.getSettings().engineExecutablePaths
+      )
+      const heifDecoder = ffmpegPick ? await probeFfmpegHeifDecoderAvailable(ffmpegPick) : false
+      const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+        title: M.mediaUtilitiesSlideshowPickTitle,
+        properties: ['openFile', 'multiSelections'],
+        filters: [
+          {
+            name: M.mediaUtilitiesSlideshowPickFilter,
+            extensions: [...mediaUtilitiesSlideshowPickExtensions(heifDecoder)]
+          }
+        ]
+      })
+      if (canceled || filePaths.length === 0) {
+        return { ok: false, cancelled: true }
+      }
+      const paths: string[] = []
+      for (const raw of filePaths) {
+        if (typeof raw !== 'string' || raw.trim().length === 0) {
+          continue
+        }
+        const abs = resolve(normalize(raw.trim()))
+        if (!existsSync(abs) || !isMediaUtilitiesImageInputPath(abs)) {
+          continue
+        }
+        grantMediaPath(abs)
+        if (isGrantedMediaPath(abs)) {
+          paths.push(abs)
+        }
+      }
+      if (paths.length < 2) {
+        return { ok: false, error: M.mediaUtilitiesSlideshowTooFewImages }
+      }
+      return { ok: true, paths }
+    }
+  )
+
+  ipcMain.handle(
+    mw.mediaUtilitiesCreateImageSlideshow,
+    async (event, raw: unknown): Promise<MediaUtilitiesCreateImageSlideshowResult> => {
+      const uiLocale =
+        parseAppUiLocale((raw as MediaUtilitiesCreateImageSlideshowRequestPayload)?.uiLocale) ??
+        host.mainDownloadsUiLocale()
+      const M = getMainApplicationStrings(uiLocale)
+      const parsed = parseImageSlideshowRequest(raw)
+      if (!parsed.ok) {
+        if (parsed.error === 'too_few_images') {
+          return { ok: false, error: M.mediaUtilitiesSlideshowTooFewImages }
+        }
+        if (parsed.error === 'too_many_images') {
+          return { ok: false, error: M.mediaUtilitiesSlideshowTooManyImages }
+        }
+        if (parsed.error === 'invalid_duration') {
+          return { ok: false, error: M.mediaUtilitiesSlideshowInvalidDuration }
+        }
+        if (parsed.error === 'invalid_transition') {
+          return { ok: false, error: M.mediaUtilitiesSlideshowInvalidTransition }
+        }
+        return { ok: false, error: M.ipcInvalidRequest }
+      }
+      const pathsCreate = resolveAppPaths()
+      const ffmpegCreate = resolveEngineExecutablePath(
+        pathsCreate,
+        'ffmpeg',
+        host.getSettings().engineExecutablePaths
+      )
+      if (!ffmpegCreate) {
+        return { ok: false, error: M.exportFfmpegMissing }
+      }
+      const heifDecoderCreate = await probeFfmpegHeifDecoderAvailable(ffmpegCreate)
+      const absPaths: string[] = []
+      for (const p of parsed.payload.imagePaths) {
+        const abs = resolve(normalize(p))
+        if (!existsSync(abs) || !isGrantedMediaPath(abs) || !isMediaUtilitiesImageInputPath(abs)) {
+          return { ok: false, error: M.exportNotGrantedPath }
+        }
+        if (isMediaUtilitiesHeifInputPath(abs) && !heifDecoderCreate) {
+          return { ok: false, error: M.mediaUtilitiesHeifUnsupported }
+        }
+        absPaths.push(abs)
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return { ok: false, error: M.exportNoActiveWindow }
+      }
+      const pick = await dialog.showSaveDialog(win, {
+        title: M.mediaUtilitiesSlideshowSaveTitle,
+        defaultPath: 'slideshow.mp4',
+        filters: [{ name: M.mediaUtilitiesSlideshowSaveFilter, extensions: ['mp4'] }]
+      })
+      if (pick.canceled || !pick.filePath) {
+        return { ok: false, cancelled: true }
+      }
+      const { transition, slideDurationSec } = parsed.payload
+      return runFfmpegImageSlideshow({
+        ffmpegPath: ffmpegCreate,
+        imagePaths: absPaths,
+        outputPath: pick.filePath,
+        slideDurationSec,
+        ...(transition !== undefined ? { transition } : {})
       })
     }
   )

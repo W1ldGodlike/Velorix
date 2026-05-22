@@ -2,11 +2,14 @@ import { describe, expect, it } from 'vitest'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
+import { KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS } from '../../src/shared/knowledge-contract'
 import {
   groupKnowledgeArticlesByToc,
   KNOWLEDGE_TOC_REGISTRY_SLUGS,
   KNOWLEDGE_TOC_SECTIONS
 } from '../../src/shared/knowledge-toc-registry'
+
+const HIDDEN_HELP_SLUGS = new Set<string>(KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS)
 
 const HELP_DIR = join(process.cwd(), 'Help')
 const HELP_RU_DIR = join(HELP_DIR, 'ru')
@@ -16,6 +19,7 @@ describe('knowledge-toc-registry', () => {
     const helpSlugs = readdirSync(HELP_RU_DIR)
       .filter((name) => /^[a-z0-9][a-z0-9-]*\.md$/i.test(name))
       .map((name) => name.replace(/\.md$/i, ''))
+      .filter((slug) => !HIDDEN_HELP_SLUGS.has(slug))
       .sort()
     const registry = [...KNOWLEDGE_TOC_REGISTRY_SLUGS].sort()
     expect(registry).toEqual(helpSlugs)

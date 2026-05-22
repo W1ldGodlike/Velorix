@@ -50,6 +50,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
     handleExport,
     handleSnapshot
   } = props
+  const previewMediaKey = preview ? `${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}` : ''
   return (
     <section
       className="app-preview"
@@ -84,7 +85,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
               aria-busy={editorPreviewRegionBusy}
             >
               <video
-                key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
+                key={previewMediaKey}
                 ref={videoRef}
                 className="app-preview-video"
                 playsInline
@@ -101,16 +102,15 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
                 }}
               />
               <PreviewTransport
-                key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
-                mediaKey={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
+                mediaKey={previewMediaKey}
                 videoRef={videoRef}
                 fullscreenRootRef={previewStackRef}
                 disabled={exportBusy || snapshotBusy}
               />
             </div>
             <VideoTimeline
-              key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
-              mediaKey={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
+              key={previewMediaKey}
+              mediaKey={previewMediaKey}
               mediaUrl={previewPlaybackUrl ?? preview.mediaUrl}
               probe={probeInfo}
               videoRef={videoRef}

@@ -30,6 +30,18 @@ const FORBIDDEN_TEXT = [
   {
     pattern: /Cadence Git|Следующий cadence|marathon cadence/i,
     label: 'legacy «cadence» — use «Git по J-NNN» / «commit по J»'
+  },
+  {
+    pattern: /not in [`']?package\.json[`']? yet/i,
+    label: 'stale §21 Playwright (test:e2e:gui wired in package.json)'
+  },
+  {
+    pattern: /not in package\.json until wired/i,
+    label: 'stale §21 Playwright (test:e2e:gui wired)'
+  },
+  {
+    pattern: /Playwright GUI deferred/i,
+    label: 'stale §21 «Playwright GUI deferred» (use wired wording)'
   }
 ]
 

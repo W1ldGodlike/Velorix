@@ -14,10 +14,13 @@ const WIN_EXE_OPTS = {
   maxBuffer: 512 * 1024
 }
 
-export async function firstVersionLineFromWinEngineExe(exePath, baseName) {
+function versionArgsForBaseName(baseName) {
   const bn = baseName.toLowerCase()
-  const args = bn === 'yt-dlp.exe' ? ['--version'] : ['-version']
-  const { stdout } = await execFileAsync(exePath, args, WIN_EXE_OPTS)
+  return bn === 'yt-dlp.exe' || bn === 'yt-dlp' ? ['--version'] : ['-version']
+}
+
+export async function firstVersionLineFromEngineBinary(exePath, baseName) {
+  const { stdout } = await execFileAsync(exePath, versionArgsForBaseName(baseName), WIN_EXE_OPTS)
   return (
     stdout
       .split(/\r?\n/)
@@ -26,11 +29,21 @@ export async function firstVersionLineFromWinEngineExe(exePath, baseName) {
   )
 }
 
-export async function tryFirstVersionLineFromWinEngineExe(exePath, baseName) {
+export async function tryFirstVersionLineFromEngineBinary(exePath, baseName) {
   try {
-    const line = await firstVersionLineFromWinEngineExe(exePath, baseName)
+    const line = await firstVersionLineFromEngineBinary(exePath, baseName)
     return { ok: true, line }
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : String(e) }
   }
+}
+
+/** @deprecated use firstVersionLineFromEngineBinary */
+export async function firstVersionLineFromWinEngineExe(exePath, baseName) {
+  return firstVersionLineFromEngineBinary(exePath, baseName)
+}
+
+/** @deprecated use tryFirstVersionLineFromEngineBinary */
+export async function tryFirstVersionLineFromWinEngineExe(exePath, baseName) {
+  return tryFirstVersionLineFromEngineBinary(exePath, baseName)
 }

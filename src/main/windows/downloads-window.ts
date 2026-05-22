@@ -153,3 +153,10 @@ export function focusOrCreateDownloadsWindow(
     broadcastDownloadsSnapshot()
   })
 }
+
+export function closeDownloadsPopoutIfOpen(): void {
+  const popout = getDownloadsPopoutWindow()
+  if (popout !== null && !popout.isDestroyed()) {
+    popout.close()
+  }
+}

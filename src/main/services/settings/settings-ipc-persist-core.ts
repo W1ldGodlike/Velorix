@@ -29,6 +29,7 @@ export function snapshot(access: MainSettingsAccess): AppSettings {
 export type SettingsIpcPersistApi = {
   ffmpegExport: FfmpegExportSettingsPersisters
   persistUiLocale: (raw: unknown) => AppSettings
+  persistConfirmCloseOnQuit: (raw: unknown) => AppSettings
   persistThemePreference: (pref: AppTheme) => AppSettingsView
   persistEnginePathOverridesPatch: (patch: EnginePathOverridesPatch) => AppSettings
   persistMainWindowUiPanelsMerge: (raw: unknown) => AppSettings

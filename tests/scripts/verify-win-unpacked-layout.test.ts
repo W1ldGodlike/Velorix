@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { describe, expect, it } from 'vitest'
 
@@ -12,5 +13,10 @@ describe('verify-win-unpacked-layout.mjs §19', () => {
     })
     expect(result.status).toBe(0)
     expect(`${result.stdout ?? ''}${result.stderr ?? ''}`).toContain('FLUXALLOY_SKIP_PACK_VERIFY')
+  })
+
+  it('layout verify expects Data/trusted_hashes.json in unpacked resources', () => {
+    const lib = readFileSync('src/shared/win-unpacked-layout-verify.ts', 'utf8')
+    expect(lib).toContain('trusted_hashes.json')
   })
 })

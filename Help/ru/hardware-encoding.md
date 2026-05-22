@@ -21,8 +21,8 @@
 
 - **Windows + NVIDIA** — NVENC (см. чеклист в настройках).
 - **Linux** — VAAPI (Intel/AMD), при наличии `/dev/dri` и vaapi в `ffmpeg -hwaccels`.
-- **macOS** — VideoToolbox в списке кодеков; ручной smoke в настройках ориентирован на Win/Linux.
+- **macOS** — VideoToolbox в списке кодеков; ручной проверки в настройках ориентирован на Win/Linux.
 
 ## См. также
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (smoke после `pack:dir`).
+[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).

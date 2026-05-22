@@ -6,6 +6,7 @@ import type {
   MediaUtilitiesImageFormatId,
   MediaUtilitiesNoiseKind
 } from '../../../shared/media-utilities-contract'
+import { MediaFileUtilitiesSlideshowSection } from './MediaFileUtilitiesSlideshowSection'
 import { getUiLocale, uiText, uiTextVars } from '../locales/ui-text'
 
 const DEFAULT_NOISE_DURATION_SEC = 5
@@ -22,7 +23,6 @@ export function MediaFileUtilitiesPanel(props: {
   const [noiseDurationSec, setNoiseDurationSec] = useState(String(DEFAULT_NOISE_DURATION_SEC))
   const [imagePath, setImagePath] = useState<string | null>(null)
   const [imageFormat, setImageFormat] = useState<MediaUtilitiesImageFormatId>('png')
-
   const pickImageFile = useCallback(async (): Promise<void> => {
     const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as AppUiLocale)
     if (!result.ok) {
@@ -292,6 +292,8 @@ export function MediaFileUtilitiesPanel(props: {
             <option value="jpg">{uiText('mediaUtilitiesImageFormatJpg')}</option>
             <option value="png">{uiText('mediaUtilitiesImageFormatPng')}</option>
             <option value="webp">{uiText('mediaUtilitiesImageFormatWebp')}</option>
+            <option value="bmp">{uiText('mediaUtilitiesImageFormatBmp')}</option>
+            <option value="tiff">{uiText('mediaUtilitiesImageFormatTiff')}</option>
           </select>
         </div>
         <div
@@ -323,6 +325,14 @@ export function MediaFileUtilitiesPanel(props: {
           </button>
         </div>
       </section>
+
+      <MediaFileUtilitiesSlideshowSection
+        disabled={disabled}
+        {...(describedById ? { describedById } : {})}
+        busy={busy}
+        setBusy={setBusy}
+        onStatus={onStatus}
+      />
 
       <section
         className="about-diagnostics-folders media-noise-utilities"

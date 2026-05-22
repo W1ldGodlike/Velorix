@@ -5322,6 +5322,21 @@ button.app-downloads-hint-token:disabled {
   color: var(--fa-text-primary);
 }
 
+.app-workspace-lazy-fallback {
+  flex: 1 1 auto;
+  min-height: 12rem;
+}
+
+/* §4.4.2 — при активных задачах ослабляем transition/animation в chrome. */
+.app-shell-busy *,
+.app-shell-busy *::before,
+.app-shell-busy *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0s !important;
+}
+
 /* §4.4 — «Уменьшить движение» в ОС: мгновенные transition/animation, без плавного прогресса. */
 @media (prefers-reduced-motion: reduce) {
   *,

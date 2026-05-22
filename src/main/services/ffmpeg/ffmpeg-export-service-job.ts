@@ -5,11 +5,20 @@ import { join } from 'path'
 import { FLUXALLOY_APP_DATA_ENV, resolveAppTempDirectory } from '../../core/app-data-root-paths'
 import type { FfmpegExportVideoCodecId } from '../../../shared/ffmpeg-export-contract'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../../../shared/ffmpeg-export-contract'
+import type { FfmpegExportArgvParams } from '../../../shared/ffmpeg-export-argv'
 import { buildFfmpegExportArgv } from '../../../shared/ffmpeg-export-argv'
+import {
+  ffmpegExportArgvParamsWithCpuFallback,
+  ffmpegExportSpawnFailureLooksLikeHwEncoder,
+  ffmpegHwEncoderCpuFallback,
+  isFfmpegHwExportVideoCodec
+} from '../../../shared/ffmpeg-export-video-codec'
 import { runFfmpegExportOnce } from './ffmpeg-export-spawn-once'
 import { nativeMainDevNullPath } from '../../platform'
 import { resolveFfmpegExportJobPlan } from './ffmpeg-export-service-job-resolve'
 import type { FfmpegExportJobParams } from './ffmpeg-export-service-job-resolve-types'
+
+type ExportOnceResult = { ok: true } | { ok: false; error: string }
 
 /**
  * §7 — экспорт: один или два прохода libx264; двухпроход только с валидным `videoBitrate`.
@@ -26,28 +35,49 @@ export async function runFfmpegExportJob(
   }
 
   const {
+    videoCodec,
     wantTwoPass,
     baseArgvParams,
     segmentDur,
     uloc,
     secondPassProgressMessage,
-    jobOnProgress,
-    doneOk,
-    doneErr
+    jobOnProgress
   } = plan
 
-  if (!wantTwoPass) {
-    const args = buildFfmpegExportArgv(baseArgvParams)
-    const r = await runFfmpegExportOnce({
+  let videoCodecUsed: FfmpegExportVideoCodecId = videoCodec
+
+  const runOnce = async (argvParams: FfmpegExportArgvParams): Promise<ExportOnceResult> => {
+    const args = buildFfmpegExportArgv(argvParams)
+    return runFfmpegExportOnce({
       ffmpegPath: params.ffmpegPath,
       args,
       signal: params.signal,
       segmentDur,
       uiLocale: uloc,
-      ...(baseArgvParams.economyMode === true ? { lowProcessPriority: true } : {}),
+      ...(argvParams.economyMode === true ? { lowProcessPriority: true } : {}),
       ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
-    return r.ok ? doneOk() : doneErr(r.error)
+  }
+
+  const runOnceWithHwCpuFallback = async (
+    argvParams: FfmpegExportArgvParams
+  ): Promise<ExportOnceResult> => {
+    const r = await runOnce(argvParams)
+    if (
+      r.ok ||
+      !isFfmpegHwExportVideoCodec(videoCodec) ||
+      !ffmpegExportSpawnFailureLooksLikeHwEncoder(r.error)
+    ) {
+      return r
+    }
+    const fallback = ffmpegHwEncoderCpuFallback(videoCodec)
+    videoCodecUsed = fallback
+    return runOnce(ffmpegExportArgvParamsWithCpuFallback(argvParams, fallback))
+  }
+
+  if (!wantTwoPass) {
+    const r = await runOnceWithHwCpuFallback(baseArgvParams)
+    return r.ok ? { ok: true, videoCodecUsed } : { ok: false, error: r.error, videoCodecUsed }
   }
 
   let tmpDir: string | null = null
@@ -76,10 +106,10 @@ export async function runFfmpegExportJob(
       ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
     if (!r1.ok) {
-      return doneErr(r1.error)
+      return { ok: false, error: r1.error, videoCodecUsed }
     }
     if (params.signal.aborted) {
-      return doneErr(FFMPEG_EXPORT_CANCELLED_ERROR)
+      return { ok: false, error: FFMPEG_EXPORT_CANCELLED_ERROR, videoCodecUsed }
     }
 
     jobOnProgress?.({ percent: 50, message: secondPassProgressMessage })
@@ -98,7 +128,7 @@ export async function runFfmpegExportJob(
       ...(baseArgvParams.economyMode === true ? { lowProcessPriority: true } : {}),
       ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
-    return r2.ok ? doneOk() : doneErr(r2.error)
+    return r2.ok ? { ok: true, videoCodecUsed } : { ok: false, error: r2.error, videoCodecUsed }
   } finally {
     if (tmpDir !== null) {
       try {

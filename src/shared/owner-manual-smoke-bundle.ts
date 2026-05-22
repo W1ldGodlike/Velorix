@@ -1,5 +1,5 @@
 /**
- * §16 / §1.1 / §3 / §10 / §11 / §14 — единый пакет ручного smoke владельца (железо, не CI).
+ * §16 / §1.1 / §3 / §10 / §11 / §14 — единый пакет ручной проверки владельца (железо, не CI).
  */
 
 import { formatFfmpegHwManualSmokeChecklistLines } from './ffmpeg-hw-manual-smoke-checklist'
@@ -68,7 +68,7 @@ export function buildOwnerManualSmokeBundleLines(opts?: {
   const packaged = getOwnerManualSmokePackagedSection(opts?.platform)
   const lines: string[] = [
     'ownerManualSmoke: Theme + HiDPI + HW + scenario + video sprite + mini player + packaged + OS scheduler + Win shell (owner, not CI)',
-    'UI: Settings → Dependencies → «Owner smoke» copy; Theme / HW / HiDPI / sprite / mini player / packaged / planner / Explorer',
+    'UI: IMPLEMENTATION_MANUAL_VERIFICATION.md (not in app); Support ZIP ownerManualSmoke:',
     '',
     '=== Theme ===',
     ...formatOwnerManualSmokeThemeChecklistLines(),

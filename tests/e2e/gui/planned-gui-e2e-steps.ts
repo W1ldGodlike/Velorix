@@ -1,5 +1,5 @@
 /**
- * §21 Playwright GUI e2e — canonical planned step ids (`npm run test:e2e:gui` scaffold runner).
+ * §21 Playwright GUI e2e — canonical planned step ids (`npm run test:e2e:gui` → spec + step-runners).
  * Re-export only; Vitest locks order against `PACKAGED_E2E_SMOKE_REGISTRY`.
  */
 import {
@@ -17,3 +17,7 @@ export const PLANNED_GUI_E2E_SCENARIOS: readonly PackagedE2eSmokeScenario[] =
 export const PLANNED_GUI_E2E_STEP_BY_ID: Readonly<Record<string, string>> = Object.fromEntries(
   PLANNED_GUI_E2E_SCENARIOS.map((row) => [row.stepId, row.note])
 )
+
+export function plannedGuiE2eStepNeedsSampleMp4(stepId: string): boolean {
+  return stepId === 'open-file' || stepId === 'snapshot' || stepId === 'export'
+}

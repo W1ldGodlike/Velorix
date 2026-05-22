@@ -57,6 +57,18 @@ export function DownloadsWorkspaceConnected(): JSX.Element {
     [setStatusHint]
   )
 
+  const handleBatchAddOutputPath = useCallback(
+    async (outputPath: string): Promise<void> => {
+      const res = await window.fluxalloy.batchExport.addPaths([outputPath])
+      if (!res.ok) {
+        setStatusHint(res.error)
+        return
+      }
+      formatBatchAddStatusHint(setStatusHint, res)
+    },
+    [setStatusHint]
+  )
+
   const handleDownloadsRailSectionToggle = useCallback(
     (key: DownloadsRailPanelKey) => {
       return (e: SyntheticEvent<HTMLDetailsElement>): void => {
@@ -137,6 +149,9 @@ export function DownloadsWorkspaceConnected(): JSX.Element {
         setStatusHint={setStatusHint}
         onBatchAddDownloadsDone={(rowIds) => {
           void handleBatchAddDownloadsDone(rowIds)
+        }}
+        onBatchAddOutputPath={(outputPath) => {
+          void handleBatchAddOutputPath(outputPath)
         }}
         onSelectDownloadsTab={() => {
           setWorkspaceTab('downloads')

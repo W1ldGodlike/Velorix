@@ -58,6 +58,12 @@ export function isInspectorWindow(win: BrowserWindow | null | undefined): boolea
   )
 }
 
+export function closeInspectorWindowIfOpen(): void {
+  if (inspectorWindow !== null && !inspectorWindow.isDestroyed()) {
+    inspectorWindow.close()
+  }
+}
+
 function grantAndNormalizeExistingPath(abs: string): string | null {
   const normalized = resolve(normalize(abs.trim()))
   if (!existsSync(normalized)) {

@@ -11,10 +11,11 @@ import {
   exportCpuCodecMkvOnlyErrorMessage,
   exportMovOnlyCodecErrorMessage,
   ffmpegExportVideoCodecRequiresMov,
+  isFfmpegHwAutoVideoCodec,
+  isFfmpegHwExportVideoCodec,
   parseFfmpegExportVideoCodec,
-  pickFfmpegHwAutoEncoder,
-  pickFfmpegHwAutoHevcEncoder,
-  probeRunnableHwSnapshot
+  probeRunnableHwSnapshot,
+  resolveFfmpegExportVideoCodecForArgv
 } from '../../../shared/ffmpeg-export-video-codec'
 import { createEmptyFfmpegHwEncodersSnapshot } from '../../../shared/ffmpeg-hw-encoder-probe'
 import {
@@ -47,7 +48,11 @@ export async function resolveFfmpegExportJobVideo(
   let videoCodec: FfmpegExportVideoCodecId = parsedVideoCodec
   const wantHwDecode = parseFfmpegExportHwDecode(params.hwDecode)
   let hwaccels: readonly string[] = []
-  if (parsedVideoCodec === 'hw_auto' || parsedVideoCodec === 'hw_auto_hevc' || wantHwDecode) {
+  const needsHwProbe =
+    isFfmpegHwAutoVideoCodec(parsedVideoCodec) ||
+    isFfmpegHwExportVideoCodec(parsedVideoCodec) ||
+    wantHwDecode
+  if (needsHwProbe) {
     let snap = createEmptyFfmpegHwEncodersSnapshot()
     try {
       const pr = await probeFfmpegHwEncoders(params.ffmpegPath)
@@ -58,11 +63,11 @@ export async function resolveFfmpegExportJobVideo(
     } catch {
       /* probe не обязан быть доступен — остаёмся на CPU */
     }
-    if (parsedVideoCodec === 'hw_auto' || parsedVideoCodec === 'hw_auto_hevc') {
-      videoCodec =
-        parsedVideoCodec === 'hw_auto_hevc'
-          ? pickFfmpegHwAutoHevcEncoder(snap)
-          : pickFfmpegHwAutoEncoder(snap)
+    if (
+      isFfmpegHwAutoVideoCodec(parsedVideoCodec) ||
+      isFfmpegHwExportVideoCodec(parsedVideoCodec)
+    ) {
+      videoCodec = resolveFfmpegExportVideoCodecForArgv(parsedVideoCodec, snap)
     }
   }
   const hwaccelDecode = wantHwDecode

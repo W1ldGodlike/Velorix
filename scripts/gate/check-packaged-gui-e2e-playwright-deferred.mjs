@@ -13,7 +13,8 @@ import {
   PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE,
   PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT,
   PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE,
-  PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS
+  PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS,
+  PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE
 } from '../../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { PACKAGED_E2E_SMOKE_REGISTRY } from '../../src/shared/packaged-e2e-smoke-registry.ts'
 import { REPO_ROOT } from '../lib/repo-root.mjs'
@@ -53,6 +54,7 @@ for (const rel of [
   PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE,
   PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE,
   PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE,
+  PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE,
   PACKAGED_GUI_E2E_PLAYWRIGHT_CONFIG_MODULE
 ]) {
   if (!fs.existsSync(path.join(REPO_ROOT, rel))) {
@@ -77,6 +79,12 @@ if (
 if (!specText.includes('test.skip')) {
   console.error(
     `[${LOG_PREFIX}] ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE} must use test.skip until FLUXALLOY_E2E_APP`
+  )
+  process.exit(1)
+}
+if (!specText.includes('runPlannedGuiE2eStep')) {
+  console.error(
+    `[${LOG_PREFIX}] ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE} must call runPlannedGuiE2eStep from ${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}`
   )
   process.exit(1)
 }

@@ -28,6 +28,7 @@ export type DownloadsWorkspaceMainProps = {
   visibleDownloadsRows: DownloadsQueueRowView[]
   setStatusHint: (hint: string | null) => void
   onBatchAddDownloadsDone: (rowIds: number[]) => void
+  onBatchAddOutputPath: (outputPath: string) => void
   onSelectDownloadsTab: () => void
   downloadsEmbeddedHistoryOpen: boolean
   persistDownloadsEmbeddedHistoryOpen: (nextOpen: boolean) => void

@@ -7,7 +7,10 @@ import type {
   KnowledgeArticleResult
 } from '../../../shared/knowledge-contract'
 import type { AppUiLocale } from '../../../shared/app-ui-locale'
+import { KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS } from '../../../shared/knowledge-contract'
 import { getMainApplicationStrings } from '../../../shared/main-application-locale'
+
+const KNOWLEDGE_UI_HIDDEN_SLUG_SET = new Set<string>(KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS)
 import { isKnowledgeSafeAssetImageHref } from '../../../shared/knowledge-markdown'
 
 const HELP_FILE_RE = /^[a-z0-9][a-z0-9-]*\.md$/i
@@ -169,8 +172,12 @@ export function listKnowledgeArticles(
     if (markdown === null) {
       continue
     }
+    const slug = basename(fileName, '.md')
+    if (KNOWLEDGE_UI_HIDDEN_SLUG_SET.has(slug)) {
+      continue
+    }
     articles.push({
-      slug: basename(fileName, '.md'),
+      slug,
       fileName,
       title: titleFromMarkdown(fileName, markdown)
     })

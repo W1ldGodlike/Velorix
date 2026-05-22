@@ -1,4 +1,6 @@
 import { buildFfmpegConvertImageArgv } from '../../../shared/ffmpeg-image-convert-argv'
+import { buildFfmpegImageSlideshowArgv } from '../../../shared/ffmpeg-image-slideshow-argv'
+import type { FfmpegImageSlideshowTransitionId } from '../../../shared/ffmpeg-image-slideshow-contract'
 import { buildFfmpegGenerateNoiseArgv } from '../../../shared/ffmpeg-noise-generate-argv'
 import {
   buildFfmpegIntegrityCheckArgv,
@@ -7,6 +9,7 @@ import {
 } from '../../../shared/ffmpeg-media-utilities-argv'
 import type {
   MediaUtilitiesConvertImageResult,
+  MediaUtilitiesCreateImageSlideshowResult,
   MediaUtilitiesGenerateNoiseResult,
   MediaUtilitiesImageFormatId,
   MediaUtilitiesIntegrityResult,
@@ -87,6 +90,30 @@ export async function runFfmpegConvertImage(params: {
     ffmpegPath: params.ffmpegPath,
     args,
     logTag: 'ffmpeg-convert-image'
+  })
+  if (result.ok) {
+    return { ok: true, outputPath: params.outputPath }
+  }
+  return { ok: false, error: result.error }
+}
+
+export async function runFfmpegImageSlideshow(params: {
+  ffmpegPath: string
+  imagePaths: readonly string[]
+  outputPath: string
+  slideDurationSec: number
+  transition?: FfmpegImageSlideshowTransitionId
+}): Promise<MediaUtilitiesCreateImageSlideshowResult> {
+  const args = buildFfmpegImageSlideshowArgv({
+    imagePaths: params.imagePaths,
+    outputPath: params.outputPath,
+    slideDurationSec: params.slideDurationSec,
+    ...(params.transition !== undefined ? { transition: params.transition } : {})
+  })
+  const result = await runFfmpegCommand({
+    ffmpegPath: params.ffmpegPath,
+    args,
+    logTag: 'ffmpeg-image-slideshow'
   })
   if (result.ok) {
     return { ok: true, outputPath: params.outputPath }

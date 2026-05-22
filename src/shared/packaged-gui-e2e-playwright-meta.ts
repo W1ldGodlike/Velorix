@@ -25,6 +25,10 @@ export const PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE =
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE =
   'tests/e2e/gui/planned-gui-e2e.spec.ts' as const
 
+/** §21 — UI step bodies (`runPlannedGuiE2eStep`). */
+export const PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE =
+  'tests/e2e/gui/planned-gui-e2e-step-runners.ts' as const
+
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_CONFIG_MODULE = 'playwright.config.mjs' as const
 
 /** Env var for packaged app path (`packaged-gui-e2e-playwright-app-path.ts`). */
@@ -49,13 +53,8 @@ export function formatPackagedGuiE2ePlaywrightNpmScriptWiredPhrase(locale: 'en' 
     : `Playwright: ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT} (\`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}; ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} skipped steps)`
 }
 
-/** `locales/{ru,en}/settings.json` keys — Playwright suffix (`check:owner-visual-smoke-locale`). */
-export const PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS = [
-  'appSettingsPackagedE2eRegistryGuardHint',
-  'appSettingsPackagedSmokeCopyAppendixHint',
-  'appSettingsOwnerSmokeIntro',
-  'appSettingsOwnerSmokePackagedE2eHint'
-] as const
+/** Раньше — подсказки в Настройках; UI убран, чеклисты только в IMPLEMENTATION_MANUAL_VERIFICATION.md. */
+export const PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS = [] as const
 
 export type PackagedGuiE2ePlaywrightSettingsUiHintKey =
   (typeof PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS)[number]
@@ -73,7 +72,7 @@ export const PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_ORDER_ANCHORS = [
 
 /** `IMPLEMENTATION_CHECKLIST.md` — sprint §21 Playwright deferred bullet. */
 export function formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line(): string {
-  return `- [x] §21: GUI Playwright — \`${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → ${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE} (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} todo); specs после \`@playwright/test\`.`
+  return `- [x] §21: GUI Playwright — \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE}\` (\`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`, ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} шагов).`
 }
 
 /** `docs/SOURCES_OF_TRUTH.md` — sprint §21 Playwright checklist index. */
@@ -83,7 +82,7 @@ export function formatPackagedGuiE2ePlaywrightSourcesSprintChecklistFragment(): 
 
 /** continue.txt / initial.txt — sprint §21 Playwright checklist fragment. */
 export function formatPackagedGuiE2ePlaywrightSdkContinuePromptSprintChecklistFragment(): string {
-  return `Sprint §21 Playwright checklist: formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps; ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT} deferred).`
+  return `Sprint §21 Playwright checklist: formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps; ${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}).`
 }
 
 /** `scripts/cursor-automation/README.md` — sprint §21 Playwright checklist bullet. */
@@ -93,12 +92,12 @@ export function formatPackagedGuiE2ePlaywrightSdkAutomationReadmeChecklistSprint
 
 /** Platform-packaging / §21 diagnostics line. */
 export function formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine(): string {
-  return `§21 planned GUI e2e: ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT} → ${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE} (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} todo; not in check:quiet)`
+  return `§21 planned GUI e2e: ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT} → ${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE} (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps; ${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}; skip без ${PACKAGED_GUI_E2E_APP_ENV_VAR})`
 }
 
 /** Platform-packaging — Playwright scaffold + runner. */
 export function formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine(): string {
-  return `§21 playwright scaffold: ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE} (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} planned-gui-e2e; ${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS}; runner ${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE})`
+  return `§21 playwright: ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE} (${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS}) + ${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE} + ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}`
 }
 
 /** Copy/releaseSmoke appendix — planned step registry notes export. */
@@ -108,17 +107,17 @@ export function formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine(): s
 
 /** `docs/RELEASE.md` — Playwright scaffold bullet (paired with deferred guard). */
 export function formatPackagedGuiE2ePlaywrightReleaseScaffoldBullet(): string {
-  return `- Playwright scaffold: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` — \`${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS}\`; \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} todo).`
+  return `- Playwright: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` (\`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE}\`, ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps).`
 }
 
 /** `docs/RELEASE.md` — planned step notes in Copy/releaseSmoke diagnostics (§21). */
 export function formatPackagedGuiE2ePlaywrightReleaseStepByIdBullet(): string {
-  return `- Playwright planned notes (deferred): \`PLANNED_GUI_E2E_STEP_BY_ID\` in \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\`; Copy/releaseSmoke — \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`.`
+  return `- Playwright planned notes: \`PLANNED_GUI_E2E_STEP_BY_ID\` in \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\`; Copy/releaseSmoke — \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`.`
 }
 
 /** `docs/RELEASE.md` — owner handoff when wiring Playwright (flip deferred guard). */
 export function formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet(): string {
-  return `- §21 Playwright specs: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` (8 skip без \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`); \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → Playwright when \`@playwright/test\` installed; step bodies — owner on hardware.`
+  return `- §21 Playwright: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (skip без \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`); \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` после \`pack:dir\`; приёмка на железе — \`IMPLEMENTATION_MANUAL_VERIFICATION.md\` **21.x**.`
 }
 
 /** About / Settings Dependencies — tail for `aboutSupportZipDiagnosticsSectionsHint` (§18/§21). */
@@ -179,7 +178,7 @@ export function formatPackagedGuiE2ePlaywrightSettingsHintSuffix(locale: 'en' | 
 
 /** Root README — §21 Playwright deferred guard (paired with Help crosslinks line). */
 export function formatPackagedGuiE2ePlaywrightRootReadmeLine(): string {
-  return `- §21 Playwright GUI e2e: \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\` — \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} todo).`
+  return `- §21 Playwright GUI e2e: \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\` — \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE}\` (\`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`, ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps).`
 }
 
 /** Root README — Help UiHintSuffix coverage tail (§15/§19). */
@@ -189,7 +188,7 @@ export function formatPackagedGuiE2ePlaywrightRootReadmeHelpUiHintsTail(): strin
 
 /** Root README — Playwright wiring handoff pointer (§21; full steps in RELEASE). */
 export function formatPackagedGuiE2ePlaywrightRootReadmeWiringHandoffLine(): string {
-  return `- §21 Playwright specs (next): \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\` (\`@playwright/test\`).`
+  return `- §21 Playwright run: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\`.`
 }
 
 /** Root README — full §21 Playwright bullets (deferred + scaffold + Help UiHintSuffix). */
@@ -210,7 +209,7 @@ export function formatPackagedGuiE2ePlaywrightSourcesOfTruthHelpUiHintsNote(): s
 
 /** `docs/SOURCES_OF_TRUTH.md` — deferred Playwright scaffold module. */
 export function formatPackagedGuiE2ePlaywrightSourcesOfTruthScaffoldNote(): string {
-  return `Playwright scaffold: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` — \`${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS}\`; \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE}\``
+  return `Playwright: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\`; \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE}\``
 }
 
 /** `docs/SOURCES_OF_TRUTH.md` — planned step notes map in Copy/releaseSmoke diagnostics. */
@@ -220,7 +219,7 @@ export function formatPackagedGuiE2ePlaywrightSourcesOfTruthStepByIdNote(): stri
 
 /** `docs/SOURCES_OF_TRUTH.md` — Playwright wiring handoff (§21 deferred). */
 export function formatPackagedGuiE2ePlaywrightSourcesOfTruthWiringHandoffNote(): string {
-  return `Playwright specs (next): \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\` (\`@playwright/test\`)`
+  return `Playwright run: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\``
 }
 
 /** `docs/ARCHITECTURE.md` — Playwright deferred UI hints (settings + about). */
@@ -230,17 +229,17 @@ export function formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause(): strin
 
 /** `docs/ARCHITECTURE.md` — deferred Playwright scaffold module (§21). */
 export function formatPackagedGuiE2ePlaywrightArchitectureScaffoldClause(): string {
-  return `Playwright scaffold: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` exports \`${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps; \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE}\`).`
+  return `Playwright: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps; \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE}\`).`
 }
 
 /** `docs/ARCHITECTURE.md` — planned step notes map in Copy/releaseSmoke diagnostics (§21). */
 export function formatPackagedGuiE2ePlaywrightArchitectureStepByIdClause(): string {
-  return `Planned step notes (deferred Playwright): \`PLANNED_GUI_E2E_STEP_BY_ID\` in \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\`; Copy/releaseSmoke — \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`.`
+  return `Planned step notes: \`PLANNED_GUI_E2E_STEP_BY_ID\` in \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\`; Copy/releaseSmoke — \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`.`
 }
 
 /** `docs/ARCHITECTURE.md` — Playwright wiring handoff when flipping deferred guard (§21). */
 export function formatPackagedGuiE2ePlaywrightArchitectureWiringHandoffClause(): string {
-  return `Playwright specs (next): \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\` (\`@playwright/test\`).`
+  return `Playwright run: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\`.`
 }
 
 /** `docs/RELEASE.md` — automation groups in `check:packaged-e2e-scenarios-registry` bullet. */
@@ -260,7 +259,7 @@ export function formatPackagedGuiE2ePlaywrightReleaseOwnerVisualSmokeLocaleLine(
 
 /** `docs/RELEASE.md` — deferred Playwright guard bullet. */
 export function formatPackagedGuiE2ePlaywrightReleaseDeferredBullet(): string {
-  return `- \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\` — §21 Playwright GUI e2e: ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} \`planned-gui-e2e\`, \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE}\`; канон — \`packaged-gui-e2e-playwright-meta.ts\`; UI — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\`.`
+  return `- \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\` — §21 Playwright GUI e2e: ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} \`planned-gui-e2e\`, \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE}\` (\`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`); канон — \`packaged-gui-e2e-playwright-meta.ts\`.`
 }
 
 /** `bin/README.md` — Playwright UI hints (locales settings + about). */
@@ -270,17 +269,17 @@ export function formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine(): string {
 
 /** `bin/README.md` — deferred Playwright scaffold module (before `test:e2e:gui` in package.json). */
 export function formatPackagedGuiE2ePlaywrightBinReadmeScaffoldLine(): string {
-  return `- §21 Playwright scaffold: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` exports \`${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps; \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE}\`).`
+  return `- §21 Playwright: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` (\`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE}\`).`
 }
 
 /** `bin/README.md` — planned step notes map in Copy/releaseSmoke diagnostics. */
 export function formatPackagedGuiE2ePlaywrightBinReadmeStepByIdLine(): string {
-  return `- §21 Playwright planned notes (deferred): \`PLANNED_GUI_E2E_STEP_BY_ID\` in \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\`; Copy/releaseSmoke — \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`.`
+  return `- §21 Playwright planned notes: \`PLANNED_GUI_E2E_STEP_BY_ID\` in \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\`; Copy/releaseSmoke — \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`.`
 }
 
 /** `bin/README.md` — Playwright wiring handoff (§21 deferred). */
 export function formatPackagedGuiE2ePlaywrightBinReadmeWiringHandoffLine(): string {
-  return `- §21 Playwright specs (next): \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\`.`
+  return `- §21 Playwright run: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\`.`
 }
 
 /** Tail for `docs/RELEASE.md` copy-appendix paragraph (§21 UI). */
@@ -290,12 +289,12 @@ export function formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail(): strin
 
 /** `AGENTS.md` — Help §21 Playwright deferred clause (before UiHintsTail). */
 export function formatPackagedGuiE2ePlaywrightAgentsMdPlaywrightDeferredClause(): string {
-  return `**Playwright GUI e2e:** \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_RUNNER_MODULE}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} todo; guard \`${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\`).`
+  return `**Playwright GUI e2e:** \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE}\` (\`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`, ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps; guard \`${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\`).`
 }
 
 /** `AGENTS.md` — Playwright scaffold clause (§21 deferred). */
 export function formatPackagedGuiE2ePlaywrightAgentsMdScaffoldClause(): string {
-  return ` **Playwright scaffold:** \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_TEST_MODULE}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps; \`${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_EXPORTS}\`).`
+  return ` **Playwright:** \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SCENARIOS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` (\`${PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_TEST_MODULE}\`).`
 }
 
 /** `AGENTS.md` — planned step notes in Copy/releaseSmoke diagnostics (§21 deferred). */
@@ -305,7 +304,7 @@ export function formatPackagedGuiE2ePlaywrightAgentsMdStepByIdClause(): string {
 
 /** `AGENTS.md` — Playwright wiring handoff (§21 deferred). */
 export function formatPackagedGuiE2ePlaywrightAgentsMdWiringClause(): string {
-  return ` **Playwright specs (next):** \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\`.`
+  return ` **Playwright run:** \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\`.`
 }
 
 /** `AGENTS.md` — Playwright deferred UI hints tail (§21). */
@@ -327,8 +326,8 @@ export function formatPackagedGuiE2ePlaywrightAgentsMdHelpPlaywrightSection(): s
 /** `Help/ru/owner-manual-smoke.md` — Settings UI hints clause (RU/EN). */
 export function formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause(locale: 'en' | 'ru'): string {
   return locale === 'ru'
-    ? ` UI в Настройках (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} ключа + about): \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` — \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`.`
-    : ` Settings UI (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} keys + about): \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` — \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`.`
+    ? ` Ручные чеклисты — \`IMPLEMENTATION_MANUAL_VERIFICATION.md\` (не в UI); about Support ZIP — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`).`
+    : ` Manual checklists — \`IMPLEMENTATION_MANUAL_VERIFICATION.md\` (not in app UI); about Support ZIP — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`).`
 }
 
 /** `Help/ru/about-support-logs.md` — About UI hint on `releaseSmoke:` dev line (§18/§21). */
@@ -349,8 +348,8 @@ export function formatPackagedGuiE2ePlaywrightLoggingPlannedGuiScopeClause(
   locale: 'en' | 'ru'
 ): string {
   return locale === 'ru'
-    ? `в Support ZIP — **planned GUI e2e scope** (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} шагов Playwright позже; 2 manual-owner: sprite, mini-player).`
-    : `Support ZIP includes **planned GUI e2e scope** (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps for future Playwright; 2 manual-owner: sprite, mini-player).`
+    ? `в Support ZIP — **planned GUI e2e scope** (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} шагов: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`; 2 manual-owner: sprite, mini-player).`
+    : `Support ZIP includes **planned GUI e2e scope** (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`; 2 manual-owner: sprite, mini-player).`
 }
 
 /** `Help/ru/logging-and-diagnostics.md` — §8 + §21 UI hints on Dev line. */
@@ -400,27 +399,13 @@ export function formatPackagedGuiE2ePlaywrightKnowledgeHubHelpUiHintSuffix(
   return formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix(locale)
 }
 
-/** Dispatch Playwright UI hint suffix by locale key (settings + about). */
+/** Playwright hint suffix for about Support ZIP (`check:support-bundle-terminal-hints`). */
 export function formatPackagedGuiE2ePlaywrightUiHintSuffix(
-  key:
-    | PackagedGuiE2ePlaywrightSettingsUiHintKey
-    | typeof PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
+  key: typeof PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
   locale: 'en' | 'ru'
 ): string {
-  switch (key) {
-    case 'appSettingsPackagedE2eRegistryGuardHint':
-      return formatPackagedGuiE2ePlaywrightSettingsHintSuffix(locale)
-    case 'appSettingsPackagedSmokeCopyAppendixHint':
-      return formatPackagedGuiE2ePlaywrightCopyAppendixHintSuffix(locale)
-    case 'appSettingsOwnerSmokeIntro':
-      return formatPackagedGuiE2ePlaywrightOwnerIntroHintSuffix(locale)
-    case 'appSettingsOwnerSmokePackagedE2eHint':
-      return formatPackagedGuiE2ePlaywrightOwnerHubHintSuffix(locale)
-    case PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY:
-      return formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintSuffix(locale)
-    default: {
-      const _exhaustive: never = key
-      return _exhaustive
-    }
+  if (key !== PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY) {
+    return ''
   }
+  return formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintSuffix(locale)
 }

@@ -1,10 +1,6 @@
 import type { JSX } from 'react'
 
-import { APP_SETTINGS_THEME_CHECKLIST_KEYS } from '../../../../shared/app-settings-theme-checklist-keys'
-import {
-  KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME,
-  KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE
-} from '../../../../shared/knowledge-contract'
+import { KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME } from '../../../../shared/knowledge-contract'
 import type { AppTheme } from '../../../../shared/settings-contract'
 import { uiText } from '../../locales/ui-text'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
@@ -31,14 +27,6 @@ export function AppSettingsThemePanel(props: {
             role="toolbar"
             aria-orientation="horizontal"
           >
-            <KnowledgeDeepLinkButton
-              label={uiText('knowledgeDeepLinkOwnerSmokeLabel')}
-              tooltip={uiText('knowledgeDeepLinkOwnerSmokeTooltip')}
-              ariaDescribedBy={props.sectionHintId}
-              onOpen={() => {
-                props.onOpenKnowledgeArticle?.(KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE)
-              }}
-            />
             <KnowledgeDeepLinkButton
               label={uiText('knowledgeDeepLinkHidpiLabel')}
               tooltip={uiText('knowledgeDeepLinkHidpiTooltip')}
@@ -75,16 +63,6 @@ export function AppSettingsThemePanel(props: {
           </label>
         ))}
       </fieldset>
-      <p className="app-modal-hint">{uiText('appSettingsThemeManualHint')}</p>
-      <p className="app-modal-hint">{uiText('appSettingsThemeOwnerBundleHint')}</p>
-      <p className="app-modal-hint app-settings-hidpi-checklist-intro">
-        {uiText('appSettingsThemeChecklistIntro')}
-      </p>
-      <ul className="app-settings-hidpi-checklist">
-        {APP_SETTINGS_THEME_CHECKLIST_KEYS.map((key) => (
-          <li key={key}>{uiText(key)}</li>
-        ))}
-      </ul>
     </section>
   )
 }

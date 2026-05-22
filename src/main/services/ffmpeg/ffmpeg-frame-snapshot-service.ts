@@ -16,10 +16,20 @@ export function ensureFfmpegSnapshotExtension(
   fallback: FfmpegSnapshotFormatId
 ): string {
   const trimmed = path.trim()
-  if (/\.(png|jpe?g)$/i.test(trimmed)) {
+  if (/\.(png|jpe?g|webp|bmp|tiff?)$/i.test(trimmed)) {
     return trimmed
   }
-  return `${trimmed}.${parseFfmpegSnapshotFormat(fallback)}`
+  const ext =
+    fallback === 'jpg'
+      ? 'jpg'
+      : fallback === 'webp'
+        ? 'webp'
+        : fallback === 'bmp'
+          ? 'bmp'
+          : fallback === 'tiff'
+            ? 'tiff'
+            : 'png'
+  return `${trimmed}.${ext}`
 }
 
 /**

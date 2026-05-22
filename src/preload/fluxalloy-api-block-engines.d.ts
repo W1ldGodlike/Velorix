@@ -32,6 +32,14 @@ export type FluxAlloyApiEnginesBlock = {
     convertImage: (
       payload: import('../shared/media-utilities-contract').MediaUtilitiesConvertImageRequestPayload
     ) => Promise<import('../shared/media-utilities-contract').MediaUtilitiesConvertImageResult>
+    pickSlideshowImages: () => Promise<
+      import('../shared/media-utilities-contract').MediaUtilitiesPickSlideshowImagesResult
+    >
+    createImageSlideshow: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesCreateImageSlideshowRequestPayload
+    ) => Promise<
+      import('../shared/media-utilities-contract').MediaUtilitiesCreateImageSlideshowResult
+    >
   }
   diagnostics: {
     listFolders: () => Promise<DiagnosticsFolderEntry[]>

@@ -1,5 +1,5 @@
 /**
- * §14 — ручной smoke Проводника Windows (не CI UI).
+ * §14 — ручная проверка Проводника Windows (не CI UI).
  * Канон: locales/ru/windows-shell-manual-smoke.json + Help windows-shell-integration.
  */
 
@@ -16,7 +16,7 @@ export const WINDOWS_SHELL_MANUAL_SMOKE_CHECKLIST =
 
 export function formatWindowsShellManualSmokeChecklistLines(): string[] {
   return formatPackagedManualSmokeChecklistLines(WINDOWS_SHELL_MANUAL_SMOKE_CHECKLIST, {
-    ownerLine: 'ручной smoke Проводника Windows (§14), не автоматизируется в CI UI',
+    ownerLine: 'ручная проверка Проводника Windows (§14), не автоматизируется в CI UI',
     automatedLine:
       'Vitest windows-file-association / windows-explorer-context-menu (argv/registry only)',
     docLine: 'Help/ru/windows-shell-integration.md',

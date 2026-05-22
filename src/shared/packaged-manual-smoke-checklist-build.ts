@@ -20,7 +20,7 @@ function t(shard: PackagedManualSmokeLocaleShard, key: string): string {
   return val
 }
 
-/** §3 — ручной smoke packaged (Win / Linux / macOS) из locales *-packaged-manual-smoke.json. */
+/** §3 — ручная проверка packaged (Win / Linux / macOS) из locales *-packaged-manual-smoke.json. */
 export function buildPackagedManualSmokeChecklistFromLocaleShard(
   shard: PackagedManualSmokeLocaleShard,
   opts: {

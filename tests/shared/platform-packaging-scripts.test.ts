@@ -28,6 +28,8 @@ describe('platform-packaging-scripts §19', () => {
     expect(lines.some((l) => l.includes(BUILD_LINUX_NPM_SCRIPT))).toBe(true)
     expect(lines.some((l) => l.includes('check:platform-packaging-scripts'))).toBe(true)
     expect(lines.some((l) => l.includes('smoke:packaged-release'))).toBe(true)
+    expect(lines.some((l) => l.includes(VERIFY_MAC_UNPACKED_NPM_SCRIPT))).toBe(true)
+    expect(lines.some((l) => l.includes(VERIFY_LINUX_UNPACKED_NPM_SCRIPT))).toBe(true)
   })
 
   it('PLATFORM_PACKAGING_NPM_SCRIPTS lists §19 script names', () => {
