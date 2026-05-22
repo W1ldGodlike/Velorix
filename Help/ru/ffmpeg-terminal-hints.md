@@ -4,7 +4,7 @@
 
 Окно **Терминал** загружает `Data/ytdlp_commands.json` и `Data/ffmpeg_commands.json`. Каждый объект описывает токен, краткий текст на русском, пример строки и `docUrl` на официальную документацию. В каталоге подсказок чип **«Сценарии»** показывает только встроенные строки с `fullLine` (без токенов JSON).
 
-Расширяйте JSON без перекомпиляции: файл копируется рядом с `FluxAlloy.exe` как `Data\*.json`.
+Расширяйте JSON без перекомпиляции: файл копируется рядом с `Velorix.exe` как `Data\*.json`.
 
 ## Полезное
 
@@ -13,7 +13,7 @@
 
 ## Встроенные сценарии (для разработчиков)
 
-Подсказки вкладки **Загрузки** и превью задаются в шардах `src/shared/terminal-contract-hints-*.ts` (канон **`terminal-contract-hints-meta`**: 14 загрузки + 8 превью (22 файлов), 839+465 подсказок; `npm run check:terminal-contract-hints-shards`). Barrel — `src/shared/terminal-contract.ts` (`summary` / `token` / `fullLine`). После правок в `summary` используйте **допишите ссылку**, а не устаревшую **допишите URL**, и пометку `(поле …)` для строк с `--print-to-file` и `flux-ytdlp-*.txt`; затем выполните **`npm run locales:terminal-summaries-ru`** **дважды**, пока второй прогон не выведет **0** замен и **0** gloss; при необходимости только глосс полей — **`npm run locales:terminal-flux-pole`**. Скрипты **не** меняют `fullLine`. Регрессия — `tests/shared/terminal-contract-scenarios.test.ts`.
+Подсказки вкладки **Загрузки** и превью задаются в шардах `src/shared/terminal-contract-hints-*.ts` (канон **`terminal-contract-hints-meta`**: 14 загрузки + 8 превью (22 файлов), 839+465 подсказок; `npm run check:terminal-contract-hints-shards`). Barrel — `src/shared/terminal-contract.ts` (`summary` / `token` / `fullLine`). После правок в `summary` используйте **допишите ссылку**, а не устаревшую **допишите URL**, и пометку `(поле …)` для строк с `--print-to-file` и `velorix-ytdlp-*.txt`; затем выполните **`npm run locales:terminal-summaries-ru`** **дважды**, пока второй прогон не выведет **0** замен и **0** gloss; при необходимости только глосс полей — **`npm run locales:terminal-velorix-pole`**. Скрипты **не** меняют `fullLine`. Регрессия — `tests/shared/terminal-contract-scenarios.test.ts`.
 
 Диагностика Support ZIP — [logging-and-diagnostics.md](logging-and-diagnostics.md).
 

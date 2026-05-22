@@ -12,7 +12,7 @@ import { logInfo } from '../../core/logger-service'
 const execFileAsync = promisify(execFile)
 
 export function linuxSystemdWatchUnitBase(taskId: string): string {
-  return `fluxalloy-watch-${taskId}`
+  return `VELORIX-watch-${taskId}`
 }
 
 export function linuxSystemdUserUnitDir(): string {
@@ -37,7 +37,7 @@ function quoteSystemdPath(path: string): string {
 export function buildLinuxSystemdServiceUnit(doc: ScheduledTaskDocument): string {
   const exe = quoteSystemdPath(process.execPath)
   return `[Unit]
-Description=FluxAlloy watch-folder tick (${doc.id})
+Description=Velorix watch-folder tick (${doc.id})
 
 [Service]
 Type=oneshot
@@ -52,7 +52,7 @@ export function buildLinuxSystemdTimerUnit(doc: ScheduledTaskDocument): string {
   const base = linuxSystemdWatchUnitBase(doc.id)
   const interval = Math.max(15, Math.min(86_400, Math.round(doc.pollIntervalSec)))
   return `[Unit]
-Description=FluxAlloy watch-folder timer (${doc.id})
+Description=Velorix watch-folder timer (${doc.id})
 
 [Timer]
 OnBootSec=30

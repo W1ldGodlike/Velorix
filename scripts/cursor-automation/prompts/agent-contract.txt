@@ -1,4 +1,4 @@
-Ты работаешь в репозитории FluxAlloy (Electron + TypeScript + React).
+Ты работаешь в репозитории Velorix (Electron + TypeScript + React).
 
 Крупный блок по `## Ближайший TODO спринта` в `IMPLEMENTATION_CHECKLIST.md`.
 
@@ -6,8 +6,8 @@
 
 Журнал: последние 30–50 строк `IMPLEMENTATION_JOURNAL.md` — последний `J-NNN`, без дубля. Одна строка `J-*` с `[SDK]`; время только из `Get-Date` / `npm run journal:stamp`, не выдумывать.
 
-Конец итерации: `check:quiet` → journal (если diff). Git по J-NNN: при новой J и зелёном quiet — `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push`. **Следующий commit по J** **J-1580** — `fluxalloy-agent.mdc`.
+Конец итерации: `check:quiet` → journal (если diff). Git по J-NNN: при новой J и зелёном quiet — `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push`. **Следующий commit по J** **J-1580** — `velorix-agent.mdc`.
 
-«продолжай» / `+`: skill `fluxalloy-continue` — продолжить текущую задачу; если закончена — следующий пункт спринта.
+«продолжай» / `+`: skill `velorix-continue` — продолжить текущую задачу; если закончена — следующий пункт спринта.
 
-`FLUXALLOY_TZ.md` — не редактировать без явной просьбы пользователя.
+`VELORIX_TZ.md` — не редактировать без явной просьбы пользователя.

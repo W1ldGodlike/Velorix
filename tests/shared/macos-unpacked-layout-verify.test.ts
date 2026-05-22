@@ -12,12 +12,12 @@ import {
 
 describe('macos-unpacked-layout-verify §2.1', () => {
   const repo = '/repo'
-  const bundle = join(repo, 'dist', 'mac', 'FluxAlloy.app')
+  const bundle = join(repo, 'dist', 'mac', 'Velorix.app')
 
   it('macosAppBundleCandidates lists dist/mac output dirs', () => {
     const c = macosAppBundleCandidates(repo)
-    expect(c).toContain(join(repo, 'dist', 'mac', 'FluxAlloy.app'))
-    expect(c).toContain(join(repo, 'dist', 'mac-arm64', 'FluxAlloy.app'))
+    expect(c).toContain(join(repo, 'dist', 'mac', 'Velorix.app'))
+    expect(c).toContain(join(repo, 'dist', 'mac-arm64', 'Velorix.app'))
   })
 
   it('resolveMacosAppBundleRoot picks first existing candidate', async () => {
@@ -38,9 +38,9 @@ describe('macos-unpacked-layout-verify §2.1', () => {
 
   it('collectMacosUnpackedLayoutFailures OK when bundle complete', async () => {
     const checks = [
-      join(bundle, 'Contents', 'MacOS', 'FluxAlloy'),
+      join(bundle, 'Contents', 'MacOS', 'Velorix'),
       join(bundle, 'Contents', 'Resources', 'bin'),
-      join(bundle, 'Contents', 'Resources', 'FLUXALLOY_TZ.md'),
+      join(bundle, 'Contents', 'Resources', 'VELORIX_TZ.md'),
       join(bundle, 'Contents', 'Resources', 'Data', 'trusted_hashes.json'),
       join(bundle, 'Contents', 'Resources', 'Help')
     ]
@@ -53,7 +53,7 @@ describe('macos-unpacked-layout-verify §2.1', () => {
   })
 
   it('formatMacosUnpackedLayoutVerifyDiagnosticLines reports layout present/missing', () => {
-    const bundle = join(repo, 'dist', 'mac-arm64', 'FluxAlloy.app')
+    const bundle = join(repo, 'dist', 'mac-arm64', 'Velorix.app')
     const binDir = join(bundle, 'Contents', 'Resources', 'bin')
     const lines = formatMacosUnpackedLayoutVerifyDiagnosticLines(
       repo,
@@ -61,7 +61,7 @@ describe('macos-unpacked-layout-verify §2.1', () => {
     )
     expect(lines.some((l) => l.includes('verify:mac-unpacked'))).toBe(true)
     expect(lines.some((l) => l.includes('trusted_hashes.json'))).toBe(true)
-    expect(lines.some((l) => l.includes('FluxAlloy.app') && l.includes(bundle))).toBe(true)
+    expect(lines.some((l) => l.includes('Velorix.app') && l.includes(bundle))).toBe(true)
     expect(lines.some((l) => l.includes('Contents/Resources/bin') && l.includes('present'))).toBe(
       true
     )

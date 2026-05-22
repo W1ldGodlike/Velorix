@@ -4,8 +4,8 @@
  * секция `windows-x64` — только объект со строковыми значениями (пустая строка допустима),
  * известные legacy-поля и `schema`, предупреждения по неизвестным ключам.
  *
- * `FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1` — неизвестные ключи в корне или в windows-x64 → exit 1.
- * `FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1` — непустые значения в windows-x64 и в YtDlpSha256/FfmpegSha256 должны быть 64-символьным hex.
+ * `VELORIX_TRUSTED_HASHES_STRICT_UNKNOWN=1` — неизвестные ключи в корне или в windows-x64 → exit 1.
+ * `VELORIX_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1` — непустые значения в windows-x64 и в YtDlpSha256/FfmpegSha256 должны быть 64-символьным hex.
  */
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -34,12 +34,12 @@ const KNOWN_WX = new Set([
 const LEGACY_STRING_KEYS = ['YtDlpSha256', 'FfmpegSha256', 'YtDlpVersion', 'FfmpegVersion']
 
 function strictUnknown() {
-  const v = process.env['FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN']
+  const v = process.env['VELORIX_TRUSTED_HASHES_STRICT_UNKNOWN']
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
 function requireSha256Hex() {
-  const v = process.env['FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX']
+  const v = process.env['VELORIX_TRUSTED_HASHES_REQUIRE_SHA256_HEX']
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
@@ -53,8 +53,8 @@ function printHelp() {
 Рядом по смыслу перед упаковкой: npm run engines:doctor  (файлы в bin/ и SHA256 содержимого; этот скрипт — только JSON).
 
 Переменные:
-  FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1       ошибка при неизвестных ключах (по умолчанию — только предупреждение в stderr)
-  FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1  непустые хеши — ровно 64 hex (windows-x64 + YtDlpSha256/FfmpegSha256)
+  VELORIX_TRUSTED_HASHES_STRICT_UNKNOWN=1       ошибка при неизвестных ключах (по умолчанию — только предупреждение в stderr)
+  VELORIX_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1  непустые хеши — ровно 64 hex (windows-x64 + YtDlpSha256/FfmpegSha256)
 
 Флаги: --help`)
 }

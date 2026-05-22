@@ -5,7 +5,7 @@ import { uiText, uiTextVars } from './locales/ui-text'
 
 export type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
 
-export type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
+export type EnginesSnapshot = Awaited<ReturnType<typeof window.velorix.engines.getStatus>>
 
 export type EnginePathsDraft = Record<EngineId, string>
 
@@ -36,7 +36,7 @@ export function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
  * Сводит подробные статусы движков к одной строке для нижнего статусбара.
  */
 export function summarizeEngines(
-  engines: Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>['engines']
+  engines: Awaited<ReturnType<typeof window.velorix.engines.getStatus>>['engines']
 ): EngineSummary {
   const states = Object.values(engines).map((engine) => engine.state)
 

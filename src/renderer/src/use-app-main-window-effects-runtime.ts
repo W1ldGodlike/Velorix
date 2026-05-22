@@ -57,7 +57,7 @@ export function useAppMainWindowEffectsRuntime(
     const probeGeneration = useAppShellStore.getState().bumpPreviewProbeGeneration()
     const ac = new AbortController()
     queueMicrotask(() => setProbePending(true))
-    void window.fluxalloy.preview.probe(previewPath).then((r) => {
+    void window.velorix.preview.probe(previewPath).then((r) => {
       if (ac.signal.aborted) {
         return
       }
@@ -94,7 +94,7 @@ export function useAppMainWindowEffectsRuntime(
     if (!appSettingsOpen || appSettingsSection !== 'dependencies') {
       return
     }
-    void window.fluxalloy.settings.get().then((s) => {
+    void window.velorix.settings.get().then((s) => {
       setEnginePathsDraft({
         ffmpeg: s.engineExecutablePaths?.ffmpeg ?? '',
         ffprobe: s.engineExecutablePaths?.ffprobe ?? '',
@@ -104,33 +104,33 @@ export function useAppMainWindowEffectsRuntime(
   }, [appSettingsOpen, appSettingsSection, setEnginePathsDraft])
 
   useEffect(() => {
-    const offEnginePaths = window.fluxalloy.onOpenEnginePaths(() => {
+    const offEnginePaths = window.velorix.onOpenEnginePaths(() => {
       setAppSettingsSection('dependencies')
       setAppSettingsOpen(true)
     })
-    const offSettings = window.fluxalloy.onOpenSettings((sec) => {
+    const offSettings = window.velorix.onOpenSettings((sec) => {
       setAppSettingsSection(sec)
       setAppSettingsOpen(true)
     })
-    const offSynced = window.fluxalloy.onEnginePathsChanged(() => {
+    const offSynced = window.velorix.onEnginePathsChanged(() => {
       void refreshEngineUi()
     })
-    const offAbout = window.fluxalloy.onOpenAbout(() => {
-      void window.fluxalloy.about.getInfo().then((info) => {
+    const offAbout = window.velorix.onOpenAbout(() => {
+      void window.velorix.about.getInfo().then((info) => {
         setAboutInfo(info)
         setAboutOpen(true)
       })
     })
-    const offExternalFilter = window.fluxalloy.onOpenExternalFilterScript(() => {
+    const offExternalFilter = window.velorix.onOpenExternalFilterScript(() => {
       setExternalFilterScriptOpen(true)
     })
-    const offMediaUtilities = window.fluxalloy.onOpenMediaFileUtilities(() => {
+    const offMediaUtilities = window.velorix.onOpenMediaFileUtilities(() => {
       setMediaFileUtilitiesOpen(true)
     })
-    const offWorkflowPlanner = window.fluxalloy.onOpenWorkflowPlanner(() => {
+    const offWorkflowPlanner = window.velorix.onOpenWorkflowPlanner(() => {
       setWorkflowPlannerOpen(true)
     })
-    const offWorkflowScenarioBuilder = window.fluxalloy.onOpenWorkflowScenarioBuilder(() => {
+    const offWorkflowScenarioBuilder = window.velorix.onOpenWorkflowScenarioBuilder(() => {
       setWorkflowScenarioBuilderOpen(true)
     })
     return (): void => {
@@ -167,7 +167,7 @@ export function useAppMainWindowEffectsRuntime(
         return
       }
       e.preventDefault()
-      void window.fluxalloy.clipboard.readText().then((raw) => {
+      void window.velorix.clipboard.readText().then((raw) => {
         if (!clipboardLooksLikeDownloadsPayload(raw)) {
           return
         }
@@ -176,7 +176,7 @@ export function useAppMainWindowEffectsRuntime(
           setWorkspaceTab('editor')
           setDownloadsUrl(trimmed)
           setStatusHint(uiText('statusDownloadOpenEditorWorking'))
-          void window.fluxalloy.downloads.downloadFirstUrlOpenInMainEditor(trimmed).then((res) => {
+          void window.velorix.downloads.downloadFirstUrlOpenInMainEditor(trimmed).then((res) => {
             if (!res.ok) {
               setStatusHint(res.error)
               return
@@ -186,7 +186,7 @@ export function useAppMainWindowEffectsRuntime(
           })
           return
         }
-        void window.fluxalloy.downloads.openWindow({ text: trimmed, uiLocale: getUiLocale() })
+        void window.velorix.downloads.openWindow({ text: trimmed, uiLocale: getUiLocale() })
       })
     }
 
@@ -212,19 +212,19 @@ export function useAppMainWindowEffectsRuntime(
   }, [setDownloadsNarrowLayout])
 
   useEffect(() => {
-    void window.fluxalloy.engines
+    void window.velorix.engines
       .shouldOfferDownload()
       .then(setEnginesOfferDownload)
       .catch(() => setEnginesOfferDownload(false))
   }, [engineSummary, setEnginesOfferDownload])
 
   useEffect(() => {
-    const offProgress = window.fluxalloy.engines.onDownloadProgress((p) => {
+    const offProgress = window.velorix.engines.onDownloadProgress((p) => {
       const pct = typeof p.percent === 'number' && p.percent >= 0 ? `${p.percent}% · ` : ''
       setStatusHint(`${pct}${p.message}`)
     })
 
-    const offExport = window.fluxalloy.export.onProgress((p) => {
+    const offExport = window.velorix.export.onProgress((p) => {
       const pct =
         typeof p.percent === 'number' && p.percent >= 0 ? `${Math.round(p.percent)}% · ` : ''
       const spd = typeof p.speed === 'string' && p.speed.trim() !== '' ? `${p.speed.trim()} · ` : ''
@@ -241,7 +241,7 @@ export function useAppMainWindowEffectsRuntime(
       )
     })
 
-    const offMenuPreview = window.fluxalloy.onPreviewOpened((payload) => {
+    const offMenuPreview = window.velorix.onPreviewOpened((payload) => {
       applyPreview(payload)
     })
 

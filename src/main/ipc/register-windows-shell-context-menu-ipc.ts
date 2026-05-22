@@ -33,9 +33,9 @@ function setOpenWithEnabledFlag(
   return deps.mutateSettings((prev) => {
     const next = { ...prev }
     if (enabled) {
-      next.windowsOpenWithFluxAlloy = true
+      next.windowsOpenWithVelorix = true
     } else {
-      delete next.windowsOpenWithFluxAlloy
+      delete next.windowsOpenWithVelorix
     }
     return next
   })
@@ -112,7 +112,7 @@ export function registerWindowsShellContextMenuIpc(deps: WindowsShellContextMenu
     const settings = deps.getSettings()
     return {
       supported: isNativeMainWindows(),
-      enabledInSettings: settings.windowsOpenWithFluxAlloy === true,
+      enabledInSettings: settings.windowsOpenWithVelorix === true,
       registered: await isWindowsFileAssociationRegistered()
     }
   })

@@ -6,10 +6,10 @@
 
 | Backend                      | Когда использовать                                                                                                                                          |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **In-app**                   | Пока FluxAlloy запущен: опрос папки каждые N секунд из процесса приложения.                                                                                 |
-| **Windows Task Scheduler**   | Только Windows: задача в Планировщике Windows запускает `FluxAlloy.exe --workflow-watch-folder-tick` по интервалу (минуты), даже если главное окно закрыто. |
+| **In-app**                   | Пока Velorix запущен: опрос папки каждые N секунд из процесса приложения.                                                                                 |
+| **Windows Task Scheduler**   | Только Windows: задача в Планировщике Windows запускает `Velorix.exe --workflow-watch-folder-tick` по интервалу (минуты), даже если главное окно закрыто. |
 | **macOS LaunchAgent**        | Только macOS: plist в `~/Library/LaunchAgents/` с `StartInterval` (секунды) и тем же CLI-тиком.                                                             |
-| **Linux systemd user timer** | Только Linux: юниты `~/.config/systemd/user/fluxalloy-watch-<id>.service` + `.timer`, `OnUnitActiveSec` по интервалу задачи.                                |
+| **Linux systemd user timer** | Только Linux: юниты `~/.config/systemd/user/VELORIX-watch-<id>.service` + `.timer`, `OnUnitActiveSec` по интервалу задачи.                                |
 
 Интервал опроса: **15–86400** секунд. Task Scheduler округляет до минут; LaunchAgent и systemd timer — в секундах (`StartInterval` / `OnUnitActiveSec`).
 
@@ -35,8 +35,8 @@
 
 - События и ошибки — в логе приложения (`workflow`).
 - Итог прогона — строка состояния и запись в **Истории обработки** (тип `workflowScenario`).
-- macOS LaunchAgent: логи в `~/Library/Logs/FluxAlloy/watch-<taskId>.log`.
-- Linux timer: `journalctl --user -u fluxalloy-watch-<taskId>.service`.
+- macOS LaunchAgent: логи в `~/Library/Logs/Velorix/watch-<taskId>.log`.
+- Linux timer: `journalctl --user -u Velorix-watch-<taskId>.service`.
 
 ## См. также
 

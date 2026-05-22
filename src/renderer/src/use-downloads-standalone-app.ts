@@ -52,7 +52,7 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
 
   const handleUiLocaleToggle = useCallback((): void => {
     const next = getUiLocale() === 'ru' ? 'en' : 'ru'
-    void window.fluxalloy.settings
+    void window.velorix.settings
       .setUiLocale(next)
       .then(() => {
         setUiLocaleForSession(next)
@@ -64,7 +64,7 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
 
   const toggleTheme = useCallback(async (): Promise<void> => {
     const next: ResolvedAppTheme = theme === 'dark' ? 'light' : 'dark'
-    const loaded = await window.fluxalloy.settings.setTheme(next)
+    const loaded = await window.velorix.settings.setTheme(next)
     applyTheme(loaded.effectiveTheme)
   }, [applyTheme, theme])
 
@@ -92,7 +92,7 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
 
   const handleBatchAddDownloadsDone = useCallback(
     async (rowIds: number[]): Promise<void> => {
-      const res = await window.fluxalloy.batchExport.addFromDownloadsDone(rowIds)
+      const res = await window.velorix.batchExport.addFromDownloadsDone(rowIds)
       if (!res.ok) {
         setStatusHint(res.error)
         return
@@ -104,7 +104,7 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
 
   const handleBatchAddOutputPath = useCallback(
     async (outputPath: string): Promise<void> => {
-      const res = await window.fluxalloy.batchExport.addPaths([outputPath])
+      const res = await window.velorix.batchExport.addPaths([outputPath])
       if (!res.ok) {
         setStatusHint(res.error)
         return
@@ -254,18 +254,18 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
 
   useEffect(() => {
     let cleanupTheme: (() => void) | undefined
-    void window.fluxalloy.settings
+    void window.velorix.settings
       .get()
       .then((loaded) => {
         const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
         syncDocumentUiLocale(resolved)
         useAppShellStore.getState().bumpUiLocaleRenderTick()
         if (shouldPersist) {
-          void window.fluxalloy.settings.setUiLocale(resolved)
+          void window.velorix.settings.setUiLocale(resolved)
         }
         applyTheme(loaded.effectiveTheme)
         downloadsWindowUiPanels.hydrateDownloadsWindowUiPanels(loaded.downloadsWindowUiPanels)
-        cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
+        cleanupTheme = window.velorix.onThemeChanged((next) => {
           applyTheme(next)
         })
       })
@@ -276,7 +276,7 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
   }, [applyTheme, downloadsWindowUiPanels])
 
   useEffect(() => {
-    const off = window.fluxalloy.onUiLocaleChanged((loc) => {
+    const off = window.velorix.onUiLocaleChanged((loc) => {
       setUiLocaleForSession(loc)
       syncDocumentUiLocale(loc)
       useAppShellStore.getState().bumpUiLocaleRenderTick()
@@ -286,7 +286,7 @@ export function useDownloadsStandaloneApp(): DownloadsStandaloneAppModel {
   }, [])
 
   useEffect(() => {
-    const off = window.fluxalloy.downloads.onDownloadsWindowUiPanelsChanged((panels) => {
+    const off = window.velorix.downloads.onDownloadsWindowUiPanelsChanged((panels) => {
       downloadsWindowUiPanels.hydrateDownloadsWindowUiPanels(panels)
     })
     return off

@@ -8,8 +8,8 @@ import {
 
 describe('packaged-ffprobe-smoke (core)', () => {
   it('listPackagedFfprobeCandidatePaths: env, unpacked, bin', () => {
-    const prev = process.env['FLUXALLOY_FFPROBE_PATH']
-    process.env['FLUXALLOY_FFPROBE_PATH'] = 'C:\\custom\\ffprobe.exe'
+    const prev = process.env['VELORIX_FFPROBE_PATH']
+    process.env['VELORIX_FFPROBE_PATH'] = 'C:\\custom\\ffprobe.exe'
     try {
       const paths = listPackagedFfprobeCandidatePaths('C:\\repo')
       expect(paths[0]).toBe('C:\\custom\\ffprobe.exe')
@@ -17,9 +17,9 @@ describe('packaged-ffprobe-smoke (core)', () => {
       expect(paths[2]).toMatch(/bin[\\/]ffprobe\.exe$/i)
     } finally {
       if (prev === undefined) {
-        delete process.env['FLUXALLOY_FFPROBE_PATH']
+        delete process.env['VELORIX_FFPROBE_PATH']
       } else {
-        process.env['FLUXALLOY_FFPROBE_PATH'] = prev
+        process.env['VELORIX_FFPROBE_PATH'] = prev
       }
     }
   })
@@ -35,7 +35,7 @@ describe('packaged-ffprobe-smoke (core)', () => {
     const candidates = listPackagedFfprobeCandidatePaths('C:\\repo')
     const lines = buildSupportZipFfprobeSmokeLines('C:\\repo', (p) => p === candidates[0])
     expect(lines[0]).toContain('smoke:packaged-ffprobe')
-    expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFPROBE_SMOKE'))).toBe(true)
+    expect(lines.some((l) => l.includes('VELORIX_SKIP_FFPROBE_SMOKE'))).toBe(true)
     expect(lines.some((l) => l.includes('registry optional'))).toBe(true)
     expect(lines.some((l) => l.includes('format_long_name'))).toBe(true)
     expect(lines.some((l) => l.includes('start_time, start_time_real'))).toBe(true)

@@ -89,19 +89,19 @@ export const YTDLP_COMMAND_PREVIEW_CASES: YtdlpCommandPreviewCase[] = [
     name: 'битый cookies-файл не попадает в argv',
     settings: {
       ...BASE,
-      ytdlpCookiesFile: 'C:\\fluxalloy-missing-cookies-989.txt'
+      ytdlpCookiesFile: 'C:\\VELORIX-missing-cookies-989.txt'
     },
     mustContain: ['--no-playlist'],
-    mustNotContain: ['fluxalloy-missing-cookies', '--cookies-from-browser', '--cookies ']
+    mustNotContain: ['VELORIX-missing-cookies', '--cookies-from-browser', '--cookies ']
   },
   {
     name: 'битый cookies-файл не подменяется browser из settings',
     settings: {
       ...BASE,
-      ytdlpCookiesFile: 'C:\\fluxalloy-missing-cookies-989.txt',
+      ytdlpCookiesFile: 'C:\\VELORIX-missing-cookies-989.txt',
       ytdlpCookiesBrowser: 'edge'
     },
     mustContain: ['--no-playlist'],
-    mustNotContain: ['--cookies-from-browser', 'fluxalloy-missing-cookies']
+    mustNotContain: ['--cookies-from-browser', 'VELORIX-missing-cookies']
   }
 ]

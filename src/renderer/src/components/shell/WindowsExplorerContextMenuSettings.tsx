@@ -21,8 +21,8 @@ export function WindowsExplorerContextMenuSettings(props: {
 
   const refresh = useCallback(() => {
     void Promise.all([
-      window.fluxalloy.settings.windowsExplorerContextMenuStatus(),
-      window.fluxalloy.settings.windowsFileAssociationStatus()
+      window.velorix.settings.windowsExplorerContextMenuStatus(),
+      window.velorix.settings.windowsFileAssociationStatus()
     ]).then(([menuSt, openWithSt]) => {
       setSupported(menuSt.supported)
       setEnabled(menuSt.enabledInSettings)
@@ -71,7 +71,7 @@ export function WindowsExplorerContextMenuSettings(props: {
           onChange={(event) => {
             const next = event.currentTarget.checked
             setBusy(true)
-            void window.fluxalloy.settings
+            void window.velorix.settings
               .setWindowsExplorerContextMenuEnabled(next)
               .then((res) => {
                 if (!res.ok) {
@@ -105,7 +105,7 @@ export function WindowsExplorerContextMenuSettings(props: {
           disabled={disabled}
           onClick={() => {
             setBusy(true)
-            void window.fluxalloy.settings
+            void window.velorix.settings
               .registerWindowsExplorerContextMenuNow()
               .then((res) => {
                 onStatus(res.ok ? uiText('appSettingsExplorerMenuRegisterDone') : res.error)
@@ -125,7 +125,7 @@ export function WindowsExplorerContextMenuSettings(props: {
           disabled={disabled || !registered}
           onClick={() => {
             setBusy(true)
-            void window.fluxalloy.settings
+            void window.velorix.settings
               .unregisterWindowsExplorerContextMenu()
               .then(() => {
                 setEnabled(false)
@@ -155,7 +155,7 @@ export function WindowsExplorerContextMenuSettings(props: {
           onChange={(event) => {
             const next = event.currentTarget.checked
             setBusy(true)
-            void window.fluxalloy.settings
+            void window.velorix.settings
               .setWindowsFileAssociationEnabled(next)
               .then((res) => {
                 if (!res.ok) {
@@ -189,7 +189,7 @@ export function WindowsExplorerContextMenuSettings(props: {
           disabled={disabled}
           onClick={() => {
             setBusy(true)
-            void window.fluxalloy.settings
+            void window.velorix.settings
               .registerWindowsFileAssociationNow()
               .then((res) => {
                 onStatus(res.ok ? uiText('appSettingsOpenWithRegisterDone') : res.error)
@@ -209,7 +209,7 @@ export function WindowsExplorerContextMenuSettings(props: {
           disabled={disabled || !openWithRegistered}
           onClick={() => {
             setBusy(true)
-            void window.fluxalloy.settings
+            void window.velorix.settings
               .unregisterWindowsFileAssociation()
               .then(() => {
                 setOpenWithEnabled(false)
@@ -229,7 +229,7 @@ export function WindowsExplorerContextMenuSettings(props: {
           title={uiText('appSettingsOpenWithDefaultApps')}
           disabled={disabled}
           onClick={() => {
-            void window.fluxalloy.settings.openWindowsDefaultAppsSettings().then((res) => {
+            void window.velorix.settings.openWindowsDefaultAppsSettings().then((res) => {
               onStatus(res.ok ? uiText('appSettingsOpenWithDefaultAppsDone') : res.error)
             })
           }}

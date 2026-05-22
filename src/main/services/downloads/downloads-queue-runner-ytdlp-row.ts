@@ -15,10 +15,10 @@ import {
 import { resolveYtdlpQueueRetryPlan } from '../ytdlp/ytdlp-queue-retry'
 import { getYtdlpRunOptionsSnapshot } from '../ytdlp/ytdlp-run-options-sync'
 import {
-  fluxLogQueueRetriesCancelled,
-  formatFluxLogAttemptExitCode,
-  formatFluxLogQueueRetryDelay
-} from '../../../shared/downloads-flux-log-locale'
+  velorixLogQueueRetriesCancelled,
+  formatVelorixLogAttemptExitCode,
+  formatVelorixLogQueueRetryDelay
+} from '../../../shared/downloads-velorix-log-locale'
 import type { AppUiLocale } from '../../../shared/app-ui-locale'
 import {
   isYtdlpQueueStatusWaiting,
@@ -82,7 +82,7 @@ export async function runYtdlpForWaitingRow(
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: formatFluxLogQueueRetryDelay(locale, runIndex, retryPlan.extraAttempts, sec)
+          text: formatVelorixLogQueueRetryDelay(locale, runIndex, retryPlan.extraAttempts, sec)
         })
         updateDownloadsRow(rowId, {
           status: `${YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX} (${runIndex}/${retryPlan.extraAttempts})…`,
@@ -179,7 +179,7 @@ export async function runYtdlpForWaitingRow(
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: formatFluxLogAttemptExitCode(locale, runIndex + 1, maxRuns, code)
+        text: formatVelorixLogAttemptExitCode(locale, runIndex + 1, maxRuns, code)
       })
 
       if (runIndex < maxRuns - 1 && shouldSkipQueueRetriesForFailureKind(failureKind)) {
@@ -187,7 +187,7 @@ export async function runYtdlpForWaitingRow(
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: fluxLogQueueRetriesCancelled(locale)
+          text: velorixLogQueueRetriesCancelled(locale)
         })
         progress.flushPendingProgressUI()
         updateDownloadsRow(rowId, {

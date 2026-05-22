@@ -119,7 +119,7 @@ export function buildSessionRestartPrompt(args: {
   sessionMaxSteps: number
 }): string {
   return [
-    'Новая короткая SDK-сессия FluxAlloy long-loop.',
+    'Новая короткая SDK-сессия Velorix long-loop.',
     '',
     `Глобальный прогресс: уже завершено ${args.completedSteps}/${args.maxSteps}; эта SDK-сессия рассчитана максимум на ${args.sessionMaxSteps} итерации; номер сессии ${args.sessionIndex}.`,
     '',

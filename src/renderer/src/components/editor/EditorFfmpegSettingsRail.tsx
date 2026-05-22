@@ -128,13 +128,13 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps): 
           void refreshProcessingHistory()
         }}
         onClear={() => {
-          void window.fluxalloy.processingHistory.clear().then((res) => {
+          void window.velorix.processingHistory.clear().then((res) => {
             if (!res.ok) {
               setStatusHint(res.error)
               return
             }
             setProcessingHistory([])
-            void window.fluxalloy.processingHistory
+            void window.velorix.processingHistory
               .weeklySummary()
               .then(setProcessingHistoryWeeklySummary)
           })
@@ -143,7 +143,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps): 
           void exportVisibleProcessingHistory()
         }}
         onOpenOutput={(id, mode) => {
-          void window.fluxalloy.processingHistory.openOutput(id, mode).then((res) => {
+          void window.velorix.processingHistory.openOutput(id, mode).then((res) => {
             if (!res.ok) {
               setStatusHint(res.error)
             } else if (mode === 'preview') {
@@ -155,7 +155,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps): 
           const entry = processingHistory.find((row) => row.id === id)
           if (entry?.kind === 'workflowScenario' && entry.workflowScenarioId) {
             setStatusHint(uiText('processingHistoryRepeatWorkflowBusy'))
-            void window.fluxalloy.processingHistory.repeatWorkflowScenario(id).then((res) => {
+            void window.velorix.processingHistory.repeatWorkflowScenario(id).then((res) => {
               if (res.ok) {
                 setStatusHint(uiText('processingHistoryRepeatWorkflowDone'))
                 return
@@ -174,12 +174,12 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps): 
             return
           }
           setStatusHint(uiText('processingHistoryOpenInputBusy'))
-          void window.fluxalloy.processingHistory.openInputInHandler(id).then((res) => {
+          void window.velorix.processingHistory.openInputInHandler(id).then((res) => {
             setStatusHint(res.ok ? uiText('processingHistoryOpenInputDone') : res.error)
           })
         }}
         onAddInputToBatch={(id) => {
-          void window.fluxalloy.batchExport.addFromHistoryInputs([id]).then((res) => {
+          void window.velorix.batchExport.addFromHistoryInputs([id]).then((res) => {
             if (!res.ok) {
               setStatusHint(res.error)
               return

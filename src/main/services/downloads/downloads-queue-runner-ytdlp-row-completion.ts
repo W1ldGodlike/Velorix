@@ -4,11 +4,11 @@ import { getDownloadsQueueRowById, updateDownloadsRow } from './downloads-queue'
 import { emitDownloadsLog } from '../../ipc/downloads/downloads-log-ipc'
 import { getYtdlpRunOptionsSnapshot } from '../ytdlp/ytdlp-run-options-sync'
 import {
-  fluxLogAutoOpenSkippedBadPath,
-  fluxLogAutoOpenSkippedNoHandler,
-  fluxLogBatchEnqueueSkippedBadPath,
-  formatFluxLogAutoOpenFailed
-} from '../../../shared/downloads-flux-log-locale'
+  velorixLogAutoOpenSkippedBadPath,
+  velorixLogAutoOpenSkippedNoHandler,
+  velorixLogBatchEnqueueSkippedBadPath,
+  formatVelorixLogAutoOpenFailed
+} from '../../../shared/downloads-velorix-log-locale'
 import type { AppUiLocale } from '../../../shared/app-ui-locale'
 import { YTDLP_QUEUE_STATUS_DONE } from '../../../shared/ytdlp-queue-status'
 import { downloadsQueueRunnerState } from './downloads-queue-runner-state'
@@ -39,7 +39,7 @@ export async function applyYtdlpRowDownloadSuccessActions(
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: fluxLogBatchEnqueueSkippedBadPath(locale)
+        text: velorixLogBatchEnqueueSkippedBadPath(locale)
       })
     } else {
       downloadsQueueRunnerState.afterDownloadEnqueueBatchHook?.(batchSafe, rowId)
@@ -65,7 +65,7 @@ export async function applyYtdlpRowDownloadSuccessActions(
       kind: 'line',
       rowId,
       stream: 'stderr',
-      text: fluxLogAutoOpenSkippedNoHandler(locale)
+      text: velorixLogAutoOpenSkippedNoHandler(locale)
     })
     return
   }
@@ -74,7 +74,7 @@ export async function applyYtdlpRowDownloadSuccessActions(
       kind: 'line',
       rowId,
       stream: 'stderr',
-      text: fluxLogAutoOpenSkippedBadPath(locale)
+      text: velorixLogAutoOpenSkippedBadPath(locale)
     })
     return
   }
@@ -85,7 +85,7 @@ export async function applyYtdlpRowDownloadSuccessActions(
       kind: 'line',
       rowId,
       stream: 'stderr',
-      text: formatFluxLogAutoOpenFailed(locale, openResult.error)
+      text: formatVelorixLogAutoOpenFailed(locale, openResult.error)
     })
     return
   }

@@ -3,7 +3,7 @@
  * §19: после `electron-builder --linux --dir` проверяем `dist/linux-unpacked/`.
  * Движки в `resources/bin` — опционально (CI-каркас без ручного bin/).
  *
- * `FLUXALLOY_SKIP_PACK_VERIFY=1` — мягкий пропуск.
+ * `VELORIX_SKIP_PACK_VERIFY=1` — мягкий пропуск.
  * Не-Linux: exit 0 с пояснением (скрипт для ubuntu CI и локальной сборки на Linux).
  */
 import { stat } from 'node:fs/promises'
@@ -22,7 +22,7 @@ function log(message) {
 }
 
 function skipRequested() {
-  const v = process.env.FLUXALLOY_SKIP_PACK_VERIFY
+  const v = process.env.VELORIX_SKIP_PACK_VERIFY
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
@@ -48,7 +48,7 @@ function printHelp() {
   console.log(`verify-linux-unpacked-layout — проверка dist/linux-unpacked после pack:linux:dir
 
 Переменные:
-  FLUXALLOY_SKIP_PACK_VERIFY=1   пропуск проверки
+  VELORIX_SKIP_PACK_VERIFY=1   пропуск проверки
 
 Флаги: --help`)
 }
@@ -60,7 +60,7 @@ async function main() {
   }
 
   if (skipRequested()) {
-    log('FLUXALLOY_SKIP_PACK_VERIFY — пропуск')
+    log('VELORIX_SKIP_PACK_VERIFY — пропуск')
     return
   }
 
@@ -80,7 +80,7 @@ async function main() {
     log(w)
   }
 
-  log('OK: app executable, resources/bin, FLUXALLOY_TZ.md, Data/trusted_hashes.json, Help/')
+  log('OK: app executable, resources/bin, VELORIX_TZ.md, Data/trusted_hashes.json, Help/')
 }
 
 main().catch((err) => {

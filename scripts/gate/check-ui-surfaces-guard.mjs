@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * UI-программа: пока gate open — временные артефакты на месте;
- * после F — ноль мусора программы; постоянно — fluxalloy-agent (UI §) + этот check.
+ * после F — ноль мусора программы; постоянно — Velorix-agent (UI §) + этот check.
  */
 import fs from 'node:fs'
 import path from 'node:path'
 import { readRepoUtf8, REPO_ROOT } from '../lib/repo-root.mjs'
 
 const PLAN_PATH = 'docs/UI_CONSOLIDATION_AND_COPY_PROGRAM.md'
-const PROGRAM_GATE_RULE = '.cursor/rules/fluxalloy-program-gate.mdc'
-const UI_SURFACES_RULE = '.cursor/rules/fluxalloy-agent.mdc'
+const PROGRAM_GATE_RULE = '.cursor/rules/VELORIX-program-gate.mdc'
+const UI_SURFACES_RULE = '.cursor/rules/velorix-agent.mdc'
 const CHECKLIST_PATH = 'IMPLEMENTATION_CHECKLIST.md'
 const QUIET_CHECK_PATH = 'scripts/gate/run-quiet-check.mjs'
 const PACKAGE_JSON_PATH = 'package.json'
@@ -44,25 +44,25 @@ const FORBIDDEN_TEXT_WHEN_PROGRAM_ENDED = [
   {
     rel: 'AGENTS.md',
     patterns: [
-      /fluxalloy-program-gate\.mdc/i,
+      /VELORIX-program-gate\.mdc/i,
       /PROGRAM GATE.*открыт/i,
       /UI_CONSOLIDATION_AND_COPY_PROGRAM/i
     ]
   },
   {
     rel: 'scripts/cursor-automation/prompts/agent-contract.txt',
-    patterns: [/program_gate:\s*open/i, /check:program-gate/i, /fluxalloy-program-gate/i]
+    patterns: [/program_gate:\s*open/i, /check:program-gate/i, /VELORIX-program-gate/i]
   },
   {
     rel: 'scripts/cursor-automation/prompts/continue.txt',
-    patterns: [/program_gate:\s*open/i, /fluxalloy-program-gate/i, /check:program-gate/i]
+    patterns: [/program_gate:\s*open/i, /VELORIX-program-gate/i, /check:program-gate/i]
   },
   {
-    rel: '.cursor/rules/fluxalloy-marathon.mdc',
+    rel: '.cursor/rules/velorix-continue.mdc',
     patterns: [/PROGRAM GATE открыт/i]
   },
   {
-    rel: '.cursor/rules/fluxalloy-core.mdc',
+    rel: '.cursor/rules/velorix-core.mdc',
     patterns: [/PROGRAM GATE open/i, /UI_CONSOLIDATION_AND_COPY_PROGRAM/i]
   }
 ]
@@ -203,7 +203,7 @@ function main() {
       }
     }
     const sources = readRepoOptional('docs/SOURCES_OF_TRUTH.md')
-    if (sources && /program_gate:\s*open|fluxalloy-program-gate/i.test(sources)) {
+    if (sources && /program_gate:\s*open|VELORIX-program-gate/i.test(sources)) {
       errors.push('program ended: docs/SOURCES_OF_TRUTH.md still documents open PROGRAM GATE')
     }
   }

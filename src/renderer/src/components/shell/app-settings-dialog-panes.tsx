@@ -92,7 +92,7 @@ export function AppSettingsGeneralPane(props: {
                 if (locale === loc) {
                   return
                 }
-                void window.fluxalloy.settings.setUiLocale(loc).then(() => {
+                void window.velorix.settings.setUiLocale(loc).then(() => {
                   setUiLocaleForSession(loc)
                   syncDocumentUiLocale(loc)
                   onUiLocalePersisted(loc)
@@ -114,7 +114,7 @@ export function AppSettingsGeneralPane(props: {
           onChange={(e) => {
             const enabled = e.target.checked
             setConfirmCloseOnQuit(enabled)
-            void window.fluxalloy.settings.setConfirmCloseOnQuit(enabled).catch(console.error)
+            void window.velorix.settings.setConfirmCloseOnQuit(enabled).catch(console.error)
           }}
         />
         <span className="app-settings-row-label">{uiText('appSettingsConfirmCloseLabel')}</span>
@@ -134,7 +134,7 @@ export function AppSettingsGeneralPane(props: {
                 ? 'download_open_editor'
                 : 'downloads_window'
             setEditorUrlPasteBehavior(v)
-            void window.fluxalloy.settings.setEditorUrlPasteBehavior(v).catch(console.error)
+            void window.velorix.settings.setEditorUrlPasteBehavior(v).catch(console.error)
           }}
         >
           <option value="downloads_window">{uiText('editorUrlPasteBehaviorDownloads')}</option>
@@ -186,7 +186,7 @@ export function AppSettingsDefaultsPane(props: {
         shellBusy={shellBusy}
         browseTitle={uiText('appSettingsYtdlpOutputBrowse')}
         onBrowse={() => {
-          void window.fluxalloy.downloads.pickOutputDirectory().then((res) => {
+          void window.velorix.downloads.pickOutputDirectory().then((res) => {
             if (res.ok) {
               setDownloadsOutputPath(res.path)
             }
@@ -199,7 +199,7 @@ export function AppSettingsDefaultsPane(props: {
         shellBusy={shellBusy}
         browseTitle={uiText('appSettingsBatchOutputBrowse')}
         onBrowse={() => {
-          void window.fluxalloy.batchExport.pickOutputFolder().then((res) => {
+          void window.velorix.batchExport.pickOutputFolder().then((res) => {
             if (res.ok) {
               setBatchOutputPath(res.path)
             }
@@ -289,7 +289,7 @@ export function AppSettingsLogsPane(props: {
         disabled={shellBusy}
         title={uiText('aboutMainLogButton')}
         onClick={() => {
-          void window.fluxalloy.diagnostics.openMainLog().then((r) => {
+          void window.velorix.diagnostics.openMainLog().then((r) => {
             if (!r.ok) {
               onStatus(r.error)
             }
@@ -305,7 +305,7 @@ export function AppSettingsLogsPane(props: {
         aria-describedby={supportZipHintId}
         title={uiText('supportZipButton')}
         onClick={() => {
-          void window.fluxalloy.diagnostics.createSupportZip().then((r) => {
+          void window.velorix.diagnostics.createSupportZip().then((r) => {
             if (r.ok) {
               onStatus(uiText('supportZipSaved'))
             } else if (!('cancelled' in r && r.cancelled)) {
@@ -368,7 +368,7 @@ export function AppSettingsResetPane(props: {
           className="app-btn"
           disabled={shellBusy}
           onClick={() => {
-            void window.fluxalloy.settings.exportBackup().then((r) => {
+            void window.velorix.settings.exportBackup().then((r) => {
               if (r.ok) {
                 onStatus(uiText('appSettingsExportDone'))
               } else if (!('cancelled' in r && r.cancelled)) {
@@ -390,7 +390,7 @@ export function AppSettingsResetPane(props: {
           className="app-btn"
           disabled={shellBusy}
           onClick={() => {
-            void window.fluxalloy.settings.importBackup().then((r) => {
+            void window.velorix.settings.importBackup().then((r) => {
               if (r.ok) {
                 onStatus(uiText('appSettingsImportDone'))
                 onClose()
@@ -421,7 +421,7 @@ export function AppSettingsResetPane(props: {
             return
           }
           setResetBusy(true)
-          void window.fluxalloy.settings
+          void window.velorix.settings
             .resetToDefaults()
             .then(() => {
               setResetConfirm(false)

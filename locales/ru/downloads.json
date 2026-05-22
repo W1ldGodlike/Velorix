@@ -63,7 +63,7 @@
   "downloadsQueueAriaMoveUp": "Поднять выше в очереди",
   "downloadsQueueAriaOpenFile": "Открыть скачанный файл",
   "downloadsQueueAriaOpenFolder": "Показать файл в папке",
-  "downloadsQueueAriaOpenInEditor": "Открыть скачанный файл в FluxAlloy",
+  "downloadsQueueAriaOpenInEditor": "Открыть скачанный файл в Velorix",
   "downloadsQueueAriaPauseYtdlp": "Пауза yt-dlp",
   "downloadsQueueAriaRemoveRow": "Удалить из очереди",
   "downloadsQueueAriaResumeYtdlp": "Продолжить yt-dlp",
@@ -90,7 +90,7 @@
   "downloadsQueueTableWrapGroupAria": "Прокручиваемая таблица очереди",
   "downloadsQueueTableZoneAria": "Таблица очереди загрузок",
   "downloadsRemoveFinished": "Убрать готовые",
-  "downloadsStandaloneBrandAria": "FluxAlloy загрузки",
+  "downloadsStandaloneBrandAria": "Velorix загрузки",
   "downloadsStandaloneHeaderTitle": "Загрузки",
   "downloadsStandalonePageHint": "Отдельное окно с той же очередью, журналом и настройками yt-dlp, что на вкладке «Загрузки» в главном окне. Изменения синхронизируются через основной процесс.",
   "downloadsStandaloneShellAria": "Отдельное окно менеджера загрузок yt-dlp",
@@ -114,6 +114,6 @@
   "downloadsUrlEnqueueHint": "Несколько ссылок — по одной на строку. Постановка в очередь — кнопками справа от поля.",
   "downloadsUrlPlaceholder": "URL или несколько URL по строкам",
   "downloadsUrlRowGroupAria": "Поле URL и действия постановки в очередь",
-  "downloadsWindowDocumentTitle": "FluxAlloy — загрузки",
+  "downloadsWindowDocumentTitle": "Velorix — загрузки",
   "downloadsWorkbenchAria": "Вкладка загрузок: очередь, журнал и панель настроек yt-dlp"
 }

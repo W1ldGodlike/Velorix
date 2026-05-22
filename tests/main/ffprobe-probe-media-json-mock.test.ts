@@ -16,7 +16,7 @@ import type { AppPaths } from '../../src/main/core/app-paths'
 import { probeMediaFile } from '../../src/main/services/ffprobe/ffprobe-service'
 
 function tmpAppPaths(): { paths: AppPaths; cleanup: () => void } {
-  const root = mkdtempSync(join(tmpdir(), 'flux-probe-json-'))
+  const root = mkdtempSync(join(tmpdir(), 'velorix-probe-json-'))
   const userData = join(root, 'userdata')
   const bundledBin = join(root, 'bundled-bin')
   const userBin = join(root, 'user-bin')

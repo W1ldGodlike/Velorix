@@ -25,7 +25,7 @@ npm run engines:report-hashes
 npm run engines:report-hashes -- --versions
 ```
 
-Таймаут загрузки движков по сети (мс): `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS` (см. `docs/RELEASE.md`).
+Таймаут загрузки движков по сети (мс): `VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS` (см. `docs/RELEASE.md`).
 
 GitHub Actions caches `bin/` between runs; the cache key hashes engine bootstrap/verify scripts and `trusted_hashes.json` (see `.github/workflows/ci.yml` for the exact `hashFiles` list).
 
@@ -46,13 +46,13 @@ Runtime resolution order is:
 - `engines:prepare:mac` / `engines:prepare:linux` — на **целевом** хосте: скачивание `yt-dlp` + BtbN `ffmpeg`/`ffprobe` в `bin/` (`prepare-engines-unix.mjs`); с другой ОС — подсказки.
 - **`engines:doctor`** на darwin/linux — presence + `--version` (опционально SHA256 в `trusted_hashes.json` → `darwin` / `linux-x64`).
 - **Порядок:** (1) `npm run engines:prepare:mac|linux` на macOS/Linux; (2) `npm run engines:doctor`; (3) `build` + `pack:*:dir` + `verify:*`; (4) packaged smoke — [owner-manual-smoke](../Help/ru/owner-manual-smoke.md).
-- **macOS (локально):** `npm run build && npm run pack:mac:dir` → `npm run verify:mac-unpacked` (проверка `dist/mac*/FluxAlloy.app`).
+- **macOS (локально):** `npm run build && npm run pack:mac:dir` → `npm run verify:mac-unpacked` (проверка `dist/mac*/Velorix.app`).
 - **Linux (локально):** быстрый smoke — `pack:linux:dir` + `verify:linux-unpacked` (как в CI); полный релиз — `npm run build:linux` → `npm run verify:linux-release` (`.AppImage` + `.deb` в `dist/`).
 - GitHub Actions: **windows-latest** — `engines:prepare:win` + packaged smokes; **ubuntu-latest** — `check:quiet` + `build` + `pack:linux:dir` + `verify:linux-unpacked` (движки в `bin/` для CI не обязательны). `electron-vite build` на Linux — плагин `fix:esm-shim` (`electron-vite-build-meta.ts`). См. `docs/ARCHITECTURE.md` § Bundled engines и CI.
 - Packaged owner-smoke locales (win/linux/macos): `npm run check:packaged-manual-smoke-parity` — в `check:quiet`; UI **Скопировать** (packaged + owner bundle) дописывает §21 packaged e2e appendix — Настройки → Зависимости.
 - §21 packaged e2e registry: `npm run check:packaged-e2e-scenarios-registry` (12 steps; `ciSmokeScript` ↔ `package.json`; `PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS` parent→leaf, напр. `smoke:packaged-engines` → ffprobe/ytdlp/ffmpeg); Support ZIP — per-step `e2e <id>:`; planned GUI e2e — `listPackagedE2eStepIdsByAutomation('planned-gui-e2e')` в diagnostics.
-- §21 Playwright GUI e2e: `npm run check:packaged-gui-e2e-playwright-deferred` — `npm run test:e2e:gui` → `tests/e2e/gui/planned-gui-e2e.spec.ts` (8 skip без `FLUXALLOY_E2E_APP`).
-- §21 Playwright scaffold: `tests/e2e/gui/planned-gui-e2e-steps.ts` exports `PLANNED_GUI_E2E_STEP_IDS, PLANNED_GUI_E2E_SCENARIOS, PLANNED_GUI_E2E_STEP_BY_ID` (8 steps; env `FLUXALLOY_E2E_APP` или `dist/win-unpacked/FluxAlloy.exe`).
+- §21 Playwright GUI e2e: `npm run check:packaged-gui-e2e-playwright-deferred` — `npm run test:e2e:gui` → `tests/e2e/gui/planned-gui-e2e.spec.ts` (8 skip без `VELORIX_E2E_APP`).
+- §21 Playwright scaffold: `tests/e2e/gui/planned-gui-e2e-steps.ts` exports `PLANNED_GUI_E2E_STEP_IDS, PLANNED_GUI_E2E_SCENARIOS, PLANNED_GUI_E2E_STEP_BY_ID` (8 steps; env `VELORIX_E2E_APP` или `dist/win-unpacked/Velorix.exe`).
 - §21 Playwright planned notes (deferred): `PLANNED_GUI_E2E_STEP_BY_ID` in `tests/e2e/gui/planned-gui-e2e-steps.ts`; Copy/releaseSmoke — `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine`.
 - §21 Playwright specs (next): `docs/RELEASE.md` — `formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet`.
 - §21 Playwright UI hints (locales): `check:owner-visual-smoke-locale` (4 settings keys, `formatPackagedGuiE2ePlaywrightUiHintSuffix`); about — `check:support-bundle-terminal-hints`.
@@ -66,7 +66,7 @@ Runtime resolution order is:
 - Help workflow crosslinks (`formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine`): `npm run check:help-workflow-smoke-crosslinks` — user footer (`owner-manual-smoke` + `packaged-windows-smoke`) in all 44 workflow Help; sync `node scripts/sync-help-workflow-user-footers.mjs`.
 - Help smoke guards (`check:quiet`): registry `npm run check:help-smoke-guards-package-json`, then `npm run check:help-workflow-smoke-crosslinks`, `npm run check:help-owner-smoke-docs`, `npm run check:help-packaged-smoke-docs`; §21 Playwright deferred — `npm run check:packaged-gui-e2e-playwright-deferred` (optional, не в quiet).
 - Terminal §8 guards (`check:quiet`, канон `terminal-contract-hints-meta`): registry `npm run check:terminal-hints-guards-package-json`, Help `npm run check:help-terminal-hints-docs`, then `npm run check:terminal-contract-hints-shards`, `npm run check:terminal-hints-locale`, `npm run check:support-bundle-terminal-hints`. RU summaries — `npm run check:terminal-summaries-ru` после правок `terminal-contract.ts` (optional).
-- Support ZIP `releaseSmoke:` (About → архив): layout **present/missing** для `dist/win-unpacked/`, `dist/linux-unpacked/`, `FluxAlloy.app` — без повторного `verify:*` на другой ОС.
+- Support ZIP `releaseSmoke:` (About → архив): layout **present/missing** для `dist/win-unpacked/`, `dist/linux-unpacked/`, `Velorix.app` — без повторного `verify:*` на другой ОС.
 
 Keep a note of the source, version, license variant, and SHA256 used for each released binary.
 

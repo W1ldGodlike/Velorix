@@ -1,5 +1,5 @@
 /**
- * Запуск `prepare-engines-win.mjs` с `FLUXALLOY_ENGINES_FORCE=1` (§19): перекачать движки в `bin/`,
+ * Запуск `prepare-engines-win.mjs` с `VELORIX_ENGINES_FORCE=1` (§19): перекачать движки в `bin/`,
  * даже если exe уже есть (актуально после смены upstream `latest` или битого кэша CI).
  */
 import { spawnSync } from 'node:child_process'
@@ -10,7 +10,7 @@ const rootDir = dirname(fileURLToPath(import.meta.url))
 const script = join(rootDir, 'prepare-engines-win.mjs')
 
 if (process.argv.includes('--help')) {
-  console.log(`engines:prepare:win:force — то же, что prepare-engines-win с FLUXALLOY_ENGINES_FORCE=1.
+  console.log(`engines:prepare:win:force — то же, что prepare-engines-win с VELORIX_ENGINES_FORCE=1.
 
 После загрузки: npm run engines:doctor  (verify + SHA + версии)
 
@@ -18,7 +18,7 @@ if (process.argv.includes('--help')) {
   process.exit(0)
 }
 
-process.env.FLUXALLOY_ENGINES_FORCE = '1'
+process.env.VELORIX_ENGINES_FORCE = '1'
 const result = spawnSync(process.execPath, [script], {
   stdio: 'inherit',
   env: process.env,

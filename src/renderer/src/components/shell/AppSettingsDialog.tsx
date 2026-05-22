@@ -1,4 +1,4 @@
-﻿import {
+import {
   useEffect,
   useId,
   useMemo,
@@ -96,7 +96,7 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
 
   const onThemePrefChange = useMemo(
     () => (pref: AppTheme) => {
-      void window.fluxalloy.settings.setTheme(pref).then((s) => {
+      void window.velorix.settings.setTheme(pref).then((s) => {
         setThemePref(pref)
         setTheme(s.effectiveTheme)
       })
@@ -108,14 +108,14 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     if (!open) {
       return
     }
-    void window.fluxalloy.settings.get().then((s) => {
+    void window.velorix.settings.get().then((s) => {
       setThemePref(s.theme)
       setConfirmCloseOnQuit(s.confirmCloseOnQuit !== false)
     })
-    void window.fluxalloy.downloads.getOutputDirectory().then((dir) => {
+    void window.velorix.downloads.getOutputDirectory().then((dir) => {
       setDownloadsOutputPath(dir.path)
     })
-    void window.fluxalloy.settings.get().then((s) => {
+    void window.velorix.settings.get().then((s) => {
       const batch = s.ffmpegExportBatchOutputDirectory?.trim()
       setBatchOutputPath(batch && batch.length > 0 ? batch : null)
     })
@@ -125,7 +125,7 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     if (!open || section !== 'dependencies') {
       return
     }
-    void window.fluxalloy.settings.get().then((s) => {
+    void window.velorix.settings.get().then((s) => {
       setEnginePathsDraft({
         ffmpeg: s.engineExecutablePaths?.ffmpeg ?? '',
         ffprobe: s.engineExecutablePaths?.ffprobe ?? '',

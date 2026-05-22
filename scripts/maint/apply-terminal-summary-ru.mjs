@@ -7,14 +7,14 @@
  *        npm run locales:terminal-summaries-ru
  *
  * Replace table: `scripts/data/terminal-summary-ru-pairs.json` (not split across .mjs shards).
- * After merge or if summaries look reverted (URL vs ссылка, flux without «(поле …)»),
- * run twice until the second run prints 0 replacements and 0 flux (поле) gloss.
+ * After merge or if summaries look reverted (URL vs ссылка, velorix without «(поле …)»),
+ * run twice until the second run prints 0 replacements and 0 velorix (поле) gloss.
  */
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'url'
 
-import { glossFluxPrintToFileSummary } from './inject-flux-summary-pole.mjs'
+import { glossVelorixPrintToFileSummary } from './inject-velorix-summary-pole.mjs'
 import { listTerminalContractHintFiles } from './terminal-contract-hint-paths.mjs'
 
 const PAIRS_JSON_PATH = path.join(
@@ -55,7 +55,7 @@ function glossSummariesInText(s) {
   const summaryRe = /summary: '((?:[^'\\]|\\.)*)'/g
   let glossHits = 0
   const next = s.replace(summaryRe, (full, inner) => {
-    const glossed = glossFluxPrintToFileSummary(inner)
+    const glossed = glossVelorixPrintToFileSummary(inner)
     if (glossed !== inner) {
       glossHits++
       return `summary: '${glossed}'`
@@ -83,6 +83,6 @@ console.log(
   'OK terminal-contract hints',
   'replacements:',
   replacements,
-  'flux (поле) gloss:',
+  'velorix (поле) gloss:',
   glossTotal
 )

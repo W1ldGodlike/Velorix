@@ -98,7 +98,7 @@ export function AboutDialog({
     }
     const request = choice === 'all' ? undefined : { targets: [choice] }
     setMaintenanceBusy(true)
-    void window.fluxalloy.diagnostics.cleanMaintenance(request).then((r) => {
+    void window.velorix.diagnostics.cleanMaintenance(request).then((r) => {
       setMaintenanceBusy(false)
       setMaintenanceConfirm(null)
       if (r.ok) {
@@ -228,7 +228,7 @@ export function AboutDialog({
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipLogsFolder')}
                 onClick={() => {
-                  void window.fluxalloy.diagnostics.openFolder('logs').then((r) => {
+                  void window.velorix.diagnostics.openFolder('logs').then((r) => {
                     if (!r.ok) {
                       pushStatus(
                         uiTextVars('aboutMaintenanceCleanErrorTemplate', {
@@ -249,7 +249,7 @@ export function AboutDialog({
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMainLog')}
                 onClick={() => {
-                  void window.fluxalloy.diagnostics.openMainLog().then((r) => {
+                  void window.velorix.diagnostics.openMainLog().then((r) => {
                     if (!r.ok) {
                       pushStatus(uiTextVars('aboutMainLogOpenErrorTemplate', { error: r.error }))
                     }
@@ -265,7 +265,7 @@ export function AboutDialog({
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipSupportZip')}
                 onClick={() => {
-                  void window.fluxalloy.diagnostics.createSupportZip().then((r) => {
+                  void window.velorix.diagnostics.createSupportZip().then((r) => {
                     if (r.ok) {
                       pushStatus(uiText('supportZipSaved'))
                     } else if ('error' in r) {
@@ -300,7 +300,7 @@ export function AboutDialog({
                 title={uiText('aboutTooltipMaintenanceSummary')}
                 onClick={() => {
                   setMaintenanceConfirm(null)
-                  void window.fluxalloy.diagnostics.maintenanceSnapshot().then((snapshot) => {
+                  void window.velorix.diagnostics.maintenanceSnapshot().then((snapshot) => {
                     pushStatus(formatMaintenanceSnapshot(snapshot))
                   })
                 }}

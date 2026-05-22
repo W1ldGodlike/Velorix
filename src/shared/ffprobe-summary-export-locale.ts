@@ -108,7 +108,7 @@ export type FfprobeSummaryStrings = {
 }
 
 export const FFPROBE_SUMMARY_STRINGS_RU: FfprobeSummaryStrings = {
-  plainDocTitle: 'FluxAlloy — сводка ffprobe',
+  plainDocTitle: 'Velorix — сводка ffprobe',
   plainDivider: '========================',
   durationPrefix: 'Длительность',
   durationUnknown: 'неизвестна',
@@ -134,7 +134,7 @@ export const FFPROBE_SUMMARY_STRINGS_RU: FfprobeSummaryStrings = {
     '#\tТип\tКодек\tФорм. пикс.\tSAR\tDAR\tЦв. пространство\tОсн. цвета\tПередача цвета\tДиапазон\tБитрейт\tСвойства дорожки\tЯзык\tЗаголовок\tСведения',
   chaptersCountTemplate: 'Главы: {count}',
   chapterTableHeaderTxt: 'ID\tНачало\tКонец\tДлит.\tЗаголовок',
-  plainFooter: '— FluxAlloy',
+  plainFooter: '— Velorix',
   trackKindVideo: 'Видео',
   trackKindAudio: 'Аудио',
   trackKindSubtitle: 'Субтитры',
@@ -143,7 +143,7 @@ export const FFPROBE_SUMMARY_STRINGS_RU: FfprobeSummaryStrings = {
   trackKindOther: 'Прочее',
   dash: '—',
   htmlLang: 'ru',
-  htmlTitle: 'FluxAlloy — сводка ffprobe',
+  htmlTitle: 'Velorix — сводка ffprobe',
   htmlH1: 'Сводка ffprobe',
   htmlTracksH2Template: 'Дорожки ({count})',
   htmlChaptersH2Template: 'Главы ({count})',
@@ -152,11 +152,11 @@ export const FFPROBE_SUMMARY_STRINGS_RU: FfprobeSummaryStrings = {
   htmlChapterTheadRow:
     '<thead><tr><th>ID</th><th>Начало</th><th>Конец</th><th>Длительность</th><th>Заголовок</th></tr></thead>',
   htmlNoTracksRow: '<tr><td colspan="15">Нет дорожек</td></tr>',
-  htmlFooter: 'FluxAlloy'
+  htmlFooter: 'VELORIX'
 }
 
 export const FFPROBE_SUMMARY_STRINGS_EN: FfprobeSummaryStrings = {
-  plainDocTitle: 'FluxAlloy — ffprobe summary',
+  plainDocTitle: 'Velorix — ffprobe summary',
   plainDivider: '========================',
   durationPrefix: 'Duration',
   durationUnknown: 'duration unknown',
@@ -182,7 +182,7 @@ export const FFPROBE_SUMMARY_STRINGS_EN: FfprobeSummaryStrings = {
     '#\tType\tCodec\tPix_fmt\tSAR\tDAR\tColor space\tPrimaries\tTransfer\tRange\tBitrate\tDisposition\tLanguage\tTitle\tDetails',
   chaptersCountTemplate: 'Chapters: {count}',
   chapterTableHeaderTxt: 'id\tStart\tEnd\tDur.\tTitle',
-  plainFooter: '— FluxAlloy',
+  plainFooter: '— Velorix',
   trackKindVideo: 'Video',
   trackKindAudio: 'Audio',
   trackKindSubtitle: 'Subtitles',
@@ -191,7 +191,7 @@ export const FFPROBE_SUMMARY_STRINGS_EN: FfprobeSummaryStrings = {
   trackKindOther: 'Other',
   dash: '—',
   htmlLang: 'en',
-  htmlTitle: 'FluxAlloy — ffprobe summary',
+  htmlTitle: 'Velorix — ffprobe summary',
   htmlH1: 'ffprobe summary',
   htmlTracksH2Template: 'Streams ({count})',
   htmlChaptersH2Template: 'Chapters ({count})',
@@ -200,7 +200,7 @@ export const FFPROBE_SUMMARY_STRINGS_EN: FfprobeSummaryStrings = {
   htmlChapterTheadRow:
     '<thead><tr><th>id</th><th>Start</th><th>End</th><th>Duration</th><th>Title</th></tr></thead>',
   htmlNoTracksRow: '<tr><td colspan="15">No streams</td></tr>',
-  htmlFooter: 'FluxAlloy'
+  htmlFooter: 'VELORIX'
 }
 
 export function ffprobeSummaryStrings(locale: FfprobeSummaryLocale): FfprobeSummaryStrings {

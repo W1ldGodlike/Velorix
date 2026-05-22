@@ -8,8 +8,8 @@ import { nativeMainEngineBinaryName } from './native-main-platform'
 
 export function listPackagedFfprobeCandidatePaths(rootDir: string): string[] {
   const fromEnv =
-    typeof process.env['FLUXALLOY_FFPROBE_PATH'] === 'string'
-      ? process.env['FLUXALLOY_FFPROBE_PATH'].trim()
+    typeof process.env['VELORIX_FFPROBE_PATH'] === 'string'
+      ? process.env['VELORIX_FFPROBE_PATH'].trim()
       : ''
   const winName = nativeMainEngineBinaryName('ffprobe')
   const candidates: string[] = []
@@ -23,8 +23,8 @@ export function listPackagedFfprobeCandidatePaths(rootDir: string): string[] {
 
 export function listPackagedFfmpegCandidatePaths(rootDir: string): string[] {
   const fromEnv =
-    typeof process.env['FLUXALLOY_FFMPEG_PATH'] === 'string'
-      ? process.env['FLUXALLOY_FFMPEG_PATH'].trim()
+    typeof process.env['VELORIX_FFMPEG_PATH'] === 'string'
+      ? process.env['VELORIX_FFMPEG_PATH'].trim()
       : ''
   const winName = nativeMainEngineBinaryName('ffmpeg')
   const candidates: string[] = []
@@ -38,8 +38,8 @@ export function listPackagedFfmpegCandidatePaths(rootDir: string): string[] {
 
 export function listPackagedYtdlpCandidatePaths(rootDir: string): string[] {
   const fromEnv =
-    typeof process.env['FLUXALLOY_YTDLP_PATH'] === 'string'
-      ? process.env['FLUXALLOY_YTDLP_PATH'].trim()
+    typeof process.env['VELORIX_YTDLP_PATH'] === 'string'
+      ? process.env['VELORIX_YTDLP_PATH'].trim()
       : ''
   const winName = nativeMainEngineBinaryName('yt-dlp')
   const candidates: string[] = []

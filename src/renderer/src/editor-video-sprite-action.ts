@@ -49,7 +49,7 @@ export async function runEditorVideoSprite(params: {
   payload: FfmpegVideoSpriteRequestPayload
   setStatusHint: (hint: string | null) => void
 }): Promise<{ ok: true } | { ok: false; cancelled?: boolean }> {
-  const res: FfmpegVideoSpriteResult = await window.fluxalloy.export.generateVideoSprite(
+  const res: FfmpegVideoSpriteResult = await window.velorix.export.generateVideoSprite(
     params.payload
   )
   if (res.ok) {

@@ -116,7 +116,7 @@ export async function exportSettingsBackupWithDialog(
   const stamp = new Date().toISOString().slice(0, 10)
   const pick = await dialog.showSaveDialog(parent, {
     title: M.settingsBackupExportTitle,
-    defaultPath: `fluxalloy-settings-${stamp}.json`,
+    defaultPath: `VELORIX-settings-${stamp}.json`,
     filters: [{ name: M.settingsBackupExportFilter, extensions: ['json'] }]
   })
   if (pick.canceled || !pick.filePath) {

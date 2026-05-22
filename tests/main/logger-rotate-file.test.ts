@@ -8,7 +8,7 @@ import { rotateLogFileIfTooLarge } from '../../src/main/core/logger-rotate-file'
 
 describe('rotateLogFileIfTooLarge §18.5', () => {
   it('renames main log to backup when over limit', () => {
-    const dir = mkdtempSync(join(tmpdir(), 'fluxalloy-log-'))
+    const dir = mkdtempSync(join(tmpdir(), 'VELORIX-log-'))
     const main = join(dir, 'main.log')
     writeFileSync(main, 'x'.repeat(2048), 'utf-8')
     rotateLogFileIfTooLarge(main, 'main.log.1', 1024)
@@ -19,7 +19,7 @@ describe('rotateLogFileIfTooLarge §18.5', () => {
   })
 
   it('keeps small files untouched', () => {
-    const dir = mkdtempSync(join(tmpdir(), 'fluxalloy-log-'))
+    const dir = mkdtempSync(join(tmpdir(), 'VELORIX-log-'))
     const main = join(dir, 'main.log')
     writeFileSync(main, 'ok\n', 'utf-8')
     rotateLogFileIfTooLarge(main, 'main.log.1', 1024)

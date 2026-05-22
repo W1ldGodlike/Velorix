@@ -15,12 +15,12 @@ export function DownloadsStandaloneStoreBootstrap(): null {
   useEffect(() => {
     const cleanups = [bindDownloadsStoreIpc()]
     let mounted = true
-    void window.fluxalloy.downloads.getSnapshot().then((rows) => {
+    void window.velorix.downloads.getSnapshot().then((rows) => {
       if (mounted) {
         useAppShellStore.getState().setDownloadsRows(sanitizeDownloadsRows(rows))
       }
     })
-    const offSnapshot = window.fluxalloy.downloads.onSnapshot((rows) => {
+    const offSnapshot = window.velorix.downloads.onSnapshot((rows) => {
       useAppShellStore.getState().setDownloadsRows(sanitizeDownloadsRows(rows))
     })
     return () => {

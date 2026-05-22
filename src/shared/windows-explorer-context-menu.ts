@@ -1,26 +1,25 @@
-/** §14 — контекстное меню Проводника Windows (только Win; см. FLUXALLOY_TZ §14). */
+/** §14 — контекстное меню Проводника Windows (только Win; см. VELORIX_TZ §14). */
 
-export const FLUXALLOY_SHELL_OPEN_ARG = '--fluxalloy-shell-open'
-export const FLUXALLOY_SHELL_QUICK_MP4_ARG = '--fluxalloy-shell-quick-mp4'
+export const VELORIX_SHELL_OPEN_ARG = '--velorix-shell-open'
+export const VELORIX_SHELL_QUICK_MP4_ARG = '--velorix-shell-quick-mp4'
 /** NSIS post-install / portable: зарегистрировать меню и выйти (headless). */
-export const FLUXALLOY_INSTALL_REGISTER_EXPLORER_MENU = '--fluxalloy-install-register-explorer-menu'
-export const FLUXALLOY_INSTALL_UNREGISTER_EXPLORER_MENU =
-  '--fluxalloy-install-unregister-explorer-menu'
+export const VELORIX_INSTALL_REGISTER_EXPLORER_MENU = '--velorix-install-register-explorer-menu'
+export const VELORIX_INSTALL_UNREGISTER_EXPLORER_MENU = '--velorix-install-unregister-explorer-menu'
 
 export function isWindowsExplorerShellHeadlessArgv(
   argv: readonly string[] = process.argv
 ): 'register' | 'unregister' | null {
-  if (argv.includes(FLUXALLOY_INSTALL_UNREGISTER_EXPLORER_MENU)) {
+  if (argv.includes(VELORIX_INSTALL_UNREGISTER_EXPLORER_MENU)) {
     return 'unregister'
   }
-  if (argv.includes(FLUXALLOY_INSTALL_REGISTER_EXPLORER_MENU)) {
+  if (argv.includes(VELORIX_INSTALL_REGISTER_EXPLORER_MENU)) {
     return 'register'
   }
   return null
 }
 
-export const WINDOWS_EXPLORER_CONTEXT_MENU_SHELL_OPEN = 'FluxAlloy.Open'
-export const WINDOWS_EXPLORER_CONTEXT_MENU_SHELL_QUICK_MP4 = 'FluxAlloy.QuickMp4'
+export const WINDOWS_EXPLORER_CONTEXT_MENU_SHELL_OPEN = 'Velorix.Open'
+export const WINDOWS_EXPLORER_CONTEXT_MENU_SHELL_QUICK_MP4 = 'Velorix.QuickMp4'
 
 /** Расширения видео для `SystemFileAssociations` (нижний регистр, с точкой). */
 export const WINDOWS_EXPLORER_VIDEO_EXTENSIONS = [
@@ -60,8 +59,8 @@ export function isWindowsExplorerContextMenuVideoPath(filePath: string): boolean
 export function parseWindowsExplorerShellArgv(
   argv: readonly string[] = process.argv
 ): WindowsExplorerShellArgvIntent | null {
-  const openIdx = argv.indexOf(FLUXALLOY_SHELL_OPEN_ARG)
-  const quickIdx = argv.indexOf(FLUXALLOY_SHELL_QUICK_MP4_ARG)
+  const openIdx = argv.indexOf(VELORIX_SHELL_OPEN_ARG)
+  const quickIdx = argv.indexOf(VELORIX_SHELL_QUICK_MP4_ARG)
   const flagIdx = openIdx >= 0 ? openIdx : quickIdx
   if (flagIdx < 0) {
     return null
@@ -84,7 +83,7 @@ export function buildWindowsExplorerContextMenuCommand(
   exePath: string,
   mode: WindowsExplorerShellLaunchMode
 ): string {
-  const flag = mode === 'open' ? FLUXALLOY_SHELL_OPEN_ARG : FLUXALLOY_SHELL_QUICK_MP4_ARG
+  const flag = mode === 'open' ? VELORIX_SHELL_OPEN_ARG : VELORIX_SHELL_QUICK_MP4_ARG
   const quotedExe = `"${exePath.replace(/"/g, '\\"')}"`
   return `${quotedExe} ${flag} "%1"`
 }

@@ -12,7 +12,7 @@ import { logInfo } from '../../core/logger-service'
 const execFileAsync = promisify(execFile)
 
 export function macosLaunchAgentLabel(taskId: string): string {
-  return `com.fluxalloy.watch.${taskId}`
+  return `com.velorix.watch.${taskId}`
 }
 
 export function macosLaunchAgentPlistPath(label: string): string {
@@ -31,7 +31,7 @@ export function buildMacosLaunchAgentPlist(doc: ScheduledTaskDocument): string {
   const label = macosLaunchAgentLabel(doc.id)
   const interval = Math.max(15, Math.min(86_400, Math.round(doc.pollIntervalSec)))
   const exe = process.execPath
-  const logDir = join(homedir(), 'Library', 'Logs', 'FluxAlloy')
+  const logDir = join(homedir(), 'Library', 'Logs', 'VELORIX')
   const outLog = join(logDir, `watch-${doc.id}.log`)
   const errLog = join(logDir, `watch-${doc.id}.err.log`)
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -111,7 +111,7 @@ export async function syncMacosLaunchdTask(
   const interval = Math.max(15, Math.min(86_400, Math.round(doc.pollIntervalSec)))
   try {
     mkdirSync(launchAgentsDir(), { recursive: true })
-    mkdirSync(join(homedir(), 'Library', 'Logs', 'FluxAlloy'), { recursive: true })
+    mkdirSync(join(homedir(), 'Library', 'Logs', 'VELORIX'), { recursive: true })
     const plistPath = macosLaunchAgentPlistPath(label)
     await bootoutLaunchAgent(label)
     writeFileSync(plistPath, buildMacosLaunchAgentPlist(doc), 'utf8')

@@ -231,7 +231,7 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS 
   'e2e <id>:',
   'win-unpacked',
   'linux-unpacked',
-  'FluxAlloy.app',
+  'Velorix.app',
   'present/missing',
   '§21 packaged e2e (CI vs owner)',
   'appendPackagedManualSmokeE2ePlanLines',

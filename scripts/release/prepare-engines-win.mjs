@@ -2,7 +2,7 @@
 /**
  * §19 Windows bootstrap: скачивает `bin/yt-dlp.exe`, `bin/ffmpeg.exe`, `bin/ffprobe.exe`.
  * SHA256 — из `Data/trusted_hashes.json` (непустые поля). См. `docs/RELEASE.md`.
- * Env: `FLUXALLOY_ENGINES_FORCE`, `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`.
+ * Env: `VELORIX_ENGINES_FORCE`, `VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS`.
  */
 import { createHash } from 'node:crypto'
 import { createReadStream, createWriteStream, existsSync } from 'node:fs'
@@ -52,7 +52,7 @@ function isWindows() {
 
 /** Принудительно перекачать/пересобрать `bin/*.exe`, даже если файлы уже есть (см. `run-prepare-engines-force.mjs`). */
 function enginesForce() {
-  const v = process.env.FLUXALLOY_ENGINES_FORCE
+  const v = process.env.VELORIX_ENGINES_FORCE
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
@@ -113,7 +113,7 @@ function trustedHashFor(file, source) {
 
 /** Таймаут HTTP-загрузки движков (мс); переопределение через env для медленных зеркал/CI. */
 function engineDownloadTimeoutMs() {
-  const raw = process.env.FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS
+  const raw = process.env.VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS
   const n = raw != null ? Number.parseInt(String(raw).trim(), 10) : Number.NaN
   return Number.isFinite(n) && n > 0 ? n : 600_000
 }
@@ -121,7 +121,7 @@ function engineDownloadTimeoutMs() {
 async function downloadToFile(url, destPath) {
   const response = await fetch(url, {
     redirect: 'follow',
-    headers: { 'User-Agent': 'FluxAlloy/0.1.0 (prepare-engines-win)', Accept: '*/*' },
+    headers: { 'User-Agent': 'VELORIX/0.1.0 (prepare-engines-win)', Accept: '*/*' },
     signal: AbortSignal.timeout(engineDownloadTimeoutMs())
   })
   if (!response.ok) {
@@ -191,7 +191,7 @@ function readVersion(exePath, args) {
 async function ensureYtDlp(trusted) {
   const target = join(binDir, 'yt-dlp.exe')
   if (enginesForce() && (await fileExistsNonEmpty(target))) {
-    log('FLUXALLOY_ENGINES_FORCE: удаляю yt-dlp.exe перед повторной загрузкой')
+    log('VELORIX_ENGINES_FORCE: удаляю yt-dlp.exe перед повторной загрузкой')
     await rm(target, { force: true })
   }
   if (await fileExistsNonEmpty(target)) {
@@ -209,7 +209,7 @@ async function ensureFfmpeg(trusted) {
   const ffprobeTarget = join(binDir, 'ffprobe.exe')
   if (enginesForce()) {
     if ((await fileExistsNonEmpty(ffmpegTarget)) || (await fileExistsNonEmpty(ffprobeTarget))) {
-      log('FLUXALLOY_ENGINES_FORCE: удаляю ffmpeg.exe / ffprobe.exe перед повторной загрузкой')
+      log('VELORIX_ENGINES_FORCE: удаляю ffmpeg.exe / ffprobe.exe перед повторной загрузкой')
       await rm(ffmpegTarget, { force: true })
       await rm(ffprobeTarget, { force: true })
     }
@@ -269,8 +269,8 @@ function printPrepareHelp() {
 SHA256 (опционально): Data/trusted_hashes.json (см. docs/RELEASE.md).
 
 Переменные окружения:
-  FLUXALLOY_ENGINES_FORCE=1               удалить существующие exe и скачать заново
-  FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS    таймаут HTTP в мс (по умолчанию 600000)
+  VELORIX_ENGINES_FORCE=1               удалить существующие exe и скачать заново
+  VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS    таймаут HTTP в мс (по умолчанию 600000)
 
 npm:
   npm run engines:prepare:win
@@ -293,8 +293,8 @@ async function main() {
   }
 
   await mkdir(binDir, { recursive: true })
-  if (process.env.FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS) {
-    log(`FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS=${engineDownloadTimeoutMs()} ms`)
+  if (process.env.VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS) {
+    log(`VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS=${engineDownloadTimeoutMs()} ms`)
   }
   const trusted = await loadTrustedHashes()
   await ensureYtDlp(trusted)

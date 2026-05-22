@@ -96,7 +96,7 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
               onChange={(e) => {
                 const v = parseEditorUrlPasteBehavior(e.target.value)
                 setEditorUrlPasteBehavior(v)
-                void window.fluxalloy.settings.setEditorUrlPasteBehavior(v).catch(console.error)
+                void window.velorix.settings.setEditorUrlPasteBehavior(v).catch(console.error)
               }}
             >
               <option value="downloads_window">{uiText('editorUrlPasteBehaviorDownloads')}</option>

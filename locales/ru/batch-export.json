@@ -74,7 +74,7 @@
   "batchExportRowStatusRunning": "В работе",
   "batchExportRowStatusWaiting": "Ожидание",
   "batchExportSaveReport": "Сохранить отчёт",
-  "batchExportSaveReportDefaultName": "fluxalloy-batch-export-report.txt",
+  "batchExportSaveReportDefaultName": "Velorix-batch-export-report.txt",
   "batchExportSaveReportTitle": "Сохранить отчёт пакетного экспорта",
   "batchExportSkippedDuplicates": "Все пути уже в очереди ({count})",
   "batchExportStart": "Запустить пакет",

@@ -30,7 +30,7 @@ export type UseAppShellLayoutPropsInput = {
     setKnowledgeInitialSlug: Dispatch<SetStateAction<string | null>>
     setKnowledgeOpen: Dispatch<SetStateAction<boolean>>
     setAboutInfo: Dispatch<
-      SetStateAction<Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null>
+      SetStateAction<Awaited<ReturnType<typeof window.velorix.about.getInfo>> | null>
     >
     setAboutOpen: Dispatch<SetStateAction<boolean>>
     setAppSettingsOpen: Dispatch<SetStateAction<boolean>>
@@ -72,7 +72,7 @@ export type UseAppShellLayoutPropsInput = {
     setSettingsResetBusy: Dispatch<SetStateAction<boolean>>
     setWorkspaceTab: Dispatch<SetStateAction<WorkspaceTab>>
     setAboutInfo: Dispatch<
-      SetStateAction<Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null>
+      SetStateAction<Awaited<ReturnType<typeof window.velorix.about.getInfo>> | null>
     >
     setAboutOpen: Dispatch<SetStateAction<boolean>>
     handlePickEngine: (id: EngineId) => Promise<void>
@@ -214,7 +214,7 @@ export function useAppShellLayoutProps(
   }, [setKnowledgeInitialSlug, setKnowledgeOpen])
 
   const onOpenAbout = useCallback((): void => {
-    void window.fluxalloy.about.getInfo().then((info) => {
+    void window.velorix.about.getInfo().then((info) => {
       setAboutInfo(info)
       setAboutOpen(true)
     })
@@ -350,7 +350,7 @@ export function useAppShellLayoutProps(
       setEditorUrlPasteBehavior: appSettings.setEditorUrlPasteBehavior,
       setWorkspaceTab: appSettings.setWorkspaceTab,
       onOpenAbout: () => {
-        void window.fluxalloy.about.getInfo().then((info) => {
+        void window.velorix.about.getInfo().then((info) => {
           appSettings.setAboutInfo(info)
           appSettings.setAboutOpen(true)
         })

@@ -1,0 +1,24 @@
+---
+description: Main/preload — IPC, процессы, безопасность
+globs:
+  - src/main/**
+  - src/preload/**
+  - src/shared/**
+alwaysApply: false
+---
+
+# Electron: main / preload / shared
+
+Глоссарий: [`velorix-rules-explicit.mdc`](velorix-rules-explicit.mdc).
+
+## Обязательно
+
+- ffmpeg, ffprobe, yt-dlp, FS, `spawn` — **только** `src/main/`.
+- Внешние процессы: `execFile` / `spawn` с **массивом argv**; **запрещено** `shell: true` и строка команды целиком.
+- **Если** новый или изменённый IPC-канал **то** **вертикальный срез** (глоссарий): `src/shared/ipc-channels.ts` + main handler + preload expose + renderer вызов + тест(ы); [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) в том же commit, что IPC.
+- Preload: узкий `contextBridge` (только нужные методы); два бандла (main window / downloads). **Запрещено** смешивать API downloads в main preload и наоборот.
+- Пути медиа и диалогов — только allowlist/grant в main.
+
+## Запрещено
+
+- Ослаблять проверки движков и `Data/trusted_hashes.json`.

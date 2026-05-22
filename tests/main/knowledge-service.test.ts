@@ -10,7 +10,7 @@ import {
 } from '../../src/main/services/knowledge/knowledge-service'
 
 function withHelpDir(fn: (dir: string) => void): void {
-  const root = mkdtempSync(join(tmpdir(), 'fluxalloy-help-'))
+  const root = mkdtempSync(join(tmpdir(), 'VELORIX-help-'))
   const help = join(root, 'Help')
   mkdirSync(help)
   try {
@@ -143,7 +143,7 @@ describe('knowledge-service', () => {
         return
       }
       expect(res.markdown).toContain('data:image/svg+xml;base64,')
-      expect(res.markdown).not.toContain('fluxhelp:')
+      expect(res.markdown).not.toContain('velorixhelp:')
       expect(res.article.title).toBe('Pic')
     })
   })

@@ -62,7 +62,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoDeinterlaceId
             setExportVideoDeinterlace(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoDeinterlace(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoDeinterlace(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoDeinterlace.map((p) => (
@@ -84,7 +84,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoDenoiseId
             setExportVideoDenoise(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoDenoise(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoDenoise(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoDenoise.map((p) => (
@@ -106,7 +106,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoDebandId
             setExportVideoDeband(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoDeband(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoDeband(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoDeband.map((p) => (
@@ -128,7 +128,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoHisteqId
             setExportVideoHisteq(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoHisteq(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoHisteq(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoHisteq.map((p) => (
@@ -150,7 +150,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoLut3dId
             setExportVideoLut3d(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoLut3d(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoLut3d(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoLut3d.map((p) => (
@@ -172,7 +172,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoSharpenId
             setExportVideoSharpen(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoSharpen(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoSharpen(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoSharpen.map((p) => (
@@ -194,7 +194,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoEqPresetId
             setExportVideoEqPreset(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoEqPreset(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoEqPreset(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoEq.map((p) => (
@@ -216,7 +216,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoHueId
             setExportVideoHue(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoHue(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoHue(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoHue.map((p) => (
@@ -238,7 +238,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoGrainId
             setExportVideoGrain(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoGrain(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoGrain(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoGrain.map((p) => (
@@ -260,7 +260,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoVignetteId
             setExportVideoVignette(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoVignette(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoVignette(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoVignette.map((p) => (
@@ -282,7 +282,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportVideoBlurId
             setExportVideoBlur(v)
-            void window.fluxalloy.settings.setFfmpegExportVideoBlur(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoBlur(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoBlur.map((p) => (

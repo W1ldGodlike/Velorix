@@ -67,14 +67,14 @@ describe('validateFilenameTemplate', () => {
 
 describe('resolveSafeYtdlpOutputPattern', () => {
   it('строит итоговый output pattern внутри каталога загрузок', () => {
-    const root = join('C:\\', 'FluxAlloyDownloads')
+    const root = join('C:\\', 'velorixDownloads')
     const resolved = resolveSafeYtdlpOutputPattern(root, 'nested/%(title)s.%(ext)s')
 
     expect(resolved).toBe(join(root, 'nested', '%(title)s.%(ext)s'))
   })
 
   it('возвращает null для шаблона с traversal', () => {
-    const root = join('C:\\', 'FluxAlloyDownloads')
+    const root = join('C:\\', 'velorixDownloads')
 
     expect(resolveSafeYtdlpOutputPattern(root, '../%(title)s.%(ext)s')).toBeNull()
   })
@@ -118,7 +118,7 @@ describe('sanitizeYtdlpPreviewUrl §6.3', () => {
 
 describe('normalizeYtdlpPreviewOutputDirectory §6.3', () => {
   it('принимает абсолютный путь после trim', () => {
-    const base = mkdtempSync(join(tmpdir(), 'flux-ytdlp-norm-'))
+    const base = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-norm-'))
     try {
       expect(normalizeYtdlpPreviewOutputDirectory(`  ${base}  `)).toBeTruthy()
     } finally {
@@ -160,7 +160,7 @@ describe('payloadFromSnapshot §6.3 превью argv', () => {
   })
 
   it('с контекстом подставляет абсолютный каталог загрузок и пример URL', () => {
-    const base = mkdtempSync(join(tmpdir(), 'flux-ytdlp-preview-'))
+    const base = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-preview-'))
     try {
       const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
       const p = payloadFromSnapshot(
@@ -186,8 +186,8 @@ describe('payloadFromSnapshot §6.3 превью argv', () => {
   })
 
   it('outputDirectoryOverride подменяет корень превью `-o` независимо от userDataRoot', () => {
-    const userBase = mkdtempSync(join(tmpdir(), 'flux-ytdlp-ud-'))
-    const overrideDir = mkdtempSync(join(tmpdir(), 'flux-ytdlp-override-'))
+    const userBase = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-ud-'))
+    const overrideDir = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-override-'))
     try {
       const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
       const p = payloadFromSnapshot(
@@ -212,7 +212,7 @@ describe('payloadFromSnapshot §6.3 превью argv', () => {
   })
 
   it('при отсутствии sampleUrl использует нейтральный пример', () => {
-    const base = mkdtempSync(join(tmpdir(), 'flux-ytdlp-preview2-'))
+    const base = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-preview2-'))
     try {
       const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
       const p = payloadFromSnapshot(
@@ -229,7 +229,7 @@ describe('payloadFromSnapshot §6.3 превью argv', () => {
   })
 
   it('sanitize sampleUrl убирает управляющие символы из preview', () => {
-    const base = mkdtempSync(join(tmpdir(), 'flux-ytdlp-preview-sanitize-'))
+    const base = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-preview-sanitize-'))
     try {
       const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
       const p = payloadFromSnapshot(

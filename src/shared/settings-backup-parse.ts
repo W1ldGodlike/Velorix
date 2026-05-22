@@ -12,7 +12,7 @@ export function extractSettingsPayloadFromBackupJson(raw: unknown): Record<strin
     return null
   }
   const record = raw as Record<string, unknown>
-  if (record['fluxalloySettingsBackup'] === true) {
+  if (record['velorixSettingsBackup'] === true) {
     const version =
       typeof record['formatVersion'] === 'number'
         ? record['formatVersion']
@@ -42,7 +42,7 @@ export function buildSettingsBackupFileV1(
   settings: SettingsBackupFileV1['settings']
 ): SettingsBackupFileV1 {
   return {
-    fluxalloySettingsBackup: true,
+    velorixSettingsBackup: true,
     formatVersion: SETTINGS_BACKUP_FORMAT_VERSION,
     exportedAt: new Date().toISOString(),
     settings

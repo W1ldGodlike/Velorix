@@ -16,7 +16,7 @@ function log(message) {
 }
 
 function skipRequested() {
-  const v = process.env.FLUXALLOY_SKIP_PACK_VERIFY
+  const v = process.env.VELORIX_SKIP_PACK_VERIFY
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
@@ -25,12 +25,12 @@ function main() {
     console.log(`verify-linux-release-artifacts — dist/*.AppImage и dist/*.deb после build:linux
 
 Переменные:
-  FLUXALLOY_SKIP_PACK_VERIFY=1   пропуск`)
+  VELORIX_SKIP_PACK_VERIFY=1   пропуск`)
     return
   }
 
   if (skipRequested()) {
-    log('FLUXALLOY_SKIP_PACK_VERIFY — пропуск')
+    log('VELORIX_SKIP_PACK_VERIFY — пропуск')
     return
   }
 

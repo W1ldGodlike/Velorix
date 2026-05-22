@@ -10,7 +10,7 @@ import { getMainApplicationStrings } from '../../../shared/main-application-loca
 
 /**
  * Системный диалог выбора локального видео (§4.B). Путь сразу регистрируется в allowlist
- * `fluxmedia://`, чтобы `<video>` мог безопасно стримить файл и в dev (Vite), и в prod.
+ * `velorixmedia://`, чтобы `<video>` мог безопасно стримить файл и в dev (Vite), и в prod.
  */
 export async function openVideoWithDialog(
   browserWindow: BrowserWindow,

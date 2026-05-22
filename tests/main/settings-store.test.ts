@@ -12,7 +12,7 @@ import {
 const tempRoots: string[] = []
 
 function makeTempRoot(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'fluxalloy-settings-'))
+  const dir = mkdtempSync(join(tmpdir(), 'VELORIX-settings-'))
   tempRoots.push(dir)
   return dir
 }

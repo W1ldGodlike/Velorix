@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/** §2.1 — после pack:mac:dir проверяем dist/mac-arm64/FluxAlloy.app (stat-only). */
+/** §2.1 — после pack:mac:dir проверяем dist/mac-arm64/Velorix.app (stat-only). */
 import { stat } from 'node:fs/promises'
 
 import { REPO_ROOT } from '../lib/repo-root.mjs'
@@ -14,7 +14,7 @@ function log(message) {
 }
 
 function skipRequested() {
-  const v = process.env.FLUXALLOY_SKIP_PACK_VERIFY
+  const v = process.env.VELORIX_SKIP_PACK_VERIFY
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
@@ -38,15 +38,15 @@ async function dirExists(path) {
 
 async function main() {
   if (process.argv.includes('--help')) {
-    console.log(`verify-macos-unpacked-layout — FluxAlloy.app после pack:mac:dir
+    console.log(`verify-macos-unpacked-layout — Velorix.app после pack:mac:dir
 
 Переменные:
-  FLUXALLOY_SKIP_PACK_VERIFY=1   пропуск`)
+  VELORIX_SKIP_PACK_VERIFY=1   пропуск`)
     return
   }
 
   if (skipRequested()) {
-    log('FLUXALLOY_SKIP_PACK_VERIFY — пропуск')
+    log('VELORIX_SKIP_PACK_VERIFY — пропуск')
     return
   }
 

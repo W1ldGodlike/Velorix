@@ -63,7 +63,7 @@ describe('pickYtdlpQueueShortLabelForOutputPath', () => {
   })
 
   it('берёт имя из .part, если финал ещё не записан', () => {
-    root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-label-'))
+    root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-label-'))
     const out = join(root, 'Нормальное название.mp4')
     const part = `${out}.part`
     writeFileSync(part, 'x')
@@ -71,7 +71,7 @@ describe('pickYtdlpQueueShortLabelForOutputPath', () => {
   })
 
   it('использует объявленный путь без файла на диске', () => {
-    root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-label2-'))
+    root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-label2-'))
     const out = join(root, 'Только Destination.mkv')
     expect(pickYtdlpQueueShortLabelForOutputPath(out)).toBe('Только Destination')
   })

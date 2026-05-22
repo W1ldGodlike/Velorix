@@ -283,7 +283,7 @@ export function logStartupBanner(): void {
     const n = process.versions.node ?? '?'
     logInfo(
       'startup',
-      `FluxAlloy ${v} | Electron ${e} | Chrome ${c} | Node ${n} | ${process.platform}/${process.arch}`
+      `Velorix ${v} | Electron ${e} | Chrome ${c} | Node ${n} | ${process.platform}/${process.arch}`
     )
   } catch {
     /* стартовая запись не критична */

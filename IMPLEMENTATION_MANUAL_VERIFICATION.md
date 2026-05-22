@@ -1,10 +1,10 @@
-# FluxAlloy — ручная проверка (владелец)
+# Velorix — ручная проверка (владелец)
 
 **Назначение:** чеклисты только на **реальном железе** (GPU, HiDPI, packaged, NSIS, Проводник). Агент **не** берёт их в «продолжай» / `+` и **не** ставит `[x]` без вашей проверки.
 
 **Связанные артефакты:** [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) (код, CI, guards — те же **N.M.K** по § ТЗ), [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) (запись: `J-NNN: manual 5.2.3 OK` или `checklist 6.3.2`). **В UI приложения этих списков нет** — только эти файлы; дубль шагов в Support ZIP: `ownerManualSmoke:`.
 
-**Нумерация:** `§.подпункт` = § в [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md) и `### §6.3` в чеклисте → здесь **6.3.1** … (ручное на железе). В чеклисте **6.3.1** — код; в этом файле **19.1.1** — NSIS на железе.
+**Нумерация:** `§.подпункт` = § в [`VELORIX_TZ.md`](VELORIX_TZ.md) и `### §6.3` в чеклисте → здесь **6.3.1** … (ручное на железе). В чеклисте **6.3.1** — код; в этом файле **19.1.1** — NSIS на железе.
 
 **Технические имена в ZIP/guards** (`ownerManualSmoke:`, `hwManualSmoke:`) — для кода; в интерфейсе и здесь — **ручная проверка**.
 
@@ -37,7 +37,7 @@
 - [ ] **0.1** §16 + §5: тема, HiDPI, HW (см. **5.x**, **16.x**).
 - [ ] **0.2** §3 + §19: packaged win/linux/macos + NSIS (**3.x**, **19.1**).
 - [ ] **0.3** §7.5 + §4.3: спрайт и мини-плеер на мониторе (**7.5.1**, **4.3.1**).
-- [ ] **0.4** §21: Playwright planned GUI — прогон `test:e2e:gui` с `FLUXALLOY_E2E_APP` (**21.x**).
+- [ ] **0.4** §21: Playwright planned GUI — прогон `test:e2e:gui` с `VELORIX_E2E_APP` (**21.x**).
 - [ ] **0.5** §22: сквозные приёмочные сценарии (**22.1**, **22.2**).
 
 ---
@@ -62,7 +62,7 @@
 
 - [ ] **3.3.1** Прогон packaged-шагов на Linux-железе (Help `packaged-linux-smoke.md`).
 
-### 3.4 macOS (`FluxAlloy.app`)
+### 3.4 macOS (`Velorix.app`)
 
 - [ ] **3.4.1** Прогон packaged-шагов на macOS (Help `packaged-macos-smoke.md`).
 
@@ -206,7 +206,7 @@
 
 Код: `planned-gui-e2e-step-runners.ts` + spec/skip, реестр, guards [x] (J-1594–1595). Help/sync — `npm run sync:help-playwright-paragraphs`.
 
-- [ ] **21.1** `FLUXALLOY_E2E_APP` + packaged: `npm run test:e2e:gui` — 8 шагов (`open-file` … `settings`) на вашем exe.
+- [ ] **21.1** `VELORIX_E2E_APP` + packaged: `npm run test:e2e:gui` — 8 шагов (`open-file` … `settings`) на вашем exe.
 - [ ] **21.2** Приёмка на железе: сценарии **22.x** (не только green skip в CI).
 
 ---

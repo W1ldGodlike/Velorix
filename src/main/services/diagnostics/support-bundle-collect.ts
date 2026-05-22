@@ -14,7 +14,7 @@ function readLimitedFile(path: string, stats: Stats): Buffer {
     return raw
   }
   const note = Buffer.from(
-    `[FluxAlloy] File was truncated to last ${MAX_BUNDLE_FILE_BYTES} bytes.\n\n`,
+    `[Velorix] File was truncated to last ${MAX_BUNDLE_FILE_BYTES} bytes.\n\n`,
     'utf8'
   )
   return Buffer.concat([note, raw.subarray(raw.length - MAX_BUNDLE_FILE_BYTES)])

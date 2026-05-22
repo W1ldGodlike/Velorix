@@ -64,7 +64,7 @@ export function EditorFfmpegSettingsRailOutputSection(
               bumpManualExportEdit()
               const v = e.target.value
               setExportExtraArgsLine(v)
-              void window.fluxalloy.settings.setFfmpegExportExtraArgsLine(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportExtraArgsLine(v).catch(console.error)
             }}
           />
           <span className="app-settings-section-hint">{uiText('editorExportExtraArgsHint')}</span>

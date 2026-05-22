@@ -7,7 +7,7 @@ export {
   isKnowledgeThematicBreak,
   isKnowledgeTrustedDataImageSrc,
   isKnowledgeTrustedImageSrc,
-  knowledgeHelpAssetFluxhelpUrl,
+  knowledgeHelpAssetVelorixhelpUrl,
   knowledgeInternalSlugFromHref,
   normalizeKnowledgeMarkdownSource
 } from './knowledge-markdown-assets'

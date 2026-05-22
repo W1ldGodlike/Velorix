@@ -28,7 +28,7 @@ export function parsePresetsExportBundleV1(raw: unknown): FfmpegExportUserPreset
     return []
   }
   const o = raw as Record<string, unknown>
-  if (o['fluxalloyExportPresetsBundle'] !== true) {
+  if (o['velorixExportPresetsBundle'] !== true) {
     return []
   }
   const version =
@@ -49,7 +49,7 @@ export function buildPresetsExportBundleV1(
   presets: FfmpegExportUserPreset[]
 ): PresetsExportBundleV1 {
   return {
-    fluxalloyExportPresetsBundle: true,
+    velorixExportPresetsBundle: true,
     formatVersion: PRESETS_EXPORT_BUNDLE_FORMAT_VERSION,
     exportedAt: new Date().toISOString(),
     presets

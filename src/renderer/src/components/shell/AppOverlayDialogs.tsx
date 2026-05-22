@@ -4,7 +4,7 @@ import { AppLazyPanelFallback, LazyKnowledgeDialog } from '../../app-lazy-panels
 import { AboutDialog } from '../AboutDialog'
 export type AppOverlayDialogsProps = {
   aboutOpen: boolean
-  aboutInfo: Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null
+  aboutInfo: Awaited<ReturnType<typeof window.velorix.about.getInfo>> | null
   setAboutOpen: Dispatch<SetStateAction<boolean>>
   knowledgeOpen: boolean
   knowledgeInitialSlug: string | null

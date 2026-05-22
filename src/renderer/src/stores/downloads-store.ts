@@ -110,7 +110,7 @@ export const useDownloadsStore = createRendererStore<DownloadsStoreState & Downl
       }))
     },
     refreshDownloadsOptions: async () => {
-      const res = await window.fluxalloy.downloads.getCliOptions({
+      const res = await window.velorix.downloads.getCliOptions({
         uiLocale: getUiLocale() as AppUiLocale
       })
       if (res.ok) {
@@ -122,7 +122,7 @@ export const useDownloadsStore = createRendererStore<DownloadsStoreState & Downl
     applyDownloadsOptionsPatch: async (patch) => {
       set({ downloadsOptionsBusy: true })
       try {
-        const res = await window.fluxalloy.downloads.setCliOptions(patch)
+        const res = await window.velorix.downloads.setCliOptions(patch)
         if (!res.ok) {
           useAppShellStore.getState().setStatusHint(res.error)
           return
@@ -148,8 +148,8 @@ export const useDownloadsStore = createRendererStore<DownloadsStoreState & Downl
       }
       try {
         const [rows, summary] = await Promise.all([
-          window.fluxalloy.downloads.getHistory(),
-          window.fluxalloy.downloads.getHistoryWeeklySummary()
+          window.velorix.downloads.getHistory(),
+          window.velorix.downloads.getHistoryWeeklySummary()
         ])
         set({ downloadsHistory: rows, downloadsHistoryWeeklySummary: summary })
       } finally {
@@ -174,9 +174,9 @@ export const useDownloadsStore = createRendererStore<DownloadsStoreState & Downl
         weeklySummary: downloadsHistoryWeeklySummary,
         entries: visible
       }
-      const res = await window.fluxalloy.saveTextWithDialog({
+      const res = await window.velorix.saveTextWithDialog({
         title: uiText('downloadsHistoryExportDialogTitle'),
-        defaultFileName: 'fluxalloy-downloads-history.json',
+        defaultFileName: 'velorix-downloads-history.json',
         content: JSON.stringify(payload, null, 2)
       })
       if (res.ok) {
@@ -204,7 +204,7 @@ export const useDownloadsStore = createRendererStore<DownloadsStoreState & Downl
       })
     },
     refreshDownloadsOutputDirectory: async () => {
-      const dir = await window.fluxalloy.downloads.getOutputDirectory()
+      const dir = await window.velorix.downloads.getOutputDirectory()
       set({ downloadsOutputDirectory: dir })
     },
     reset: () => {

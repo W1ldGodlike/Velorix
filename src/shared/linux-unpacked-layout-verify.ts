@@ -4,7 +4,7 @@
  */
 import { join } from 'node:path'
 
-export const LINUX_UNPACKED_EXECUTABLE_NAMES = ['fluxalloy', 'FluxAlloy'] as const
+export const LINUX_UNPACKED_EXECUTABLE_NAMES = ['velorix', 'Velorix'] as const
 
 export const LINUX_UNPACKED_BUNDLED_ENGINE_FILES = ['yt-dlp', 'ffmpeg', 'ffprobe'] as const
 
@@ -27,9 +27,9 @@ export function listLinuxUnpackedLayoutChecks(unpackedRoot: string): LinuxUnpack
   return [
     { path: bundledBin, kind: 'dir', label: 'resources/bin' },
     {
-      path: join(unpackedRoot, 'resources', 'FLUXALLOY_TZ.md'),
+      path: join(unpackedRoot, 'resources', 'VELORIX_TZ.md'),
       kind: 'file',
-      label: 'resources/FLUXALLOY_TZ.md'
+      label: 'resources/VELORIX_TZ.md'
     },
     {
       path: join(unpackedRoot, 'resources', 'Data', 'trusted_hashes.json'),
@@ -111,9 +111,9 @@ export function formatLinuxUnpackedLayoutVerifyDiagnosticLines(
   const exePresent = linuxUnpackedExecutableCandidates(unpackedRoot).some((p) => existsSync(p))
   return [
     'command: npm run verify:linux-unpacked (после pack:linux:dir на Linux)',
-    'checks: app executable, resources/bin (dir), FLUXALLOY_TZ.md, Data/trusted_hashes.json, Help/',
+    'checks: app executable, resources/bin (dir), VELORIX_TZ.md, Data/trusted_hashes.json, Help/',
     'optional engines: ffmpeg, ffprobe, yt-dlp in resources/bin (ручной bin/ перед release)',
-    'env: FLUXALLOY_SKIP_PACK_VERIFY',
+    'env: VELORIX_SKIP_PACK_VERIFY',
     `layout: app executable (${exePresent ? 'present' : 'missing'})`,
     ...listLinuxUnpackedLayoutChecks(unpackedRoot).map((check) => {
       const present = check.kind === 'dir' ? existsSync(check.path) : existsSync(check.path)

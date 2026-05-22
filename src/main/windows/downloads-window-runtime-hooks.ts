@@ -45,7 +45,7 @@ export interface DownloadsWindowBoundsHooks {
     patch: YtdlpDownloadOptionsPatch,
     uiLocale?: AppUiLocale
   ) => { ok: true } | { ok: false; error: string }
-  /** §6.4 — открыть готовый файл из yt-dlp в основном обработчике/preview FluxAlloy. */
+  /** §6.4 — открыть готовый файл из yt-dlp в основном обработчике/preview Velorix. */
   openDownloadedFileInHandler?: (
     absoluteFile: string
   ) => Promise<{ ok: true } | { ok: false; error: string }>

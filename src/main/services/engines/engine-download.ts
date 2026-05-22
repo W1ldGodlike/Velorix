@@ -3,7 +3,7 @@
  *
  * Серверная часть: скачивает yt-dlp и архив FFmpeg, опционально сверяет SHA256 по JSON,
  * раскладывает `ffmpeg.exe`/`ffprobe.exe` в `app-data/bin`. На других ОС загрузчик пока явно отклоняется.
- * Таймаут HTTP: `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS` (см. `docs/RELEASE.md`).
+ * Таймаут HTTP: `VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS` (см. `docs/RELEASE.md`).
  */
 
 import { createHash } from 'node:crypto'
@@ -42,7 +42,7 @@ import { getMainApplicationStrings } from '../../../shared/main-application-loca
 import type { EngineDownloadProgress } from '../../../shared/engine-download-contract'
 
 function userAgent(): string {
-  return 'FluxAlloy/0.1.0 (engine downloader; Electron)'
+  return 'VELORIX/0.1.0 (engine downloader; Electron)'
 }
 
 async function sha256File(filePath: string): Promise<string> {
@@ -72,9 +72,9 @@ async function assertSha256Optional(
   }
 }
 
-/** Таймаут загрузки движков (мс), общий с `prepare-engines-win.mjs` (`FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`). */
+/** Таймаут загрузки движков (мс), общий с `prepare-engines-win.mjs` (`VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS`). */
 function engineDownloadFetchTimeoutMs(): number {
-  const raw = process.env['FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS']
+  const raw = process.env['VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS']
   const n = raw != null ? Number.parseInt(String(raw).trim(), 10) : Number.NaN
   return Number.isFinite(n) && n > 0 ? n : 600_000
 }

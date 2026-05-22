@@ -76,7 +76,7 @@ export function EditorFfmpegSettingsRailPresetsSection(
               if (!preset) {
                 return
               }
-              void window.fluxalloy.settings
+              void window.velorix.settings
                 .applyFfmpegExportSnapshot(preset.snapshot)
                 .then((s) => {
                   hydrateExportFieldsFromSettings(s)

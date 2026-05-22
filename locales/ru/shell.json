@@ -1,7 +1,7 @@
 {
-  "appMainShellAria": "Главное окно FluxAlloy",
+  "appMainShellAria": "Главное окно Velorix",
   "commonNotApplicableShort": "н/д",
-  "mainWindowDocumentTitle": "FluxAlloy",
+  "mainWindowDocumentTitle": "VELORIX",
   "topbarAboutLabel": "О программе",
   "topbarAboutTitle": "О программе и диагностика",
   "topbarActionsToolbarAria": "Панель действий: файлы, инструменты и справка",
@@ -25,7 +25,7 @@
   "topbarOpenFileTitle": "Выбрать видео с компьютера: оно появится в превью и на таймлайне, дальше можно резать и сохранять.",
   "topbarOpenVideoFolderLabel": "Папка",
   "topbarOpenVideoFolderTitle": "Выбрать папку: в превью откроется первое найденное видео (тот же поиск, что у пакета и перетаскивания папки).",
-  "topbarProductName": "FluxAlloy",
+  "topbarProductName": "VELORIX",
   "topbarThemeToggleTitle": "Переключить тёмную/светлую тему",
   "topbarThemeUseDark": "Тёмная тема",
   "topbarThemeUseLight": "Светлая тема",

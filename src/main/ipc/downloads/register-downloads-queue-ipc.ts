@@ -109,7 +109,7 @@ export function registerDownloadsQueueIpcHandlers(): void {
       const stamp = new Date().toISOString().replace(/[:.]/g, '-')
       const pick = await dialog.showSaveDialog(win, {
         title: P.saveLogDialogTitle,
-        defaultPath: `fluxalloy-ytdlp-${stamp}.log`,
+        defaultPath: `VELORIX-ytdlp-${stamp}.log`,
         filters: [
           { name: P.saveLogFilterLog, extensions: ['log'] },
           { name: P.saveLogFilterText, extensions: ['txt'] }

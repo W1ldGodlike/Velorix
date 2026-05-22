@@ -13,7 +13,7 @@ export default defineConfig(
       '**/dist',
       '**/out',
       'scripts/cursor-automation/**',
-      'scripts/maint/inject-flux-summary-pole.mjs',
+      'scripts/maint/inject-velorix-summary-pole.mjs',
       'scripts/maint/journal-lib.mjs',
       'scripts/maint/journal-next-stamp.mjs',
       'scripts/maint/journal-consolidate.mjs',

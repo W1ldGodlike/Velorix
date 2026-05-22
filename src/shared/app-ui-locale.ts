@@ -17,23 +17,23 @@ export function appUiLocaleFromSystemLocale(systemLocale: string): AppUiLocale {
 }
 
 const MAIN_WINDOW_TITLE: Record<AppUiLocale, string> = {
-  ru: 'FluxAlloy',
-  en: 'FluxAlloy'
+  ru: 'VELORIX',
+  en: 'VELORIX'
 }
 
 const DOWNLOADS_POPOUT_WINDOW_TITLE: Record<AppUiLocale, string> = {
-  ru: 'FluxAlloy — загрузки',
-  en: 'FluxAlloy — Downloads'
+  ru: 'Velorix — загрузки',
+  en: 'Velorix — Downloads'
 }
 
 const INSPECTOR_WINDOW_TITLE: Record<AppUiLocale, string> = {
-  ru: 'FluxAlloy — инспектор',
-  en: 'FluxAlloy — Inspector'
+  ru: 'Velorix — инспектор',
+  en: 'Velorix — Inspector'
 }
 
 const MINI_PLAYER_WINDOW_TITLE: Record<AppUiLocale, string> = {
-  ru: 'FluxAlloy — мини-плеер',
-  en: 'FluxAlloy — Mini Player'
+  ru: 'Velorix — мини-плеер',
+  en: 'Velorix — Mini Player'
 }
 
 /** Заголовок главного окна (Electron `BrowserWindow`) — синхрон с `mainWindowDocumentTitle` в renderer. */

@@ -33,7 +33,7 @@ export function useFfmpegExportBatchHandlersRun({
 } {
   const handleBatchOpenOutput = useCallback(
     async (outputPath: string, mode: 'file' | 'folder' | 'preview'): Promise<void> => {
-      const res = await window.fluxalloy.export.openOutput(outputPath, mode)
+      const res = await window.velorix.export.openOutput(outputPath, mode)
       if (!res.ok) {
         setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
         return
@@ -47,7 +47,7 @@ export function useFfmpegExportBatchHandlersRun({
 
   const handleBatchOpenInput = useCallback(
     async (inputPath: string, mode: 'file' | 'folder' | 'preview'): Promise<void> => {
-      const res = await window.fluxalloy.batchExport.openInput(inputPath, mode)
+      const res = await window.velorix.batchExport.openInput(inputPath, mode)
       if (!res.ok) {
         setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
         return
@@ -64,7 +64,7 @@ export function useFfmpegExportBatchHandlersRun({
     if (pipelineBusy) {
       return
     }
-    const res = await window.fluxalloy.batchExport.start(buildExportOverrides())
+    const res = await window.velorix.batchExport.start(buildExportOverrides())
     if (!res.ok) {
       setStatusHint(res.error)
       return
@@ -73,12 +73,12 @@ export function useFfmpegExportBatchHandlersRun({
   }, [buildExportOverrides, pipelineBusy, setStatusHint])
 
   const handleBatchCancel = useCallback(async (): Promise<void> => {
-    await window.fluxalloy.batchExport.cancel()
+    await window.velorix.batchExport.cancel()
     setStatusHint(uiText('batchExportCancelled'))
   }, [setStatusHint])
 
   const handleBatchRetryFailed = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.batchExport.retryFailed()
+    const res = await window.velorix.batchExport.retryFailed()
     if (!res.ok) {
       setStatusHint(res.error)
       return
@@ -91,7 +91,7 @@ export function useFfmpegExportBatchHandlersRun({
   }, [setStatusHint])
 
   const handleBatchClearCompleted = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.batchExport.clearCompleted()
+    const res = await window.velorix.batchExport.clearCompleted()
     if (!res.ok) {
       setStatusHint(res.error)
       return
@@ -105,7 +105,7 @@ export function useFfmpegExportBatchHandlersRun({
     if (pipelineBusy) {
       return
     }
-    const res = await window.fluxalloy.batchExport.retryFailedAndStart(buildExportOverrides())
+    const res = await window.velorix.batchExport.retryFailedAndStart(buildExportOverrides())
     if (!res.ok) {
       setStatusHint(res.error)
       return
@@ -114,13 +114,13 @@ export function useFfmpegExportBatchHandlersRun({
   }, [buildExportOverrides, pipelineBusy, setStatusHint])
 
   const handleBatchCopyInputPaths = useCallback(async (): Promise<void> => {
-    const listed = await window.fluxalloy.batchExport.listInputPaths()
+    const listed = await window.velorix.batchExport.listInputPaths()
     if (listed.paths.length === 0) {
       setStatusHint(uiText('batchExportEmpty'))
       return
     }
     const text = listed.paths.join('\r\n')
-    const written = await window.fluxalloy.clipboard.writeText(text)
+    const written = await window.velorix.clipboard.writeText(text)
     if (!written.ok) {
       setStatusHint(uiText('batchExportCopyPathsFailed'))
       return
@@ -129,13 +129,13 @@ export function useFfmpegExportBatchHandlersRun({
   }, [setStatusHint])
 
   const handleBatchCopyOutputPaths = useCallback(async (): Promise<void> => {
-    const listed = await window.fluxalloy.batchExport.listOutputPaths()
+    const listed = await window.velorix.batchExport.listOutputPaths()
     if (listed.paths.length === 0) {
       setStatusHint(uiText('batchExportNoOutputPaths'))
       return
     }
     const text = listed.paths.join('\r\n')
-    const written = await window.fluxalloy.clipboard.writeText(text)
+    const written = await window.velorix.clipboard.writeText(text)
     if (!written.ok) {
       setStatusHint(uiText('batchExportCopyPathsFailed'))
       return
@@ -147,7 +147,7 @@ export function useFfmpegExportBatchHandlersRun({
 
   const handleBatchCopyRowPath = useCallback(
     async (path: string, kind: 'in' | 'out'): Promise<void> => {
-      const written = await window.fluxalloy.clipboard.writeText(path)
+      const written = await window.velorix.clipboard.writeText(path)
       if (!written.ok) {
         setStatusHint(uiText('batchExportCopyPathsFailed'))
         return
@@ -162,13 +162,13 @@ export function useFfmpegExportBatchHandlersRun({
   )
 
   const handleBatchSaveReport = useCallback(async (): Promise<void> => {
-    const snap = batchSnapshot ?? (await window.fluxalloy.batchExport.getSnapshot())
+    const snap = batchSnapshot ?? (await window.velorix.batchExport.getSnapshot())
     if (snap.rows.length === 0) {
       setStatusHint(uiText('batchExportEmpty'))
       return
     }
     const loc = getUiLocale() === 'en' ? 'en' : 'ru'
-    const res = await window.fluxalloy.saveTextWithDialog({
+    const res = await window.velorix.saveTextWithDialog({
       title: uiText('batchExportSaveReportTitle'),
       defaultFileName: uiText('batchExportSaveReportDefaultName'),
       content: formatFfmpegExportBatchReportText(snap, loc)
@@ -181,7 +181,7 @@ export function useFfmpegExportBatchHandlersRun({
   }, [batchSnapshot, setStatusHint])
 
   const handleBatchRemoveWaiting = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.batchExport.removeWaiting()
+    const res = await window.velorix.batchExport.removeWaiting()
     if (!res.ok) {
       setStatusHint(res.error)
       return

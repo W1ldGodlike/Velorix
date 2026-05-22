@@ -4,6 +4,6 @@ import { windowsScheduledTaskName } from '../../src/main/services/platform/windo
 
 describe('windows-task-scheduler-sync §10', () => {
   it('builds stable schtasks TN', () => {
-    expect(windowsScheduledTaskName('task-watch-abc')).toBe('\\FluxAlloy\\watch-task-watch-abc')
+    expect(windowsScheduledTaskName('task-watch-abc')).toBe('\\Velorix\\watch-task-watch-abc')
   })
 })

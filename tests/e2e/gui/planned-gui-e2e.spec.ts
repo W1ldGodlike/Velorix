@@ -1,5 +1,5 @@
 /**
- * §21 Playwright GUI e2e — planned-gui-e2e registry rows (needs dist/win-unpacked or FLUXALLOY_E2E_APP).
+ * §21 Playwright GUI e2e — planned-gui-e2e registry rows (needs dist/win-unpacked or VELORIX_E2E_APP).
  */
 import { test } from '@playwright/test'
 import type { ElectronApplication, Page } from 'playwright'
@@ -11,13 +11,13 @@ import {
 import { PLANNED_GUI_E2E_SCENARIOS, plannedGuiE2eStepNeedsSampleMp4 } from './planned-gui-e2e-steps'
 import {
   createPlannedGuiE2eSampleMp4,
-  launchPackagedFluxAlloy,
+  launchPackagedVELORIX,
   waitForMainShell
 } from './planned-gui-e2e-launch'
 import { runPlannedGuiE2eStep } from './planned-gui-e2e-step-runners'
 
 const e2eApp = resolvePackagedGuiE2eAppPath(process.cwd())
-const skipReason = `Set ${PACKAGED_GUI_E2E_APP_ENV_VAR} or npm run pack:dir (dist/win-unpacked/FluxAlloy.exe on Windows)`
+const skipReason = `Set ${PACKAGED_GUI_E2E_APP_ENV_VAR} or npm run pack:dir (dist/win-unpacked/Velorix.exe on Windows)`
 
 test.describe.configure({ mode: 'serial' })
 
@@ -28,7 +28,7 @@ test.beforeAll(async () => {
   if (!e2eApp) {
     return
   }
-  electronApp = await launchPackagedFluxAlloy(e2eApp)
+  electronApp = await launchPackagedVELORIX(e2eApp)
   try {
     sampleMp4 = createPlannedGuiE2eSampleMp4(e2eApp)
   } catch {

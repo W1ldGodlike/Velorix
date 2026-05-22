@@ -93,7 +93,7 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
       const mediaError = video.error
       const code = mediaError?.code ?? 0
       const detail = previewVideoMediaErrorDetailLabel(code)
-      window.fluxalloy.log.send({
+      window.velorix.log.send({
         level: 'error',
         scope: 'preview/video',
         message: `video element error code=${code} detail=${detail} path=${preview.path} mediaUrl=${preview.mediaUrl} playbackUrl=${previewBlobUrl ?? preview.mediaUrl}`
@@ -118,7 +118,7 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
             return blobUrl
           })
           setStatusHint(uiText('statusVideoBlobFallbackActive'))
-          window.fluxalloy.log.send({
+          window.velorix.log.send({
             level: 'info',
             scope: 'preview/video',
             message: `blob fallback ready size=${blob.size} type=${blob.type || 'unknown'} path=${preview.path}`
@@ -127,7 +127,7 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
         .catch((error: unknown) => {
           const message = error instanceof Error ? error.message : String(error)
           setStatusHint(uiTextVars('statusVideoPlayFailedAfterFallback', { detail }))
-          window.fluxalloy.log.send({
+          window.velorix.log.send({
             level: 'error',
             scope: 'preview/video',
             message: `blob fallback failed error=${message} path=${preview.path} mediaUrl=${preview.mediaUrl}`
@@ -142,7 +142,7 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
       if (!preview) {
         return
       }
-      window.fluxalloy.log.send({
+      window.velorix.log.send({
         level: 'info',
         scope: 'preview/video',
         message: `video metadata loaded duration=${video.duration || 0} size=${video.videoWidth}x${video.videoHeight} path=${preview.path} playbackUrl=${previewBlobUrl ?? preview.mediaUrl}`
@@ -194,7 +194,7 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
           if (editorUrlPasteBehavior === 'download_open_editor') {
             setDownloadsUrl(urlText)
             setStatusHint(uiText('statusDownloadOpenEditorWorking'))
-            const res = await window.fluxalloy.downloads.downloadFirstUrlOpenInMainEditor(urlText)
+            const res = await window.velorix.downloads.downloadFirstUrlOpenInMainEditor(urlText)
             if (!res.ok) {
               setStatusHint(res.error)
               return
@@ -202,13 +202,13 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
             setDownloadsUrl('')
             setStatusHint(uiText('statusDownloadOpenEditorSuccess'))
           } else {
-            void window.fluxalloy.downloads.openWindow({ text: urlText, uiLocale: getUiLocale() })
+            void window.velorix.downloads.openWindow({ text: urlText, uiLocale: getUiLocale() })
           }
         }
         return
       }
-      const absolutePath = window.fluxalloy.preview.getPathForFile(file)
-      const granted = await window.fluxalloy.preview.grantPath(absolutePath)
+      const absolutePath = window.velorix.preview.getPathForFile(file)
+      const granted = await window.velorix.preview.grantPath(absolutePath)
       if (!granted.ok) {
         setStatusHint(uiTextVars('statusDndGrantFailed', { error: granted.error }))
         return

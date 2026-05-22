@@ -14,7 +14,7 @@ export function resolvePlannedGuiE2eExecutable(): string | null {
 
 /** Короткий MP4 для open-file / snapshot / export (рядом с packaged ffmpeg). */
 export function createPlannedGuiE2eSampleMp4(executablePath: string): string {
-  const dir = mkdtempSync(join(tmpdir(), 'fluxalloy-e2e-media-'))
+  const dir = mkdtempSync(join(tmpdir(), 'VELORIX-e2e-media-'))
   const out = join(dir, 'sample-e2e.mp4')
   const ffmpeg = join(dirname(executablePath), 'resources', 'bin', 'ffmpeg.exe')
   if (!existsSync(ffmpeg)) {
@@ -46,14 +46,12 @@ export function createPlannedGuiE2eSampleMp4(executablePath: string): string {
   return out
 }
 
-export async function launchPackagedFluxAlloy(
-  executablePath: string
-): Promise<ElectronApplication> {
+export async function launchPackagedVELORIX(executablePath: string): Promise<ElectronApplication> {
   return electron.launch({
     executablePath,
     env: {
       ...process.env,
-      FLUXALLOY_E2E: '1'
+      VELORIX_E2E: '1'
     }
   })
 }

@@ -67,7 +67,7 @@ export function usePreviewProbeBody({
 
   async function handleCopyProbeJson(): Promise<void> {
     const text = formatProbeJsonForDisplay(probeInfo.rawJson)
-    const r = await window.fluxalloy.clipboard.writeText(text)
+    const r = await window.velorix.clipboard.writeText(text)
     setProbeToolbarTip(r.ok ? uiText('probeClipboardCopied') : uiText('probeClipboardCopyFailed'))
     window.setTimeout(() => {
       setProbeToolbarTip(null)
@@ -77,7 +77,7 @@ export function usePreviewProbeBody({
   async function handleSaveProbeJson(): Promise<void> {
     const text = formatProbeJsonForDisplay(probeInfo.rawJson)
     const defaultFileName = defaultFfprobeJsonFileName(mediaPathForDefaultSave)
-    const r = await window.fluxalloy.saveTextWithDialog({
+    const r = await window.velorix.saveTextWithDialog({
       title: uiText('probeSaveJsonDialogTitle'),
       defaultFileName,
       content: text
@@ -96,7 +96,7 @@ export function usePreviewProbeBody({
 
   async function handleSaveSummaryTxt(): Promise<void> {
     const text = formatProbeSummaryPlainText(probeInfo, getUiLocale())
-    const r = await window.fluxalloy.saveTextWithDialog({
+    const r = await window.velorix.saveTextWithDialog({
       title: uiText('probeSaveSummaryTxtDialogTitle'),
       defaultFileName: defaultFfprobeSummaryTxtFileName(mediaPathForDefaultSave),
       content: text
@@ -113,7 +113,7 @@ export function usePreviewProbeBody({
 
   async function handleSaveSummaryHtml(): Promise<void> {
     const html = formatProbeSummaryHtmlDocument(probeInfo, getUiLocale())
-    const r = await window.fluxalloy.saveTextWithDialog({
+    const r = await window.velorix.saveTextWithDialog({
       title: uiText('probeSaveSummaryHtmlDialogTitle'),
       defaultFileName: defaultFfprobeSummaryHtmlFileName(mediaPathForDefaultSave),
       content: html
@@ -158,7 +158,7 @@ export function usePreviewProbeBody({
   }, [probeTableMenu])
 
   async function copyProbeCellAndDismiss(text: string): Promise<void> {
-    const r = await window.fluxalloy.clipboard.writeText(text)
+    const r = await window.velorix.clipboard.writeText(text)
     setProbeToolbarTip(r.ok ? uiText('probeClipboardCopied') : uiText('probeClipboardCopyFailed'))
     setProbeTableMenu(null)
     window.setTimeout(() => setProbeToolbarTip(null), 2200)

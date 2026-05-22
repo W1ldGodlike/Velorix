@@ -1,5 +1,5 @@
 {
-  "name": "fluxalloy-cursor-automation",
+  "name": "VELORIX-cursor-automation",
   "private": true,
   "description": "Локальный цикл Cursor Agent по чек‑листу (SDK), вне Composer-чата IDE",
   "type": "module",

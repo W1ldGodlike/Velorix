@@ -6,19 +6,19 @@ const node = process.execPath
 const SCRIPTS = [
   {
     path: 'scripts/release/smoke-packaged-app.mjs',
-    envHint: 'FLUXALLOY_SKIP_APP_SMOKE'
+    envHint: 'VELORIX_SKIP_APP_SMOKE'
   },
   {
     path: 'scripts/release/smoke-packaged-ffprobe.mjs',
-    envHint: 'FLUXALLOY_SKIP_FFPROBE_SMOKE'
+    envHint: 'VELORIX_SKIP_FFPROBE_SMOKE'
   },
   {
     path: 'scripts/release/smoke-packaged-ytdlp.mjs',
-    envHint: 'FLUXALLOY_SKIP_YTDLP_SMOKE'
+    envHint: 'VELORIX_SKIP_YTDLP_SMOKE'
   },
   {
     path: 'scripts/release/smoke-packaged-ffmpeg.mjs',
-    envHint: 'FLUXALLOY_SKIP_FFMPEG_SMOKE'
+    envHint: 'VELORIX_SKIP_FFMPEG_SMOKE'
   }
 ] as const
 

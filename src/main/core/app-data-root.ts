@@ -3,14 +3,14 @@ import { app } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
 import {
-  FLUXALLOY_APP_DATA_ENV,
+  VELORIX_APP_DATA_ENV,
   resolveAppDataDirectoryFromInstallRoot,
   resolveInstallRootFromProcess
 } from './app-data-root-paths'
 
 export {
   APP_DATA_DIR_NAME,
-  FLUXALLOY_APP_DATA_ENV,
+  VELORIX_APP_DATA_ENV,
   resolveAppTempDirectory,
   resolveInstallRootFromProcess
 } from './app-data-root-paths'
@@ -35,7 +35,7 @@ export function resolveAppDataDirectory(): string {
  */
 export function configurePortableAppDataPaths(): void {
   const appDataRoot = resolveAppDataDirectory()
-  process.env[FLUXALLOY_APP_DATA_ENV] = appDataRoot
+  process.env[VELORIX_APP_DATA_ENV] = appDataRoot
   app.setPath('userData', appDataRoot)
   app.setPath('cache', join(appDataRoot, 'cache'))
   app.setPath('crashDumps', join(appDataRoot, 'crash-dumps'))

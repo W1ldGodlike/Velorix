@@ -73,7 +73,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
             setBatchOutputSuffix(e.target.value)
           }}
           onBlur={() => {
-            void window.fluxalloy.settings
+            void window.velorix.settings
               .setFfmpegExportBatchOutputSuffix(batchOutputSuffix)
               .then((s) => {
                 setBatchOutputSuffix(
@@ -176,7 +176,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
             } else if (raw === '4') {
               v = 4
             }
-            void window.fluxalloy.batchExport.setConcurrency(v).catch(console.error)
+            void window.velorix.batchExport.setConcurrency(v).catch(console.error)
           }}
         >
           <option value="1">1</option>
@@ -320,7 +320,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
           title={uiText('batchExportClear')}
           disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
           onClick={() => {
-            void window.fluxalloy.batchExport.clear().catch(console.error)
+            void window.velorix.batchExport.clear().catch(console.error)
           }}
         >
           <IconQueueTrash size={16} aria-hidden />

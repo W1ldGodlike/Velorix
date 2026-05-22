@@ -10,12 +10,12 @@ import { SCHEDULED_TASK_TEMPLATE_V1 } from '../../src/shared/scheduled-task-cont
 
 describe('linux-systemd-user-timer-sync §10', () => {
   it('builds stable systemd unit base name', () => {
-    expect(linuxSystemdWatchUnitBase('task-watch-abc')).toBe('fluxalloy-watch-task-watch-abc')
+    expect(linuxSystemdWatchUnitBase('task-watch-abc')).toBe('VELORIX-watch-task-watch-abc')
   })
 
   it('timer unit path under ~/.config/systemd/user', () => {
     expect(linuxSystemdTimerUnitPath('task-watch-1')).toMatch(
-      /\.config[/\\]systemd[/\\]user[/\\]fluxalloy-watch-task-watch-1\.timer$/
+      /\.config[/\\]systemd[/\\]user[/\\]VELORIX-watch-task-watch-1\.timer$/
     )
   })
 
@@ -39,6 +39,6 @@ describe('linux-systemd-user-timer-sync §10', () => {
     }
     const unit = buildLinuxSystemdTimerUnit(doc)
     expect(unit).toContain('OnUnitActiveSec=45s')
-    expect(unit).toContain('fluxalloy-watch-task-watch-3.service')
+    expect(unit).toContain('VELORIX-watch-task-watch-3.service')
   })
 })

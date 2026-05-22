@@ -5,18 +5,18 @@ import {
   WINDOWS_EXPLORER_VIDEO_EXTENSIONS
 } from './windows-explorer-context-menu'
 
-export const FLUXALLOY_INSTALL_REGISTER_OPEN_WITH = '--fluxalloy-install-register-open-with'
-export const FLUXALLOY_INSTALL_UNREGISTER_OPEN_WITH = '--fluxalloy-install-unregister-open-with'
+export const VELORIX_INSTALL_REGISTER_OPEN_WITH = '--velorix-install-register-open-with'
+export const VELORIX_INSTALL_UNREGISTER_OPEN_WITH = '--velorix-install-unregister-open-with'
 
-export const WINDOWS_FILE_ASSOCIATION_PROG_ID = 'FluxAlloy.VideoFile'
+export const WINDOWS_FILE_ASSOCIATION_PROG_ID = 'Velorix.VideoFile'
 
 export function isWindowsFileAssociationHeadlessArgv(
   argv: readonly string[] = process.argv
 ): 'register' | 'unregister' | null {
-  if (argv.includes(FLUXALLOY_INSTALL_UNREGISTER_OPEN_WITH)) {
+  if (argv.includes(VELORIX_INSTALL_UNREGISTER_OPEN_WITH)) {
     return 'unregister'
   }
-  if (argv.includes(FLUXALLOY_INSTALL_REGISTER_OPEN_WITH)) {
+  if (argv.includes(VELORIX_INSTALL_REGISTER_OPEN_WITH)) {
     return 'register'
   }
   return null

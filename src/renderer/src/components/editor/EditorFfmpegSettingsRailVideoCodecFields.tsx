@@ -115,19 +115,19 @@ export function EditorFfmpegSettingsRailVideoCodecFields(
             setExportVideoCodec(v)
             if (cpuFfmpegVideoCodecRequiresMkv(v) && exportContainer !== 'mkv') {
               setExportContainer('mkv')
-              void window.fluxalloy.settings.setFfmpegExportContainer('mkv').catch(console.error)
+              void window.velorix.settings.setFfmpegExportContainer('mkv').catch(console.error)
               setStatusHint(uiText('editorExportAutoContainerMkv'))
             }
             if (ffmpegExportVideoCodecRequiresMov(v) && exportContainer !== 'mov') {
               setExportContainer('mov')
-              void window.fluxalloy.settings.setFfmpegExportContainer('mov').catch(console.error)
+              void window.velorix.settings.setFfmpegExportContainer('mov').catch(console.error)
               setStatusHint(uiText('editorExportAutoContainerMov'))
             }
             if (v !== 'libx264' && exportTwoPass) {
               setExportTwoPass(false)
-              void window.fluxalloy.settings.setFfmpegExportTwoPass(false).catch(console.error)
+              void window.velorix.settings.setFfmpegExportTwoPass(false).catch(console.error)
             }
-            void window.fluxalloy.settings.setFfmpegExportVideoCodec(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoCodec(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.videoCodecs.map((p) => (
@@ -159,7 +159,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportEncodePresetId
             setExportEncodePreset(v)
-            void window.fluxalloy.settings.setFfmpegExportEncodePreset(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportEncodePreset(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.encodePresets.map((p) => (
@@ -181,7 +181,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(
             bumpManualExportEdit()
             const v = e.target.value as FfmpegExportContainerId
             setExportContainer(v)
-            void window.fluxalloy.settings.setFfmpegExportContainer(v).catch(console.error)
+            void window.velorix.settings.setFfmpegExportContainer(v).catch(console.error)
           }}
         >
           {ffmpegExportSelectOptions.containers.map((p) => (
@@ -212,7 +212,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(
             const raw = e.target.value
             const next = raw === 'preset' ? null : Number(raw)
             setExportCrf(next)
-            void window.fluxalloy.settings.setFfmpegExportCrf(next).catch(console.error)
+            void window.velorix.settings.setFfmpegExportCrf(next).catch(console.error)
           }}
         >
           <option value="preset">{uiText('editorCrfOptionPreset')}</option>
@@ -238,9 +238,9 @@ export function EditorFfmpegSettingsRailVideoCodecFields(
             setExportVideoBitrate(next)
             if (next === null && exportTwoPass) {
               setExportTwoPass(false)
-              void window.fluxalloy.settings.setFfmpegExportTwoPass(false).catch(console.error)
+              void window.velorix.settings.setFfmpegExportTwoPass(false).catch(console.error)
             }
-            void window.fluxalloy.settings.setFfmpegExportVideoBitrate(next).catch(console.error)
+            void window.velorix.settings.setFfmpegExportVideoBitrate(next).catch(console.error)
           }}
         >
           <option value="crf">{uiText('editorVideoBitrateOptionCrf')}</option>

@@ -156,7 +156,7 @@ export function useEditorExportSettingsDerived(
   const exportCodecStatusbarAria = exportCodecStatusbarCodec.ariaLabel
 
   const refetchHwEncoders = useCallback((): Promise<void> => {
-    return window.fluxalloy.engines.probeHwEncoders().then((r) => {
+    return window.velorix.engines.probeHwEncoders().then((r) => {
       setHwEncoderProbe(r)
       setExportVideoCodec((codec) => {
         if (codec === 'hw_auto' || codec === 'hw_auto_hevc') {
@@ -168,7 +168,7 @@ export function useEditorExportSettingsDerived(
         if (r.ok === true && probeRunnableHwSnapshot(r)[codec]) {
           return codec
         }
-        void window.fluxalloy.settings.setFfmpegExportVideoCodec('libx264').catch(console.error)
+        void window.velorix.settings.setFfmpegExportVideoCodec('libx264').catch(console.error)
         return 'libx264'
       })
     })
@@ -223,7 +223,7 @@ export function useEditorExportSettingsDerived(
 
   useEffect(() => {
     let cancelled = false
-    void window.fluxalloy.export.resolveBundledLutCubePath(exportVideoLut3d).then((p) => {
+    void window.velorix.export.resolveBundledLutCubePath(exportVideoLut3d).then((p) => {
       if (!cancelled) {
         setLutCubePathForPreview(p)
       }

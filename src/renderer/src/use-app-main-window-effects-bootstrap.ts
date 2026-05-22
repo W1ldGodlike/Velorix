@@ -34,12 +34,12 @@ export function useAppMainWindowEffectsBootstrap(
 
   useEffect(() => {
     let mounted = true
-    void window.fluxalloy.downloads.getSnapshot().then((rows) => {
+    void window.velorix.downloads.getSnapshot().then((rows) => {
       if (mounted) {
         setDownloadsRows(sanitizeDownloadsRows(rows))
       }
     })
-    const unsubscribe = window.fluxalloy.downloads.onSnapshot((rows) => {
+    const unsubscribe = window.velorix.downloads.onSnapshot((rows) => {
       setDownloadsRows(sanitizeDownloadsRows(rows))
     })
     return () => {
@@ -53,10 +53,10 @@ export function useAppMainWindowEffectsBootstrap(
   }, [currentSourcePath, trimSnapshotRef])
 
   useEffect(() => {
-    const offTheme = window.fluxalloy.onThemeChanged((next) => {
+    const offTheme = window.velorix.onThemeChanged((next) => {
       applyTheme(next)
     })
-    const offPanels = window.fluxalloy.onMainWindowUiPanelsChanged((panels) => {
+    const offPanels = window.velorix.onMainWindowUiPanelsChanged((panels) => {
       hydrateMainWindowUiPanels(panels)
     })
     return (): void => {
@@ -68,7 +68,7 @@ export function useAppMainWindowEffectsBootstrap(
   useEffect(() => {
     let cancelled = false
     void (async () => {
-      const loaded = await window.fluxalloy.settings.get()
+      const loaded = await window.velorix.settings.get()
       if (cancelled) {
         return
       }
@@ -77,7 +77,7 @@ export function useAppMainWindowEffectsBootstrap(
       document.title = uiText('mainWindowDocumentTitle')
       setUiLocaleRenderTick((n) => n + 1)
       if (shouldPersist) {
-        void window.fluxalloy.settings.setUiLocale(resolved)
+        void window.velorix.settings.setUiLocale(resolved)
       }
       applyTheme(loaded.effectiveTheme)
       hydrateExportFieldsFromSettings(loaded)
@@ -103,14 +103,14 @@ export function useAppMainWindowEffectsBootstrap(
   ])
 
   useEffect(() => {
-    const off = window.fluxalloy.onSettingsBackupImported(() => {
-      void window.fluxalloy.settings.get().then((loaded) => {
+    const off = window.velorix.onSettingsBackupImported(() => {
+      void window.velorix.settings.get().then((loaded) => {
         const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
         syncDocumentUiLocale(resolved)
         document.title = uiText('mainWindowDocumentTitle')
         setUiLocaleRenderTick((n) => n + 1)
         if (shouldPersist) {
-          void window.fluxalloy.settings.setUiLocale(resolved)
+          void window.velorix.settings.setUiLocale(resolved)
         }
         applyTheme(loaded.effectiveTheme)
         hydrateExportFieldsFromSettings(loaded)
@@ -136,12 +136,12 @@ export function useAppMainWindowEffectsBootstrap(
   ])
 
   useEffect(() => {
-    const off = window.fluxalloy.onUiLocaleChanged((loc) => {
+    const off = window.velorix.onUiLocaleChanged((loc) => {
       setUiLocaleForSession(loc)
       syncDocumentUiLocale(loc)
       document.title = uiText('mainWindowDocumentTitle')
       setUiLocaleRenderTick((n) => n + 1)
-      void window.fluxalloy.settings.get().then((s) => {
+      void window.velorix.settings.get().then((s) => {
         setExportUserPresets(s.ffmpegExportUserPresets ?? [])
       })
     })
@@ -149,7 +149,7 @@ export function useAppMainWindowEffectsBootstrap(
   }, [setExportUserPresets, setUiLocaleRenderTick])
 
   useEffect(() => {
-    const off = window.fluxalloy.downloads.onDownloadsWindowUiPanelsChanged((panels) => {
+    const off = window.velorix.downloads.onDownloadsWindowUiPanelsChanged((panels) => {
       hydrateDownloadsWindowUiPanels(panels)
     })
     return off
@@ -157,7 +157,7 @@ export function useAppMainWindowEffectsBootstrap(
 
   useEffect(() => {
     let cancelled = false
-    void window.fluxalloy.session.restoreLastSource().then((restored) => {
+    void window.velorix.session.restoreLastSource().then((restored) => {
       if (cancelled || !restored) {
         return
       }

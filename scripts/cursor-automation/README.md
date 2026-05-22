@@ -1,6 +1,6 @@
 # Автоматизация Cursor Agent (локальный SDK)
 
-Не читает Composer-чат IDE. Запускает [**Cursor Agent TypeScript SDK**](https://cursor.com/docs/api/sdk/typescript) против **корня репозитория FluxAlloy** (`cwd` = два уровня выше этой папки).
+Не читает Composer-чат IDE. Запускает [**Cursor Agent TypeScript SDK**](https://cursor.com/docs/api/sdk/typescript) против **корня репозитория Velorix** (`cwd` = два уровня выше этой папки).
 
 ## Подготовка
 
@@ -9,7 +9,7 @@ cd scripts/cursor-automation
 npm install
 ```
 
-Корень репозитория содержит [`.npmrc`](../../.npmrc) (`legacy-peer-deps=true` для основного приложения); при `npm install` из этой папки npm обычно подхватывает его при обходе родительских каталогов. Канон baseline — `package.json` (lock — `tests/shared/toolchain-baseline-package.test.ts`). **Wave 5 Dependabot** — [x] на **`main`** (журнал **J-1558**). **Следующий commit по J** **J-1580** — [`fluxalloy-agent.mdc`](../../.cursor/rules/fluxalloy-agent.mdc).
+Корень репозитория содержит [`.npmrc`](../../.npmrc) (`legacy-peer-deps=true` для основного приложения); при `npm install` из этой папки npm обычно подхватывает его при обходе родительских каталогов. Канон baseline — `package.json` (lock — `tests/shared/toolchain-baseline-package.test.ts`). **Wave 5 Dependabot** — [x] на **`main`** (журнал **J-1558**). **Следующий commit по J** **J-1580** — [`velorix-agent.mdc`](../../.cursor/rules/velorix-agent.mdc).
 
 Ключ API (личный или service account): обычно **Dashboard → Integrations**.
 Если ключ был отправлен в чат/лог, лучше сразу отозвать его и создать новый.

@@ -11,7 +11,7 @@ export interface TrimMarks {
 export interface VideoTimelineProps {
   /** Совпадает с `key` у `<video>`, чтобы переподписаться при смене источника. */
   mediaKey: string
-  /** `fluxmedia://…` для побочной декодирования waveform без Node API в renderer (§1.1 v0). */
+  /** `velorixmedia://…` для побочной декодирования waveform без Node API в renderer (§1.1 v0). */
   mediaUrl: string
   videoRef: RefObject<HTMLVideoElement | null>
   /** Сводка ffprobe для строки «Видео / Аудио / Позиция» (`docs/UX_REFERENCE_V0.md`). */

@@ -13,7 +13,7 @@ describe('verify-bundled-engines-hashes §3', () => {
     expect(out).toContain('ffmpeg')
     expect(out).toContain('yt-dlp')
     expect(out).toContain('macOS/Linux')
-    expect(out).toContain('FLUXALLOY_ENGINES_STRICT')
+    expect(out).toContain('VELORIX_ENGINES_STRICT')
     expect(out).toContain('windows-x64')
   })
 

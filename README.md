@@ -1,11 +1,11 @@
-# FluxAlloy
+# Velorix
 
-Десктопное приложение (Electron + React + TypeScript): оболочка вокруг **ffmpeg** и **yt‑dlp** по [`FLUXALLOY_TZ.md`](./FLUXALLOY_TZ.md).
+Десктопное приложение (Electron + React + TypeScript): оболочка вокруг **ffmpeg** и **yt‑dlp** по [`VELORIX_TZ.md`](./VELORIX_TZ.md).
 
 ## Быстрый старт (разработчик)
 
 ```bash
-git clone <url> FluxAlloy && cd FluxAlloy
+git clone <url> Velorix && cd Velorix
 npm install
 npm run check:quiet   # lint, typecheck, тесты, guards — краткий свод
 npm run dev           # Electron + Vite (predev подтянет движки на Windows)
@@ -17,8 +17,8 @@ npm run dev           # Electron + Vite (predev подтянет движки н
 
 - **Node.js** **≥ 20.19** (`engines` в `package.json`, ориентир [`.nvmrc`](./.nvmrc) — `24`).
 - **Renderer:** Zustand (`src/renderer/src/stores/*`), один бандл UI; pop-out загрузок/инспектора — тот же renderer + hash `#downloads` / `#inspector` (см. [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)).
-- **Агент Cursor:** [`AGENTS.md`](./AGENTS.md) → [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md); «продолжай» / `+` — skill [`fluxalloy-continue`](./.cursor/skills/fluxalloy-continue/SKILL.md); **следующий commit по J** **J-1580**, **push по J** **J-1580** — [`fluxalloy-agent.mdc`](./.cursor/rules/fluxalloy-agent.mdc).
-- **Git по J-NNN:** см. [`fluxalloy-agent.mdc`](./.cursor/rules/fluxalloy-agent.mdc), [`agent-contract.txt`](./scripts/cursor-automation/prompts/agent-contract.txt).
+- **Агент Cursor:** [`AGENTS.md`](./AGENTS.md) → [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md); «продолжай» / `+` — skill [`velorix-continue`](./.cursor/skills/velorix-continue/SKILL.md); **следующий commit по J** **J-1580**, **push по J** **J-1580** — [`velorix-agent.mdc`](./.cursor/rules/velorix-agent.mdc).
+- **Git по J-NNN:** см. [`velorix-agent.mdc`](./.cursor/rules/velorix-agent.mdc), [`agent-contract.txt`](./scripts/cursor-automation/prompts/agent-contract.txt).
 
 ### Первичная настройка окружения
 
@@ -66,7 +66,7 @@ npm run build:linux
 
 ## Зависимости приложения (движки)
 
-FluxAlloy работает поверх внешних движков:
+Velorix работает поверх внешних движков:
 
 - **yt-dlp**
 - **ffmpeg** / **ffprobe**
@@ -117,10 +117,10 @@ npm run engines:doctor
 - §19 signing indexed: Help §15 hub + `check:help-packaged-smoke-docs` + `check:help-owner-smoke-docs` + strict signing crosslinks; SDK `continue.txt` / `initial.txt` / `agent-contract.txt` — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock` / `formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause`; diagnostics — `check:release` / `check:platform-packaging-scripts` (`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine`). Packaging indexed: `electron-builder.yml` (**9** §19 yaml comments; J-1520..1539).
 - §19 packaging (`electron-builder.yml`): win **nsis** + **zip** (no `portable`); **9** §19 yaml comments — `getReleaseCodeSigningElectronBuilderYmlComments` in [`release-code-signing-roadmap.ts`](./src/shared/release-code-signing-roadmap.ts).
 - §21 Playwright GUI e2e: `npm run check:packaged-gui-e2e-playwright-deferred` — `npm run test:e2e:gui` → `scripts/e2e/run-planned-gui-e2e-playwright.mjs` (`tests/e2e/gui/planned-gui-e2e-step-runners.ts`, 8 steps). Help UiHintSuffix: AGENTS + 4 §15 anchors + 6 packaged (`formatPackagedGuiE2ePlaywright*HelpUiHintSuffix`; `check:help-owner-smoke-docs`, `check:help-packaged-smoke-docs`).
-- §21 Playwright scaffold: `tests/e2e/gui/planned-gui-e2e-steps.ts` + `planned-gui-e2e.spec.ts` (`PLANNED_GUI_E2E_*`; skip без `FLUXALLOY_E2E_APP`).
+- §21 Playwright scaffold: `tests/e2e/gui/planned-gui-e2e-steps.ts` + `planned-gui-e2e.spec.ts` (`PLANNED_GUI_E2E_*`; skip без `VELORIX_E2E_APP`).
 - §21 Playwright planned notes: `PLANNED_GUI_E2E_STEP_BY_ID`; Copy/releaseSmoke — `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine`.
 - §21 Playwright run on hardware: `docs/RELEASE.md` — `formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet` (manual **21.x**).
 - SDK automation: [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
 - yt-dlp по умолчанию: `<папка программы>/app-data/downloads/ytdlp`.
-- NSIS спрашивает про удаление `app-data/`; в ZIP — `Uninstall FluxAlloy.cmd`.
+- NSIS спрашивает про удаление `app-data/`; в ZIP — `Uninstall Velorix.cmd`.
 - **contextIsolation** + узкий IPC; тяжёлая работа только в **main process**.

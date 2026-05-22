@@ -159,7 +159,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                       if (fromId === null || fromId === row.id) {
                         return
                       }
-                      void window.fluxalloy.batchExport
+                      void window.velorix.batchExport
                         .reorderRow(fromId, rowIndex)
                         .catch(console.error)
                     }}
@@ -351,7 +351,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             aria-label={uiText('batchExportRetryRow')}
                             disabled={batchExportBusy}
                             onClick={() => {
-                              void window.fluxalloy.batchExport.retryRows([row.id]).then((res) => {
+                              void window.velorix.batchExport.retryRows([row.id]).then((res) => {
                                 if (!res.ok) {
                                   setStatusHint(res.error)
                                   return
@@ -377,7 +377,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                           aria-label={uiText('batchExportMoveUp')}
                           disabled={batchExportBusy || row.status === 'running'}
                           onClick={() => {
-                            void window.fluxalloy.batchExport
+                            void window.velorix.batchExport
                               .moveRow(row.id, 'up')
                               .catch(console.error)
                           }}
@@ -392,7 +392,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                           aria-label={uiText('batchExportMoveDown')}
                           disabled={batchExportBusy || row.status === 'running'}
                           onClick={() => {
-                            void window.fluxalloy.batchExport
+                            void window.velorix.batchExport
                               .moveRow(row.id, 'down')
                               .catch(console.error)
                           }}
@@ -407,7 +407,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                           aria-label={uiText('batchExportRemoveRow')}
                           disabled={batchExportBusy || row.status === 'running'}
                           onClick={() => {
-                            void window.fluxalloy.batchExport
+                            void window.velorix.batchExport
                               .removeRows([row.id])
                               .catch(console.error)
                           }}

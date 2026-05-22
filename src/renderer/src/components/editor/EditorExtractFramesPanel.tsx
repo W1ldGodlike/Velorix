@@ -241,7 +241,7 @@ export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps): 
             className="app-btn app-btn-compact app-btn-danger"
             title={uiText('editorExtractFramesCancelTitle')}
             onClick={() => {
-              void window.fluxalloy.export.cancel()
+              void window.velorix.export.cancel()
             }}
           >
             {uiText('topbarExportCancelReady')}

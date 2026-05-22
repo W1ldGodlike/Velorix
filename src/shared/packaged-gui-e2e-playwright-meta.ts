@@ -32,7 +32,7 @@ export const PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE =
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_CONFIG_MODULE = 'playwright.config.mjs' as const
 
 /** Env var for packaged app path (`packaged-gui-e2e-playwright-app-path.ts`). */
-export const PACKAGED_GUI_E2E_APP_ENV_VAR = 'FLUXALLOY_E2E_APP' as const
+export const PACKAGED_GUI_E2E_APP_ENV_VAR = 'VELORIX_E2E_APP' as const
 
 /** Vitest lock for scaffold exports (§21 deferred). */
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_SCAFFOLD_TEST_MODULE =

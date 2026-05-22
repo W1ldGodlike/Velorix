@@ -51,8 +51,8 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
 
   const reload = useCallback(async (): Promise<void> => {
     const [taskRes, scenRes] = await Promise.all([
-      window.fluxalloy.workflows.listScheduledTasks(),
-      window.fluxalloy.workflows.listScenarios()
+      window.velorix.workflows.listScheduledTasks(),
+      window.velorix.workflows.listScenarios()
     ])
     if (taskRes.ok) {
       setTasks(taskRes.items)
@@ -68,9 +68,9 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
     }
     let cancelled = false
     void Promise.all([
-      window.fluxalloy.workflows.listScheduledTasks(),
-      window.fluxalloy.workflows.listScenarios(),
-      window.fluxalloy.workflows.capabilities()
+      window.velorix.workflows.listScheduledTasks(),
+      window.velorix.workflows.listScenarios(),
+      window.velorix.workflows.capabilities()
     ]).then(([taskRes, scenRes, capRes]) => {
       if (cancelled) {
         return
@@ -109,7 +109,7 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
     }
     setBusy(true)
     try {
-      const res = await window.fluxalloy.workflows.saveScheduledTask(doc)
+      const res = await window.velorix.workflows.saveScheduledTask(doc)
       if (res.ok) {
         onStatus?.(
           res.osSchedulerWarning
@@ -129,7 +129,7 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
   const toggleEnabled = async (id: string, enabled: boolean): Promise<void> => {
     setBusy(true)
     try {
-      const res = await window.fluxalloy.workflows.setScheduledTaskEnabled(id, enabled)
+      const res = await window.velorix.workflows.setScheduledTaskEnabled(id, enabled)
       if (res.ok) {
         await reload()
       }
@@ -141,7 +141,7 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
   const deleteTask = async (id: string): Promise<void> => {
     setBusy(true)
     try {
-      const res = await window.fluxalloy.workflows.deleteScheduledTask(id)
+      const res = await window.velorix.workflows.deleteScheduledTask(id)
       if (res.ok) {
         onStatus?.(uiText('workflowPlannerTaskDeleted'))
         await reload()
@@ -231,7 +231,7 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
                     className="app-btn app-btn-compact"
                     disabled={busy}
                     onClick={() => {
-                      void window.fluxalloy.workflows.pickWatchFolder().then((res) => {
+                      void window.velorix.workflows.pickWatchFolder().then((res) => {
                         if (res.ok) {
                           setDraft((p) => ({ ...p, watchFolderPath: res.path }))
                         }

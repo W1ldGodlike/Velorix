@@ -149,7 +149,7 @@ export function isDiagnosticsFolderId(raw: unknown): raw is DiagnosticsFolderId 
  * Открыть один из диагностических каталогов в проводнике.
  *
  * `shell.openPath` возвращает пустую строку при успехе и текст ошибки иначе — конвертируем
- * это в `{ ok: true } | { ok: false; error }`, как принято в остальных IPC FluxAlloy.
+ * это в `{ ok: true } | { ok: false; error }`, как принято в остальных IPC Velorix.
  */
 export async function openDiagnosticsFolder(
   id: DiagnosticsFolderId

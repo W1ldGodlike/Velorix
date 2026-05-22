@@ -1,4 +1,4 @@
-/** Результат системного диалога «Открыть видео» §4.B (IPC allowlist `fluxmedia://`). */
+/** Результат системного диалога «Открыть видео» §4.B (IPC allowlist `velorixmedia://`). */
 
 export type PreviewDialogResult =
   | { ok: true; path: string; mediaUrl: string; name: string }

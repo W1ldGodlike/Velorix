@@ -27,7 +27,7 @@ export function formatPackagedVideoSpriteSmokeDiagnosticLines(): string[] {
   return [
     'guard: buildFfmpegVideoSpriteVideoFilter + isPackagedVideoSpriteVideoFilterShape (§7.5)',
     `sample-vf: ${sample}`,
-    'ui: EditorVideoSpritePanel → export.generateVideoSprite → fluxalloy:generate-video-sprite',
+    'ui: EditorVideoSpritePanel → export.generateVideoSprite → velorix:generate-video-sprite',
     'dev: npm run test — tests/shared/packaged-video-sprite-smoke.test.ts'
   ]
 }

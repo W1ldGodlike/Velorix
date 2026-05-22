@@ -4,16 +4,16 @@ import type {
 } from './ffmpeg-export-contract'
 import { FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES } from './ffmpeg-export-contract'
 
-const BUILTIN_PREFIX = 'flux-builtin-'
+const BUILTIN_PREFIX = 'velorix-builtin-'
 
-/** Встроенные пресеты экспорта (§7.2): id с префиксом `flux-builtin-` резервируются под код приложения. */
+/** Встроенные пресеты экспорта (§7.2): id с префиксом `velorix-builtin-` резервируются под код приложения. */
 export function isBuiltinExportUserPresetId(id: string): boolean {
   return id.startsWith(BUILTIN_PREFIX)
 }
 
 /**
  * §7.2 — при загрузке настроек: актуальные встроенные из кода + только пользовательские строки из JSON
- * (любые `flux-builtin-*` из файла игнорируются, в т.ч. устаревшие share-mp4 / compact-mp4 / quality-mkv).
+ * (любые `velorix-builtin-*` из файла игнорируются, в т.ч. устаревшие share-mp4 / compact-mp4 / quality-mkv).
  */
 export function mergeBuiltinFfmpegExportUserPresetsFromFile(
   fromFile: FfmpegExportUserPreset[],
@@ -42,7 +42,7 @@ function S(
 }
 
 /**
- * §7.2 / FLUXALLOY_TZ.md §7.2 — встроенные пресеты платформ (TikTok, YouTube, …).
+ * §7.2 / VELORIX_TZ.md §7.2 — встроенные пресеты платформ (TikTok, YouTube, …).
  * Значения — типичный H.264+AAC и масштаб под загрузку; вертикаль 9:16 задаётся отдельно в монтаже.
  */
 export function getBuiltinFfmpegExportUserPresets(locale: 'ru' | 'en'): FfmpegExportUserPreset[] {

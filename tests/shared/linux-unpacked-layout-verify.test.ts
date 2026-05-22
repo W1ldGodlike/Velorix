@@ -26,7 +26,7 @@ describe('linux-unpacked-layout-verify §19', () => {
       fileNonEmpty: async () => false,
       dirExists: async () => false
     })
-    expect(failures.some((e) => e.includes('fluxalloy'))).toBe(true)
+    expect(failures.some((e) => e.includes('VELORIX'))).toBe(true)
   })
 
   it('collectLinuxUnpackedLayoutFailures OK when exe and resources present', async () => {

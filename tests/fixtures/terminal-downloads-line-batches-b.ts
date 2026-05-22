@@ -39,7 +39,7 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_B: readonly TerminalDownloadsLineBa
     label:
       'print-to-file / file-urls / source-address / annotations / storyboards / sponsorblock chapter / concat-playlist / fixup / use-extractors / default-search',
     lines: [
-      'yt-dlp --print-to-file title flux-ytdlp-title.txt --skip-download ',
+      'yt-dlp --print-to-file title velorix-ytdlp-title.txt --skip-download ',
       'yt-dlp --enable-file-urls -F ',
       'yt-dlp --source-address 198.51.100.2 -F ',
       'yt-dlp --skip-download --print annotations ',
@@ -220,7 +220,7 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_B: readonly TerminalDownloadsLineBa
       'yt-dlp --list-extractor-descriptions',
       'yt-dlp --print-traffic -F ',
       'yt-dlp --extract-audio --audio-format vorbis ',
-      'yt-dlp --print-to-file id flux-ytdlp-id.txt --skip-download '
+      'yt-dlp --print-to-file id velorix-ytdlp-id.txt --skip-download '
     ] as const
   },
   {
@@ -242,10 +242,10 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_B: readonly TerminalDownloadsLineBa
   {
     label: 'print-to-file pageurl+durstr+uploader+churl + geo BY+AL+MK',
     lines: [
-      'yt-dlp --print-to-file webpage_url flux-ytdlp-pageurl.txt --skip-download ',
-      'yt-dlp --print-to-file duration_string flux-ytdlp-durstr.txt --skip-download ',
-      'yt-dlp --print-to-file uploader flux-ytdlp-uploader.txt --skip-download ',
-      'yt-dlp --print-to-file channel_url flux-ytdlp-churl.txt --skip-download ',
+      'yt-dlp --print-to-file webpage_url velorix-ytdlp-pageurl.txt --skip-download ',
+      'yt-dlp --print-to-file duration_string velorix-ytdlp-durstr.txt --skip-download ',
+      'yt-dlp --print-to-file uploader velorix-ytdlp-uploader.txt --skip-download ',
+      'yt-dlp --print-to-file channel_url velorix-ytdlp-churl.txt --skip-download ',
       'yt-dlp --geo-bypass-country BY -F ',
       'yt-dlp --geo-bypass-country AL -F ',
       'yt-dlp --geo-bypass-country MK -F '
@@ -254,11 +254,11 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_B: readonly TerminalDownloadsLineBa
   {
     label: 'print-to-file views+channel+extractor+pltitle+uploaddate + geo ME+PS+TL + wma',
     lines: [
-      'yt-dlp --print-to-file view_count flux-ytdlp-views.txt --skip-download ',
-      'yt-dlp --print-to-file channel flux-ytdlp-channel.txt --skip-download ',
-      'yt-dlp --print-to-file extractor flux-ytdlp-extractor.txt --skip-download ',
-      'yt-dlp --print-to-file playlist_title flux-ytdlp-pltitle.txt --skip-download ',
-      'yt-dlp --print-to-file upload_date flux-ytdlp-update.txt --skip-download ',
+      'yt-dlp --print-to-file view_count velorix-ytdlp-views.txt --skip-download ',
+      'yt-dlp --print-to-file channel velorix-ytdlp-channel.txt --skip-download ',
+      'yt-dlp --print-to-file extractor velorix-ytdlp-extractor.txt --skip-download ',
+      'yt-dlp --print-to-file playlist_title velorix-ytdlp-pltitle.txt --skip-download ',
+      'yt-dlp --print-to-file upload_date velorix-ytdlp-update.txt --skip-download ',
       'yt-dlp --geo-bypass-country ME -F ',
       'yt-dlp --geo-bypass-country PS -F ',
       'yt-dlp --geo-bypass-country TL -F ',
@@ -277,32 +277,32 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_B: readonly TerminalDownloadsLineBa
       'yt-dlp --geo-bypass-country AS -F ',
       'yt-dlp --geo-bypass-country MP -F ',
       'yt-dlp --geo-bypass-country UM -F ',
-      'yt-dlp --print-to-file description flux-ytdlp-desc.txt --skip-download ',
-      'yt-dlp --print-to-file filename flux-ytdlp-fn.txt --skip-download '
+      'yt-dlp --print-to-file description velorix-ytdlp-desc.txt --skip-download ',
+      'yt-dlp --print-to-file filename velorix-ytdlp-fn.txt --skip-download '
     ] as const
   },
   {
     label: 'no-prefer-free + print-to-file categories/tags/language/autocap/chapters/acodec/vcodec',
     lines: [
       'yt-dlp --no-prefer-free-formats -F ',
-      'yt-dlp --print-to-file categories flux-ytdlp-categories.txt --skip-download ',
-      'yt-dlp --print-to-file tags flux-ytdlp-tags.txt --skip-download ',
-      'yt-dlp --print-to-file language flux-ytdlp-language.txt --skip-download ',
-      'yt-dlp --print-to-file automatic_captions flux-ytdlp-autocap.txt --skip-download ',
-      'yt-dlp --print-to-file chapters flux-ytdlp-chapters.txt --skip-download ',
-      'yt-dlp --print-to-file acodec flux-ytdlp-acodec.txt --skip-download ',
-      'yt-dlp --print-to-file vcodec flux-ytdlp-vcodec.txt --skip-download '
+      'yt-dlp --print-to-file categories velorix-ytdlp-categories.txt --skip-download ',
+      'yt-dlp --print-to-file tags velorix-ytdlp-tags.txt --skip-download ',
+      'yt-dlp --print-to-file language velorix-ytdlp-language.txt --skip-download ',
+      'yt-dlp --print-to-file automatic_captions velorix-ytdlp-autocap.txt --skip-download ',
+      'yt-dlp --print-to-file chapters velorix-ytdlp-chapters.txt --skip-download ',
+      'yt-dlp --print-to-file acodec velorix-ytdlp-acodec.txt --skip-download ',
+      'yt-dlp --print-to-file vcodec velorix-ytdlp-vcodec.txt --skip-download '
     ] as const
   },
   {
     label: 'print-to-file likes+duration+subs+chid+plid+heatmap + lazy-pl + no-continue -F',
     lines: [
-      'yt-dlp --print-to-file like_count flux-ytdlp-likes.txt --skip-download ',
-      'yt-dlp --print-to-file duration flux-ytdlp-duration.txt --skip-download ',
-      'yt-dlp --print-to-file subtitles flux-ytdlp-subs.txt --skip-download ',
-      'yt-dlp --print-to-file channel_id flux-ytdlp-chid.txt --skip-download ',
-      'yt-dlp --print-to-file playlist_id flux-ytdlp-plid.txt --skip-download ',
-      'yt-dlp --print-to-file heatmap flux-ytdlp-heatmap.txt --skip-download ',
+      'yt-dlp --print-to-file like_count velorix-ytdlp-likes.txt --skip-download ',
+      'yt-dlp --print-to-file duration velorix-ytdlp-duration.txt --skip-download ',
+      'yt-dlp --print-to-file subtitles velorix-ytdlp-subs.txt --skip-download ',
+      'yt-dlp --print-to-file channel_id velorix-ytdlp-chid.txt --skip-download ',
+      'yt-dlp --print-to-file playlist_id velorix-ytdlp-plid.txt --skip-download ',
+      'yt-dlp --print-to-file heatmap velorix-ytdlp-heatmap.txt --skip-download ',
       'yt-dlp --lazy-playlist -F ',
       'yt-dlp --no-continue -F '
     ] as const

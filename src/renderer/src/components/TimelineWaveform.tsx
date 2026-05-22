@@ -10,7 +10,7 @@ const WAVEFORM_MAX_FETCH_BYTES = 96 * 1024 * 1024
 const PEAK_BUCKETS = 400
 
 interface TimelineWaveformProps {
-  /** `fluxmedia://…` после grant; синхронизируется по `mediaKey`. */
+  /** `velorixmedia://…` после grant; синхронизируется по `mediaKey`. */
   mediaUrl: string
   mediaKey: string
   durationSec: number

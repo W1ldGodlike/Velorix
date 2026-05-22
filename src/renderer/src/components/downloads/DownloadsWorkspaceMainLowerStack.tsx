@@ -61,7 +61,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
           void refreshDownloadsHistory()
         }}
         onClear={() => {
-          void window.fluxalloy.downloads.clearHistory().then((res) => {
+          void window.velorix.downloads.clearHistory().then((res) => {
             if (!res.ok) {
               setStatusHint(res.error)
               return
@@ -74,7 +74,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
           void exportVisibleDownloadsHistory()
         }}
         onRepeat={(url) => {
-          void window.fluxalloy.downloads.addLines(url).then((res) => {
+          void window.velorix.downloads.addLines(url).then((res) => {
             if (!res.ok) {
               setStatusHint(res.error)
               return
@@ -88,14 +88,14 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
           })
         }}
         onOpenOutput={(id, mode) => {
-          void window.fluxalloy.downloads.openHistoryOutput(id, mode).then((res) => {
+          void window.velorix.downloads.openHistoryOutput(id, mode).then((res) => {
             if (!res.ok) {
               setStatusHint(res.error)
             }
           })
         }}
         onOpenInEditor={(id) => {
-          void window.fluxalloy.downloads.openHistoryOutputInHandler(id).then((res) => {
+          void window.velorix.downloads.openHistoryOutputInHandler(id).then((res) => {
             if (!res.ok) {
               setStatusHint(res.error)
               return
@@ -121,7 +121,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
         }}
         onSave={() => {
           const text = formatDownloadsLogText(downloadsLogLines)
-          void window.fluxalloy.downloads.saveVisibleLog(text).then((res) => {
+          void window.velorix.downloads.saveVisibleLog(text).then((res) => {
             if (!res.ok && res.error !== DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED) {
               setStatusHint(res.error)
             }

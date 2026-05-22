@@ -34,7 +34,7 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
       setScenarioHasUrl(false)
       return
     }
-    const res = await window.fluxalloy.workflows.getScenario(id)
+    const res = await window.velorix.workflows.getScenario(id)
     if (!res.ok) {
       setScenarioHasUrl(false)
       return
@@ -43,7 +43,7 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
   }, [])
 
   const loadScenarios = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.workflows.listScenarios()
+    const res = await window.velorix.workflows.listScenarios()
     if (!res.ok) {
       return
     }
@@ -63,7 +63,7 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
     }
     setRunBusy(true)
     try {
-      const res = await window.fluxalloy.workflows.runScenarioOnFile(
+      const res = await window.velorix.workflows.runScenarioOnFile(
         scenarioId,
         previewMediaPath,
         uiText('editorWorkflowRunTaskTitle')
@@ -85,7 +85,7 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
     }
     setRunBusy(true)
     try {
-      const res = await window.fluxalloy.workflows.runScenarioOnUrl(
+      const res = await window.velorix.workflows.runScenarioOnUrl(
         scenarioId,
         uiText('editorWorkflowRunUrlTaskTitle')
       )

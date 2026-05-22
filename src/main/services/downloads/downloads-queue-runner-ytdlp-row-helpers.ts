@@ -1,5 +1,5 @@
 import type { AppUiLocale } from '../../../shared/app-ui-locale'
-import { downloadsRunnerAbortMessage } from '../../../shared/downloads-flux-log-locale'
+import { downloadsRunnerAbortMessage } from '../../../shared/downloads-velorix-log-locale'
 
 /** Реже дергать таблицу/IPC: полоса и подпись прогресса обновляются не чаще этого интервала. */
 export const DOWNLOADS_PROGRESS_UI_MIN_INTERVAL_MS = 1000

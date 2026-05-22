@@ -10,7 +10,7 @@ import { protocol } from 'electron'
  * Маркеры путей, которым renderer явно получил доступ (диалог выбора, DnD с путём из preload).
  *
  * Если отдавать `file:///` напрямую из произвольной строки, UI мог бы попросить main открыть
- * любой файл по угадыванию пути. Поэтому `fluxmedia://` принимает только зарегистрированные ключи.
+ * любой файл по угадыванию пути. Поэтому `velorixmedia://` принимает только зарегистрированные ключи.
  */
 const allowedMediaPaths = new Set<string>()
 const allowedMediaTokens = new Map<string, string>()
@@ -34,10 +34,10 @@ const MEDIA_MIME_BY_EXT: Record<string, string> = {
 }
 
 /** Нужно вызвать до `app.ready`, иначе схема не получит нужных привилегий Chromium. */
-export function registerFluxMediaPrivileges(): void {
+export function registervelorixmediaPrivileges(): void {
   protocol.registerSchemesAsPrivileged([
     {
-      scheme: 'fluxmedia',
+      scheme: 'velorixmedia',
       privileges: {
         secure: true,
         standard: true,
@@ -86,7 +86,7 @@ export function grantMediaPath(filePath: string): string | null {
     allowedMediaTokens.set(token, key)
     return `http://127.0.0.1:${localMediaServerPort}/media/${token}`
   }
-  return `fluxmedia://local/?p=${encodeURIComponent(key)}`
+  return `velorixmedia://local/?p=${encodeURIComponent(key)}`
 }
 
 function mediaMimeType(filePath: string): string {
@@ -257,9 +257,9 @@ function startLocalMediaServer(): void {
   })
 }
 
-export function registerFluxMediaProtocol(): void {
+export function registervelorixmediaProtocol(): void {
   startLocalMediaServer()
-  protocol.handle('fluxmedia', async (request) => {
+  protocol.handle('velorixmedia', async (request) => {
     let url: URL
     try {
       url = new URL(request.url)

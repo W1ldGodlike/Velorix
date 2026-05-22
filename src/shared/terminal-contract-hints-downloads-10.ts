@@ -6,36 +6,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_10: TerminalCommandHintEntry
     tool: 'yt-dlp',
     token: '· в файл: аудиобитрейт',
     summary:
-      'Записать средний битрейт аудио (поле abr; kbps) в flux-ytdlp-abr.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file abr flux-ytdlp-abr.txt --skip-download '
+      'Записать средний битрейт аудио (поле abr; kbps) в velorix-ytdlp-abr.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file abr velorix-ytdlp-abr.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: видеобитрейт',
     summary:
-      'Записать средний битрейт видео (поле vbr; kbps) в flux-ytdlp-vbr.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file vbr flux-ytdlp-vbr.txt --skip-download '
+      'Записать средний битрейт видео (поле vbr; kbps) в velorix-ytdlp-vbr.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file vbr velorix-ytdlp-vbr.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: размер файла',
     summary:
-      'Записать (поле filesize) (байты, если известен) в flux-ytdlp-fszb.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file filesize flux-ytdlp-fszb.txt --skip-download '
+      'Записать (поле filesize) (байты, если известен) в velorix-ytdlp-fszb.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file filesize velorix-ytdlp-fszb.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: примечание к формату',
     summary:
-      'Записать примечание к выбранному формату (поле format_note) в flux-ytdlp-fnote.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file format_note flux-ytdlp-fnote.txt --skip-download '
+      'Записать примечание к выбранному формату (поле format_note) в velorix-ytdlp-fnote.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file format_note velorix-ytdlp-fnote.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: автор плейлиста',
     summary:
-      'Записать (поле playlist_uploader) (имя автора плейлиста) в flux-ytdlp-plup.txt без скачивания; допишите ссылку на плейлист.',
-    fullLine: 'yt-dlp --print-to-file playlist_uploader flux-ytdlp-plup.txt --skip-download '
+      'Записать (поле playlist_uploader) (имя автора плейлиста) в velorix-ytdlp-plup.txt без скачивания; допишите ссылку на плейлист.',
+    fullLine: 'yt-dlp --print-to-file playlist_uploader velorix-ytdlp-plup.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
@@ -93,56 +93,58 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_10: TerminalCommandHintEntry
     tool: 'yt-dlp',
     token: '· в файл: полный заголовок',
     summary:
-      'Записать полный заголовок (поле fulltitle) в flux-ytdlp-fulltitle.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file fulltitle flux-ytdlp-fulltitle.txt --skip-download '
+      'Записать полный заголовок (поле fulltitle) в velorix-ytdlp-fulltitle.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file fulltitle velorix-ytdlp-fulltitle.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: альтернативный заголовок',
     summary:
-      'Записать альтернативный заголовок (поле alt_title) в flux-ytdlp-alttitle.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file alt_title flux-ytdlp-alttitle.txt --skip-download '
+      'Записать альтернативный заголовок (поле alt_title) в velorix-ytdlp-alttitle.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file alt_title velorix-ytdlp-alttitle.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: исполнитель',
     summary:
-      'Записать исполнителя (поле artist) в flux-ytdlp-artist.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file artist flux-ytdlp-artist.txt --skip-download '
+      'Записать исполнителя (поле artist) в velorix-ytdlp-artist.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file artist velorix-ytdlp-artist.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: альбом',
-    summary: 'Записать альбом (поле album) в flux-ytdlp-album.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file album flux-ytdlp-album.txt --skip-download '
+    summary:
+      'Записать альбом (поле album) в velorix-ytdlp-album.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file album velorix-ytdlp-album.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: год релиза',
     summary:
-      'Записать год релиза (поле release_year) в flux-ytdlp-relyear.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file release_year flux-ytdlp-relyear.txt --skip-download '
+      'Записать год релиза (поле release_year) в velorix-ytdlp-relyear.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file release_year velorix-ytdlp-relyear.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: эфир сейчас',
     summary:
-      'Записать признак прямого эфира (поле is_live) в flux-ytdlp-islive.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file is_live flux-ytdlp-islive.txt --skip-download '
+      'Записать признак прямого эфира (поле is_live) в velorix-ytdlp-islive.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file is_live velorix-ytdlp-islive.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: статус эфира',
     summary:
-      'Записать статус эфира (поле live_status) в flux-ytdlp-livestat.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file live_status flux-ytdlp-livestat.txt --skip-download '
+      'Записать статус эфира (поле live_status) в velorix-ytdlp-livestat.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file live_status velorix-ytdlp-livestat.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: подписчики канала',
     summary:
-      'Записать число подписчиков канала (поле channel_follower_count) в flux-ytdlp-chfol.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file channel_follower_count flux-ytdlp-chfol.txt --skip-download '
+      'Записать число подписчиков канала (поле channel_follower_count) в velorix-ytdlp-chfol.txt без скачивания; допишите ссылку.',
+    fullLine:
+      'yt-dlp --print-to-file channel_follower_count velorix-ytdlp-chfol.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
@@ -192,85 +194,85 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_10: TerminalCommandHintEntry
     tool: 'yt-dlp',
     token: '· в файл: сериал',
     summary:
-      'Записать (поле series) (шоу) в flux-ytdlp-series.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file series flux-ytdlp-series.txt --skip-download '
+      'Записать (поле series) (шоу) в velorix-ytdlp-series.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file series velorix-ytdlp-series.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: номер сезона',
     summary:
-      'Записать номер сезона (поле season_number) в flux-ytdlp-snum.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file season_number flux-ytdlp-snum.txt --skip-download '
+      'Записать номер сезона (поле season_number) в velorix-ytdlp-snum.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file season_number velorix-ytdlp-snum.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: номер эпизода',
     summary:
-      'Записать номер эпизода (поле episode_number) в flux-ytdlp-epnum.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file episode_number flux-ytdlp-epnum.txt --skip-download '
+      'Записать номер эпизода (поле episode_number) в velorix-ytdlp-epnum.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file episode_number velorix-ytdlp-epnum.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: название эпизода',
     summary:
-      'Записать (поле episode) (строка площадки) в flux-ytdlp-epstr.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file episode flux-ytdlp-epstr.txt --skip-download '
+      'Записать (поле episode) (строка площадки) в velorix-ytdlp-epstr.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file episode velorix-ytdlp-epstr.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: id эпизода',
     summary:
-      'Записать идентификатор эпизода (поле episode_id) в flux-ytdlp-epid.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file episode_id flux-ytdlp-epid.txt --skip-download '
+      'Записать идентификатор эпизода (поле episode_id) в velorix-ytdlp-epid.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file episode_id velorix-ytdlp-epid.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: id сезона',
     summary:
-      'Записать идентификатор сезона (поле season_id) в flux-ytdlp-sid.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file season_id flux-ytdlp-sid.txt --skip-download '
+      'Записать идентификатор сезона (поле season_id) в velorix-ytdlp-sid.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file season_id velorix-ytdlp-sid.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: id канала плейлиста',
     summary:
-      'Записать идентификатор канала плейлиста (поле playlist_channel_id) в flux-ytdlp-plchid.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file playlist_channel_id flux-ytdlp-plchid.txt --skip-download '
+      'Записать идентификатор канала плейлиста (поле playlist_channel_id) в velorix-ytdlp-plchid.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file playlist_channel_id velorix-ytdlp-plchid.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: частота дискретизации',
     summary:
-      'Записать (поле asr) (Hz дискретизации аудио) в flux-ytdlp-asr.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file asr flux-ytdlp-asr.txt --skip-download '
+      'Записать (поле asr) (Hz дискретизации аудио) в velorix-ytdlp-asr.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file asr velorix-ytdlp-asr.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: защита контента (has_drm)',
     summary:
-      'Записать признак DRM (поле has_drm) в flux-ytdlp-drm.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file has_drm flux-ytdlp-drm.txt --skip-download '
+      'Записать признак DRM (поле has_drm) в velorix-ytdlp-drm.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file has_drm velorix-ytdlp-drm.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: встраивание в плеер',
     summary:
-      'Записать ограничения встроенного плеера (поле playable_in_embed) в flux-ytdlp-embed.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file playable_in_embed flux-ytdlp-embed.txt --skip-download '
+      'Записать ограничения встроенного плеера (поле playable_in_embed) в velorix-ytdlp-embed.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file playable_in_embed velorix-ytdlp-embed.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: был эфир',
     summary:
-      'Записать признак «был эфир» (поле was_live) в flux-ytdlp-waslive.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file was_live flux-ytdlp-waslive.txt --skip-download '
+      'Записать признак «был эфир» (поле was_live) в velorix-ytdlp-waslive.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file was_live velorix-ytdlp-waslive.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: тип медиа',
     summary:
-      'Записать тип медиа (поле media_type) в flux-ytdlp-mtype.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file media_type flux-ytdlp-mtype.txt --skip-download '
+      'Записать тип медиа (поле media_type) в velorix-ytdlp-mtype.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file media_type velorix-ytdlp-mtype.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
@@ -332,36 +334,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_10: TerminalCommandHintEntry
     tool: 'yt-dlp',
     token: '· в файл: тип записи',
     summary:
-      'Записать тип объекта (поле _type: video, playlist и т. п.) в flux-ytdlp-otype.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file _type flux-ytdlp-otype.txt --skip-download '
+      'Записать тип объекта (поле _type: video, playlist и т. п.) в velorix-ytdlp-otype.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file _type velorix-ytdlp-otype.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: ссылка на плейлист',
     summary:
-      'Записать ссылку на плейлист (поле playlist_url) в flux-ytdlp-plurl.txt без скачивания; допишите ссылку на плейлист.',
-    fullLine: 'yt-dlp --print-to-file playlist_url flux-ytdlp-plurl.txt --skip-download '
+      'Записать ссылку на плейлист (поле playlist_url) в velorix-ytdlp-plurl.txt без скачивания; допишите ссылку на плейлист.',
+    fullLine: 'yt-dlp --print-to-file playlist_url velorix-ytdlp-plurl.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: ссылка на манифест',
     summary:
-      'Записать (поле manifest_url) (манифест HLS, DASH и др.) в flux-ytdlp-manurl.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file manifest_url flux-ytdlp-manurl.txt --skip-download '
+      'Записать (поле manifest_url) (манифест HLS, DASH и др.) в velorix-ytdlp-manurl.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file manifest_url velorix-ytdlp-manurl.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: sar после растяжения кадра',
     summary:
-      'Записать (поле stretched_ratio) (анаморфное растяжение кадра, если модуль извлечения отдаёт) в flux-ytdlp-sarfix.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file stretched_ratio flux-ytdlp-sarfix.txt --skip-download '
+      'Записать (поле stretched_ratio) (анаморфное растяжение кадра, если модуль извлечения отдаёт) в velorix-ytdlp-sarfix.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file stretched_ratio velorix-ytdlp-sarfix.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: запрошенные форматы',
     summary:
-      'Записать (поле requested_formats) (JSON выбранных потоков) в flux-ytdlp-reqf.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file requested_formats flux-ytdlp-reqf.txt --skip-download '
+      'Записать (поле requested_formats) (JSON выбранных потоков) в velorix-ytdlp-reqf.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file requested_formats velorix-ytdlp-reqf.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
@@ -398,14 +400,14 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_10: TerminalCommandHintEntry
     tool: 'yt-dlp',
     token: '· в файл: список форматов',
     summary:
-      'Записать список форматов (поле formats; JSON или текст от модуля извлечения) в flux-ytdlp-formats.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file formats flux-ytdlp-formats.txt --skip-download '
+      'Записать список форматов (поле formats; JSON или текст от модуля извлечения) в velorix-ytdlp-formats.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file formats velorix-ytdlp-formats.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: прямая ссылка',
     summary:
-      'Записать прямую ссылку на поток выбранного формата (поле url) в flux-ytdlp-url.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file url flux-ytdlp-url.txt --skip-download '
+      'Записать прямую ссылку на поток выбранного формата (поле url) в velorix-ytdlp-url.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file url velorix-ytdlp-url.txt --skip-download '
   }
 ]

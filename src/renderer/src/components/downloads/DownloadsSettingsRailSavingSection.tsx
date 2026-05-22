@@ -71,7 +71,7 @@ export function DownloadsSettingsRailSavingSection(
               aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipOutputOpenFolder')}
               onClick={() => {
-                void window.fluxalloy.downloads.openOutputDirectory().then((res) => {
+                void window.velorix.downloads.openOutputDirectory().then((res) => {
                   if (!res.ok) {
                     setStatusHint(res.error)
                   }
@@ -87,7 +87,7 @@ export function DownloadsSettingsRailSavingSection(
               aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipOutputPick')}
               onClick={() => {
-                void window.fluxalloy.downloads.pickOutputDirectory().then((res) => {
+                void window.velorix.downloads.pickOutputDirectory().then((res) => {
                   if (res.ok) {
                     setDownloadsOutputDirectory({ path: res.path, isDefault: false })
                     return
@@ -107,7 +107,7 @@ export function DownloadsSettingsRailSavingSection(
               aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipOutputDefault')}
               onClick={() => {
-                void window.fluxalloy.downloads.clearOutputDirectory().then((res) => {
+                void window.velorix.downloads.clearOutputDirectory().then((res) => {
                   if (!res.ok) {
                     setStatusHint(res.error)
                     return

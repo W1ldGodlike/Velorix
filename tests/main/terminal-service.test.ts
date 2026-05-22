@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('electron', () => ({
   app: {
-    getAppPath: () => '/tmp/fluxalloy-test',
+    getAppPath: () => '/tmp/VELORIX-test',
     getPath: () => '/tmp'
   }
 }))
@@ -36,7 +36,7 @@ import { TERMINAL_CURRENT_FILE_PLACEHOLDER } from '../../src/shared/terminal-con
 
 describe('appendTerminalCliSessionLog', () => {
   it('создаёт logs/terminal-cli.log под userData', () => {
-    const dir = mkdtempSync(join(tmpdir(), 'fluxalloy-term-cli-'))
+    const dir = mkdtempSync(join(tmpdir(), 'VELORIX-term-cli-'))
     try {
       appendTerminalCliSessionLog({ userData: dir, block: 'probe-run\n' })
       const p = resolveTerminalCliSessionLogPath(dir)

@@ -14,7 +14,7 @@ import { getMainApplicationStrings } from '../../../shared/main-application-loca
 import { isNativeMainYtdlpKillProcessTreeSupported } from '../../platform'
 import { isYtdlpOsPauseSupported } from './ytdlp-os-pause-support'
 import { buildYtdlpSpawnArgvTokens } from './ytdlp-extra-args'
-import { downloadsRunnerAbortMessage } from '../../../shared/downloads-flux-log-locale'
+import { downloadsRunnerAbortMessage } from '../../../shared/downloads-velorix-log-locale'
 import {
   resolveSafeYtdlpOutputPattern,
   YTDLP_DEFAULT_FILENAME_TEMPLATE,

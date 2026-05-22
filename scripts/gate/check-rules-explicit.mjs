@@ -13,7 +13,7 @@ const BANNED = [
   { phrase: 'если нужно', allow: null },
   { phrase: 'желательно', allow: null },
   { phrase: 'по желанию', allow: /не обязательн/i },
-  { phrase: 'крупный', allow: /глоссар|fluxalloy-rules-explicit|Крупный срез/i },
+  { phrase: 'крупный', allow: /глоссар|velorix-rules-explicit|Крупный срез/i },
   { phrase: 'мелоч', allow: /Микро-J|микро-J|глоссар/i },
   { phrase: 'подобн', allow: /Однотипн|глоссар|_SPECS|parseWhitelist/i }
 ]
@@ -21,7 +21,7 @@ const BANNED = [
 const failures = []
 
 for (const name of readdirSync(RULES_DIR)) {
-  if (!name.endsWith('.mdc') || name === 'fluxalloy-rules-explicit.mdc') {
+  if (!name.endsWith('.mdc') || name === 'velorix-rules-explicit.mdc') {
     continue
   }
   const path = join(RULES_DIR, name)
@@ -38,9 +38,7 @@ for (const name of readdirSync(RULES_DIR)) {
       if (allow && allow.test(line)) {
         continue
       }
-      failures.push(
-        `${path}:${i + 1}: размытая фраза «${phrase}» — см. fluxalloy-rules-explicit.mdc`
-      )
+      failures.push(`${path}:${i + 1}: размытая фраза «${phrase}» — см. velorix-rules-explicit.mdc`)
     }
   }
 }

@@ -31,7 +31,7 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     userBin: join(info.userData, 'bin')
   })
   return [
-    `FluxAlloy ${info.appVersion}`,
+    `Velorix ${info.appVersion}`,
     ...(info.buildInfoLines.length > 0 ? [...info.buildInfoLines] : []),
     `Electron ${info.electronVersion}`,
     `Chrome ${info.chromeVersion}`,

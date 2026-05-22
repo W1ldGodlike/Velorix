@@ -21,7 +21,7 @@ afterEach(() => {
 
 describe('resolveAllowedYtdlpDownloadOutputFile', () => {
   it('принимает файл внутри каталога по умолчанию app-data/downloads/ytdlp', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-out-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-out-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     const file = join(outDir, 'x.mp4')
@@ -31,7 +31,7 @@ describe('resolveAllowedYtdlpDownloadOutputFile', () => {
   })
 
   it('отклоняет пути вне каталога загрузок yt-dlp', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-out2-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-out2-'))
     mkdirSync(join(root, 'downloads', 'ytdlp'), { recursive: true })
     const outside = join(root, 'outside.txt')
     writeFileSync(outside, 'x')
@@ -40,7 +40,7 @@ describe('resolveAllowedYtdlpDownloadOutputFile', () => {
   })
 
   it('учитывает override каталога загрузки из настроек', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-custom-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-custom-'))
     const customDir = join(root, 'my-downloads')
     mkdirSync(customDir, { recursive: true })
     syncYtdlpDownloadDirectoryFromSettings(customDir)
@@ -51,7 +51,7 @@ describe('resolveAllowedYtdlpDownloadOutputFile', () => {
   })
 
   it('находит финальный файл по media id, если yt-dlp сообщил удалённый промежуточный путь', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-merge-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-merge-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     const finalFile = join(outDir, 'Rimworld. нормальное имя [dCoZhhCIhXo].mkv')
@@ -63,7 +63,7 @@ describe('resolveAllowedYtdlpDownloadOutputFile', () => {
   })
 
   it('не ищет fallback по media id для пути вне каталога загрузок', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-merge-outside-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-merge-outside-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     writeFileSync(join(outDir, 'clip [dCoZhhCIhXo].mkv'), 'x')
@@ -76,7 +76,7 @@ describe('resolveAllowedYtdlpDownloadOutputFile', () => {
 
 describe('resolveYtdlpFolderRevealTarget', () => {
   it('без outputPath открывает корень каталога загрузок', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-reveal-root-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-reveal-root-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     expect(resolveYtdlpFolderRevealTarget('', root)).toEqual({
@@ -87,7 +87,7 @@ describe('resolveYtdlpFolderRevealTarget', () => {
   })
 
   it('при активной загрузке находит .part и открывает его в проводнике', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-reveal-part-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-reveal-part-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     const finalPath = join(outDir, 'clip.mp4')
@@ -101,7 +101,7 @@ describe('resolveYtdlpFolderRevealTarget', () => {
   })
 
   it('при известном пути без файла открывает родительский каталог', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-reveal-dir-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-reveal-dir-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     const sub = join(outDir, 'Channel')
     mkdirSync(sub, { recursive: true })
@@ -116,7 +116,7 @@ describe('resolveYtdlpFolderRevealTarget', () => {
 
 describe('deleteIncompleteDownloadArtifactsForQueueRow', () => {
   it('удаляет outputPath и соседний .part для незавершённой строки', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-clean-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     const f = join(outDir, 'a.mp4')
@@ -134,7 +134,7 @@ describe('deleteIncompleteDownloadArtifactsForQueueRow', () => {
   })
 
   it('не трогает файлы при статусе «Готово»', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-done-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-clean-done-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     const f = join(outDir, 'done.mp4')
@@ -149,7 +149,7 @@ describe('deleteIncompleteDownloadArtifactsForQueueRow', () => {
   })
 
   it('удаляет все верхнеуровневые .part и .ytdl при незавершённом статусе (не «Ожидание»)', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-loose-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-clean-loose-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     writeFileSync(join(outDir, 'vod-site.part'), 'x')
@@ -164,7 +164,7 @@ describe('deleteIncompleteDownloadArtifactsForQueueRow', () => {
   })
 
   it('удаляет .part в подкаталогах (глубина обхода для частичных файлов)', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-nested-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-clean-nested-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     const deep = join(outDir, 'Channel', 'Series')
     mkdirSync(deep, { recursive: true })
@@ -179,7 +179,7 @@ describe('deleteIncompleteDownloadArtifactsForQueueRow', () => {
   })
 
   it('в статусе «Ожидание» не удаляет произвольные .part в корне вывода', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-wait-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-clean-wait-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     const orphan = join(outDir, 'queued-but-not-started.part')
@@ -193,7 +193,7 @@ describe('deleteIncompleteDownloadArtifactsForQueueRow', () => {
   })
 
   it('в статусе «Ожидание» не удаляет .part даже в подкаталоге', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-wait-sub-'))
+    const root = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-clean-wait-sub-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     const deep = join(outDir, 'sub')
     mkdirSync(deep, { recursive: true })

@@ -1,4 +1,4 @@
-# FluxAlloy helper: unblock npm.ps1/npx.ps1, try ExecutionPolicy RemoteSigned,
+# Velorix helper: unblock npm.ps1/npx.ps1, try ExecutionPolicy RemoteSigned,
 # automatically append npm.cmd/npx.cmd aliases to PowerShell profiles (Windows PS + PS7 path).
 
 $ErrorActionPreference = 'Continue'
@@ -9,7 +9,7 @@ function Install-FluxNpmProfileAliases {
     [Parameter(Mandatory)][string]$NpxCmd
   )
 
-  $marker = '# FluxAlloy-auto-npm-alias'
+  $marker = '# Velorix-auto-npm-alias'
   $nl = "`r`n"
   $block = "$nl$marker${nl}Set-Alias -Name npm -Value '$NpmCmd'${nl}Set-Alias -Name npx -Value '$NpxCmd'$nl"
 

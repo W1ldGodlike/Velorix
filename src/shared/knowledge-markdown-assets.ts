@@ -28,13 +28,13 @@ export function isKnowledgeTrustedImageSrc(href: string): boolean {
 }
 
 /** URL для `<img src>` в Electron (схема регистрируется в main). */
-export function knowledgeHelpAssetFluxhelpUrl(href: string): string {
+export function knowledgeHelpAssetVelorixhelpUrl(href: string): string {
   const t = href.trim()
   if (t.startsWith('data:')) {
     return t
   }
   const clean = t.replace(/^\.\//, '')
-  return `fluxhelp:///${clean
+  return `velorixhelp:///${clean
     .split('/')
     .map((segment) => encodeURIComponent(segment))
     .join('/')}`

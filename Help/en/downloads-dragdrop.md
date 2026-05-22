@@ -2,7 +2,7 @@
 
 ## Automatic clipboard scan
 
-When you open the **Downloads** tab or bring FluxAlloy back to the front, it looks at the clipboard for strings that look like normal **web addresses** (`http://` or `https://`) and may add them to the queue for you. This speeds up work from a browser.
+When you open the **Downloads** tab or bring Velorix back to the front, it looks at the clipboard for strings that look like normal **web addresses** (`http://` or `https://`) and may add them to the queue for you. This speeds up work from a browser.
 
 ## Drag-and-drop
 

@@ -41,7 +41,7 @@ export function MediaFileUtilitiesSlideshowSection(props: {
     if (busy) {
       return
     }
-    const res = await window.fluxalloy.utilities.pickSlideshowImages()
+    const res = await window.velorix.utilities.pickSlideshowImages()
     if ('cancelled' in res && res.cancelled) {
       return
     }
@@ -67,7 +67,7 @@ export function MediaFileUtilitiesSlideshowSection(props: {
     setBusy(true)
     onStatus(uiText('mediaUtilitiesSlideshowBusy'))
     try {
-      const res = await window.fluxalloy.utilities.createImageSlideshow({
+      const res = await window.velorix.utilities.createImageSlideshow({
         imagePaths: slideshowPaths,
         slideDurationSec,
         transition: slideshowTransition,

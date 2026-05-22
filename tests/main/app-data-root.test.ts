@@ -13,39 +13,39 @@ describe('app-data-root-paths', () => {
     expect(
       resolveInstallRootFromProcess({
         platform: 'win32',
-        execPath: 'C:\\Apps\\FluxAlloy\\FluxAlloy.exe',
+        execPath: 'C:\\Apps\\Velorix\\Velorix.exe',
         dev: true,
-        appPath: 'C:\\repo\\FluxAlloy'
+        appPath: 'C:\\repo\\Velorix'
       })
-    ).toBe('C:\\repo\\FluxAlloy')
+    ).toBe('C:\\repo\\Velorix')
   })
 
   it('win packaged install root is exe directory', () => {
     expect(
       resolveInstallRootFromProcess({
         platform: 'win32',
-        execPath: 'D:\\Tools\\FluxAlloy\\FluxAlloy.exe',
+        execPath: 'D:\\Tools\\Velorix\\Velorix.exe',
         dev: false,
         appPath: 'ignored'
       })
-    ).toBe('D:\\Tools\\FluxAlloy')
+    ).toBe('D:\\Tools\\Velorix')
   })
 
   it('mac install root is .app bundle when exec in MacOS', () => {
     expect(
       resolveInstallRootFromProcess({
         platform: 'darwin',
-        execPath: '/Applications/FluxAlloy.app/Contents/MacOS/FluxAlloy',
+        execPath: '/Applications/Velorix.app/Contents/MacOS/Velorix',
         dev: false,
         appPath: 'ignored'
       })
-    ).toBe(normalize('/Applications/FluxAlloy.app'))
+    ).toBe(normalize('/Applications/Velorix.app'))
   })
 
   it('data and temp paths are under install root', () => {
     const installRoot = resolveInstallRootFromProcess({
       platform: 'win32',
-      execPath: 'D:\\Tools\\FluxAlloy\\FluxAlloy.exe',
+      execPath: 'D:\\Tools\\Velorix\\Velorix.exe',
       dev: false,
       appPath: 'ignored'
     })

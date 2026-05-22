@@ -16,7 +16,7 @@ import {
 const tempRoots: string[] = []
 
 function makeTempRoot(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'fluxalloy-history-'))
+  const dir = mkdtempSync(join(tmpdir(), 'VELORIX-history-'))
   tempRoots.push(dir)
   return dir
 }

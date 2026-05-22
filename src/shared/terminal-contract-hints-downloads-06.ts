@@ -47,8 +47,8 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_06: TerminalCommandHintEntry
     tool: 'yt-dlp',
     token: '· в файл: заголовок',
     summary:
-      'Записать (поле title) в рядом лежащий текстовый файл без скачивания (--print-to-file title flux-ytdlp-title.txt --skip-download); допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file title flux-ytdlp-title.txt --skip-download '
+      'Записать (поле title) в рядом лежащий текстовый файл без скачивания (--print-to-file title velorix-ytdlp-title.txt --skip-download); допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file title velorix-ytdlp-title.txt --skip-download '
   },
   {
     tool: 'yt-dlp',

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
- * Сверка ключевых артефактов FLUXALLOY_TZ с репозиторием (§2.2 / §3 / IPC).
+ * Сверка ключевых артефактов VELORIX_TZ с репозиторием (§2.2 / §3 / IPC).
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { REPO_ROOT } from '../lib/repo-root.mjs'
 
-const TZ_PATH = join(REPO_ROOT, 'FLUXALLOY_TZ.md')
+const TZ_PATH = join(REPO_ROOT, 'VELORIX_TZ.md')
 const IPC_PATH = join(REPO_ROOT, 'src', 'shared', 'ipc-channels.ts')
 
 const REQUIRED_PATHS = [
@@ -25,12 +25,12 @@ const TZ_KEYWORDS = ['Electron', 'React', 'TypeScript', 'ffmpeg', 'yt-dlp', 'ffp
 function main() {
   const violations = []
   if (!existsSync(TZ_PATH)) {
-    violations.push('missing FLUXALLOY_TZ.md')
+    violations.push('missing VELORIX_TZ.md')
   } else {
     const tz = readFileSync(TZ_PATH, 'utf8')
     for (const kw of TZ_KEYWORDS) {
       if (!tz.includes(kw)) {
-        violations.push(`FLUXALLOY_TZ.md: missing keyword ${kw}`)
+        violations.push(`VELORIX_TZ.md: missing keyword ${kw}`)
       }
     }
   }
@@ -42,7 +42,7 @@ function main() {
   }
 
   const ipc = readFileSync(IPC_PATH, 'utf8')
-  for (const token of ['fluxalloy:settings', 'fluxalloy:export', 'fluxalloy:downloads']) {
+  for (const token of ['velorix:settings', 'velorix:export', 'velorix:downloads']) {
     if (!ipc.includes(token)) {
       violations.push(`ipc-channels.ts: missing ${token}`)
     }

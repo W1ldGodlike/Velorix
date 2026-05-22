@@ -63,7 +63,7 @@
   "downloadsQueueAriaMoveUp": "Move up in queue",
   "downloadsQueueAriaOpenFile": "Open downloaded file",
   "downloadsQueueAriaOpenFolder": "Show file in folder",
-  "downloadsQueueAriaOpenInEditor": "Open downloaded file in FluxAlloy",
+  "downloadsQueueAriaOpenInEditor": "Open downloaded file in Velorix",
   "downloadsQueueAriaPauseYtdlp": "Pause yt-dlp",
   "downloadsQueueAriaRemoveRow": "Remove from queue",
   "downloadsQueueAriaResumeYtdlp": "Resume yt-dlp",
@@ -90,7 +90,7 @@
   "downloadsQueueTableWrapGroupAria": "Scrollable queue table",
   "downloadsQueueTableZoneAria": "Download queue table",
   "downloadsRemoveFinished": "Remove finished",
-  "downloadsStandaloneBrandAria": "FluxAlloy downloads",
+  "downloadsStandaloneBrandAria": "Velorix downloads",
   "downloadsStandaloneHeaderTitle": "Downloads",
   "downloadsStandalonePageHint": "A separate window with the same queue, log, and yt-dlp settings as the Downloads tab in the main window. Changes stay in sync through the main process.",
   "downloadsStandaloneShellAria": "Standalone yt-dlp downloads manager window",
@@ -114,6 +114,6 @@
   "downloadsUrlEnqueueHint": "Paste multiple URLs, one per line. Use the buttons to the right of the field to enqueue.",
   "downloadsUrlPlaceholder": "One URL per line, or multiple URLs",
   "downloadsUrlRowGroupAria": "URL field and enqueue actions",
-  "downloadsWindowDocumentTitle": "FluxAlloy — Downloads",
+  "downloadsWindowDocumentTitle": "Velorix — Downloads",
   "downloadsWorkbenchAria": "Downloads tab: queue, log, and yt-dlp settings rail"
 }

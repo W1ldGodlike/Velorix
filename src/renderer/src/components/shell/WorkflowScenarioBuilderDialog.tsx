@@ -52,7 +52,7 @@ export function WorkflowScenarioBuilderDialog(
   }, [jsonText])
 
   const reloadList = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.workflows.listScenarios()
+    const res = await window.velorix.workflows.listScenarios()
     if (res.ok) {
       setItems(res.items)
     }
@@ -63,7 +63,7 @@ export function WorkflowScenarioBuilderDialog(
       return
     }
     let cancelled = false
-    void window.fluxalloy.workflows.listScenarios().then((res) => {
+    void window.velorix.workflows.listScenarios().then((res) => {
       if (cancelled || !res.ok) {
         return
       }
@@ -82,7 +82,7 @@ export function WorkflowScenarioBuilderDialog(
     }
     setBusy(true)
     try {
-      const res = await window.fluxalloy.workflows.getScenario(id)
+      const res = await window.velorix.workflows.getScenario(id)
       if (res.ok) {
         setSelectedId(res.scenario.id)
         setJsonText(JSON.stringify(res.scenario, null, 2))
@@ -119,7 +119,7 @@ export function WorkflowScenarioBuilderDialog(
     }
     setBusy(true)
     try {
-      const res = await window.fluxalloy.workflows.saveScenario(doc)
+      const res = await window.velorix.workflows.saveScenario(doc)
       if (res.ok) {
         onStatus(uiText('workflowScenarioSaved'))
         setSelectedId(res.scenario.id)
@@ -147,7 +147,7 @@ export function WorkflowScenarioBuilderDialog(
     }
     setBusy(true)
     try {
-      const res = await window.fluxalloy.workflows.deleteScenario(id)
+      const res = await window.velorix.workflows.deleteScenario(id)
       if (res.ok) {
         onStatus(uiText('workflowScenarioDeleted'))
         await reloadList()

@@ -41,7 +41,7 @@ export const AUDIT_STRUCTURAL_MAX_LINES = 500
 /**
  * Файлы > `AUDIT_STRUCTURAL_MAX_LINES` допустимы только при совпадении glob и непустом `reason`
  * (категория/архитектура, не «разрешить этот путь»). Иначе — логический split в той же итерации
- * (запрещено: дробление только ради лимита; см. `.cursor/rules/fluxalloy-simplicity.mdc`).
+ * (запрещено: дробление только ради лимита; см. `.cursor/rules/velorix-simplicity.mdc`).
  * Glob: `**`, `*`; не список отдельных путей без обоснования.
  *
  * @type {ReadonlyArray<{ glob: string; reason: string }>}

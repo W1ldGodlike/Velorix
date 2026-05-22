@@ -167,7 +167,7 @@ describe('toolchain baseline (package.json / .npmrc / tsconfig.web)', () => {
     expect(viteConfig).toContain("@renderer': resolve('src/renderer/src')")
     expect(viteConfig).toContain("@locales': resolve('locales')")
     expect(viteConfig).toContain('plugins: [react(), rendererDevCspPlugin()]')
-    expect(viteConfig).toContain("name: 'fluxalloy-renderer-dev-csp'")
+    expect(viteConfig).toContain("name: 'VELORIX-renderer-dev-csp'")
     const webOpts = readCompilerOptions('tsconfig.web.json')
     const paths = webOpts['paths'] as Record<string, string[]>
     expect(paths['@renderer/*']).toEqual(['./src/renderer/src/*'])

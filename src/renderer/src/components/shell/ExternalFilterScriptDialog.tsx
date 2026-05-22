@@ -22,7 +22,7 @@ export function ExternalFilterScriptDialog(
     if (!open) {
       return
     }
-    void window.fluxalloy.settings.get().then((s) => {
+    void window.velorix.settings.get().then((s) => {
       const storedKind = s.ffmpegExportExternalFilterKind ?? 'off'
       setKind(storedKind === 'avisynth' || storedKind === 'vapoursynth' ? storedKind : 'off')
       setScriptPath(s.ffmpegExportExternalFilterScriptPath ?? '')
@@ -36,7 +36,7 @@ export function ExternalFilterScriptDialog(
     }
     setBusy(true)
     try {
-      const res = await window.fluxalloy.externalFilterScript.pickFile({
+      const res = await window.velorix.externalFilterScript.pickFile({
         kind,
         uiLocale: getUiLocale()
       })
@@ -61,7 +61,7 @@ export function ExternalFilterScriptDialog(
     }
     setBusy(true)
     try {
-      const res = await window.fluxalloy.externalFilterScript.apply({
+      const res = await window.velorix.externalFilterScript.apply({
         kind,
         scriptPath: kind === 'off' ? null : scriptPath,
         uiLocale: getUiLocale()

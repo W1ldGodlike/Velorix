@@ -58,11 +58,9 @@ export async function runEditorExtractFrames(params: {
   onProgress: (p: FfmpegFramesExtractProgressPayload) => void
   setStatusHint: (hint: string | null) => void
 }): Promise<{ ok: true } | { ok: false; cancelled?: boolean }> {
-  const off = window.fluxalloy.export.onExtractFramesProgress(params.onProgress)
+  const off = window.velorix.export.onExtractFramesProgress(params.onProgress)
   try {
-    const res: FfmpegFramesExtractResult = await window.fluxalloy.export.extractFrames(
-      params.payload
-    )
+    const res: FfmpegFramesExtractResult = await window.velorix.export.extractFrames(params.payload)
     if (res.ok) {
       params.setStatusHint(
         uiTextVars('editorExtractFramesDone', {

@@ -23,7 +23,7 @@ describe('settings-backup-parse', () => {
 
   it('rejects unknown format version', () => {
     const payload = extractSettingsPayloadFromBackupJson({
-      fluxalloySettingsBackup: true,
+      velorixSettingsBackup: true,
       formatVersion: SETTINGS_BACKUP_FORMAT_VERSION + 1,
       settings: { theme: 'dark' }
     })

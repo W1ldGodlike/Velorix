@@ -10,12 +10,12 @@ import { SCHEDULED_TASK_TEMPLATE_V1 } from '../../src/shared/scheduled-task-cont
 
 describe('macos-launchd-sync §10', () => {
   it('builds stable launchd label', () => {
-    expect(macosLaunchAgentLabel('task-watch-abc')).toBe('com.fluxalloy.watch.task-watch-abc')
+    expect(macosLaunchAgentLabel('task-watch-abc')).toBe('com.velorix.watch.task-watch-abc')
   })
 
   it('plist path under LaunchAgents', () => {
-    expect(macosLaunchAgentPlistPath('com.fluxalloy.watch.x')).toMatch(
-      /LaunchAgents[/\\]com\.fluxalloy\.watch\.x\.plist$/
+    expect(macosLaunchAgentPlistPath('com.velorix.watch.x')).toMatch(
+      /LaunchAgents[/\\]com\.velorix\.watch\.x\.plist$/
     )
   })
 
@@ -30,7 +30,7 @@ describe('macos-launchd-sync §10', () => {
     expect(xml).toContain('<key>StartInterval</key>')
     expect(xml).toContain('<integer>120</integer>')
     expect(xml).toContain('--workflow-watch-folder-tick')
-    expect(xml).toContain('com.fluxalloy.watch.task-watch-1')
+    expect(xml).toContain('com.velorix.watch.task-watch-1')
   })
 
   it('escapeLaunchdPlistXml escapes special chars', () => {

@@ -28,11 +28,11 @@ export function settingsPath(): string {
 }
 
 export function technicalSpecPath(): string {
-  const packaged = join(process.resourcesPath, 'FLUXALLOY_TZ.md')
+  const packaged = join(process.resourcesPath, 'VELORIX_TZ.md')
   if (!is.dev && existsSync(packaged)) {
     return packaged
   }
-  return join(app.getAppPath(), 'FLUXALLOY_TZ.md')
+  return join(app.getAppPath(), 'VELORIX_TZ.md')
 }
 
 export function getCachedSettings(): AppSettings {

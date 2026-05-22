@@ -34,7 +34,7 @@ export function formatCheckReleaseScriptDiagnosticLines(): string[] {
     formatReleaseCodeSigningRoadmapElectronBuilderConfigDiagnosticLine(),
     formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnosticLine(),
     formatToolchainBaselineWipHandoffCheckReleaseDiagnosticLine(),
-    'smoke skips: FLUXALLOY_SKIP_PACK_VERIFY, FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_SKIP_FFMPEG_SMOKE, FLUXALLOY_SKIP_YTDLP_SMOKE',
+    'smoke skips: VELORIX_SKIP_PACK_VERIFY, VELORIX_SKIP_FFPROBE_SMOKE, VELORIX_SKIP_FFMPEG_SMOKE, VELORIX_SKIP_YTDLP_SMOKE',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (2× locales:terminal-summaries-ru, 0 replacements / 0 gloss)'
   ]
 }

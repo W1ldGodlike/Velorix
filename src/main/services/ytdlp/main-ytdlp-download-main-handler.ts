@@ -7,13 +7,13 @@ import { mainWindowIpc as mw } from '../../../shared/ipc-channels'
 import type { AppUiLocale } from '../../../shared/app-ui-locale'
 import {
   autoExportProgressMessage,
-  fluxLogAutoExportCancelled,
-  fluxLogAutoExportFfmpegMissing,
-  fluxLogAutoExportSkippedBusy,
-  fluxLogAutoExportSkippedMainWindow,
-  formatFluxLogAutoExportDone,
-  formatFluxLogAutoExportFailed
-} from '../../../shared/downloads-flux-log-locale'
+  velorixLogAutoExportCancelled,
+  velorixLogAutoExportFfmpegMissing,
+  velorixLogAutoExportSkippedBusy,
+  velorixLogAutoExportSkippedMainWindow,
+  formatVelorixLogAutoExportDone,
+  formatVelorixLogAutoExportFailed
+} from '../../../shared/downloads-velorix-log-locale'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../../../shared/ffmpeg-export-contract'
 import {
   processingHistoryAutoExportCancelled,
@@ -131,7 +131,7 @@ export function scheduleAutoExportAfterSuccessfulYtdlpOpen(
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: fluxLogAutoExportSkippedBusy(loc)
+        text: velorixLogAutoExportSkippedBusy(loc)
       })
       return
     }
@@ -142,7 +142,7 @@ export function scheduleAutoExportAfterSuccessfulYtdlpOpen(
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: fluxLogAutoExportFfmpegMissing(loc)
+        text: velorixLogAutoExportFfmpegMissing(loc)
       })
       return
     }
@@ -154,7 +154,7 @@ export function scheduleAutoExportAfterSuccessfulYtdlpOpen(
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: fluxLogAutoExportSkippedMainWindow(loc)
+        text: velorixLogAutoExportSkippedMainWindow(loc)
       })
       return
     }
@@ -197,7 +197,7 @@ export function scheduleAutoExportAfterSuccessfulYtdlpOpen(
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: formatFluxLogAutoExportDone(loc, outPath)
+          text: formatVelorixLogAutoExportDone(loc, outPath)
         })
         return
       }
@@ -217,7 +217,7 @@ export function scheduleAutoExportAfterSuccessfulYtdlpOpen(
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: fluxLogAutoExportCancelled(loc)
+          text: velorixLogAutoExportCancelled(loc)
         })
         return
       }
@@ -236,7 +236,7 @@ export function scheduleAutoExportAfterSuccessfulYtdlpOpen(
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: formatFluxLogAutoExportFailed(loc, result.error)
+        text: formatVelorixLogAutoExportFailed(loc, result.error)
       })
     } finally {
       host.setActiveExportAbort(null)

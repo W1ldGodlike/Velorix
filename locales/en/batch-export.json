@@ -74,7 +74,7 @@
   "batchExportRowStatusRunning": "Running",
   "batchExportRowStatusWaiting": "Waiting",
   "batchExportSaveReport": "Save report",
-  "batchExportSaveReportDefaultName": "fluxalloy-batch-export-report.txt",
+  "batchExportSaveReportDefaultName": "Velorix-batch-export-report.txt",
   "batchExportSaveReportTitle": "Save batch export report",
   "batchExportSkippedDuplicates": "All paths already in queue ({count})",
   "batchExportStart": "Start batch",

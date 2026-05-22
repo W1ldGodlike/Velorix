@@ -16,10 +16,10 @@ import { collectFfprobeFormatScalarTagExportLines } from './ffprobe-format-tag-r
 
 export type { FfprobeSummaryLocale } from './ffprobe-summary-export-locale'
 
-/** Общий stem для имён файлов экспорта ffprobe; без пути — префикс `fluxalloy`. */
+/** Общий stem для имён файлов экспорта ffprobe; без пути — префикс `VELORIX`. */
 function stemFromMediaPath(mediaPath: string | undefined): string {
   if (!mediaPath || mediaPath.trim().length === 0) {
-    return 'fluxalloy'
+    return 'VELORIX'
   }
   const name = mediaPath.replace(/^.*[/\\]/, '').trim()
   const cut = name.replace(/\.[^./\\]+$/, '')
@@ -29,21 +29,21 @@ function stemFromMediaPath(mediaPath: string | undefined): string {
 
 export function defaultFfprobeJsonFileName(mediaPath: string | undefined): string {
   if (!mediaPath || mediaPath.trim().length === 0) {
-    return 'fluxalloy-ffprobe.json'
+    return 'VELORIX-ffprobe.json'
   }
   return `${stemFromMediaPath(mediaPath)}-ffprobe.json`
 }
 
 export function defaultFfprobeSummaryTxtFileName(mediaPath: string | undefined): string {
   if (!mediaPath || mediaPath.trim().length === 0) {
-    return 'fluxalloy-ffprobe-summary.txt'
+    return 'VELORIX-ffprobe-summary.txt'
   }
   return `${stemFromMediaPath(mediaPath)}-ffprobe-summary.txt`
 }
 
 export function defaultFfprobeSummaryHtmlFileName(mediaPath: string | undefined): string {
   if (!mediaPath || mediaPath.trim().length === 0) {
-    return 'fluxalloy-ffprobe-summary.html'
+    return 'VELORIX-ffprobe-summary.html'
   }
   return `${stemFromMediaPath(mediaPath)}-ffprobe-summary.html`
 }

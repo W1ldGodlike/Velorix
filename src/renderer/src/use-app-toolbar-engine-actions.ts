@@ -52,17 +52,17 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
   } = deps
 
   const toggleTheme = useCallback(async (): Promise<void> => {
-    const s = await window.fluxalloy.settings.get()
+    const s = await window.velorix.settings.get()
     if (s.theme === 'system') {
-      void window.fluxalloy.settings.setTheme(s.effectiveTheme === 'dark' ? 'light' : 'dark')
+      void window.velorix.settings.setTheme(s.effectiveTheme === 'dark' ? 'light' : 'dark')
     } else {
-      void window.fluxalloy.settings.setTheme(s.theme === 'dark' ? 'light' : 'dark')
+      void window.velorix.settings.setTheme(s.theme === 'dark' ? 'light' : 'dark')
     }
   }, [])
 
   const handleUiLocaleToggle = useCallback((): void => {
     const next: AppUiLocale = getUiLocale() === 'ru' ? 'en' : 'ru'
-    void window.fluxalloy.settings
+    void window.velorix.settings
       .setUiLocale(next)
       .then(() => {
         setUiLocaleForSession(next)
@@ -73,16 +73,14 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
   }, [setUiLocaleRenderTick])
 
   const handleOpenToolbar = useCallback(async (): Promise<void> => {
-    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as AppUiLocale)
+    const result = await window.velorix.preview.openFileDialog(getUiLocale() as AppUiLocale)
     if (result.ok) {
       applyPreview(result)
     }
   }, [applyPreview])
 
   const handleOpenVideoFolderToolbar = useCallback(async (): Promise<void> => {
-    const result = await window.fluxalloy.preview.openVideoFolderDialog(
-      getUiLocale() as AppUiLocale
-    )
+    const result = await window.velorix.preview.openVideoFolderDialog(getUiLocale() as AppUiLocale)
     if (result.ok) {
       applyPreview(result)
     } else if ('error' in result && typeof result.error === 'string' && result.error.length > 0) {
@@ -94,7 +92,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
     setEngineDownloadBusy(true)
     setStatusHint(uiText('statusEnginesDownloadPreparing'))
     try {
-      const res = await window.fluxalloy.engines.download(getUiLocale() as AppUiLocale)
+      const res = await window.velorix.engines.download(getUiLocale() as AppUiLocale)
       if (!res.ok) {
         setStatusHint(uiTextVars('statusErrorWithDetail', { detail: res.error }))
         return
@@ -115,9 +113,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
     setEngineDownloadBusy(true)
     setStatusHint(uiText('statusEnginesUpdateChecking'))
     try {
-      const res = await window.fluxalloy.engines.checkUpdatesAndDownload(
-        getUiLocale() as AppUiLocale
-      )
+      const res = await window.velorix.engines.checkUpdatesAndDownload(getUiLocale() as AppUiLocale)
       if (!res.ok) {
         setStatusHint(uiTextVars('statusErrorWithDetail', { detail: res.error }))
         return
@@ -141,7 +137,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
   const handleClearDownloadedEngines = useCallback(async (): Promise<void> => {
     setStatusHint(uiText('statusEnginesClearingUserBin'))
     try {
-      const res = await window.fluxalloy.engines.clearUserBin()
+      const res = await window.velorix.engines.clearUserBin()
       if (!res.ok) {
         setStatusHint(uiTextVars('statusErrorWithDetail', { detail: res.error }))
         return
@@ -162,7 +158,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
   const handleSaveEnginePaths = useCallback(async (): Promise<void> => {
     setEnginePathsSaving(true)
     try {
-      await window.fluxalloy.settings.setEngineExecutablePaths({
+      await window.velorix.settings.setEngineExecutablePaths({
         ffmpeg: enginePathsDraft.ffmpeg.trim() || null,
         ffprobe: enginePathsDraft.ffprobe.trim() || null,
         'yt-dlp': enginePathsDraft['yt-dlp'].trim() || null
@@ -177,7 +173,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
 
   const handlePickEngine = useCallback(
     async (id: EngineId): Promise<void> => {
-      const picked = await window.fluxalloy.settings.pickEngineExecutable(id)
+      const picked = await window.velorix.settings.pickEngineExecutable(id)
       if (!picked) {
         return
       }

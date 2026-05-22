@@ -7,7 +7,7 @@ export function bindDownloadsStoreIpc(): () => void {
   const cleanups: Array<() => void> = []
   let mounted = true
 
-  void window.fluxalloy.downloads
+  void window.velorix.downloads
     .getCliOptions({ uiLocale: getUiLocale() as AppUiLocale })
     .then((res) => {
       if (!mounted) {
@@ -21,8 +21,8 @@ export function bindDownloadsStoreIpc(): () => void {
     })
 
   void Promise.all([
-    window.fluxalloy.downloads.getHistory(),
-    window.fluxalloy.downloads.getHistoryWeeklySummary()
+    window.velorix.downloads.getHistory(),
+    window.velorix.downloads.getHistoryWeeklySummary()
   ]).then(([rows, summary]) => {
     if (mounted) {
       useDownloadsStore.setState({
@@ -32,30 +32,30 @@ export function bindDownloadsStoreIpc(): () => void {
     }
   })
 
-  void window.fluxalloy.downloads.getOutputDirectory().then((dir) => {
+  void window.velorix.downloads.getOutputDirectory().then((dir) => {
     useDownloadsStore.setState({ downloadsOutputDirectory: dir })
   })
 
   cleanups.push(
-    window.fluxalloy.downloads.onLog((payload) => {
+    window.velorix.downloads.onLog((payload) => {
       useDownloadsStore.getState().handleDownloadsLogPayload(payload)
     })
   )
 
   cleanups.push(
-    window.fluxalloy.downloads.onDownloadsOutputDirectoryChanged((snap) => {
+    window.velorix.downloads.onDownloadsOutputDirectoryChanged((snap) => {
       useDownloadsStore.setState({ downloadsOutputDirectory: snap })
     })
   )
 
   cleanups.push(
-    window.fluxalloy.downloads.onDownloadsCliOptionsChanged(() => {
+    window.velorix.downloads.onDownloadsCliOptionsChanged(() => {
       void useDownloadsStore.getState().refreshDownloadsOptions()
     })
   )
 
   cleanups.push(
-    window.fluxalloy.downloads.onDownloadsHistoryChanged(() => {
+    window.velorix.downloads.onDownloadsHistoryChanged(() => {
       void useDownloadsStore.getState().refreshDownloadsHistory({ silent: true })
     })
   )

@@ -9,7 +9,7 @@ import { logInfo } from '../../core/logger-service'
 
 const execFileAsync = promisify(execFile)
 
-const SCHTASKS_FOLDER = '\\FluxAlloy'
+const SCHTASKS_FOLDER = '\\Velorix'
 
 export function windowsScheduledTaskName(taskId: string): string {
   return `${SCHTASKS_FOLDER}\\watch-${taskId}`

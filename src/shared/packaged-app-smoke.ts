@@ -9,15 +9,15 @@ export function packagedWinUnpackedRoot(rootDir: string): string {
 
 export function listPackagedAppExeCandidatePaths(rootDir: string): string[] {
   const fromEnv =
-    typeof process.env['FLUXALLOY_APP_EXE_PATH'] === 'string'
-      ? process.env['FLUXALLOY_APP_EXE_PATH'].trim()
+    typeof process.env['VELORIX_APP_EXE_PATH'] === 'string'
+      ? process.env['VELORIX_APP_EXE_PATH'].trim()
       : ''
   const unpacked = packagedWinUnpackedRoot(rootDir)
   const candidates: string[] = []
   if (fromEnv.length > 0) {
     candidates.push(fromEnv)
   }
-  candidates.push(join(unpacked, 'FluxAlloy.exe'))
+  candidates.push(join(unpacked, 'Velorix.exe'))
   return candidates
 }
 
@@ -36,7 +36,7 @@ export function formatPackagedAppSmokeDiagnosticLines(): string[] {
   return [
     'command: npm run smoke:packaged-app (part of smoke:packaged-release)',
     'check: ELECTRON_RUN_AS_NODE version stdout matches isMinimalPackagedAppElectronVersionOutput',
-    'env: FLUXALLOY_APP_EXE_PATH, FLUXALLOY_SKIP_PACK_VERIFY (packaged-release chain)',
+    'env: VELORIX_APP_EXE_PATH, VELORIX_SKIP_PACK_VERIFY (packaged-release chain)',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)'
   ]
 }

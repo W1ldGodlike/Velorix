@@ -8,7 +8,7 @@ const GITHUB_API = {
 } as const
 
 function userAgent(): string {
-  return 'FluxAlloy/0.1.0 (engine update check; Electron)'
+  return 'VELORIX/0.1.0 (engine update check; Electron)'
 }
 
 async function fetchJson(url: string): Promise<unknown> {

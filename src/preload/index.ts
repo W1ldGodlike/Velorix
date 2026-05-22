@@ -1,11 +1,11 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
-import { fluxalloy } from './preload-fluxalloy-bridge'
+import { velorix } from './preload-velorix-bridge'
 
 try {
   contextBridge.exposeInMainWorld('electron', electronAPI)
-  contextBridge.exposeInMainWorld('fluxalloy', fluxalloy)
+  contextBridge.exposeInMainWorld('velorix', velorix)
 } catch (error) {
   console.error(error)
 }

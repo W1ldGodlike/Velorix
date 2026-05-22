@@ -17,7 +17,7 @@ export function formatPackagedYtdlpSmokeDiagnosticLines(): string[] {
   return [
     'command: npm run smoke:packaged-ytdlp (part of smoke:packaged-engines)',
     'check: yt-dlp --list-extractors offline (isMinimalYtdlpExtractorsOutput)',
-    'env: FLUXALLOY_YTDLP_PATH, FLUXALLOY_SKIP_YTDLP_SMOKE',
+    'env: VELORIX_YTDLP_PATH, VELORIX_SKIP_YTDLP_SMOKE',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)'
   ]
 }

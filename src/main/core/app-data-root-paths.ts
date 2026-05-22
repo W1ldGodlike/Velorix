@@ -4,10 +4,10 @@ import { basename, dirname, join } from 'path'
 export const APP_DATA_DIR_NAME = 'app-data'
 
 /** Env с абсолютным путём app-data (main выставляет при старте; Vitest — без Electron). */
-export const FLUXALLOY_APP_DATA_ENV = 'FLUXALLOY_APP_DATA'
+export const VELORIX_APP_DATA_ENV = 'VELORIX_APP_DATA'
 
 /**
- * Корень установки: каталог с `FluxAlloy.exe` (Windows/Linux) или `.app` (macOS).
+ * Корень установки: каталог с `Velorix.exe` (Windows/Linux) или `.app` (macOS).
  * В dev — корень репозитория (`app.getAppPath()`).
  */
 export function resolveInstallRootFromProcess(opts: {

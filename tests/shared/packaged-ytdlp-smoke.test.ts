@@ -8,8 +8,8 @@ import {
 
 describe('packaged-ytdlp-smoke', () => {
   it('listPackagedYtdlpCandidatePaths: env, unpacked, bin', () => {
-    const prev = process.env['FLUXALLOY_YTDLP_PATH']
-    process.env['FLUXALLOY_YTDLP_PATH'] = 'C:\\custom\\yt-dlp.exe'
+    const prev = process.env['VELORIX_YTDLP_PATH']
+    process.env['VELORIX_YTDLP_PATH'] = 'C:\\custom\\yt-dlp.exe'
     try {
       const paths = listPackagedYtdlpCandidatePaths('C:\\repo')
       expect(paths[0]).toBe('C:\\custom\\yt-dlp.exe')
@@ -17,9 +17,9 @@ describe('packaged-ytdlp-smoke', () => {
       expect(paths[2]).toMatch(/bin[\\/]yt-dlp\.exe$/i)
     } finally {
       if (prev === undefined) {
-        delete process.env['FLUXALLOY_YTDLP_PATH']
+        delete process.env['VELORIX_YTDLP_PATH']
       } else {
-        process.env['FLUXALLOY_YTDLP_PATH'] = prev
+        process.env['VELORIX_YTDLP_PATH'] = prev
       }
     }
   })
@@ -35,7 +35,7 @@ describe('packaged-ytdlp-smoke', () => {
   it('formatPackagedYtdlpSmokeDiagnosticLines', () => {
     const lines = formatPackagedYtdlpSmokeDiagnosticLines()
     expect(lines[0]).toContain('smoke:packaged-ytdlp')
-    expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_YTDLP_SMOKE'))).toBe(true)
+    expect(lines.some((l) => l.includes('VELORIX_SKIP_YTDLP_SMOKE'))).toBe(true)
     expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
   })
 })

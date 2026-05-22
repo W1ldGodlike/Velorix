@@ -2,7 +2,7 @@
   "workflowPlannerDialogTitle": "Планировщик задач",
   "workflowPlannerDialogHint": "Watch-folder: in-app или OS backend (Windows/macOS/Linux). Справка — кнопка рядом с заголовком.",
   "workflowPlannerFieldBackend": "Backend",
-  "workflowPlannerFieldBackendHint": "In-app — опрос в FluxAlloy. Windows — schtasks; macOS — LaunchAgent; Linux — systemd user timer с --workflow-watch-folder-tick.",
+  "workflowPlannerFieldBackendHint": "In-app — опрос в Velorix. Windows — schtasks; macOS — LaunchAgent; Linux — systemd user timer с --workflow-watch-folder-tick.",
   "workflowPlannerBackendInApp": "In-app",
   "workflowPlannerBackendWindows": "Windows Task Scheduler",
   "workflowPlannerBackendMacos": "macOS LaunchAgent",

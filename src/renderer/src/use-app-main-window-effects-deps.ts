@@ -25,7 +25,7 @@ export type UseAppMainWindowEffectsDeps = {
   setTheme: Dispatch<SetStateAction<ResolvedAppTheme>>
   setUiLocaleRenderTick: Dispatch<SetStateAction<number>>
   hydrateExportFieldsFromSettings: (
-    loaded: Awaited<ReturnType<typeof window.fluxalloy.settings.get>>
+    loaded: Awaited<ReturnType<typeof window.velorix.settings.get>>
   ) => void
   hydrateMainWindowUiPanels: (patch: MainWindowUiPanelState | null | undefined) => void
   hydrateDownloadsWindowUiPanels: (patch: DownloadsWindowUiPanelState | null | undefined) => void
@@ -53,7 +53,7 @@ export type UseAppMainWindowEffectsDeps = {
   setWorkflowPlannerOpen: Dispatch<SetStateAction<boolean>>
   setWorkflowScenarioBuilderOpen: Dispatch<SetStateAction<boolean>>
   setAboutInfo: Dispatch<
-    SetStateAction<Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null>
+    SetStateAction<Awaited<ReturnType<typeof window.velorix.about.getInfo>> | null>
   >
   setAboutOpen: Dispatch<SetStateAction<boolean>>
   editorUrlPasteBehavior: EditorUrlPasteBehaviorId

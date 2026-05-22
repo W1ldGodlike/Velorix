@@ -47,7 +47,7 @@ describe('applyYtdlpRowDownloadSuccessActions §7.4.3', () => {
   } as unknown as YtdlpRowProgressBridge
 
   beforeEach(() => {
-    const userData = mkdtempSync(join(tmpdir(), 'flux-ytdlp-complete-'))
+    const userData = mkdtempSync(join(tmpdir(), 'velorix-ytdlp-complete-'))
     paths = { userData } as AppPaths
     getSnapshot.mockReturnValue({
       openInHandlerOnComplete: false,

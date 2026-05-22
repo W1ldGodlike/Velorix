@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, unlinkSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 
-import { FLUXALLOY_APP_DATA_ENV, resolveAppTempDirectory } from '../../core/app-data-root-paths'
+import { VELORIX_APP_DATA_ENV, resolveAppTempDirectory } from '../../core/app-data-root-paths'
 import { buildFfmpegExportArgv } from '../../../shared/ffmpeg-export-argv'
 import {
   FFMPEG_EXPORT_BENCHMARK_SAMPLE_SEC,
@@ -71,10 +71,10 @@ export async function runFfmpegExportBenchmark(params: {
 
   let tmpDir: string | null = null
   try {
-    const appDataRoot = process.env[FLUXALLOY_APP_DATA_ENV]
+    const appDataRoot = process.env[VELORIX_APP_DATA_ENV]
     const appTemp = appDataRoot
       ? resolveAppTempDirectory(appDataRoot)
-      : join(tmpdir(), 'fluxalloy-export-temp')
+      : join(tmpdir(), 'VELORIX-export-temp')
     mkdirSync(appTemp, { recursive: true })
     tmpDir = mkdtempSync(join(appTemp, 'fa-bench-'))
 

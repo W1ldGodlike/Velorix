@@ -91,7 +91,7 @@ export function parseArgs(argv: string[]): {
       promptsDir = dir
       i++
     } else if (a === '--help' || a === '-h') {
-      console.log(`FluxAlloy Cursor automation (локальный SDK-агент)
+      console.log(`Velorix Cursor automation (локальный SDK-агент)
 
 Переменные окружения:
   CURSOR_API_KEY       обязательна

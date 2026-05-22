@@ -1,5 +1,5 @@
 /**
- * §21 — planned GUI e2e (skipped until FLUXALLOY_E2E_APP or dist/win-unpacked/FluxAlloy.exe).
+ * §21 — planned GUI e2e (skipped until VELORIX_E2E_APP or dist/win-unpacked/Velorix.exe).
  * ESM config: Playwright loads this without pulling config into `tsconfig.node` (optional dep).
  */
 import { defineConfig } from '@playwright/test'

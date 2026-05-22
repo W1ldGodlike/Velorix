@@ -85,7 +85,7 @@ export function useEditorExportPipelineHandlers({
     setSnapshotBusy(true)
     setStatusHint(uiText('statusSnapshotInProgress'))
     try {
-      const res = await window.fluxalloy.preview.snapshotFrame({
+      const res = await window.velorix.preview.snapshotFrame({
         inputPath: preview.path,
         timeSec,
         uiLocale: getUiLocale()
@@ -143,7 +143,7 @@ export function useEditorExportPipelineHandlers({
     try {
       const trimSnap =
         trimSnapshotRef.current?.path === preview.path ? trimSnapshotRef.current.range : null
-      const res = await window.fluxalloy.export.start({
+      const res = await window.velorix.export.start({
         inputPath: preview.path,
         uiLocale: getUiLocale(),
         ...(trimSnap != null ? { trim: trimSnap } : {}),
@@ -176,7 +176,7 @@ export function useEditorExportPipelineHandlers({
     }
     setExportCancelBusy(true)
     setStatusHint(uiText('statusExportCancelling'))
-    const res = await window.fluxalloy.export.cancel()
+    const res = await window.velorix.export.cancel()
     if (!res.ok) {
       setExportCancelBusy(false)
       setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
@@ -187,7 +187,7 @@ export function useEditorExportPipelineHandlers({
     if (!lastExportPath || exportBusy || snapshotBusy) {
       return
     }
-    const res = await window.fluxalloy.export.openOutput(lastExportPath, mode)
+    const res = await window.velorix.export.openOutput(lastExportPath, mode)
     if (!res.ok) {
       setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
     } else if (mode === 'preview') {
@@ -199,7 +199,7 @@ export function useEditorExportPipelineHandlers({
     if (!lastExportPath) {
       return
     }
-    const res = await window.fluxalloy.clipboard.writeText(lastExportPath)
+    const res = await window.velorix.clipboard.writeText(lastExportPath)
     setStatusHint(res.ok ? uiText('statusExportPathCopied') : uiText('statusExportPathCopyFailed'))
   }
 
@@ -207,7 +207,7 @@ export function useEditorExportPipelineHandlers({
     if (!lastSnapshotPath || exportBusy || snapshotBusy) {
       return
     }
-    const res = await window.fluxalloy.export.openOutput(lastSnapshotPath, mode)
+    const res = await window.velorix.export.openOutput(lastSnapshotPath, mode)
     if (!res.ok) {
       setStatusHint(uiTextVars('statusSnapshotFailedWithDetail', { detail: res.error }))
     }
@@ -217,7 +217,7 @@ export function useEditorExportPipelineHandlers({
     if (!lastSnapshotPath) {
       return
     }
-    const res = await window.fluxalloy.clipboard.writeText(lastSnapshotPath)
+    const res = await window.velorix.clipboard.writeText(lastSnapshotPath)
     setStatusHint(
       res.ok ? uiText('statusSnapshotPathCopied') : uiText('statusSnapshotPathCopyFailed')
     )
@@ -227,7 +227,7 @@ export function useEditorExportPipelineHandlers({
     const text = exportPreview.pass1Command
       ? `${exportPreview.pass1Command}\n\n${exportPreviewCommand}`
       : exportPreviewCommand
-    const r = await window.fluxalloy.clipboard.writeText(text)
+    const r = await window.velorix.clipboard.writeText(text)
     setStatusHint(
       r.ok ? uiText('statusFfmpegCommandCopied') : uiText('statusFfmpegCommandCopyFailed')
     )

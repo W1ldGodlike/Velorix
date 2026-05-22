@@ -3,8 +3,8 @@
  * §6/§19 — smoke bundled yt-dlp после `pack:dir` или из dev `bin/`:
  * `--version`, затем offline `--list-extractors`.
  *
- * `FLUXALLOY_SKIP_YTDLP_SMOKE=1` — пропуск.
- * `FLUXALLOY_YTDLP_SMOKE_EXTRACTORS=0` — только `--version`.
+ * `VELORIX_SKIP_YTDLP_SMOKE=1` — пропуск.
+ * `VELORIX_YTDLP_SMOKE_EXTRACTORS=0` — только `--version`.
  */
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -20,12 +20,12 @@ function log(message) {
 }
 
 function skipRequested() {
-  const v = process.env.FLUXALLOY_SKIP_YTDLP_SMOKE
+  const v = process.env.VELORIX_SKIP_YTDLP_SMOKE
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
 function extractorsDisabled() {
-  const v = process.env.FLUXALLOY_YTDLP_SMOKE_EXTRACTORS
+  const v = process.env.VELORIX_YTDLP_SMOKE_EXTRACTORS
   return v === '0' || (typeof v === 'string' && v.trim().toLowerCase() === 'false')
 }
 
@@ -33,9 +33,9 @@ function printHelp() {
   console.log(`smoke-packaged-ytdlp — version + offline extractors list
 
 Переменные:
-  FLUXALLOY_SKIP_YTDLP_SMOKE=1          пропуск
-  FLUXALLOY_YTDLP_SMOKE_EXTRACTORS=0    только --version
-  FLUXALLOY_YTDLP_PATH                  явный путь
+  VELORIX_SKIP_YTDLP_SMOKE=1          пропуск
+  VELORIX_YTDLP_SMOKE_EXTRACTORS=0    только --version
+  VELORIX_YTDLP_PATH                  явный путь
 
 Флаги: --help`)
 }
@@ -56,7 +56,7 @@ async function run() {
   } = await import('../lib/smoke-packaged-ytdlp-lib.mjs')
 
   if (skipRequested()) {
-    log('FLUXALLOY_SKIP_YTDLP_SMOKE — пропуск')
+    log('VELORIX_SKIP_YTDLP_SMOKE — пропуск')
     return
   }
 
@@ -68,7 +68,7 @@ async function run() {
   const ytdlpPath = await pickFirstExistingEngine(listPackagedYtdlpCandidatePaths(rootDir))
   if (ytdlpPath === null) {
     throw new Error(
-      'yt-dlp не найден. Выполните npm run engines:prepare:win и/или npm run pack:dir, либо задайте FLUXALLOY_YTDLP_PATH.'
+      'yt-dlp не найден. Выполните npm run engines:prepare:win и/или npm run pack:dir, либо задайте VELORIX_YTDLP_PATH.'
     )
   }
 
@@ -79,7 +79,7 @@ async function run() {
   log(`version: ${versionLine} (${ytdlpPath})`)
 
   if (extractorsDisabled()) {
-    log('FLUXALLOY_YTDLP_SMOKE_EXTRACTORS=0 — только version')
+    log('VELORIX_YTDLP_SMOKE_EXTRACTORS=0 — только version')
     return
   }
 

@@ -20,7 +20,7 @@ import {
 const tempRoots: string[] = []
 
 function makeTempRoot(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'fluxalloy-support-'))
+  const dir = mkdtempSync(join(tmpdir(), 'VELORIX-support-'))
   tempRoots.push(dir)
   return dir
 }
@@ -100,7 +100,7 @@ describe('createSupportBundleZip', () => {
         'steps: verify:win-unpacked → smoke:packaged-app → smoke:packaged-engines (ffprobe, yt-dlp, ffmpeg)',
         'mac: npm run build:mac (electron-builder --mac; dmg; engines/bin вручную)',
         'linux: npm run build:linux (AppImage + deb; engines/bin вручную)',
-        'layout: FluxAlloy.exe (missing)'
+        'layout: Velorix.exe (missing)'
       ],
       ffprobeSmokeLines: [
         'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
@@ -108,8 +108,8 @@ describe('createSupportBundleZip', () => {
         'candidate: C:\\bin\\ffprobe.exe (present)'
       ],
       uiLocaleIpcLines: [
-        'invoke: fluxalloy:settings-set-ui-locale → persist settings.json uiLocale',
-        'event: fluxalloy:ui-locale-changed → all BrowserWindow webContents'
+        'invoke: velorix:settings-set-ui-locale → persist settings.json uiLocale',
+        'event: velorix:ui-locale-changed → all BrowserWindow webContents'
       ],
       localeJsonCatalogLines: [
         'catalog: locales/ru/*.json + locales/en/*.json (flat string values)',
@@ -125,15 +125,15 @@ describe('createSupportBundleZip', () => {
       ],
       winPackagedSmokeChecklistLines: [
         'doc: docs/RELEASE.md §4',
-        '  step [launch]: Run dist/win-unpacked/FluxAlloy.exe'
+        '  step [launch]: Run dist/win-unpacked/Velorix.exe'
       ],
       linuxPackagedSmokeChecklistLines: [
         'doc: docs/RELEASE.md §4.1',
-        '  step [launch]: Run dist/linux-unpacked/fluxalloy'
+        '  step [launch]: Run dist/linux-unpacked/VELORIX'
       ],
       macosPackagedSmokeChecklistLines: [
         'doc: docs/RELEASE.md §4.2',
-        '  step [launch]: Open FluxAlloy.app'
+        '  step [launch]: Open Velorix.app'
       ],
       workflowOsSchedulerSmokeChecklistLines: [
         'doc: docs/RELEASE.md §4.3',

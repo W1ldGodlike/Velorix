@@ -46,7 +46,7 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
       rawJson: 'probeRawJson'
     } as const
     const sk = map[key]
-    void window.fluxalloy.settings
+    void window.velorix.settings
       .mergeMainWindowUiPanels({ [sk]: open })
       .then((s) => {
         setProbeUiPanels(probePanelsFromSettings(s.mainWindowUiPanels))
@@ -56,7 +56,7 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
 
   const handleUiLocaleToggle = useCallback((): void => {
     const next: AppUiLocale = getUiLocale() === 'ru' ? 'en' : 'ru'
-    void window.fluxalloy.settings
+    void window.velorix.settings
       .setUiLocale(next)
       .then(() => {
         setUiLocaleForSession(next)
@@ -67,7 +67,7 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
   }, [])
 
   useEffect(() => {
-    const off = window.fluxalloy.onUiLocaleChanged((loc) => {
+    const off = window.velorix.onUiLocaleChanged((loc) => {
       setUiLocaleForSession(loc)
       syncDocumentUiLocale(loc)
       setUiLocaleRenderTick((n) => n + 1)
@@ -79,28 +79,28 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
     document.title = uiText('inspectorWindowDocumentTitle')
     let cleanupTheme: (() => void) | undefined
     let cleanupUiPanels: (() => void) | undefined
-    void window.fluxalloy.settings
+    void window.velorix.settings
       .get()
       .then((loaded) => {
         const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
         syncDocumentUiLocale(resolved)
         setUiLocaleRenderTick((n) => n + 1)
         if (shouldPersist) {
-          void window.fluxalloy.settings.setUiLocale(resolved)
+          void window.velorix.settings.setUiLocale(resolved)
         }
         document.title = uiText('inspectorWindowDocumentTitle')
         applyTheme(loaded.effectiveTheme)
         setProbeUiPanels(probePanelsFromSettings(loaded.mainWindowUiPanels))
-        cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
+        cleanupTheme = window.velorix.onThemeChanged((next) => {
           applyTheme(next)
         })
-        cleanupUiPanels = window.fluxalloy.onMainWindowUiPanelsChanged((panels) => {
+        cleanupUiPanels = window.velorix.onMainWindowUiPanelsChanged((panels) => {
           setProbeUiPanels(probePanelsFromSettings(panels))
         })
       })
       .catch(console.error)
 
-    void window.fluxalloy.inspector.bootstrap().then(({ initialMediaPath }) => {
+    void window.velorix.inspector.bootstrap().then(({ initialMediaPath }) => {
       if (initialMediaPath && initialMediaPath.length > 0) {
         setMediaPath(initialMediaPath)
       }
@@ -113,7 +113,7 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
   }, [applyTheme])
 
   useEffect(() => {
-    const off = window.fluxalloy.inspector.onTargetMediaPath((abs) => {
+    const off = window.velorix.inspector.onTargetMediaPath((abs) => {
       setMediaPath(abs)
     })
     return off
@@ -126,7 +126,7 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
     }
     queueMicrotask(() => setProbePending(true))
     let cancelled = false
-    void window.fluxalloy.preview.probe(mediaPath).then((r) => {
+    void window.velorix.preview.probe(mediaPath).then((r) => {
       if (cancelled) {
         return
       }
@@ -148,18 +148,16 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
   const displayedProbeError = mediaPath ? probeError : null
 
   const toggleTheme = useCallback(async (): Promise<void> => {
-    const s = await window.fluxalloy.settings.get()
+    const s = await window.velorix.settings.get()
     if (s.theme === 'system') {
-      void window.fluxalloy.settings.setTheme(s.effectiveTheme === 'dark' ? 'light' : 'dark')
+      void window.velorix.settings.setTheme(s.effectiveTheme === 'dark' ? 'light' : 'dark')
     } else {
-      void window.fluxalloy.settings.setTheme(s.theme === 'dark' ? 'light' : 'dark')
+      void window.velorix.settings.setTheme(s.theme === 'dark' ? 'light' : 'dark')
     }
   }, [])
 
   const handleOpenFolderDialog = useCallback(async (): Promise<void> => {
-    const result = await window.fluxalloy.preview.openVideoFolderDialog(
-      getUiLocale() as AppUiLocale
-    )
+    const result = await window.velorix.preview.openVideoFolderDialog(getUiLocale() as AppUiLocale)
     if (result.ok) {
       setMediaPath(result.path)
       setStatusHint(result.name)
@@ -169,7 +167,7 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
   }, [])
 
   const handleOpenDialog = useCallback(async (): Promise<void> => {
-    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as AppUiLocale)
+    const result = await window.velorix.preview.openFileDialog(getUiLocale() as AppUiLocale)
     if (result.ok) {
       setMediaPath(result.path)
       setStatusHint(result.name)
@@ -181,8 +179,8 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
     if (!file) {
       return
     }
-    const absolutePath = window.fluxalloy.preview.getPathForFile(file)
-    const granted = await window.fluxalloy.preview.grantPath(absolutePath)
+    const absolutePath = window.velorix.preview.getPathForFile(file)
+    const granted = await window.velorix.preview.grantPath(absolutePath)
     if (!granted.ok) {
       setStatusHint(uiTextVars('statusDndGrantFailed', { error: granted.error }))
       return
@@ -192,7 +190,7 @@ export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
   }, [])
 
   const openAboutDialog = useCallback((): void => {
-    void window.fluxalloy.about.getInfo().then((info) => {
+    void window.velorix.about.getInfo().then((info) => {
       setAboutInfo(info)
       setAboutOpen(true)
     })

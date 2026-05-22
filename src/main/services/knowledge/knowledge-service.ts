@@ -99,7 +99,7 @@ const MIME_FOR_HELP_ASSET_EXT: Record<string, string> = {
 
 /**
  * Встраивает мелкие `Help/assets/*` в markdown как `data:image/*;base64,...`, чтобы `<img>` в
- * Chromium не зависел от кастомной схемы `fluxhelp:` (CSP/загрузка с dev-сервера).
+ * Chromium не зависел от кастомной схемы `velorixhelp:` (CSP/загрузка с dev-сервера).
  */
 function inlineKnowledgeMarkdownAssetImages(helpDir: string, markdown: string): string {
   const root = normalize(helpDir)

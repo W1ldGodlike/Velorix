@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * §19 — smoke packaged app после `pack:dir`:
- * `FluxAlloy.exe` + непустой `resources/app.asar`, затем headless probe через
+ * `Velorix.exe` + непустой `resources/app.asar`, затем headless probe через
  * `ELECTRON_RUN_AS_NODE` (без GUI).
  *
- * `FLUXALLOY_SKIP_APP_SMOKE=1` — пропуск.
- * `FLUXALLOY_APP_SMOKE_NODE=0` — только stat exe/asar.
+ * `VELORIX_SKIP_APP_SMOKE=1` — пропуск.
+ * `VELORIX_APP_SMOKE_NODE=0` — только stat exe/asar.
  */
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -28,12 +28,12 @@ function log(message) {
 }
 
 function skipRequested() {
-  const v = process.env.FLUXALLOY_SKIP_APP_SMOKE
+  const v = process.env.VELORIX_SKIP_APP_SMOKE
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
 function nodeProbeDisabled() {
-  const v = process.env.FLUXALLOY_APP_SMOKE_NODE
+  const v = process.env.VELORIX_APP_SMOKE_NODE
   return v === '0' || (typeof v === 'string' && v.trim().toLowerCase() === 'false')
 }
 
@@ -41,9 +41,9 @@ function printHelp() {
   console.log(`smoke-packaged-app — exe + app.asar + ELECTRON_RUN_AS_NODE probe
 
 Переменные:
-  FLUXALLOY_SKIP_APP_SMOKE=1     пропуск
-  FLUXALLOY_APP_SMOKE_NODE=0     только stat exe/asar
-  FLUXALLOY_APP_EXE_PATH         явный путь к FluxAlloy.exe
+  VELORIX_SKIP_APP_SMOKE=1     пропуск
+  VELORIX_APP_SMOKE_NODE=0     только stat exe/asar
+  VELORIX_APP_EXE_PATH         явный путь к Velorix.exe
 
 Флаги: --help`)
 }
@@ -70,7 +70,7 @@ async function main() {
   }
 
   if (skipRequested()) {
-    log('FLUXALLOY_SKIP_APP_SMOKE — пропуск')
+    log('VELORIX_SKIP_APP_SMOKE — пропуск')
     return
   }
 
@@ -82,7 +82,7 @@ async function main() {
   const appExe = await pickFirstExistingEngine(listPackagedAppExeCandidatePaths(rootDir))
   if (appExe === null) {
     throw new Error(
-      `FluxAlloy.exe не найден. Сначала: npm run build && npm run pack:dir (или npm run check:release), либо FLUXALLOY_APP_EXE_PATH.`
+      `Velorix.exe не найден. Сначала: npm run build && npm run pack:dir (или npm run check:release), либо VELORIX_APP_EXE_PATH.`
     )
   }
   log(`exe: ${appExe}`)
@@ -94,7 +94,7 @@ async function main() {
   log(`asar: ${asarPath}`)
 
   if (nodeProbeDisabled()) {
-    log('FLUXALLOY_APP_SMOKE_NODE=0 — только stat')
+    log('VELORIX_APP_SMOKE_NODE=0 — только stat')
     return
   }
 

@@ -1,18 +1,18 @@
 {
-  "name": "fluxalloy",
+  "name": "velorix",
   "version": "0.1.0",
-  "description": "FluxAlloy — desktop app for yt-dlp + ffmpeg workflows, built with Electron, React and TypeScript.",
+  "description": "Velorix — desktop app for yt-dlp + ffmpeg workflows, built with Electron, React and TypeScript.",
   "main": "./out/main/index.js",
   "private": true,
   "license": "UNLICENSED",
   "author": "W1ldGodlike",
-  "homepage": "https://github.com/W1ldGodlike/FluxAlloy#readme",
+  "homepage": "https://github.com/W1ldGodlike/Velorix#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/W1ldGodlike/FluxAlloy.git"
+    "url": "git+https://github.com/W1ldGodlike/Velorix.git"
   },
   "bugs": {
-    "url": "https://github.com/W1ldGodlike/FluxAlloy/issues"
+    "url": "https://github.com/W1ldGodlike/Velorix/issues"
   },
   "keywords": [
     "electron",
@@ -85,7 +85,7 @@
     "sync:help-playwright-paragraphs": "node scripts/maint/sync-help-playwright-paragraphs.mjs",
     "check:secrets": "node scripts/gate/check-no-secrets.mjs",
     "locales:terminal-summaries-ru": "node scripts/maint/apply-terminal-summary-ru.mjs",
-    "locales:terminal-flux-pole": "node scripts/maint/inject-flux-summary-pole.mjs",
+    "locales:terminal-velorix-pole": "node scripts/maint/inject-velorix-summary-pole.mjs",
     "check:release": "npm run check && npm run engines:prepare:win && npm run engines:doctor && npm run build && npm run pack:dir && npm run smoke:packaged-release && npm run audit:moderate",
     "check:release:local": "npm run engines:doctor && npm run build && npm run pack:dir && npm run smoke:packaged-release && npm run audit:moderate",
     "audit:moderate": "npm audit --audit-level=moderate",

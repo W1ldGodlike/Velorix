@@ -42,7 +42,7 @@ export function KnowledgeDialog({
     void Promise.resolve().then(async () => {
       setLoading(true)
       setError(null)
-      const res = await window.fluxalloy.knowledge.listArticles({
+      const res = await window.velorix.knowledge.listArticles({
         preferredUiLocale: getUiLocale()
       })
       if (disposed) {
@@ -74,7 +74,7 @@ export function KnowledgeDialog({
       setLoading(true)
       setError(null)
       setReadArticleMeta(null)
-      const res = await window.fluxalloy.knowledge.readArticle({
+      const res = await window.velorix.knowledge.readArticle({
         slug: selectedSlug,
         preferredUiLocale: getUiLocale()
       })

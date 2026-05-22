@@ -28,13 +28,13 @@ export function MiniPlayerStandaloneApp(): JSX.Element {
 
   useEffect(() => {
     let cancelled = false
-    void window.fluxalloy.miniPlayer.getSnapshot().then((s) => {
+    void window.velorix.miniPlayer.getSnapshot().then((s) => {
       if (!cancelled) {
         setSnapshot(s)
         setAlwaysOnTop(s.alwaysOnTop)
       }
     })
-    const off = window.fluxalloy.miniPlayer.onSnapshot((s) => {
+    const off = window.velorix.miniPlayer.onSnapshot((s) => {
       setSnapshot(s)
       setAlwaysOnTop(s.alwaysOnTop)
     })
@@ -61,7 +61,7 @@ export function MiniPlayerStandaloneApp(): JSX.Element {
         : '0%'
 
   const onToggleTop = useCallback(() => {
-    void window.fluxalloy.miniPlayer.setAlwaysOnTop(!alwaysOnTop).then((r) => {
+    void window.velorix.miniPlayer.setAlwaysOnTop(!alwaysOnTop).then((r) => {
       setAlwaysOnTop(r.alwaysOnTop)
     })
   }, [alwaysOnTop])
@@ -89,7 +89,7 @@ export function MiniPlayerStandaloneApp(): JSX.Element {
           type="button"
           className="app-btn app-btn-compact"
           onClick={() => {
-            void window.fluxalloy.miniPlayer.focusMain()
+            void window.velorix.miniPlayer.focusMain()
           }}
         >
           {uiText('miniPlayerRestoreMain')}
@@ -102,7 +102,7 @@ export function MiniPlayerStandaloneApp(): JSX.Element {
           type="button"
           className="app-btn app-btn-compact"
           onClick={() => {
-            void window.fluxalloy.miniPlayer.hide()
+            void window.velorix.miniPlayer.hide()
           }}
         >
           {uiText('miniPlayerClose')}
@@ -115,10 +115,10 @@ export function MiniPlayerStandaloneApp(): JSX.Element {
         onDismiss={() => setContextMenu(null)}
         onToggleAlwaysOnTop={onToggleTop}
         onRestoreMain={() => {
-          void window.fluxalloy.miniPlayer.focusMain()
+          void window.velorix.miniPlayer.focusMain()
         }}
         onClose={() => {
-          void window.fluxalloy.miniPlayer.hide()
+          void window.velorix.miniPlayer.hide()
         }}
       />
     </div>

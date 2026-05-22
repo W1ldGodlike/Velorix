@@ -1,6 +1,6 @@
 {
   "editorVideoSpriteSmokeSectionTitle": "Preview sprite sheet from video (§7.5, dev/packaged)",
-  "editorVideoSpriteSmokePrereq0": "A local video file is open in the editor (fluxmedia:// preview).",
+  "editorVideoSpriteSmokePrereq0": "A local video file is open in the editor (velorixmedia:// preview).",
   "editorVideoSpriteSmokePrereq1": "Bundled ffmpeg on PATH (Settings → Dependencies → doctor OK).",
   "editorVideoSpriteSmokeStep_open_panel": "Editor → FFmpeg rail → “Preview sprite” block: cols×rows grid, PNG/JPEG format.",
   "editorVideoSpriteSmokeStep_burn_timestamps": "(Optional) Enable “PTS on frames” — drawtext before tile; check readability.",

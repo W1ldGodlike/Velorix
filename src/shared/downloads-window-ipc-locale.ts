@@ -66,7 +66,7 @@ export type DownloadsWindowIpcStrings = {
 
 export const DOWNLOADS_WINDOW_IPC_STRINGS_RU: DownloadsWindowIpcStrings = {
   fileOutsideDownloadDir: 'Файл не найден или находится вне каталога загрузок.',
-  handlerNotConnected: 'Обработчик FluxAlloy не подключён.',
+  handlerNotConnected: 'Обработчик Velorix не подключён.',
   invalidSender: 'Недопустимый отправитель',
   invalidUrlText: 'Некорректный текст URL',
   ytdlpOptionsNotConnected: 'Опции yt-dlp не подключены',
@@ -124,13 +124,13 @@ export const DOWNLOADS_WINDOW_IPC_STRINGS_RU: DownloadsWindowIpcStrings = {
   noActiveYtdlpDownload: 'Нет активной загрузки yt-dlp.',
   ytdlpAlreadyPaused: 'Загрузка уже приостановлена.',
   ytdlpNotPaused: 'Загрузка не на паузе.',
-  logYtdlpPausedSigstop: '[FluxAlloy] Процесс yt-dlp приостановлен (SIGSTOP).',
-  logYtdlpResumedSigcont: '[FluxAlloy] Процесс yt-dlp возобновлён (SIGCONT).'
+  logYtdlpPausedSigstop: '[Velorix] Процесс yt-dlp приостановлен (SIGSTOP).',
+  logYtdlpResumedSigcont: '[Velorix] Процесс yt-dlp возобновлён (SIGCONT).'
 }
 
 export const DOWNLOADS_WINDOW_IPC_STRINGS_EN: DownloadsWindowIpcStrings = {
   fileOutsideDownloadDir: 'File not found or outside the download directory.',
-  handlerNotConnected: 'FluxAlloy handler is not connected.',
+  handlerNotConnected: 'Velorix handler is not connected.',
   invalidSender: 'Invalid sender',
   invalidUrlText: 'Invalid URL text',
   ytdlpOptionsNotConnected: 'yt-dlp options are not connected',
@@ -184,8 +184,8 @@ export const DOWNLOADS_WINDOW_IPC_STRINGS_EN: DownloadsWindowIpcStrings = {
   noActiveYtdlpDownload: 'No active yt-dlp download.',
   ytdlpAlreadyPaused: 'Download is already paused.',
   ytdlpNotPaused: 'Download is not paused.',
-  logYtdlpPausedSigstop: '[FluxAlloy] yt-dlp process paused (SIGSTOP).',
-  logYtdlpResumedSigcont: '[FluxAlloy] yt-dlp process resumed (SIGCONT).'
+  logYtdlpPausedSigstop: '[Velorix] yt-dlp process paused (SIGSTOP).',
+  logYtdlpResumedSigcont: '[Velorix] yt-dlp process resumed (SIGCONT).'
 }
 
 export function getDownloadsWindowIpcStrings(locale: AppUiLocale): DownloadsWindowIpcStrings {

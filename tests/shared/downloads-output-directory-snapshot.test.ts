@@ -25,11 +25,11 @@ describe('downloads output directory snapshot', () => {
 
   it('downloadsOutputDirectoryChanged channel is stable', () => {
     expect(mainWindowIpc.downloadsOutputDirectoryChanged).toBe(
-      'fluxalloy:downloads-output-directory-changed'
+      'velorix:downloads-output-directory-changed'
     )
   })
 
   it('downloadsCliOptionsChanged channel is stable', () => {
-    expect(mainWindowIpc.downloadsCliOptionsChanged).toBe('fluxalloy:downloads-cli-options-changed')
+    expect(mainWindowIpc.downloadsCliOptionsChanged).toBe('velorix:downloads-cli-options-changed')
   })
 })

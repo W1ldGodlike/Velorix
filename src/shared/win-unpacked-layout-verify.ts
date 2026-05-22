@@ -22,7 +22,7 @@ export function winUnpackedLayoutRoot(repoRoot: string): string {
 export function listWinUnpackedLayoutChecks(unpackedRoot: string): WinUnpackedLayoutCheck[] {
   const bundledBin = join(unpackedRoot, 'resources', 'bin')
   const checks: WinUnpackedLayoutCheck[] = [
-    { path: join(unpackedRoot, 'FluxAlloy.exe'), kind: 'file', label: 'FluxAlloy.exe' },
+    { path: join(unpackedRoot, 'Velorix.exe'), kind: 'file', label: 'Velorix.exe' },
     { path: bundledBin, kind: 'dir', label: 'resources/bin' }
   ]
   for (const name of WIN_UNPACKED_BUNDLED_ENGINE_FILES) {
@@ -34,9 +34,9 @@ export function listWinUnpackedLayoutChecks(unpackedRoot: string): WinUnpackedLa
   }
   checks.push(
     {
-      path: join(unpackedRoot, 'resources', 'FLUXALLOY_TZ.md'),
+      path: join(unpackedRoot, 'resources', 'VELORIX_TZ.md'),
       kind: 'file',
-      label: 'resources/FLUXALLOY_TZ.md'
+      label: 'resources/VELORIX_TZ.md'
     },
     {
       path: join(unpackedRoot, 'resources', 'Data', 'trusted_hashes.json'),
@@ -74,7 +74,7 @@ export async function collectWinUnpackedLayoutFailures(
       const hint =
         check.label.startsWith('resources/bin/') && check.label !== 'resources/bin'
           ? ' Перед pack:dir выполните npm run engines:prepare:win.'
-          : check.label === 'FluxAlloy.exe'
+          : check.label === 'Velorix.exe'
             ? ' Сначала: npm run build && npm run pack:dir (или npm run check:release).'
             : ''
       errors.push(`Нет или пустой ${check.path} (${check.label}).${hint}`)
@@ -91,8 +91,8 @@ export function formatWinUnpackedLayoutVerifyDiagnosticLines(
   const unpackedRoot = winUnpackedLayoutRoot(repoRoot)
   return [
     'command: npm run verify:win-unpacked (part of check:release / smoke:packaged-release)',
-    'checks: FluxAlloy.exe, resources/bin engines, FLUXALLOY_TZ.md, Data/trusted_hashes.json, Help/',
-    'env: FLUXALLOY_SKIP_PACK_VERIFY',
+    'checks: Velorix.exe, resources/bin engines, VELORIX_TZ.md, Data/trusted_hashes.json, Help/',
+    'env: VELORIX_SKIP_PACK_VERIFY',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',
     ...listWinUnpackedLayoutChecks(unpackedRoot).map((check) => {
       const present = check.kind === 'dir' ? existsSync(check.path) : existsSync(check.path)

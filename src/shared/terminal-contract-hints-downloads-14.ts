@@ -6,92 +6,94 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS_PART_14: TerminalCommandHintEntry
     tool: 'yt-dlp',
     token: '· в файл: ключ экстрактора',
     summary:
-      'Записать (поле extractor_key) (внутренний ключ модуля извлечения yt-dlp) в flux-ytdlp-extractor-key.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file extractor_key flux-ytdlp-extractor-key.txt --skip-download '
+      'Записать (поле extractor_key) (внутренний ключ модуля извлечения yt-dlp) в velorix-ytdlp-extractor-key.txt без скачивания; допишите ссылку.',
+    fullLine:
+      'yt-dlp --print-to-file extractor_key velorix-ytdlp-extractor-key.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: ссылка на автора',
     summary:
-      'Записать (поле uploader_url) (каноническая ссылка на канал или автора, если есть) в flux-ytdlp-uploader-url.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file uploader_url flux-ytdlp-uploader-url.txt --skip-download '
+      'Записать (поле uploader_url) (каноническая ссылка на канал или автора, если есть) в velorix-ytdlp-uploader-url.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file uploader_url velorix-ytdlp-uploader-url.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: ссылка на превью',
     summary:
-      'Записать миниатюру (поле thumbnail; основная ссылка на обложку) в flux-ytdlp-thumb-url.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file thumbnail flux-ytdlp-thumb-url.txt --skip-download '
+      'Записать миниатюру (поле thumbnail; основная ссылка на обложку) в velorix-ytdlp-thumb-url.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file thumbnail velorix-ytdlp-thumb-url.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: ключевые слова',
     summary:
-      'Записать (поле keywords) (теги и SEO-ключи, если модуль извлечения отдаёт) в flux-ytdlp-keywords.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file keywords flux-ytdlp-keywords.txt --skip-download '
+      'Записать (поле keywords) (теги и SEO-ключи, если модуль извлечения отдаёт) в velorix-ytdlp-keywords.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file keywords velorix-ytdlp-keywords.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: ссылка на канал плейлиста',
     summary:
-      'Записать (поле playlist_channel_url) (каноническая ссылка на вкладку или канал плейлиста, если есть) в flux-ytdlp-plchurl.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file playlist_channel_url flux-ytdlp-plchurl.txt --skip-download '
+      'Записать (поле playlist_channel_url) (каноническая ссылка на вкладку или канал плейлиста, если есть) в velorix-ytdlp-plchurl.txt без скачивания; допишите ссылку.',
+    fullLine:
+      'yt-dlp --print-to-file playlist_channel_url velorix-ytdlp-plchurl.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: в главных ролях',
     summary:
-      'Записать (поле starring) (верхний актёрский блок, если модуль извлечения отдаёт) в flux-ytdlp-starring.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file starring flux-ytdlp-starring.txt --skip-download '
+      'Записать (поле starring) (верхний актёрский блок, если модуль извлечения отдаёт) в velorix-ytdlp-starring.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file starring velorix-ytdlp-starring.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: сортировка заголовка',
     summary:
-      'Записать (поле title_sort) (сортировочный заголовок каталога, если есть) в flux-ytdlp-titlesort.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file title_sort flux-ytdlp-titlesort.txt --skip-download '
+      'Записать (поле title_sort) (сортировочный заголовок каталога, если есть) в velorix-ytdlp-titlesort.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file title_sort velorix-ytdlp-titlesort.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: сезон (строка)',
     summary:
-      'Записать (поле season) (название или метка сезона, если модуль извлечения отдаёт) в flux-ytdlp-season.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file season flux-ytdlp-season.txt --skip-download '
+      'Записать (поле season) (название или метка сезона, если модуль извлечения отдаёт) в velorix-ytdlp-season.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file season velorix-ytdlp-season.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: номер секции',
     summary:
-      'Записать (поле section_number) (номер секции или части релиза, если модуль извлечения отдаёт) в flux-ytdlp-secnum.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file section_number flux-ytdlp-secnum.txt --skip-download '
+      'Записать (поле section_number) (номер секции или части релиза, если модуль извлечения отдаёт) в velorix-ytdlp-secnum.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file section_number velorix-ytdlp-secnum.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: код isrc',
     summary:
-      'Записать (поле isrc) (код ISRC трека или релиза, если площадка отдаёт) в flux-ytdlp-isrc.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file isrc flux-ytdlp-isrc.txt --skip-download '
+      'Записать (поле isrc) (код ISRC трека или релиза, если площадка отдаёт) в velorix-ytdlp-isrc.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file isrc velorix-ytdlp-isrc.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: сортировка трека',
     summary:
-      'Записать (поле track_sort) (сортировочный номер или имя трека, если модуль извлечения отдаёт) в flux-ytdlp-tracksort.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file track_sort flux-ytdlp-tracksort.txt --skip-download '
+      'Записать (поле track_sort) (сортировочный номер или имя трека, если модуль извлечения отдаёт) в velorix-ytdlp-tracksort.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file track_sort velorix-ytdlp-tracksort.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: альтернативное описание',
     summary:
-      'Записать (поле alt_description) (краткое или альтернативное описание, если модуль извлечения отдаёт) в flux-ytdlp-altdesc.txt без скачивания; допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file alt_description flux-ytdlp-altdesc.txt --skip-download '
+      'Записать (поле alt_description) (краткое или альтернативное описание, если модуль извлечения отдаёт) в velorix-ytdlp-altdesc.txt без скачивания; допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file alt_description velorix-ytdlp-altdesc.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
     token: '· в файл: просмотры (доп. файл)',
     summary:
-      'Записать (поле view_count) в отдельный flux-ytdlp-viewcount.txt без скачивания (дубль поля для кастомных сценариев рядом с другими txt); допишите ссылку.',
-    fullLine: 'yt-dlp --print-to-file view_count flux-ytdlp-viewcount.txt --skip-download '
+      'Записать (поле view_count) в отдельный velorix-ytdlp-viewcount.txt без скачивания (дубль поля для кастомных сценариев рядом с другими txt); допишите ссылку.',
+    fullLine: 'yt-dlp --print-to-file view_count velorix-ytdlp-viewcount.txt --skip-download '
   },
   {
     tool: 'yt-dlp',

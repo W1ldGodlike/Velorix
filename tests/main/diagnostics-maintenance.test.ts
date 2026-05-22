@@ -10,7 +10,7 @@ import {
 } from '../../src/main/services/diagnostics/diagnostics-maintenance'
 
 function tmpPaths(): { paths: AppPaths; cleanup: () => void } {
-  const root = mkdtempSync(join(tmpdir(), 'flux-maint-'))
+  const root = mkdtempSync(join(tmpdir(), 'velorix-maint-'))
   const userData = join(root, 'userData')
   const paths: AppPaths = {
     appRoot: root,

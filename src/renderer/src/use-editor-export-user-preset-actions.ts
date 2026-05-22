@@ -68,7 +68,7 @@ export function useEditorExportUserPresetActions(params: UseEditorExportUserPres
       return
     }
     const next = exportUserPresets.filter((p) => p.id !== selectedUserPresetId)
-    void window.fluxalloy.settings
+    void window.velorix.settings
       .setFfmpegExportUserPresets(next)
       .then((s) => {
         setExportUserPresets(s.ffmpegExportUserPresets ?? [])
@@ -131,7 +131,7 @@ export function useEditorExportUserPresetActions(params: UseEditorExportUserPres
       ]
       setExportPresetSaving(true)
       try {
-        const s = await window.fluxalloy.settings.setFfmpegExportUserPresets(next)
+        const s = await window.velorix.settings.setFfmpegExportUserPresets(next)
         setExportUserPresets(s.ffmpegExportUserPresets ?? [])
         setSelectedUserPresetId(id)
         setExportPresetNameDialog(null)
@@ -152,7 +152,7 @@ export function useEditorExportUserPresetActions(params: UseEditorExportUserPres
     )
     setExportPresetSaving(true)
     try {
-      const s = await window.fluxalloy.settings.setFfmpegExportUserPresets(next)
+      const s = await window.velorix.settings.setFfmpegExportUserPresets(next)
       setExportUserPresets(s.ffmpegExportUserPresets ?? [])
       setExportPresetNameDialog(null)
     } catch (error) {
@@ -183,7 +183,7 @@ export function useEditorExportUserPresetActions(params: UseEditorExportUserPres
     const next = exportUserPresets.map((p) =>
       p.id === selectedUserPresetId ? { ...p, snapshot: snap } : p
     )
-    void window.fluxalloy.settings
+    void window.velorix.settings
       .setFfmpegExportUserPresets(next)
       .then((s) => {
         setExportUserPresets(s.ffmpegExportUserPresets ?? [])

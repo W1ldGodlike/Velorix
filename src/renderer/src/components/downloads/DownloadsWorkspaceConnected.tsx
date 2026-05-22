@@ -47,7 +47,7 @@ export function DownloadsWorkspaceConnected(): JSX.Element {
 
   const handleBatchAddDownloadsDone = useCallback(
     async (rowIds: number[]): Promise<void> => {
-      const res = await window.fluxalloy.batchExport.addFromDownloadsDone(rowIds)
+      const res = await window.velorix.batchExport.addFromDownloadsDone(rowIds)
       if (!res.ok) {
         setStatusHint(res.error)
         return
@@ -59,7 +59,7 @@ export function DownloadsWorkspaceConnected(): JSX.Element {
 
   const handleBatchAddOutputPath = useCallback(
     async (outputPath: string): Promise<void> => {
-      const res = await window.fluxalloy.batchExport.addPaths([outputPath])
+      const res = await window.velorix.batchExport.addPaths([outputPath])
       if (!res.ok) {
         setStatusHint(res.error)
         return

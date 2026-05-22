@@ -157,7 +157,7 @@ for (const [key, channel] of downloads) {
   }
 }
 
-const literalHandle = mainText.match(/ipcMain\.handle\(\s*['"]fluxalloy/g)
+const literalHandle = mainText.match(/ipcMain\.handle\(\s*['"]VELORIX/g)
 if (literalHandle?.length) {
   console.error(
     `[audit:ipc-architecture] FAIL: string-literal ipcMain.handle (${literalHandle.length}) — use ipc-channels.ts`

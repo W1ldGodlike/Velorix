@@ -73,7 +73,7 @@ export const YTDLP_CLI_VALIDATION_COPY_RU: YtdlpCliValidationCopy = {
   tokenDangerChars:
     'Запрещены символы оболочки (shell): ; | & `, кавычки и аналогичные конструкции.',
   tokenAtFile: 'Аргументы вида @файл запрещены.',
-  tokenPathsForbidden: 'Каталоги вывода задаются настройками FluxAlloy; -P/--paths запрещены.',
+  tokenPathsForbidden: 'Каталоги вывода задаются настройками Velorix; -P/--paths запрещены.',
   tokenOutputDup: 'Шаблон вывода задаётся полем выше; не дублируйте -o/--output.',
   tokenBatchForbidden: 'Пакетные файлы (-a/--batch-file) здесь запрещены.',
   tokenCookiesDup: 'Cookies задаются в блоке §6.2; не дублируйте --cookies.',
@@ -148,7 +148,7 @@ export const YTDLP_CLI_VALIDATION_COPY_EN: YtdlpCliValidationCopy = {
   tokenTooLong: (max) => `Token is longer than ${max} characters.`,
   tokenDangerChars: 'Shell metacharacters are not allowed (; | & ` quotes, etc.).',
   tokenAtFile: '@file-style arguments are not allowed.',
-  tokenPathsForbidden: 'Output directories are set in FluxAlloy; -P/--paths are not allowed.',
+  tokenPathsForbidden: 'Output directories are set in Velorix; -P/--paths are not allowed.',
   tokenOutputDup: 'Output template is set above; do not duplicate -o/--output.',
   tokenBatchForbidden: 'Batch files (-a/--batch-file) are not allowed here.',
   tokenCookiesDup: 'Cookies are configured in the downloads settings; do not duplicate --cookies.',

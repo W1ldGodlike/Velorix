@@ -25,7 +25,7 @@ import {
  */
 function safeLog(level: 'info' | 'warn' | 'error', scope: string, message: string): void {
   try {
-    window.fluxalloy?.log?.send?.({ level, scope, message })
+    window.velorix?.log?.send?.({ level, scope, message })
   } catch {
     /* preload недоступен — нечего делать в renderer */
   }

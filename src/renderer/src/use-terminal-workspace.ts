@@ -221,7 +221,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     }
     setTerminalBusy(true)
     try {
-      const result: TerminalRunResult = await window.fluxalloy.terminal.run({
+      const result: TerminalRunResult = await window.velorix.terminal.run({
         line,
         currentFilePath: currentSourcePath,
         uiLocale: getUiLocale() as AppUiLocale
@@ -250,7 +250,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
 
   const copyTerminalOutputLine = useCallback(
     async (line: string): Promise<void> => {
-      const r = await window.fluxalloy.clipboard.writeText(line)
+      const r = await window.velorix.clipboard.writeText(line)
       setStatusHint(
         r.ok
           ? uiText('statusTerminalOutputLineCopied')

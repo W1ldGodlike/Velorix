@@ -25,7 +25,7 @@ export async function runPlannedGuiE2eEditorDlStep(page: Page): Promise<void> {
   await expect(page.locator('#workspace-panel-downloads')).toBeVisible({ timeout: 15_000 })
   await expect(
     page.getByRole('button', {
-      name: /Open downloaded file in FluxAlloy|Открыть скачанный файл в FluxAlloy/i
+      name: /Open downloaded file in Velorix|Открыть скачанный файл в Velorix/i
     })
   ).toBeVisible()
 }

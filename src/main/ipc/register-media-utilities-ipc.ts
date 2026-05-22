@@ -185,7 +185,7 @@ export function registerMediaUtilitiesIpcHandlers(host: ExportBatchIpcHost): voi
       }
       const pick = await dialog.showSaveDialog(win, {
         title: M.mediaUtilitiesNoiseSaveTitle,
-        defaultPath: `fluxalloy_${kind}_${durationSec}s.wav`,
+        defaultPath: `VELORIX_${kind}_${durationSec}s.wav`,
         filters: [{ name: M.mediaUtilitiesNoiseSaveFilter, extensions: ['wav'] }]
       })
       if (pick.canceled || !pick.filePath) {

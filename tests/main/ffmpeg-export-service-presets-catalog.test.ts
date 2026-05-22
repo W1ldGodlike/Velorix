@@ -39,20 +39,20 @@ describe('ffmpeg export pure helpers', () => {
   it('§7.2 built-in platform presets count', () => {
     const ru = getBuiltinFfmpegExportUserPresets('ru')
     expect(ru).toHaveLength(11)
-    expect(ru.every((p) => p.id.startsWith('flux-builtin-'))).toBe(true)
+    expect(ru.every((p) => p.id.startsWith('velorix-builtin-'))).toBe(true)
     expect(ru[0]?.hint && ru[0].hint.length > 0).toBe(true)
   })
 
   it('§7.2 merge builtins from code + user-only rows from settings file', () => {
     const snap = getBuiltinFfmpegExportUserPresets('ru')[0]!.snapshot
     const legacy = [
-      { id: 'flux-builtin-share-mp4', label: 'X', snapshot: snap },
-      { id: 'flux-builtin-compact-mp4', label: 'Y', snapshot: snap },
-      { id: 'flux-builtin-quality-mkv', label: 'Z', snapshot: snap }
+      { id: 'velorix-builtin-share-mp4', label: 'X', snapshot: snap },
+      { id: 'velorix-builtin-compact-mp4', label: 'Y', snapshot: snap },
+      { id: 'velorix-builtin-quality-mkv', label: 'Z', snapshot: snap }
     ]
     const mergedLegacy = mergeBuiltinFfmpegExportUserPresetsFromFile(legacy, 'ru')
     expect(mergedLegacy).toHaveLength(11)
-    expect(mergedLegacy[0]?.id).toBe('flux-builtin-tiktok')
+    expect(mergedLegacy[0]?.id).toBe('velorix-builtin-tiktok')
 
     const withUser = mergeBuiltinFfmpegExportUserPresetsFromFile(
       [...legacy, { id: 'my-slot', label: 'Mine', snapshot: snap }],
@@ -60,6 +60,6 @@ describe('ffmpeg export pure helpers', () => {
     )
     expect(withUser).toHaveLength(12)
     expect(withUser.some((p) => p.id === 'my-slot')).toBe(true)
-    expect(withUser.some((p) => p.id === 'flux-builtin-share-mp4')).toBe(false)
+    expect(withUser.some((p) => p.id === 'velorix-builtin-share-mp4')).toBe(false)
   })
 })

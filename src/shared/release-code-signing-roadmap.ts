@@ -176,7 +176,7 @@ export function formatReleaseCodeSigningRoadmapElectronBuilderYmlSigningComment(
 
 /** `electron-builder.yml` — win.target policy comment (no portable; TZ §19). */
 export function formatReleaseCodeSigningRoadmapElectronBuilderYmlWinTargetComment(): string {
-  return '# win.target: nsis + zip only (no portable — single-root policy; см. FLUXALLOY_TZ.md §19 и docs/RELEASE.md §4).'
+  return '# win.target: nsis + zip only (no portable — single-root policy; см. VELORIX_TZ.md §19 и docs/RELEASE.md §4).'
 }
 
 /** `electron-builder.yml` — mac notarize off until publish (docs/RELEASE.md §4.2). */

@@ -111,10 +111,10 @@ export interface AppSettings {
   ytdlpFilenameTemplate?: string
   /** §6.2: пресет `-f` (`editor_mp4` | `default` | `merge_bv_ba` | `best_single` и др.). */
   ytdlpFormatPreset?: string
-  /** §14 (Windows): пункты «Открыть в FluxAlloy» / Quick MP4 в контекстном меню видео. */
+  /** §14 (Windows): пункты «Открыть в Velorix» / Quick MP4 в контекстном меню видео. */
   windowsExplorerContextMenu?: boolean
   /** §14 — «Открыть с помощью» для видео (HKCU OpenWithProgids). */
-  windowsOpenWithFluxAlloy?: boolean
+  windowsOpenWithVelorix?: boolean
   /** §6.2: с `--yes-playlist` скачивать весь плейлист (иначе `--no-playlist`). */
   ytdlpDownloadPlaylist?: boolean
   /** §6.2: извлечение аудио `-x` (нужен ffmpeg рядом с yt-dlp). */

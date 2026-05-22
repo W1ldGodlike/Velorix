@@ -62,11 +62,11 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
   {
     label: 'print-to-file _type/plurl/manurl/sarfix/reqf + geo NR/TV/KI/WF + progress-delta -F',
     lines: [
-      'yt-dlp --print-to-file _type flux-ytdlp-otype.txt --skip-download ',
-      'yt-dlp --print-to-file playlist_url flux-ytdlp-plurl.txt --skip-download ',
-      'yt-dlp --print-to-file manifest_url flux-ytdlp-manurl.txt --skip-download ',
-      'yt-dlp --print-to-file stretched_ratio flux-ytdlp-sarfix.txt --skip-download ',
-      'yt-dlp --print-to-file requested_formats flux-ytdlp-reqf.txt --skip-download ',
+      'yt-dlp --print-to-file _type velorix-ytdlp-otype.txt --skip-download ',
+      'yt-dlp --print-to-file playlist_url velorix-ytdlp-plurl.txt --skip-download ',
+      'yt-dlp --print-to-file manifest_url velorix-ytdlp-manurl.txt --skip-download ',
+      'yt-dlp --print-to-file stretched_ratio velorix-ytdlp-sarfix.txt --skip-download ',
+      'yt-dlp --print-to-file requested_formats velorix-ytdlp-reqf.txt --skip-download ',
       'yt-dlp --geo-bypass-country NR -F ',
       'yt-dlp --geo-bypass-country TV -F ',
       'yt-dlp --geo-bypass-country KI -F ',
@@ -87,35 +87,35 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
       'yt-dlp --geo-bypass-country LA -F ',
       'yt-dlp --geo-bypass-country KH -F ',
       'yt-dlp --geo-bypass-country BN -F ',
-      'yt-dlp --print-to-file channel_is_verified flux-ytdlp-chverify.txt --skip-download ',
-      'yt-dlp --print-to-file is_private flux-ytdlp-private.txt --skip-download ',
-      'yt-dlp --print-to-file composers flux-ytdlp-composers.txt --skip-download ',
-      'yt-dlp --print-to-file creators flux-ytdlp-creators.txt --skip-download ',
-      'yt-dlp --print-to-file track_number flux-ytdlp-trknum.txt --skip-download '
+      'yt-dlp --print-to-file channel_is_verified velorix-ytdlp-chverify.txt --skip-download ',
+      'yt-dlp --print-to-file is_private velorix-ytdlp-private.txt --skip-download ',
+      'yt-dlp --print-to-file composers velorix-ytdlp-composers.txt --skip-download ',
+      'yt-dlp --print-to-file creators velorix-ytdlp-creators.txt --skip-download ',
+      'yt-dlp --print-to-file track_number velorix-ytdlp-trknum.txt --skip-download '
     ] as const
   },
   {
     label: 'print-to-file timestamp/extractor_key/track_id/album_id/dynamic_range + geo TT -F',
     lines: [
-      'yt-dlp --print-to-file timestamp flux-ytdlp-ts.txt --skip-download ',
-      'yt-dlp --print-to-file extractor_key flux-ytdlp-extkey.txt --skip-download ',
-      'yt-dlp --print-to-file track_id flux-ytdlp-trackid.txt --skip-download ',
-      'yt-dlp --print-to-file album_id flux-ytdlp-albumid.txt --skip-download ',
-      'yt-dlp --print-to-file dynamic_range flux-ytdlp-dynrange.txt --skip-download ',
+      'yt-dlp --print-to-file timestamp velorix-ytdlp-ts.txt --skip-download ',
+      'yt-dlp --print-to-file extractor_key velorix-ytdlp-extkey.txt --skip-download ',
+      'yt-dlp --print-to-file track_id velorix-ytdlp-trackid.txt --skip-download ',
+      'yt-dlp --print-to-file album_id velorix-ytdlp-albumid.txt --skip-download ',
+      'yt-dlp --print-to-file dynamic_range velorix-ytdlp-dynrange.txt --skip-download ',
       'yt-dlp --geo-bypass-country TT -F '
     ] as const
   },
   {
     label: 'print-to-file audio_channels/chapter*/start_time/end_time/quality/formats_table',
     lines: [
-      'yt-dlp --print-to-file audio_channels flux-ytdlp-achs.txt --skip-download ',
-      'yt-dlp --print-to-file chapter flux-ytdlp-chapter.txt --skip-download ',
-      'yt-dlp --print-to-file chapter_id flux-ytdlp-chapid.txt --skip-download ',
-      'yt-dlp --print-to-file chapter_number flux-ytdlp-chapnum.txt --skip-download ',
-      'yt-dlp --print-to-file start_time flux-ytdlp-stt.txt --skip-download ',
-      'yt-dlp --print-to-file end_time flux-ytdlp-end.txt --skip-download ',
-      'yt-dlp --print-to-file quality flux-ytdlp-quality.txt --skip-download ',
-      'yt-dlp --print-to-file formats_table flux-ytdlp-ftbl.txt --skip-download '
+      'yt-dlp --print-to-file audio_channels velorix-ytdlp-achs.txt --skip-download ',
+      'yt-dlp --print-to-file chapter velorix-ytdlp-chapter.txt --skip-download ',
+      'yt-dlp --print-to-file chapter_id velorix-ytdlp-chapid.txt --skip-download ',
+      'yt-dlp --print-to-file chapter_number velorix-ytdlp-chapnum.txt --skip-download ',
+      'yt-dlp --print-to-file start_time velorix-ytdlp-stt.txt --skip-download ',
+      'yt-dlp --print-to-file end_time velorix-ytdlp-end.txt --skip-download ',
+      'yt-dlp --print-to-file quality velorix-ytdlp-quality.txt --skip-download ',
+      'yt-dlp --print-to-file formats_table velorix-ytdlp-ftbl.txt --skip-download '
     ] as const
   },
   {
@@ -132,9 +132,9 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
   {
     label: 'print-to-file format/language_preference/autonumber + geo OM/QA/BH/AE/SA',
     lines: [
-      'yt-dlp --print-to-file format flux-ytdlp-fmtline.txt --skip-download ',
-      'yt-dlp --print-to-file language_preference flux-ytdlp-langpref.txt --skip-download ',
-      'yt-dlp --print-to-file autonumber flux-ytdlp-anum.txt --skip-download ',
+      'yt-dlp --print-to-file format velorix-ytdlp-fmtline.txt --skip-download ',
+      'yt-dlp --print-to-file language_preference velorix-ytdlp-langpref.txt --skip-download ',
+      'yt-dlp --print-to-file autonumber velorix-ytdlp-anum.txt --skip-download ',
       'yt-dlp --geo-bypass-country OM -F ',
       'yt-dlp --geo-bypass-country QA -F ',
       'yt-dlp --geo-bypass-country BH -F ',
@@ -146,8 +146,8 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
     label:
       'print-to-file filename_sanitized/requested_downloads + extractor-retries 5 -F + geo JO/LB/UZ/TM',
     lines: [
-      'yt-dlp --print-to-file filename_sanitized flux-ytdlp-fnsan.txt --skip-download ',
-      'yt-dlp --print-to-file requested_downloads flux-ytdlp-reqdl.txt --skip-download ',
+      'yt-dlp --print-to-file filename_sanitized velorix-ytdlp-fnsan.txt --skip-download ',
+      'yt-dlp --print-to-file requested_downloads velorix-ytdlp-reqdl.txt --skip-download ',
       'yt-dlp --extractor-retries 5 -F ',
       'yt-dlp --geo-bypass-country JO -F ',
       'yt-dlp --geo-bypass-country LB -F ',
@@ -158,8 +158,8 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
   {
     label: 'print-to-file modified_date/live_title + http-chunk 1M -F + geo CV/GM/KM',
     lines: [
-      'yt-dlp --print-to-file modified_date flux-ytdlp-mdate.txt --skip-download ',
-      'yt-dlp --print-to-file live_title flux-ytdlp-livetitle.txt --skip-download ',
+      'yt-dlp --print-to-file modified_date velorix-ytdlp-mdate.txt --skip-download ',
+      'yt-dlp --print-to-file live_title velorix-ytdlp-livetitle.txt --skip-download ',
       'yt-dlp --http-chunk-size 1M -F ',
       'yt-dlp --geo-bypass-country CV -F ',
       'yt-dlp --geo-bypass-country GM -F ',
@@ -170,10 +170,10 @@ export const TERMINAL_DOWNLOADS_LINE_BATCHES_A: readonly TerminalDownloadsLineBa
     label:
       'print-to-file section_start/section_end/played_count/referrer + playlist-reverse -F + geo YT/MG/PG',
     lines: [
-      'yt-dlp --print-to-file section_start flux-ytdlp-segstart.txt --skip-download ',
-      'yt-dlp --print-to-file section_end flux-ytdlp-segend.txt --skip-download ',
-      'yt-dlp --print-to-file played_count flux-ytdlp-playcnt.txt --skip-download ',
-      'yt-dlp --print-to-file referrer flux-ytdlp-refurl.txt --skip-download ',
+      'yt-dlp --print-to-file section_start velorix-ytdlp-segstart.txt --skip-download ',
+      'yt-dlp --print-to-file section_end velorix-ytdlp-segend.txt --skip-download ',
+      'yt-dlp --print-to-file played_count velorix-ytdlp-playcnt.txt --skip-download ',
+      'yt-dlp --print-to-file referrer velorix-ytdlp-refurl.txt --skip-download ',
       'yt-dlp --playlist-reverse -F ',
       'yt-dlp --geo-bypass-country YT -F ',
       'yt-dlp --geo-bypass-country MG -F ',

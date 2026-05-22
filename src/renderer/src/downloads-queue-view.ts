@@ -37,15 +37,15 @@ export type DownloadsQueueStats = {
 
 /** §6 — id заголовков таблицы очереди yt-dlp (`headers` на `<td>`). */
 export const DOWNLOADS_QUEUE_TABLE_HEADER_IDS = {
-  num: 'flux-dlq-col-num',
-  titleUrl: 'flux-dlq-col-title-url',
-  format: 'flux-dlq-col-format',
-  size: 'flux-dlq-col-size',
-  progress: 'flux-dlq-col-progress',
-  speed: 'flux-dlq-col-speed',
-  eta: 'flux-dlq-col-eta',
-  status: 'flux-dlq-col-status',
-  actions: 'flux-dlq-col-actions'
+  num: 'velorix-dlq-col-num',
+  titleUrl: 'velorix-dlq-col-title-url',
+  format: 'velorix-dlq-col-format',
+  size: 'velorix-dlq-col-size',
+  progress: 'velorix-dlq-col-progress',
+  speed: 'velorix-dlq-col-speed',
+  eta: 'velorix-dlq-col-eta',
+  status: 'velorix-dlq-col-status',
+  actions: 'velorix-dlq-col-actions'
 } as const
 
 export function sanitizeDownloadsRows(raw: unknown[]): DownloadsQueueRowView[] {

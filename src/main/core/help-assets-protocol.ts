@@ -14,11 +14,11 @@ const HELP_IMAGE_MIME: Record<string, string> = {
   '.svg': 'image/svg+xml'
 }
 
-/** Схема `fluxhelp://` для картинок из `Help/assets/*` в статьях базы знаний. Регистрировать до `app.whenReady`. */
+/** Схема `velorixhelp://` для картинок из `Help/assets/*` в статьях базы знаний. Регистрировать до `app.whenReady`. */
 export function registerFluxHelpPrivileges(): void {
   protocol.registerSchemesAsPrivileged([
     {
-      scheme: 'fluxhelp',
+      scheme: 'velorixhelp',
       privileges: {
         secure: true,
         standard: true,
@@ -34,7 +34,7 @@ export function registerFluxHelpPrivileges(): void {
  * `getHelpDir` вызывается на каждый запрос (dev/packaged могут отличаться).
  */
 export function registerFluxHelpProtocol(getHelpDir: () => string | null): void {
-  protocol.handle('fluxhelp', (request) => {
+  protocol.handle('velorixhelp', (request) => {
     const helpDir = getHelpDir()
     if (!helpDir) {
       return new Response('Help not found', { status: 404 })

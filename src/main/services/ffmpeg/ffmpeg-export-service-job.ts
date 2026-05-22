@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 
-import { FLUXALLOY_APP_DATA_ENV, resolveAppTempDirectory } from '../../core/app-data-root-paths'
+import { VELORIX_APP_DATA_ENV, resolveAppTempDirectory } from '../../core/app-data-root-paths'
 import type { FfmpegExportVideoCodecId } from '../../../shared/ffmpeg-export-contract'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../../../shared/ffmpeg-export-contract'
 import type { FfmpegExportArgvParams } from '../../../shared/ffmpeg-export-argv'
@@ -82,10 +82,10 @@ export async function runFfmpegExportJob(
 
   let tmpDir: string | null = null
   try {
-    const appDataRoot = process.env[FLUXALLOY_APP_DATA_ENV]
+    const appDataRoot = process.env[VELORIX_APP_DATA_ENV]
     const appTemp = appDataRoot
       ? resolveAppTempDirectory(appDataRoot)
-      : join(tmpdir(), 'fluxalloy-export-temp')
+      : join(tmpdir(), 'VELORIX-export-temp')
     mkdirSync(appTemp, { recursive: true })
     tmpDir = mkdtempSync(join(appTemp, 'fa-x264tw-'))
     const passlogBase = join(tmpDir, 'pass')

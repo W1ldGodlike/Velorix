@@ -7,7 +7,7 @@ import { runWorkflowHeadlessTickIfRequested } from './services/workflow/workflow
 import { runWindowsExplorerShellHeadlessCliIfRequested } from './services/platform/windows-explorer-shell-headless-cli'
 import { captureWindowsExplorerShellArgv } from './services/platform/windows-explorer-shell-launch'
 import { tryFulfillPendingWindowsExplorerShellLaunch } from './services/platform/windows-explorer-shell-launch-schedule'
-import { registerFluxMediaPrivileges } from './core/media-protocol'
+import { registervelorixmediaPrivileges } from './core/media-protocol'
 import { registerFluxHelpPrivileges } from './core/help-assets-protocol'
 import { isNativeMainQuitOnLastWindowClosed } from './platform/index'
 
@@ -15,7 +15,7 @@ import { isNativeMainQuitOnLastWindowClosed } from './platform/index'
 configurePortableAppDataPaths()
 
 attachProcessErrorHandlers()
-registerFluxMediaPrivileges()
+registervelorixmediaPrivileges()
 registerFluxHelpPrivileges()
 
 const gotSingleInstanceLock = app.requestSingleInstanceLock()

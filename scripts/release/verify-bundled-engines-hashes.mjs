@@ -2,7 +2,7 @@
 /**
  * Верификация bundled `bin/` для §19: Windows `*.exe`; macOS/Linux — `ffmpeg`, `ffprobe`, `yt-dlp`.
  *
- * Режим строгого релиза: `FLUXALLOY_ENGINES_STRICT=1` — обязательны непустые хеши
+ * Режим строгого релиза: `VELORIX_ENGINES_STRICT=1` — обязательны непустые хеши
  * `windows-x64["yt-dlp.exe"]`, `["ffmpeg.exe"]`, `["ffprobe.exe"]` и совпадение с диском.
  * Без strict пустые поля = проверка пропускается (dev), но файлы после prepare должны существовать.
  * Флаги: `--help`.
@@ -48,7 +48,7 @@ async function fileNonEmpty(path) {
 
 function shouldLogEngineVersions() {
   const ga = process.env.GITHUB_ACTIONS
-  const flag = process.env.FLUXALLOY_LOG_ENGINE_VERSIONS
+  const flag = process.env.VELORIX_LOG_ENGINE_VERSIONS
   return (
     ga === 'true' ||
     flag === '1' ||
@@ -77,8 +77,8 @@ function printHelp() {
 Комплексно (verify + SHA в лог + версии): npm run engines:doctor  (см. docs/RELEASE.md)
 
 Переменные:
-  FLUXALLOY_ENGINES_STRICT=1     обязательны непустые exe-хеши в windows-x64 (только Windows)
-  FLUXALLOY_LOG_ENGINE_VERSIONS=1   печать первой строки версии каждого движка
+  VELORIX_ENGINES_STRICT=1     обязательны непустые exe-хеши в windows-x64 (только Windows)
+  VELORIX_LOG_ENGINE_VERSIONS=1   печать первой строки версии каждого движка
   GITHUB_ACTIONS=true (в CI)    то же, что лог версий`)
 }
 
@@ -97,7 +97,7 @@ async function verifyWindowsBundled(strict, trusted) {
     const expected = typeof wx[jsonKey] === 'string' ? wx[jsonKey].trim() : ''
     if (strict && expected === '') {
       throw new Error(
-        `FLUXALLOY_ENGINES_STRICT: в trusted_hashes.json -> windows-x64["${jsonKey}"] нужен непустой SHA256`
+        `VELORIX_ENGINES_STRICT: в trusted_hashes.json -> windows-x64["${jsonKey}"] нужен непустой SHA256`
       )
     }
     if (expected !== '') {
@@ -141,7 +141,7 @@ async function main() {
   }
 
   const strict =
-    process.env.FLUXALLOY_ENGINES_STRICT === '1' || process.env.FLUXALLOY_ENGINES_STRICT === 'true'
+    process.env.VELORIX_ENGINES_STRICT === '1' || process.env.VELORIX_ENGINES_STRICT === 'true'
 
   let trusted = {}
   try {
@@ -159,7 +159,7 @@ async function main() {
 
   if (isUnixBundledPlatform()) {
     if (strict) {
-      log('FLUXALLOY_ENGINES_STRICT: только windows-x64 exe-хеши — unix SHA пока не enforced')
+      log('VELORIX_ENGINES_STRICT: только windows-x64 exe-хеши — unix SHA пока не enforced')
     }
     await verifyUnixBundled()
     return

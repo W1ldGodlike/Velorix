@@ -1,12 +1,12 @@
-# FluxAlloy v0 UX Reference
+# Velorix v0 UX Reference
 
 Краткая карта v0-референса для Cursor SDK/Assistant. Использовать как ориентир для UI/UX-переноса без слепого копирования.
 
 ## Источник анализа
 
-- Проверен `https://v0-fluxalloy-desktop-app.vercel.app/` через Playwright.
+- Проверен `https://v0-VELORIX-desktop-app.vercel.app/` через Playwright.
 - Пройдены состояния `Редактор` и `Загрузки`, клики по IN/OUT, timeline, collapsible sections, switches и action-кнопкам таблицы загрузок.
-- Отдельный canvas-артефакт для человека: `v0-fluxalloy-ux-map.canvas.tsx` в Cursor canvases.
+- Отдельный canvas-артефакт для человека: `v0-VELORIX-ux-map.canvas.tsx` в Cursor canvases.
 - В скопированном логе v0 подтверждены Next 16, Radix UI (`tabs`, `accordion/collapsible`, `select`, `switch`) и `lucide-react`.
 - Известный баг v0: hydration mismatch из-за случайных высот waveform. Такую random-разметку не копировать.
 
@@ -21,7 +21,7 @@
 ## Topbar
 
 - Высота около 70px в v0.
-- Слева: бренд `FluxAlloy`, версия, иконки `folder-open`, `save`, `rotate-ccw`, `rotate-cw`, `scissors`.
+- Слева: бренд `VELORIX`, версия, иконки `folder-open`, `save`, `rotate-ccw`, `rotate-cw`, `scissors`.
 - Центр: tabs `Редактор` / `Загрузки`, активная вкладка подчёркнута синим.
 - Справа: строка версий `ffmpeg 6.1 • yt-dlp 2024.01` и icon cluster `film`, `download`, `settings`, `help`.
 - Вывод: topbar должен быть коротким и не содержать все настройки.
@@ -50,7 +50,7 @@
   - `Формат`: разрешение, частота кадров, 2-pass switch, hardware acceleration switch.
   - `Аудио`: свернута по умолчанию.
   - `Вывод`: путь, имя файла, command preview, primary export button.
-- Для FluxAlloy: держать settings в боковой/нижней панели, сохранять preview/timeline доминирующими.
+- Для velorix: держать settings в боковой/нижней панели, сохранять preview/timeline доминирующими.
 
 ## Downloads Layout
 

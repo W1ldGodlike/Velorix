@@ -114,11 +114,11 @@ export function hydrateEditorExportFieldsFromSettings(
     ec === 'mp4' || ec === 'mkv' || ec === 'mov' ? ec : 'mp4'
   if (cpuFfmpegVideoCodecRequiresMkv(vcodec) && nextContainer !== 'mkv') {
     nextContainer = 'mkv'
-    void window.fluxalloy.settings.setFfmpegExportContainer('mkv').catch(console.error)
+    void window.velorix.settings.setFfmpegExportContainer('mkv').catch(console.error)
   }
   if (ffmpegExportVideoCodecRequiresMov(vcodec) && nextContainer !== 'mov') {
     nextContainer = 'mov'
-    void window.fluxalloy.settings.setFfmpegExportContainer('mov').catch(console.error)
+    void window.velorix.settings.setFfmpegExportContainer('mov').catch(console.error)
   }
   let nextAudioMode: FfmpegExportAudioModeId = 'aac'
   if (loaded.ffmpegExportAudioMode === 'none') {
@@ -142,7 +142,7 @@ export function hydrateEditorExportFieldsFromSettings(
   }
   if (ffmpegExportAudioModeRequiresMkv(nextAudioMode) && nextContainer !== 'mkv') {
     nextContainer = 'mkv'
-    void window.fluxalloy.settings.setFfmpegExportContainer('mkv').catch(console.error)
+    void window.velorix.settings.setFfmpegExportContainer('mkv').catch(console.error)
   }
   s.setExportContainer(nextContainer)
   s.setExportAudioMode(nextAudioMode)

@@ -38,10 +38,10 @@ export function useAppMainWindowEngineActions(
   const refreshEngineUi = useCallback(async (): Promise<void> => {
     try {
       const loc = getUiLocale() as AppUiLocale
-      const snapshot = await window.fluxalloy.engines.getStatus(loc)
+      const snapshot = await window.velorix.engines.getStatus(loc)
       setEngineSummary(summarizeEngines(snapshot.engines))
       setEngineVersionsLine(formatEngineVersionsLine(snapshot))
-      const need = await window.fluxalloy.engines.shouldOfferDownload()
+      const need = await window.velorix.engines.shouldOfferDownload()
       setEnginesOfferDownload(need)
       await refetchHwEncoders()
     } catch {

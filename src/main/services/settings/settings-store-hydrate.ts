@@ -203,8 +203,8 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
   if (parsed.windowsExplorerContextMenu === true) {
     base.windowsExplorerContextMenu = true
   }
-  if (parsed.windowsOpenWithFluxAlloy === true) {
-    base.windowsOpenWithFluxAlloy = true
+  if (parsed.windowsOpenWithVelorix === true) {
+    base.windowsOpenWithVelorix = true
   }
   if (parsed.ytdlpDownloadPlaylist === true) {
     base.ytdlpDownloadPlaylist = true

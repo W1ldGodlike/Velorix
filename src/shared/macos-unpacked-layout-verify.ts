@@ -1,13 +1,13 @@
 /**
- * §2.1/§19 — dist/mac-arm64/FluxAlloy.app (и др. mac*) после pack:mac:dir (stat-only).
+ * §2.1/§19 — dist/mac-arm64/Velorix.app (и др. mac*) после pack:mac:dir (stat-only).
  */
 import { join } from 'node:path'
 
-export const MACOS_APP_BUNDLE_DIR_NAME = 'FluxAlloy.app'
+export const MACOS_APP_BUNDLE_DIR_NAME = 'Velorix.app'
 
 export const MACOS_PACK_OUTPUT_DIR_NAMES = ['mac', 'mac-arm64', 'mac-x64'] as const
 
-export const MACOS_APP_EXECUTABLE_NAMES = ['FluxAlloy', 'fluxalloy'] as const
+export const MACOS_APP_EXECUTABLE_NAMES = ['velorix', 'Velorix'] as const
 
 export type MacosUnpackedLayoutCheck = {
   path: string
@@ -34,9 +34,9 @@ export function listMacosUnpackedLayoutChecks(bundleRoot: string): MacosUnpacked
       label: 'Contents/Resources/bin'
     },
     {
-      path: join(resources, 'FLUXALLOY_TZ.md'),
+      path: join(resources, 'VELORIX_TZ.md'),
       kind: 'file',
-      label: 'Contents/Resources/FLUXALLOY_TZ.md'
+      label: 'Contents/Resources/VELORIX_TZ.md'
     },
     {
       path: join(resources, 'Data', 'trusted_hashes.json'),
@@ -124,7 +124,7 @@ export function formatMacosUnpackedLayoutVerifyDiagnosticLines(
           return `layout: ${label} (missing)`
         })
       : [
-          `layout: FluxAlloy.app (${bundleRoot})`,
+          `layout: Velorix.app (${bundleRoot})`,
           ...listMacosUnpackedLayoutChecks(bundleRoot).map((check) => {
             const present = existsSync(check.path)
             return `layout: ${check.label} (${present ? 'present' : 'missing'})`
@@ -132,8 +132,8 @@ export function formatMacosUnpackedLayoutVerifyDiagnosticLines(
         ]
   return [
     'command: npm run verify:mac-unpacked (после pack:mac:dir на macOS)',
-    'checks: FluxAlloy.app/Contents/MacOS, Resources/bin, FLUXALLOY_TZ.md, Data, Help',
-    'env: FLUXALLOY_SKIP_PACK_VERIFY',
+    'checks: Velorix.app/Contents/MacOS, Resources/bin, VELORIX_TZ.md, Data, Help',
+    'env: VELORIX_SKIP_PACK_VERIFY',
     ...layoutLines
   ]
 }

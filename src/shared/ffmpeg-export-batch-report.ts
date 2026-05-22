@@ -59,9 +59,7 @@ export function formatFfmpegExportBatchReportText(
   locale: AppUiLocale = 'ru'
 ): string {
   const header =
-    locale === 'en'
-      ? '# FluxAlloy batch export report\r\n'
-      : '# Отчёт пакетного экспорта FluxAlloy\r\n'
+    locale === 'en' ? '# Velorix batch export report\r\n' : '# Отчёт пакетного экспорта Velorix\r\n'
   const summary =
     locale === 'en'
       ? `running=${snap.running} ok=${snap.completedOk} error=${snap.completedError} cancelled=${snap.completedCancelled} concurrency=${snap.concurrency}\r\n`

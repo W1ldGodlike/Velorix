@@ -58,7 +58,7 @@ const urlScenario: WorkflowScenarioDocument = {
 const tempRoots: string[] = []
 
 function makeTempRoot(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'flux-ph-repeat-'))
+  const dir = mkdtempSync(join(tmpdir(), 'velorix-ph-repeat-'))
   tempRoots.push(dir)
   return dir
 }

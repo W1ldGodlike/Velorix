@@ -1,9 +1,9 @@
 {
   "winPackagedSmokeSectionTitle": "Ручная проверка Windows (pack:dir)",
   "winPackagedSmokePrereq0": "Локально: npm run check:release (или pack:dir + verify:win-unpacked + smoke:packaged-release).",
-  "winPackagedSmokePrereq1": "Каталог dist/win-unpacked/ с FluxAlloy.exe и resources/bin/*.exe.",
+  "winPackagedSmokePrereq1": "Каталог dist/win-unpacked/ с Velorix.exe и resources/bin/*.exe.",
   "winPackagedSmokePrereq2": "Чистый профиль userData (первый запуск) или осознанный тест поверх существующего.",
-  "winPackagedSmokeStep_launch": "Запустить dist/win-unpacked/FluxAlloy.exe (не npm run dev).",
+  "winPackagedSmokeStep_launch": "Запустить dist/win-unpacked/Velorix.exe (не npm run dev).",
   "winPackagedSmokeStep_engines": "Статусбар: версии yt-dlp / ffmpeg / ffprobe без ошибок «не найден».",
   "winPackagedSmokeStep_open_file": "Редактор: открыть локальный MP4/MKV, превью играет, scrub работает.",
   "winPackagedSmokeStep_ytdlp": "Загрузки: короткий URL (10–30 с), очередь до «Готово», лог без ERROR.",

@@ -94,10 +94,10 @@ export function EditorFfmpegSettingsRailAudioSection(
               setExportAudioMode(v)
               if (ffmpegExportAudioModeRequiresMkv(v) && exportContainer !== 'mkv') {
                 setExportContainer('mkv')
-                void window.fluxalloy.settings.setFfmpegExportContainer('mkv').catch(console.error)
+                void window.velorix.settings.setFfmpegExportContainer('mkv').catch(console.error)
                 setStatusHint(uiText('editorExportAutoContainerMkv'))
               }
-              void window.fluxalloy.settings.setFfmpegExportAudioMode(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportAudioMode(v).catch(console.error)
             }}
           >
             {ffmpegExportSelectOptions.audioModes.map((p) => (
@@ -124,7 +124,7 @@ export function EditorFfmpegSettingsRailAudioSection(
               bumpManualExportEdit()
               const v = e.target.value
               setExportAudioBitrate(v)
-              void window.fluxalloy.settings.setFfmpegExportAudioBitrate(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportAudioBitrate(v).catch(console.error)
             }}
           >
             {EXPORT_AUDIO_BITRATES.map((v) => (
@@ -149,7 +149,7 @@ export function EditorFfmpegSettingsRailAudioSection(
               const parsed = Number(e.target.value)
               const v = Number.isFinite(parsed) ? Math.trunc(parsed) : 0
               setExportAudioGainDb(v)
-              void window.fluxalloy.settings
+              void window.velorix.settings
                 .setFfmpegExportAudioGainDb(v === 0 ? null : v)
                 .catch(console.error)
             }}
@@ -175,7 +175,7 @@ export function EditorFfmpegSettingsRailAudioSection(
               bumpManualExportEdit()
               const v = e.target.value as FfmpegExportAudioNormalizeId
               setExportAudioNormalize(v)
-              void window.fluxalloy.settings.setFfmpegExportAudioNormalize(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportAudioNormalize(v).catch(console.error)
             }}
           >
             {ffmpegExportSelectOptions.audioNormalize.map((p) => (
@@ -196,7 +196,7 @@ export function EditorFfmpegSettingsRailAudioSection(
             onChange={(e) => {
               const v = parseFfmpegSnapshotFormatId(e.target.value)
               setSnapshotFormat(v)
-              void window.fluxalloy.settings.setFfmpegSnapshotFormat(v).catch(console.error)
+              void window.velorix.settings.setFfmpegSnapshotFormat(v).catch(console.error)
             }}
           >
             {ffmpegExportSelectOptions.snapshotFormats.map((p) => (
@@ -218,7 +218,7 @@ export function EditorFfmpegSettingsRailAudioSection(
               bumpManualExportEdit()
               const next = !exportStripMetadata
               setExportStripMetadata(next)
-              void window.fluxalloy.settings.setFfmpegExportStripMetadata(next).catch(console.error)
+              void window.velorix.settings.setFfmpegExportStripMetadata(next).catch(console.error)
             }}
           />
           <span id="ffmpegStripMetadataHint" className="app-visually-hidden">
@@ -237,7 +237,7 @@ export function EditorFfmpegSettingsRailAudioSection(
               bumpManualExportEdit()
               const next = !exportStripChapters
               setExportStripChapters(next)
-              void window.fluxalloy.settings.setFfmpegExportStripChapters(next).catch(console.error)
+              void window.velorix.settings.setFfmpegExportStripChapters(next).catch(console.error)
             }}
           />
           <span id="ffmpegStripChaptersHint" className="app-visually-hidden">
@@ -256,7 +256,7 @@ export function EditorFfmpegSettingsRailAudioSection(
               bumpManualExportEdit()
               const v: FfmpegExportSubtitleModeId = e.target.value === 'copy' ? 'copy' : 'drop'
               setExportSubtitleMode(v)
-              void window.fluxalloy.settings.setFfmpegExportSubtitleMode(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportSubtitleMode(v).catch(console.error)
             }}
           >
             {ffmpegExportSelectOptions.subtitleModes.map((p) => (

@@ -1,8 +1,8 @@
-# FluxAlloy — рабочий чек-лист реализации
+# Velorix — рабочий чек-лист реализации
 
-Источник требований: **[`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md)**. **Запрещено** правки ТЗ без **явной просьбы владельца** (глоссарий `fluxalloy-rules-explicit.mdc`). Состояние по §, спринту и TODO — **в этом файле**; **ручная проверка на железе (владелец)** — в **[`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)**; хронологию решений и длинные заметки — в **[`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md)**.
+Источник требований: **[`VELORIX_TZ.md`](VELORIX_TZ.md)**. **Запрещено** правки ТЗ без **явной просьбы владельца** (глоссарий `velorix-rules-explicit.mdc`). Состояние по §, спринту и TODO — **в этом файле**; **ручная проверка на железе (владелец)** — в **[`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)**; хронологию решений и длинные заметки — в **[`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md)**.
 
-**Канон формата спринта и меток — этот файл** (раздел «Ближайший TODO спринта» ниже). Исполняемая копия для Cursor: [`.cursor/rules/fluxalloy-checklist.mdc`](.cursor/rules/fluxalloy-checklist.mdc). Иерархия: [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md). «продолжай» / `+`: [`.cursor/skills/fluxalloy-continue/SKILL.md`](.cursor/skills/fluxalloy-continue/SKILL.md).
+**Канон формата спринта и меток — этот файл** (раздел «Ближайший TODO спринта» ниже). Исполняемая копия для Cursor: [`.cursor/rules/velorix-checklist.mdc`](.cursor/rules/velorix-checklist.mdc). Иерархия: [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md). «продолжай» / `+`: [`.cursor/skills/velorix-continue/SKILL.md`](.cursor/skills/velorix-continue/SKILL.md).
 
 **Нумерация:** как в [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) — **N.M.K** по § ТЗ (`### §6.3` → **6.3.1**, **6.3.2**, …; `## §19` без подраздела → **19.1**, **19.2**, …). Исключения: **snap.*** — «Текущий снимок»; **sprint.*** — спринт; **0.E.*** — этапы §0. Ручная проверка на железе — только в manual-файле (**19.1.1** там ≠ **19.8** здесь).
 
@@ -20,15 +20,15 @@
 ## Текущий снимок проекта
 
 - [x] **snap.1** Удалён старый `.NET` / WinUI слой; текущий проект — Electron + React + TypeScript.
-- [x] **snap.2** Инициализирован локальный Git-репозиторий, первый коммит: `4f14f86 Initialize FluxAlloy Electron project`.
+- [x] **snap.2** Инициализирован локальный Git-репозиторий, первый коммит: `4f14f86 Initialize Velorix Electron project`.
 - [x] **snap.3** Установлены Node.js `24.15.0`, npm `11.12.1`, Git `2.54.0`.
 - [x] **snap.4** `npm install` выполнен; `npm run check` (lint/typecheck/tests/trusted-hashes/journal/secrets), `npm run build`, `npm run build:unpack`, `npm run build:win` проходят; для релиза добавлены `check:release` / `release:win*`.
 - [x] **snap.5** Есть `package.json`, `electron-vite`, `electron-builder`, ESLint, Prettier, TypeScript-конфиги.
 - [x] **snap.6** Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] **snap.7** Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] **snap.8** Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] **snap.9** Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **263 / 1860** (J-1609; синхрон с «Тестовый раннер»).
-- [~] **snap.10** Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
+- [~] **snap.9** Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`velorixmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **263 / 1860** (J-1609; синхрон с «Тестовый раннер»).
+- [~] **snap.10** Есть `Data/`, `Help/`, `VELORIX_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] **snap.11** Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] **snap.12** ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW §16** (resolve + spawn CPU fallback); редкие фильтры — дальше.
 - [~] **snap.13** Движки: Win `engines:prepare:win` (+ `predev`); mac/linux `engines:prepare:mac|linux` (`prepare-engines-unix.mjs`) + `engines:doctor`; SHA256 через `trusted_hashes.json`; `bin/` → `resources/bin` (`extraResources`); бинарники в Git не коммитятся (J-1601).
@@ -53,13 +53,13 @@
 
 ## §0. Стратегия выполнения для Cursor
 
-- [x] **0.1** `FLUXALLOY_TZ.md` существует в корне.
+- [x] **0.1** `VELORIX_TZ.md` существует в корне.
 - [x] **0.2** `IMPLEMENTATION_CHECKLIST.md` существует в корне и используется как рабочий TODO.
 - [x] **0.3** [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — хроника решений и проверок (отдельно от чек‑листа); в `npm run check` входит `check:journal` (`scripts/gate/check-journal-numbering.mjs`): строгий порядок `J-001…` и явная ошибка при **дубликатах** `[J-NNN]`.
 - [x] **0.4** Стек проекта переведён в Electron + TypeScript + React.
 - [x] **0.5** Базовые темы и IPC настроек заведены.
 - [x] **0.6** Локальный Git-репозиторий создан.
-- [x] **0.7** Процесс обновления чеклиста и журнала — skill `fluxalloy-checklist-audit`, глоссарий (J при diff); **запрещено** правки `FLUXALLOY_TZ.md` без явной просьбы владельца.
+- [x] **0.7** Процесс обновления чеклиста и журнала — skill `velorix-checklist-audit`, глоссарий (J при diff); **запрещено** правки `VELORIX_TZ.md` без явной просьбы владельца.
 
 ### Этапы
 
@@ -119,7 +119,7 @@
 - [x] **2.2.7** Миграция Zustand закрыта (**J-1126**); временные gate/чеклист удалены (**J-1128**).
 - [x] **2.2.8** Локализация `locales/ru|en/*.json`: 20 шардов, `ui-text-strings-build` только JSON (legacy `ui-text-strings-{ru|en}-NN.ts` удалены J-1142); guards TS↔JSON + ban legacy parts (J-1143).
 - [x] **2.2.9** Смена языка без перезапуска (все окна renderer + меню, J-1018).
-- [x] **2.2.10** Governance/docs: `fluxalloy-agent.mdc` + skills; `check:docs-governance`; программа GOV закрыта (J-1137); канон — `docs/SOURCES_OF_TRUTH.md`.
+- [x] **2.2.10** Governance/docs: `velorix-agent.mdc` + skills; `check:docs-governance`; программа GOV закрыта (J-1137); канон — `docs/SOURCES_OF_TRUTH.md`.
 - [x] **2.2.11** Toolchain baseline: Electron 42 / Vite 8 / TS 6 / ESLint 9 (10 отложен); выполнен (**J-1354**); план удалён (**J-1559**); Vitest package+governance (**J-1397**/**J-1411**); docs ARCHITECTURE/README/RELEASE (**J-1416**); `fix:esm-shim` (**J-1413**); Vite 8 dev preload SSR + renderer CSP (**J-1454**); [`.npmrc`](.npmrc) `legacy-peer-deps=true`.
 - [~] **2.2.12** Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); единый комментированный конфиг `src/sdk-settings.ts`; long-loop режется на короткие `Agent.create` сессии через `SDK_SESSION_STEPS`/`--session-steps` (дефолт 1) для минимизации cache-read; `check:quiet` печатает короткий summary успешных проверок; локальный `STOP=0/1`; retry SDK/transport + быстрых transient error-run, полный повтор любого `status=error` только через `LOOP_RETRY_RUN_ERROR=1`; `continue.txt` работает как чат-команда `+`/compact handoff (не перечитывает весь контекст без причины), журнал требует `J-NNN` и проверяется `check:journal`.
 
@@ -137,7 +137,7 @@
 - [x] **3.5** Реализовать проверку `--version` для каждого движка.
 - [x] **3.6** Реализовать статус движков в main: отсутствует / проверяется / готов / ошибка.
 - [x] **3.7** Реализовать IPC: получить статус движков.
-- [x] **3.8** Реализовать IPC: загрузка движков + прогресс (`fluxalloy:engines-download`, `fluxalloy:engines-progress`).
+- [x] **3.8** Реализовать IPC: загрузка движков + прогресс (`velorix:engines-download`, `velorix:engines-progress`).
 - [x] **3.9** Реализовать IPC/UI: удалить скачанные движки из `userData/bin` без трогания bundled `resources/bin` и ручных путей.
 - [x] **3.10** Добавить dev/release bootstrap `npm run engines:prepare:win`: скачивает `yt-dlp.exe`, `ffmpeg.exe`, `ffprobe.exe` в проектный `bin/`; `npm run dev` запускает проверку автоматически через `predev`.
 - [x] **3.11** Первый запуск/отсутствующие движки: bundled-first + статусбар/действия UI; `predev` → Win `engines:prepare:win` или unix `prepare-engines-unix` + verify; UI-загрузка в `userData/bin` — fallback/update (J-1599).
@@ -165,7 +165,7 @@
 
 ### §4.B Единая зона источника
 
-- [x] **4.1** Меню/кнопка «Открыть файл» (диалог → `fluxmedia`).
+- [x] **4.1** Меню/кнопка «Открыть файл» (диалог → `velorixmedia`).
 - [x] **4.2** Меню/кнопка **«Открыть папку с видео»** (первый файл после scan §7.3; горячая клавиша Ctrl+Shift+O).
 - [x] **4.3** Системные диалоги открытия (файл/папка превью, входы и папка выхода пакета) стартуют из **`lastOpenedSourcePath`** / **`ffmpegExportBatchOutputDirectory`** где возможно (`defaultPath`).
 - [x] **4.4** Drag-and-Drop локального файла (`getPathForFile` → IPC `grantPath`).
@@ -296,8 +296,8 @@
 ### §6.4 Прогресс, лог, комбинированный режим
 
 - [x] **6.4.1** Парсинг прогресса yt-dlp: процент + скорость + «Осталось» + фрагменты/плейлист/retry/HLS prep + редкие `[download]` + post-processing в колонке «Прогресс» (`parseYtdlpQueuePostProcessProgressLine`: merge, audio, remux, convert, embed, concat, fixup, SponsorBlock…; J-1043).
-- [~] **6.4.2** Лог stdout/stderr: IPC `fluxalloy-downloads-log` fan-out в главное окно и pop-out; вкладка `Загрузки` показывает live log, очистку и сохранение видимого текста; pop-out сохраняет compact-layout со счётчиком размера и обрезкой DOM.
-- [x] **6.4.3** «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик FluxAlloy из очереди и истории.
+- [~] **6.4.2** Лог stdout/stderr: IPC `velorix-downloads-log` fan-out в главное окно и pop-out; вкладка `Загрузки` показывает live log, очистку и сохранение видимого текста; pop-out сохраняет compact-layout со счётчиком размера и обрезкой DOM.
+- [x] **6.4.3** «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик Velorix из очереди и истории.
 - [x] **6.4.4** «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок; неуспех авто-открытия пишется в лог строки).
 - [x] **6.4.5** Опционально после успешного авто-открытия — авто-экспорт §7.2 в соседний файл (`name-export.ext` с суффиксом при коллизии), прогресс в главном окне, итог/ошибка в логе очереди.
 - [~] **6.4.6** Обработка ошибок: приоритет текста `ERROR:`; иначе последняя строка stderr; явное завершение по сигналу ОС; `--retries`/`--fragment-retries` yt-dlp + повторы очереди §6.4 (в т.ч. профиль `persistent`) + ручной retry строки; пропуск повторов очереди по тексту (`private video`, HTTP 403/404, DRM, «нет форматов»/unsupported URL, завершённый live/premiere, **нет места на диске / errno 28**, **ffmpeg/ffprobe not found**, пустой файл и т.п.) с приоритетом транзиентных сетевых маркеров (408/502/503/504/500/429/**521/522/523/520**, таймаут/broken pipe/premature close/**EOF/SSL handshake**, signature extraction/rate limit exceeded и т.д.); `classifyYtdlpQueueFailureKind` (+ коды **2** параметры, **100** перезапуск, **101** лимит загрузок, см. апстрим yt-dlp) и суффиксы в статусе строки; код **1** по-прежнему без отдельного кода — через текстовые маркеры.
@@ -319,7 +319,7 @@
 
 ### §7.2 Панель настроек
 
-- [~] **7.2.1** Пресеты обработки: в тулбаре — пресеты скорости/CRF для libx264/libx265 (`ffmpegExportEncodePreset`); список **пресетов экспорта** — **11 встроенных платформенных** из кода (`getBuiltinFfmpegExportUserPresets`, TikTok/YouTube/…; `hint` в данных) + до **8** пользовательских без префикса `flux-builtin-`, слияние при загрузке `mergeBuiltinFfmpegExportUserPresetsFromFile` (до **24** записей суммарно; J-633–J-635); старые три `flux-builtin-*` из файла настроек не подмешиваются.
+- [~] **7.2.1** Пресеты обработки: в тулбаре — пресеты скорости/CRF для libx264/libx265 (`ffmpegExportEncodePreset`); список **пресетов экспорта** — **11 встроенных платформенных** из кода (`getBuiltinFfmpegExportUserPresets`, TikTok/YouTube/…; `hint` в данных) + до **8** пользовательских без префикса `velorix-builtin-`, слияние при загрузке `mergeBuiltinFfmpegExportUserPresetsFromFile` (до **24** записей суммарно; J-633–J-635); старые три `velorix-builtin-*` из файла настроек не подмешиваются.
 - [~] **7.2.2** Контейнер/формат: toolbar + settings MP4/MKV/MOV; VP9 и CPU AV1 (SVT, AOM, rav1e) и **FFV1** — только MKV; **ProRes (`prores_ks`) / DNxHR (`dnxhd`) — только MOV** (disabled MP4/MKV в UI, авто-переключение при смене кодека и при загрузке настроек).
 - [~] **7.2.3** Видео кодек: whitelist **libx264** / **libx265** / **libvpx-vp9** / **libsvtav1** / **libaom-av1** / **librav1e** / **ffv1** / **prores_ks** / **dnxhd** (MKV-only для VP9/AV1 CPU и FFV1; MOV-only для ProRes/DNx) / HW (`ffmpegExportVideoCodec`, settings/IPC, argv, UI rail «Видео»); 2-pass только для H.264; AV1 HW — в `hw_auto`/`hw_auto_hevc` (в т.ч. **av1_vaapi** в пробе и цепочке AV1); прочие mezzanine — позже.
 - [~] **7.2.4** Аудио кодек: AAC, **MP3 (libmp3lame)**, **AC-3**, **копировать дорожку (copy)**, **PCM s16le**, **Vorbis (libvorbis, MKV-only)**, **Opus (libopus, MKV-only)**, **FLAC (MKV-only)**, **ALAC** или без аудио; **громкость аудио** через `-filter:a volume=NdB` (`ffmpegExportAudioGainDb`, шаг 3 дБ, диапазон −24…+24); выбор другого кодека — позже.
@@ -365,7 +365,7 @@
 
 - [x] **7.6.1** Извлечение кадра из текущей позиции превью (`currentTime` → ffmpeg `-frames:v 1`).
 - [x] **7.6.2** Выбор формата: persisted PNG/JPEG в toolbar + диалог сохранения с нужным расширением по умолчанию.
-- [x] **7.6.3** Выбор пути сохранения через диалог (`fluxalloy:snapshot-frame`).
+- [x] **7.6.3** Выбор пути сохранения через диалог (`velorix:snapshot-frame`).
 
 ## §8. Терминал, CLI и IntelliSense — **[x] закрыт (спринт 2026-05-21, J-1572–1574)**
 
@@ -381,7 +381,7 @@
 - [x] **8.10** Логирование команд и результата.
 - [x] **8.11** IntelliSense в строке argv (v1): merge JSON+сценарии, клавиатура, фильтр до 240, `shared/terminal-inline-suggest` + Vitest.
 - [x] **8.12** Вкладка «Терминал»: `ui-text` ru/en, intro/aria/история через форматтеры `formatTerminal*`.
-- [x] **8.13** RU `summary` сценариев: `locales:terminal-summaries-ru` / `locales:terminal-flux-pole` (`scripts/maint/apply-terminal-summary-ru.mjs`, `inject-flux-summary-pole.mjs`); регрессия `terminal-contract-scenarios.test`.
+- [x] **8.13** RU `summary` сценариев: `locales:terminal-summaries-ru` / `locales:terminal-velorix-pole` (`scripts/maint/apply-terminal-summary-ru.mjs`, `inject-velorix-summary-pole.mjs`); регрессия `terminal-contract-scenarios.test`.
 - [x] **8.14** Каталог сценариев: **839+465** hints, **22** shards (14+8); prune near-dup и «только цифра/дорожка» — `scripts/audit/audit-terminal-hints-prune.mjs`; guards `check:terminal-contract-hints-shards` в `check:quiet`.
 - [x] **8.15** guards data + scenario summaries (J-1025..1026); tooltips J-996.
 
@@ -443,8 +443,8 @@
 ## §14. Контекстное меню Windows
 
 - [x] **14.1** Регистрация HKCU пунктов (video `SystemFileAssociations`, J-1061).
-- [x] **14.2** «Открыть в FluxAlloy» (`--fluxalloy-shell-open`, J-1061).
-- [x] **14.3** Quick MP4 (`--fluxalloy-shell-quick-mp4`, ffmpeg export, J-1061).
+- [x] **14.2** «Открыть в Velorix» (`--velorix-shell-open`, J-1061).
+- [x] **14.3** Quick MP4 (`--velorix-shell-quick-mp4`, ffmpeg export, J-1061).
 - [x] **14.4** Ограничение на видеофайлы (whitelist расширений + parse argv).
 - [x] **14.5** Удаление регистрации (настройки + IPC unregister).
 - [x] **14.6** macOS/Linux: отложено (UI скрыт, `supported: false`).
@@ -458,7 +458,7 @@
 ## §15. База знаний и подсказки
 
 - [x] **15.1** Файлы справки: `Help/ru/*.md` (RU) и `Help/en/*.md` (EN); общие `Help/assets/`.
-- [~] **15.2** Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, списки `-`/`+`/нумерация + перенос пункта с отступом 4+, внутренние `.md` и внешние `https`, **картинки** `![alt](assets/…)` — при `readKnowledgeArticle` мелкие файлы из `Help/assets/**` (до ~512 KiB) **встраиваются** в markdown как `data:image/*;base64` (стабильно в dev и сборке); парсер допускает только whitelist `data:`; `fluxhelp:` + CSP `img-src` остаются как запасной путь.
+- [~] **15.2** Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, списки `-`/`+`/нумерация + перенос пункта с отступом 4+, внутренние `.md` и внешние `https`, **картинки** `![alt](assets/…)` — при `readKnowledgeArticle` мелкие файлы из `Help/assets/**` (до ~512 KiB) **встраиваются** в markdown как `data:image/*;base64` (стабильно в dev и сборке); парсер допускает только whitelist `data:`; `velorixhelp:` + CSP `img-src` остаются как запасной путь.
 - [x] **15.3** Оглавление: 7 разделов `knowledge-toc-registry` + FAQ RU/EN (J-983).
 - [x] **15.4** Поиск.
 - [x] **15.5** Язык UI и база: `listArticles`/`readKnowledgeArticle` — RU из `Help/ru/{slug}.md`, EN из `Help/en/{slug}.md` (fallback EN→RU); при смене языка UI список/статья перезапрашиваются.
@@ -499,7 +499,7 @@
 
 - [x] **18.1** Библиотека: `logger-service` (без `electron-log`/`pino`; J-1589).
 - [x] **18.2** Логи main: `logInfo/logWarn/logError` → `userData/logs/main.log` с timestamp/scope.
-- [x] **18.3** Логи renderer: IPC `fluxalloy:log-renderer` + перехват `error`/`unhandledrejection`; token bucket + sanitize.
+- [x] **18.3** Логи renderer: IPC `velorix:log-renderer` + перехват `error`/`unhandledrejection`; token bucket + sanitize.
 - [x] **18.4** Логи внешних процессов stdout/stderr: yt-dlp, ffmpeg export/snapshot, ffprobe через общий sanitizer без полного argv.
 - [x] **18.5** Ротация: `rotateLogFileIfTooLarge` → `main.log.1` при >1 MiB (`logger-rotate-file.test.ts`).
 - [x] **18.6** Prune crash dumps / session archives / diagnostics в Support ZIP (см. `logger-service`, `support-bundle`).
@@ -514,11 +514,11 @@
 - [x] **19.1** `electron-builder.yml` есть.
 - [x] **19.2** `npm run build:win` проходит (ручная приёмка packaged/installer — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)).
 - [x] **19.3** `npm run build:unpack` проходит.
-- [~] **19.4** `Data/`, `Help/`, `FLUXALLOY_TZ.md` добавлены в `extraResources`.
-- [~] **19.5** `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + **`engines:doctor`** со строгой проверкой структуры `trusted_hashes` и логом версий; локально **`check:release`** / **`release:win*`** после prepare тоже через `engines:doctor` (`FLUXALLOY_ENGINES_STRICT=1` — ручной релизный gate для непустых exe-хешей).
+- [~] **19.4** `Data/`, `Help/`, `VELORIX_TZ.md` добавлены в `extraResources`.
+- [~] **19.5** `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + **`engines:doctor`** со строгой проверкой структуры `trusted_hashes` и логом версий; локально **`check:release`** / **`release:win*`** после prepare тоже через `engines:doctor` (`VELORIX_ENGINES_STRICT=1` — ручной релизный gate для непустых exe-хешей).
 - [x] **19.6** Dependabot: `.github/dependabot.yml` (npm weekly, GitHub Actions monthly); разовые настройки Actions и расшифровка писем CI — `docs/RELEASE.md` §5.
 - [x] **19.7** Иконка: `resources/icon.png` + `electron-builder.yml` `icon:` + main window (приёмка в установщике — manual **19.3.1**).
-- [~] **19.8** Windows NSIS + ZIP (без цели `portable` — single-root); `installer.nsh` / `Uninstall FluxAlloy.cmd` — опциональное удаление `app-data/` (по умолчанию нет); `verify:win-unpacked` после `pack:dir`; интерактивная проверка installer/packaged — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) §19.
+- [~] **19.8** Windows NSIS + ZIP (без цели `portable` — single-root); `installer.nsh` / `Uninstall Velorix.cmd` — опциональное удаление `app-data/` (по умолчанию нет); `verify:win-unpacked` после `pack:dir`; интерактивная проверка installer/packaged — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) §19.
 - [ ] **19.9** macOS dmg/zip (targets в builder [x]; прогон — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)).
 - [ ] **19.10** Linux AppImage/deb/tar (targets [x]; прогон — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)).
 - [x] **19.11** Подпись Windows — roadmap [`docs/RELEASE.md`](docs/RELEASE.md) §4 + `release-code-signing-roadmap.ts` (J-1498); Authenticode/CSC в CI — позже.
@@ -528,7 +528,7 @@
 
 ## §20. Пресеты
 
-- [x] **20.1** Формат пользовательских пресетов: `fluxalloy.export-preset.v1` / bundle `fluxalloy.export-presets-bundle.v1` (`presets-export-file-v1.ts`, `presets-export-disk-parse.ts`).
+- [x] **20.1** Формат пользовательских пресетов: `Velorix.export-preset.v1` / bundle `Velorix.export-presets-bundle.v1` (`presets-export-file-v1.ts`, `presets-export-disk-parse.ts`).
 - [x] **20.2** Папка `Presets/export/` рядом с install root (`resolveInstallRoot`); legacy из `settings.json` мигрирует при загрузке; в `settings.json` пресеты не пишутся.
 - [x] **20.3** Системные пресеты: **11** built-in в `builtin-ffmpeg-export-user-presets.ts`, merge при hydrate.
 - [x] **20.4** Клонировать встроенный → пользовательский: IPC `presetsExportCloneBuiltin` + кнопка в rail пресетов.

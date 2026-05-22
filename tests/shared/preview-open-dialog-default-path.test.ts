@@ -11,7 +11,7 @@ describe('resolveOpenMediaDialogDefaultPath', () => {
     expect(resolveOpenMediaDialogDefaultPath('')).toBeUndefined()
     expect(resolveOpenMediaDialogDefaultPath('   ')).toBeUndefined()
     expect(
-      resolveOpenMediaDialogDefaultPath(join(tmpdir(), 'flux-no-such-path-xyz'))
+      resolveOpenMediaDialogDefaultPath(join(tmpdir(), 'velorix-no-such-path-xyz'))
     ).toBeUndefined()
   })
 

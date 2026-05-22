@@ -19,8 +19,8 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 35
     env:
-      FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN: '1'
-      FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX: '1'
+      VELORIX_TRUSTED_HASHES_STRICT_UNKNOWN: '1'
+      VELORIX_TRUSTED_HASHES_REQUIRE_SHA256_HEX: '1'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,9 +47,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: bin
-          key: ${{ runner.os }}-flux-engines-${{ hashFiles('scripts/release/prepare-engines-win.mjs', 'scripts/release/run-prepare-engines-force.mjs', 'scripts/release/engines-exe-version-line.mjs', 'scripts/release/verify-bundled-engines-hashes.mjs', 'scripts/release/report-bundled-engines-hashes.mjs', 'Data/trusted_hashes.json') }}
+          key: ${{ runner.os }}-velorix-engines-${{ hashFiles('scripts/release/prepare-engines-win.mjs', 'scripts/release/run-prepare-engines-force.mjs', 'scripts/release/engines-exe-version-line.mjs', 'scripts/release/verify-bundled-engines-hashes.mjs', 'scripts/release/report-bundled-engines-hashes.mjs', 'Data/trusted_hashes.json') }}
           restore-keys: |
-            ${{ runner.os }}-flux-engines-
+            ${{ runner.os }}-velorix-engines-
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -102,8 +102,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
-      FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN: '1'
-      FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX: '1'
+      VELORIX_TRUSTED_HASHES_STRICT_UNKNOWN: '1'
+      VELORIX_TRUSTED_HASHES_REQUIRE_SHA256_HEX: '1'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

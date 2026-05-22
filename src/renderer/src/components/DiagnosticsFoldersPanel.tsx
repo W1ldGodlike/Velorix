@@ -16,7 +16,7 @@ export function DiagnosticsFoldersPanel({
 
   useEffect(() => {
     let cancelled = false
-    void window.fluxalloy.diagnostics.listFolders().then((entries) => {
+    void window.velorix.diagnostics.listFolders().then((entries) => {
       if (!cancelled) {
         setFolders(entries)
       }
@@ -57,7 +57,7 @@ export function DiagnosticsFoldersPanel({
                 })}
                 aria-describedby={describedById}
                 onClick={() => {
-                  void window.fluxalloy.diagnostics.openFolder(entry.id).then((r) => {
+                  void window.velorix.diagnostics.openFolder(entry.id).then((r) => {
                     if (!r.ok) {
                       onStatus(
                         uiTextVars('aboutMaintenanceCleanErrorTemplate', {

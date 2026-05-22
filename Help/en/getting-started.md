@@ -1,6 +1,6 @@
 # Getting started
 
-**FluxAlloy** helps with two everyday jobs: **download a link** and **reshape a local video** for social apps or an archive.
+**VELORIX** helps with two everyday jobs: **download a link** and **reshape a local video** for social apps or an archive.
 
 ![Tabs: Editor, Downloads, Terminal (diagram)](assets/workspace-tabs-diagram.svg)
 

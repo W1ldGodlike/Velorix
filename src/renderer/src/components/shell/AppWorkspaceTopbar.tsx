@@ -223,7 +223,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
             className="app-icon-btn"
             aria-describedby={workspaceTabDescId}
             onClick={() => {
-              void window.fluxalloy.inspector.openWindow(previewPath ?? null)
+              void window.velorix.inspector.openWindow(previewPath ?? null)
             }}
             title={uiText('topbarInspectorTitle')}
           >

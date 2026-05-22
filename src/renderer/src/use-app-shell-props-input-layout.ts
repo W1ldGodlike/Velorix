@@ -130,7 +130,7 @@ export function buildAppShellPropsInputLayout(
       setOpen: setExternalFilterScriptOpen,
       onStatus: setStatusHint,
       onApplied: () => {
-        void window.fluxalloy.settings.get().then((loaded) => {
+        void window.velorix.settings.get().then((loaded) => {
           hydrateExportFieldsFromSettings(loaded)
         })
       }

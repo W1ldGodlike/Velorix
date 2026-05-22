@@ -88,9 +88,7 @@ export const usePanelsStore = createRendererStore<PanelsStoreState & PanelsStore
     },
     persistMainWindowUiPanelToggle: (key, nextOpen) => {
       set((s) => ({ mainUiPanels: { ...s.mainUiPanels, [key]: nextOpen } }))
-      void window.fluxalloy.settings
-        .mergeMainWindowUiPanels({ [key]: nextOpen })
-        .catch(console.error)
+      void window.velorix.settings.mergeMainWindowUiPanels({ [key]: nextOpen }).catch(console.error)
     },
     hydrateDownloadsWindowUiPanels: (patch) => {
       set((s) => ({
@@ -126,7 +124,7 @@ export const usePanelsStore = createRendererStore<PanelsStoreState & PanelsStore
     },
     persistDownloadsEmbeddedSettingsOpen: (nextOpen) => {
       set({ downloadsEmbeddedSettingsOpen: nextOpen })
-      void window.fluxalloy.downloads.mergeUiPanels({ settings: nextOpen }).then((res) => {
+      void window.velorix.downloads.mergeUiPanels({ settings: nextOpen }).then((res) => {
         if (!res.ok) {
           console.error(res.error)
         }
@@ -134,7 +132,7 @@ export const usePanelsStore = createRendererStore<PanelsStoreState & PanelsStore
     },
     persistDownloadsEmbeddedHistoryOpen: (nextOpen) => {
       set({ downloadsEmbeddedHistoryOpen: nextOpen })
-      void window.fluxalloy.downloads.mergeUiPanels({ history: nextOpen }).then((res) => {
+      void window.velorix.downloads.mergeUiPanels({ history: nextOpen }).then((res) => {
         if (!res.ok) {
           console.error(res.error)
         }
@@ -142,7 +140,7 @@ export const usePanelsStore = createRendererStore<PanelsStoreState & PanelsStore
     },
     persistDownloadsEmbeddedLogOpen: (nextOpen) => {
       set({ downloadsEmbeddedLogOpen: nextOpen })
-      void window.fluxalloy.downloads.mergeUiPanels({ log: nextOpen }).then((res) => {
+      void window.velorix.downloads.mergeUiPanels({ log: nextOpen }).then((res) => {
         if (!res.ok) {
           console.error(res.error)
         }
@@ -150,7 +148,7 @@ export const usePanelsStore = createRendererStore<PanelsStoreState & PanelsStore
     },
     persistDownloadsHistoryListMode: (nextMode) => {
       set({ downloadsHistoryListMode: nextMode })
-      void window.fluxalloy.downloads.mergeUiPanels({ historyListMode: nextMode }).then((res) => {
+      void window.velorix.downloads.mergeUiPanels({ historyListMode: nextMode }).then((res) => {
         if (!res.ok) {
           console.error(res.error)
         }
@@ -158,7 +156,7 @@ export const usePanelsStore = createRendererStore<PanelsStoreState & PanelsStore
     },
     persistDownloadsRailPanelToggle: (key, nextOpen) => {
       set((s) => ({ downloadsRailPanels: { ...s.downloadsRailPanels, [key]: nextOpen } }))
-      void window.fluxalloy.downloads.mergeUiPanels({ [key]: nextOpen }).then((res) => {
+      void window.velorix.downloads.mergeUiPanels({ [key]: nextOpen }).then((res) => {
         if (!res.ok) {
           console.error(res.error)
         }

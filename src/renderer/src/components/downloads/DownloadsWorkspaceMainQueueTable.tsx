@@ -214,7 +214,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                           aria-label={uiText('downloadsQueueAriaMoveUp')}
                           title={uiText('downloadsQueueAriaMoveUp')}
                           onClick={() => {
-                            void window.fluxalloy.downloads.moveRow(row.id, -1).then((res) => {
+                            void window.velorix.downloads.moveRow(row.id, -1).then((res) => {
                               if (!res.ok) {
                                 setStatusHint(res.error)
                               }
@@ -230,7 +230,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                           aria-label={uiText('downloadsQueueAriaMoveDown')}
                           title={uiText('downloadsQueueAriaMoveDown')}
                           onClick={() => {
-                            void window.fluxalloy.downloads.moveRow(row.id, 1).then((res) => {
+                            void window.velorix.downloads.moveRow(row.id, 1).then((res) => {
                               if (!res.ok) {
                                 setStatusHint(res.error)
                               }
@@ -255,8 +255,8 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                           }
                           onClick={() => {
                             const fn = isYtdlpQueueStatusErrorLike(row.status)
-                              ? window.fluxalloy.downloads.retryRow
-                              : window.fluxalloy.downloads.startRow
+                              ? window.velorix.downloads.retryRow
+                              : window.velorix.downloads.startRow
                             void fn(row.id).then((res) => {
                               if (!res.ok) {
                                 setStatusHint(res.error)
@@ -279,7 +279,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                               aria-label={uiText('downloadsQueueAriaOpenFile')}
                               title={uiText('downloadsQueueAriaOpenFile')}
                               onClick={() => {
-                                void window.fluxalloy.downloads
+                                void window.velorix.downloads
                                   .openQueueOutput(row.id, 'file')
                                   .then((res) => {
                                     if (!res.ok) {
@@ -297,7 +297,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                               aria-label={uiText('downloadsQueueAriaOpenFolder')}
                               title={uiText('downloadsQueueAriaOpenFolder')}
                               onClick={() => {
-                                void window.fluxalloy.downloads
+                                void window.velorix.downloads
                                   .openQueueOutput(row.id, 'folder')
                                   .then((res) => {
                                     if (!res.ok) {
@@ -317,7 +317,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                                 title={uiText('downloadsQueueExtractCoverTitle')}
                                 onClick={() => {
                                   setStatusHint(uiText('downloadsCoverExtractBusy'))
-                                  void window.fluxalloy.downloads
+                                  void window.velorix.downloads
                                     .extractQueueCover(row.id)
                                     .then((res) => {
                                       if (res.ok) {
@@ -347,7 +347,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                               title={uiText('downloadsQueueAriaOpenInEditor')}
                               onClick={() => {
                                 setStatusHint(uiText('downloadsHistoryOpenHandlerPreparing'))
-                                void window.fluxalloy.downloads
+                                void window.velorix.downloads
                                   .openQueueOutputInHandler(row.id)
                                   .then((res) => {
                                     if (!res.ok) {
@@ -385,7 +385,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                             aria-label={uiText('downloadsQueueOpenDownloadDirTitle')}
                             title={uiText('downloadsQueueOpenDownloadDirTitle')}
                             onClick={() => {
-                              void window.fluxalloy.downloads
+                              void window.velorix.downloads
                                 .openQueueOutput(row.id, 'folder')
                                 .then((res) => {
                                   if (!res.ok) {
@@ -421,8 +421,8 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                             }
                             onClick={() => {
                               const fn = row.ytdlpPaused
-                                ? window.fluxalloy.downloads.resumeYtdlp
-                                : window.fluxalloy.downloads.pauseYtdlp
+                                ? window.velorix.downloads.resumeYtdlp
+                                : window.velorix.downloads.pauseYtdlp
                               void fn().then((res) => {
                                 if (!res.ok) {
                                   setStatusHint(res.error)
@@ -444,7 +444,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                           aria-label={uiText('downloadsQueueAriaRemoveRow')}
                           title={uiText('downloadsQueueAriaRemoveRow')}
                           onClick={() => {
-                            void window.fluxalloy.downloads.removeRow(row.id).then((res) => {
+                            void window.velorix.downloads.removeRow(row.id).then((res) => {
                               if (!res.ok) {
                                 setStatusHint(res.error)
                               }

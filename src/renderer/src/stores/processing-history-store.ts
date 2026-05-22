@@ -63,8 +63,8 @@ export const useProcessingHistoryStore = createRendererStore<
     }
     try {
       const [rows, summary] = await Promise.all([
-        window.fluxalloy.processingHistory.get({ ...activeFilter, limit: 100 }),
-        window.fluxalloy.processingHistory.weeklySummary()
+        window.velorix.processingHistory.get({ ...activeFilter, limit: 100 }),
+        window.velorix.processingHistory.weeklySummary()
       ])
       set({
         processingHistory: rows,
@@ -92,9 +92,9 @@ export const useProcessingHistoryStore = createRendererStore<
       weeklySummary: processingHistoryWeeklySummary,
       entries: processingHistory
     }
-    const res = await window.fluxalloy.saveTextWithDialog({
+    const res = await window.velorix.saveTextWithDialog({
       title: uiText('processingHistoryExportDialogTitle'),
-      defaultFileName: 'fluxalloy-processing-history.json',
+      defaultFileName: 'VELORIX-processing-history.json',
       content: JSON.stringify(payload, null, 2)
     })
     if (res.ok) {

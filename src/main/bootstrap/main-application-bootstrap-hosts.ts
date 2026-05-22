@@ -96,7 +96,7 @@ import {
 } from './main-application-bootstrap-state'
 
 export function bootstrapMainApplicationHosts(): void {
-  electronApp.setAppUserModelId('com.fluxalloy')
+  electronApp.setAppUserModelId('com.VELORIX')
   setProcessErrorReporter((kind, reason) => {
     void showProcessErrorDialog(kind, reason)
   })
@@ -314,7 +314,7 @@ export function bootstrapMainApplicationHosts(): void {
     }
   )
   void syncWindowsFileAssociationEnabled(
-    getCachedSettings().windowsOpenWithFluxAlloy === true,
+    getCachedSettings().windowsOpenWithVelorix === true,
     shellM.windowsFileAssociationTypeName
   )
 }

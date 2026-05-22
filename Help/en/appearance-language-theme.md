@@ -6,7 +6,7 @@ Use the **View** menu or **Settings → General → Theme** to pick dark, light,
 
 ### Visual theme checklist
 
-**Settings → General → Theme** lists checks for each mode: primary button and accent link contrast, Tab focus rings, disabled states, Settings/About modal backdrops, the downloads pop-out, the inspector window, and scenario builder nodes. For **match the system**, change the OS theme and confirm FluxAlloy follows without restarting.
+**Settings → General → Theme** lists checks for each mode: primary button and accent link contrast, Tab focus rings, disabled states, Settings/About modal backdrops, the downloads pop-out, the inspector window, and scenario builder nodes. For **match the system**, change the OS theme and confirm Velorix follows without restarting.
 
 
 ## Interface language

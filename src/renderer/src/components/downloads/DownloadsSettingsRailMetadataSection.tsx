@@ -212,7 +212,7 @@ export function DownloadsSettingsRailMetadataSection(
               disabled={downloadsOptionsBusy}
               title={uiText('downloadsTooltipCookiesPick')}
               onClick={() => {
-                void window.fluxalloy.downloads.pickCookiesFile().then((res) => {
+                void window.velorix.downloads.pickCookiesFile().then((res) => {
                   if (res.ok) {
                     void refreshDownloadsOptions()
                     return
@@ -233,7 +233,7 @@ export function DownloadsSettingsRailMetadataSection(
               disabled={downloadsOptionsBusy || downloadsOptions.cookiesFilePathStored.length === 0}
               title={uiText('downloadsTooltipCookiesClear')}
               onClick={() => {
-                void window.fluxalloy.downloads.clearCookiesFile().then((res) => {
+                void window.velorix.downloads.clearCookiesFile().then((res) => {
                   if (!res.ok) {
                     setStatusHint(res.error)
                     return

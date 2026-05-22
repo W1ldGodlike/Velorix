@@ -23,7 +23,7 @@ describe('verify-linux-release-artifacts.mjs §2.1', () => {
     expect(out).toContain('пропуск')
   })
 
-  it('--help documents FLUXALLOY_SKIP_PACK_VERIFY', () => {
+  it('--help documents VELORIX_SKIP_PACK_VERIFY', () => {
     const result = spawnSync(
       node,
       ['scripts/release/verify-linux-release-artifacts.mjs', '--help'],
@@ -34,7 +34,7 @@ describe('verify-linux-release-artifacts.mjs §2.1', () => {
       }
     )
     expect(result.status).toBe(0)
-    expect(`${result.stdout ?? ''}${result.stderr ?? ''}`).toContain('FLUXALLOY_SKIP_PACK_VERIFY')
+    expect(`${result.stdout ?? ''}${result.stderr ?? ''}`).toContain('VELORIX_SKIP_PACK_VERIFY')
   })
 
   it('script wires linux-release-artifacts verify lib', () => {

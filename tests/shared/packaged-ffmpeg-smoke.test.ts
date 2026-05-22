@@ -8,8 +8,8 @@ import {
 
 describe('packaged-ffmpeg-smoke', () => {
   it('listPackagedFfmpegCandidatePaths: env, unpacked, bin', () => {
-    const prev = process.env['FLUXALLOY_FFMPEG_PATH']
-    process.env['FLUXALLOY_FFMPEG_PATH'] = 'C:\\custom\\ffmpeg.exe'
+    const prev = process.env['VELORIX_FFMPEG_PATH']
+    process.env['VELORIX_FFMPEG_PATH'] = 'C:\\custom\\ffmpeg.exe'
     try {
       const paths = listPackagedFfmpegCandidatePaths('C:\\repo')
       expect(paths[0]).toBe('C:\\custom\\ffmpeg.exe')
@@ -17,9 +17,9 @@ describe('packaged-ffmpeg-smoke', () => {
       expect(paths[2]).toMatch(/bin[\\/]ffmpeg\.exe$/i)
     } finally {
       if (prev === undefined) {
-        delete process.env['FLUXALLOY_FFMPEG_PATH']
+        delete process.env['VELORIX_FFMPEG_PATH']
       } else {
-        process.env['FLUXALLOY_FFMPEG_PATH'] = prev
+        process.env['VELORIX_FFMPEG_PATH'] = prev
       }
     }
   })
@@ -33,7 +33,7 @@ describe('packaged-ffmpeg-smoke', () => {
   it('formatPackagedFfmpegSmokeDiagnosticLines', () => {
     const lines = formatPackagedFfmpegSmokeDiagnosticLines()
     expect(lines[0]).toContain('smoke:packaged-ffmpeg')
-    expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFMPEG_SMOKE'))).toBe(true)
+    expect(lines.some((l) => l.includes('VELORIX_SKIP_FFMPEG_SMOKE'))).toBe(true)
     expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
     expect(lines.some((l) => l.includes('video sprite'))).toBe(true)
   })

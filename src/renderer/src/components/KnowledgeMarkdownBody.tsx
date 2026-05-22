@@ -2,7 +2,7 @@ import type { JSX } from 'react'
 
 import type { MdBlock, MdInline } from '../../../shared/knowledge-markdown'
 import {
-  knowledgeHelpAssetFluxhelpUrl,
+  knowledgeHelpAssetVelorixhelpUrl,
   knowledgeInternalSlugFromHref
 } from '../../../shared/knowledge-markdown'
 
@@ -36,7 +36,7 @@ function renderInline(
         <img
           key={k}
           className="app-knowledge-img"
-          src={knowledgeHelpAssetFluxhelpUrl(n.src)}
+          src={knowledgeHelpAssetVelorixhelpUrl(n.src)}
           alt={n.alt}
           loading="lazy"
           decoding="async"

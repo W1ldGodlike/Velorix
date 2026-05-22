@@ -48,14 +48,14 @@ function fixedEsmShimPlugin(): Plugin {
  */
 function rendererDevCspPlugin(): Plugin {
   return {
-    name: 'fluxalloy-renderer-dev-csp',
+    name: 'VELORIX-renderer-dev-csp',
     apply: 'serve',
     transformIndexHtml(html) {
       return html
         .replace("script-src 'self'", "script-src 'self' 'unsafe-inline'")
         .replace(
-          "connect-src 'self' http://127.0.0.1:* fluxmedia:",
-          "connect-src 'self' http://127.0.0.1:* http://localhost:* ws://127.0.0.1:* ws://localhost:* fluxmedia:"
+          "connect-src 'self' http://127.0.0.1:* velorixmedia:",
+          "connect-src 'self' http://127.0.0.1:* http://localhost:* ws://127.0.0.1:* ws://localhost:* velorixmedia:"
         )
     }
   }

@@ -1,6 +1,6 @@
 {
   "editorVideoSpriteSmokeSectionTitle": "Спрайт превью из видео (§7.5, dev/packaged)",
-  "editorVideoSpriteSmokePrereq0": "Открыт локальный видеофайл в редакторе (preview fluxmedia://).",
+  "editorVideoSpriteSmokePrereq0": "Открыт локальный видеофайл в редакторе (preview velorixmedia://).",
   "editorVideoSpriteSmokePrereq1": "Bundled ffmpeg в PATH (Настройки → Зависимости → doctor OK).",
   "editorVideoSpriteSmokeStep_open_panel": "Редактор → FFmpeg rail → блок «Спрайт превью»: сетка cols×rows, формат PNG/JPEG.",
   "editorVideoSpriteSmokeStep_burn_timestamps": "(Опц.) Включить «PTS на кадрах» — drawtext перед tile; проверить читаемость.",

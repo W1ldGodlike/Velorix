@@ -2,7 +2,7 @@
   "workflowPlannerDialogTitle": "Task planner",
   "workflowPlannerDialogHint": "Watch-folder: in-app or an OS backend (Windows/macOS/Linux). See Help — button next to the title.",
   "workflowPlannerFieldBackend": "Backend",
-  "workflowPlannerFieldBackendHint": "In-app polls inside FluxAlloy. Windows: schtasks; macOS: LaunchAgent; Linux: systemd user timer — all with --workflow-watch-folder-tick.",
+  "workflowPlannerFieldBackendHint": "In-app polls inside Velorix. Windows: schtasks; macOS: LaunchAgent; Linux: systemd user timer — all with --workflow-watch-folder-tick.",
   "workflowPlannerBackendInApp": "In-app",
   "workflowPlannerBackendWindows": "Windows Task Scheduler",
   "workflowPlannerBackendMacos": "macOS LaunchAgent",

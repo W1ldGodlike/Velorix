@@ -12,7 +12,7 @@ export const TOOLCHAIN_BASELINE_WIP_MAIN_SHA = 'ff89765' as const
 export const IMPLEMENTATION_CHECKLIST_SPRINT_HEADING =
   `## Ближайший ${'T' + 'ODO'} спринта` as const
 
-/** fluxalloy-continue SKILL.md — «продолжай» / «+». */
+/** Velorix-continue SKILL.md — «продолжай» / «+». */
 export function formatToolchainBaselineContinuePromptLine(): string {
   return `«продолжай» или «+» — продолжить текущую задачу; если закончена — следующий пункт из \`IMPLEMENTATION_CHECKLIST.md\` → \`${IMPLEMENTATION_CHECKLIST_SPRINT_HEADING}\`.`
 }
@@ -29,7 +29,7 @@ export function formatToolchainBaselineAgentsMdSlimDomainsPointer(): string {
 
 /** AGENTS.md — git по J-NNN one-liner. */
 export function formatToolchainBaselineWipHandoffAgentsGitByJournalLine(): string {
-  return `**Git по J-NNN:** \`NNN % 5\` → commit, \`NNN % 10\` → push (любой чат); **следующий commit по J** **${TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT}**, **следующий push по J** **${TOOLCHAIN_BASELINE_WIP_NEXT_J_PUSH}** — [\`fluxalloy-agent.mdc\`](.cursor/rules/fluxalloy-agent.mdc).`
+  return `**Git по J-NNN:** \`NNN % 5\` → commit, \`NNN % 10\` → push (любой чат); **следующий commit по J** **${TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT}**, **следующий push по J** **${TOOLCHAIN_BASELINE_WIP_NEXT_J_PUSH}** — [\`velorix-agent.mdc\`](.cursor/rules/velorix-agent.mdc).`
 }
 
 /** agent-contract.txt — journal + next commit by J (plain). */
@@ -74,12 +74,12 @@ export function formatToolchainBaselineWipHandoffBinReadmeLine(): string {
 
 /** check:release / check:platform-packaging-scripts diagnostic line. */
 export function formatToolchainBaselineWipHandoffCheckReleaseDiagnosticLine(): string {
-  return `Toolchain baseline: toolchain-baseline-wip-handoff-meta.ts (journal ${TOOLCHAIN_BASELINE_WIP_JOURNAL_RANGE}; commit по J ${TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT} — fluxalloy-agent.mdc)`
+  return `Toolchain baseline: toolchain-baseline-wip-handoff-meta.ts (journal ${TOOLCHAIN_BASELINE_WIP_JOURNAL_RANGE}; commit по J ${TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT} — Velorix-agent.mdc)`
 }
 
 /** agent-contract.txt — git по J fragment. */
 export function formatToolchainBaselineWipHandoffSdkContractClause(): string {
-  return `Git по J ${TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT} commit — fluxalloy-agent.mdc`
+  return `Git по J ${TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT} commit — Velorix-agent.mdc`
 }
 
 /** agent-contract.txt — journal + git по J. */

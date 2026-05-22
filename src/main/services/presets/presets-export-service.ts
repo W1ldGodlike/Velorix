@@ -164,7 +164,7 @@ export async function exportUserPresetsWithDialog(
   const stamp = new Date().toISOString().slice(0, 10)
   const pick = await dialog.showSaveDialog(parent, {
     title: M.presetsExportTitle,
-    defaultPath: `fluxalloy-export-presets-${stamp}.json`,
+    defaultPath: `VELORIX-export-presets-${stamp}.json`,
     filters: [{ name: M.presetsExportFilter, extensions: ['json'] }]
   })
   if (pick.canceled || !pick.filePath) {

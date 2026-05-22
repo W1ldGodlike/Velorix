@@ -4,7 +4,7 @@ import {
   isKnowledgeSafeAssetImageHref,
   isKnowledgeThematicBreak,
   isKnowledgeTrustedDataImageSrc,
-  knowledgeHelpAssetFluxhelpUrl,
+  knowledgeHelpAssetVelorixhelpUrl,
   knowledgeInternalSlugFromHref,
   normalizeKnowledgeMarkdownSource,
   parseKnowledgeMarkdown
@@ -60,15 +60,17 @@ describe('isKnowledgeTrustedDataImageSrc', () => {
   })
 })
 
-describe('knowledgeHelpAssetFluxhelpUrl', () => {
-  it('builds fluxhelp URL with encoded segments', () => {
-    expect(knowledgeHelpAssetFluxhelpUrl('assets/a b.svg')).toBe('fluxhelp:///assets/a%20b.svg')
+describe('knowledgeHelpAssetVelorixhelpUrl', () => {
+  it('builds velorixhelp URL with encoded segments', () => {
+    expect(knowledgeHelpAssetVelorixhelpUrl('assets/a b.svg')).toBe(
+      'velorixhelp:///assets/a%20b.svg'
+    )
   })
 
   it('passes through data:image base64 URLs unchanged', () => {
     const data =
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
-    expect(knowledgeHelpAssetFluxhelpUrl(data)).toBe(data)
+    expect(knowledgeHelpAssetVelorixhelpUrl(data)).toBe(data)
   })
 })
 

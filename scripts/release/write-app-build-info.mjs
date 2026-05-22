@@ -10,7 +10,7 @@ import { join } from 'node:path'
 import { REPO_ROOT } from '../lib/repo-root.mjs'
 
 function resolveBuildId() {
-  const fromEnv = process.env.FLUXALLOY_BUILD_ID
+  const fromEnv = process.env.VELORIX_BUILD_ID
   if (typeof fromEnv === 'string' && fromEnv.trim().length > 0) {
     return fromEnv.trim()
   }

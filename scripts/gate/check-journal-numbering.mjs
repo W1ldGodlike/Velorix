@@ -129,7 +129,7 @@ for (const pattern of MICRO_JOURNAL_PATTERNS) {
   }
   if (count >= 4) {
     console.error(
-      `[journal] last ${count} entries look like micro "${pattern.id}" steps — one iteration = one J; ${pattern.hint}; see fluxalloy-iteration-batch.mdc`
+      `[journal] last ${count} entries look like micro "${pattern.id}" steps — one iteration = one J; ${pattern.hint}; see Velorix-iteration-batch.mdc`
     )
     failed = true
   }

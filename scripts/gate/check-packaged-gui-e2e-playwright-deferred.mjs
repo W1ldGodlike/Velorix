@@ -78,7 +78,7 @@ if (
 }
 if (!specText.includes('test.skip')) {
   console.error(
-    `[${LOG_PREFIX}] ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE} must use test.skip until FLUXALLOY_E2E_APP`
+    `[${LOG_PREFIX}] ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE} must use test.skip until VELORIX_E2E_APP`
   )
   process.exit(1)
 }

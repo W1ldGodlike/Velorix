@@ -75,7 +75,7 @@ export function EditorFfmpegSettingsRailFormatSection(
               bumpManualExportEdit()
               const v = e.target.value as FfmpegExportScalePresetId
               setExportScalePreset(v)
-              void window.fluxalloy.settings.setFfmpegExportScalePreset(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportScalePreset(v).catch(console.error)
             }}
           >
             {ffmpegExportSelectOptions.scalePresets.map((p) => (
@@ -98,7 +98,7 @@ export function EditorFfmpegSettingsRailFormatSection(
               const raw = e.target.value
               const next = raw === 'source' ? null : Number(raw)
               setExportFps(next)
-              void window.fluxalloy.settings.setFfmpegExportFps(next).catch(console.error)
+              void window.velorix.settings.setFfmpegExportFps(next).catch(console.error)
             }}
           >
             <option value="source">{uiText('editorFpsOptionSource')}</option>
@@ -129,7 +129,7 @@ export function EditorFfmpegSettingsRailFormatSection(
               bumpManualExportEdit()
               const v = !exportTwoPass
               setExportTwoPass(v)
-              void window.fluxalloy.settings.setFfmpegExportTwoPass(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportTwoPass(v).catch(console.error)
             }}
           />
           <span id="ffmpegTwoPassUiHint" className="app-visually-hidden">
@@ -148,7 +148,7 @@ export function EditorFfmpegSettingsRailFormatSection(
               bumpManualExportEdit()
               const v = !exportEconomyMode
               setExportEconomyMode(v)
-              void window.fluxalloy.settings.setFfmpegExportEconomyMode(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportEconomyMode(v).catch(console.error)
             }}
           />
           <span id="ffmpegEconomyModeUiHint" className="app-visually-hidden">
@@ -167,7 +167,7 @@ export function EditorFfmpegSettingsRailFormatSection(
               bumpManualExportEdit()
               const v = !exportHwDecode
               setExportHwDecode(v)
-              void window.fluxalloy.settings.setFfmpegExportHwDecode(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportHwDecode(v).catch(console.error)
             }}
           />
           <span id="ffmpegHwDecodeUiHint" className="app-visually-hidden">
@@ -186,7 +186,7 @@ export function EditorFfmpegSettingsRailFormatSection(
               bumpManualExportEdit()
               const v = e.target.value as FfmpegExportVideoTransformId
               setExportVideoTransform(v)
-              void window.fluxalloy.settings.setFfmpegExportVideoTransform(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportVideoTransform(v).catch(console.error)
             }}
           >
             {ffmpegExportSelectOptions.videoTransforms.map((p) => (
@@ -208,7 +208,7 @@ export function EditorFfmpegSettingsRailFormatSection(
               bumpManualExportEdit()
               const v = e.target.value as FfmpegExportCropPresetId
               setExportCropPreset(v)
-              void window.fluxalloy.settings.setFfmpegExportCropPreset(v).catch(console.error)
+              void window.velorix.settings.setFfmpegExportCropPreset(v).catch(console.error)
             }}
           >
             {ffmpegExportSelectOptions.cropPresets.map((p) => (

@@ -24,7 +24,7 @@ export function useEditorExtractFramesInput(params: {
   const durationSec = followPreview ? (previewProbeDurationSec ?? 0) : pickedDurationSec
 
   const pickVideoFile = useCallback(async (): Promise<void> => {
-    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as AppUiLocale)
+    const result = await window.velorix.preview.openFileDialog(getUiLocale() as AppUiLocale)
     if (!result.ok) {
       if ('error' in result && typeof result.error === 'string' && result.error.length > 0) {
         setStatusHint(result.error)
@@ -34,7 +34,7 @@ export function useEditorExtractFramesInput(params: {
     setFollowPreview(false)
     setPickedPath(result.path)
     setStatusHint(uiText('editorExtractFramesProbing'))
-    const probe = await window.fluxalloy.preview.probe(result.path)
+    const probe = await window.velorix.preview.probe(result.path)
     if (!probe.ok) {
       setStatusHint(probe.error)
       return

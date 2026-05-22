@@ -118,7 +118,7 @@ export const FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX = 24
 
 /** §7.2 — максимум записей пресетов в `settings.json` (встроенные платформы + пользовательские). */
 export const FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES = 24
-/** §7.2 — максимум пользовательских пресетов (без учёта встроенных `flux-builtin-*`). */
+/** §7.2 — максимум пользовательских пресетов (без учёта встроенных `velorix-builtin-*`). */
 export const FFMPEG_EXPORT_USER_ADDED_PRESETS_MAX = 8
 
 /**

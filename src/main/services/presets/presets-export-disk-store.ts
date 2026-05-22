@@ -25,7 +25,7 @@ import {
   PRESETS_EXPORT_USER_SUBDIR
 } from '../../../shared/presets-export-file-v1'
 import type { AppSettings } from '../../../shared/settings-contract'
-import { FLUXALLOY_APP_DATA_ENV } from '../../core/app-data-root-paths'
+import { VELORIX_APP_DATA_ENV } from '../../core/app-data-root-paths'
 
 const MAX_PRESET_FILE_BYTES = 64 * 1024
 
@@ -41,7 +41,7 @@ export function resolvePresetsExportInstallRoot(): string {
   if (installRootResolver) {
     return installRootResolver()
   }
-  const appData = process.env[FLUXALLOY_APP_DATA_ENV]
+  const appData = process.env[VELORIX_APP_DATA_ENV]
   if (typeof appData === 'string' && appData.trim() !== '') {
     return join(appData.trim(), '..')
   }

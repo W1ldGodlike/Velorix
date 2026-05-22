@@ -56,7 +56,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
               aria-describedby="downloads-page-hint"
               title={uiText('downloadsPopOut')}
               onClick={() => {
-                void window.fluxalloy.downloads.openWindow({
+                void window.velorix.downloads.openWindow({
                   ...(downloadsUrl.trim().length > 0 ? { text: downloadsUrl } : {}),
                   uiLocale: getUiLocale()
                 })
@@ -119,7 +119,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
             aria-describedby="downloads-page-hint downloads-main-url-hint"
             title={uiText('downloadsStopQueueTooltip')}
             onClick={() => {
-              void window.fluxalloy.downloads.cancelQueue().then((res) => {
+              void window.velorix.downloads.cancelQueue().then((res) => {
                 if (!res.ok) {
                   setStatusHint(res.error)
                 }
@@ -136,7 +136,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
             title={uiText('downloadsRemoveFinished')}
             disabled={downloadsRows.length === 0}
             onClick={() => {
-              void window.fluxalloy.downloads.clearFinished().then((res) => {
+              void window.velorix.downloads.clearFinished().then((res) => {
                 if (!res.ok) {
                   setStatusHint(res.error)
                   return
@@ -159,7 +159,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
             title={uiText('downloadsClearQueue')}
             disabled={downloadsRows.length === 0}
             onClick={() => {
-              void window.fluxalloy.downloads.clearQueue().then((res) => {
+              void window.velorix.downloads.clearQueue().then((res) => {
                 if (!res.ok) {
                   setStatusHint(res.error)
                   return

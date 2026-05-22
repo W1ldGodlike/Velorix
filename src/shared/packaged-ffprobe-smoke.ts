@@ -26,7 +26,7 @@ export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
     'probe optional: chapters[] (buildChapterRowsFromFfprobeJson / isFfprobeChaptersArrayOkForSmoke)',
     'stream detail optional: codec_type, codec_name, id, duration, duration_ts, start_time, start_pts, fps, bit_rate, nb_frames, nb_read_frames, nb_read_packets, width/height/pix_fmt, color_*, field_order, chroma_location, bits_per_*_sample, coded_width/height, extradata_size, refs, has_b_frames, closed_captions, is_avc, ticks_per_frame, initial_padding, index, stream_index, disposition, sample_aspect_ratio, display_aspect_ratio, channel_layout, channels, sample_rate, sample_fmt, profile, level, bits_per_sample, codec_tag, codec_tag_string, stream.tags.* (language, title, handler_name, rotate, stereo_mode, …), side_data_list, time_base, codec_long_name',
     'ui/export: formatFfprobeContainerDiagnostics* (filename + probe layout + offset/timing)',
-    'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
+    'env: VELORIX_SKIP_FFPROBE_SMOKE, VELORIX_FFPROBE_SMOKE_PROBE=0, VELORIX_FFPROBE_PATH'
   ]
 }
 

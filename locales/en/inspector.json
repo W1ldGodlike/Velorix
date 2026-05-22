@@ -1,6 +1,6 @@
 {
   "inspectorStandaloneAboutDiagnosticsTitle": "About and quick diagnostics actions",
-  "inspectorStandaloneBrandAria": "FluxAlloy inspector",
+  "inspectorStandaloneBrandAria": "Velorix inspector",
   "inspectorStandaloneEmptyHint": "Drop a video file here or click “Open…”. When launched from the menu, the last preview file is used if it is still on disk.",
   "inspectorStandaloneEmptyRegionAria": "Hint when no file is open yet",
   "inspectorStandaloneFfprobeRefreshDisabledTitle": "No file to refresh",
@@ -19,5 +19,5 @@
   "inspectorStandaloneTopbarEngineLabel": "ffprobe",
   "inspectorTopbarActionsToolbarAria": "Inspector toolbar: file, refresh, help",
   "inspectorTopbarTrailingGroupAria": "Actions beside the inspector title",
-  "inspectorWindowDocumentTitle": "FluxAlloy — Inspector"
+  "inspectorWindowDocumentTitle": "Velorix — Inspector"
 }

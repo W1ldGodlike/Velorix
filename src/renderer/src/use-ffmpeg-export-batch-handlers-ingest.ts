@@ -26,7 +26,7 @@ export function useFfmpegExportBatchHandlersIngest({
   handleBatchAddDownloadsDone: (ids?: number[]) => Promise<void>
 } {
   const handleBatchPickFiles = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.batchExport.pickFiles()
+    const res = await window.velorix.batchExport.pickFiles()
     if (res.ok) {
       setBatchAddStatusHint(res)
       return
@@ -40,7 +40,7 @@ export function useFfmpegExportBatchHandlersIngest({
   }, [setBatchAddStatusHint, setStatusHint])
 
   const handleBatchPickFolder = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.batchExport.pickFolder()
+    const res = await window.velorix.batchExport.pickFolder()
     if (res.ok) {
       setBatchAddStatusHint(res)
       return
@@ -54,11 +54,11 @@ export function useFfmpegExportBatchHandlersIngest({
   }, [setBatchAddStatusHint, setStatusHint])
 
   const handleBatchPickOutputFolder = useCallback(async (): Promise<void> => {
-    const picked = await window.fluxalloy.batchExport.pickOutputFolder()
+    const picked = await window.velorix.batchExport.pickOutputFolder()
     if (!picked.ok) {
       return
     }
-    const s = await window.fluxalloy.settings.setFfmpegExportBatchOutputDirectory(picked.path)
+    const s = await window.velorix.settings.setFfmpegExportBatchOutputDirectory(picked.path)
     setBatchOutputDirectory(
       typeof s.ffmpegExportBatchOutputDirectory === 'string'
         ? s.ffmpegExportBatchOutputDirectory
@@ -67,7 +67,7 @@ export function useFfmpegExportBatchHandlersIngest({
   }, [setBatchOutputDirectory])
 
   const handleBatchClearOutputDirectory = useCallback(async (): Promise<void> => {
-    const s = await window.fluxalloy.settings.setFfmpegExportBatchOutputDirectory(null)
+    const s = await window.velorix.settings.setFfmpegExportBatchOutputDirectory(null)
     setBatchOutputDirectory(
       typeof s.ffmpegExportBatchOutputDirectory === 'string'
         ? s.ffmpegExportBatchOutputDirectory
@@ -76,7 +76,7 @@ export function useFfmpegExportBatchHandlersIngest({
   }, [setBatchOutputDirectory])
 
   const handleBatchRevealSharedOutputFolder = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.batchExport.revealSharedOutputFolder()
+    const res = await window.velorix.batchExport.revealSharedOutputFolder()
     if (!res.ok) {
       setStatusHint(res.error)
     }
@@ -93,7 +93,7 @@ export function useFfmpegExportBatchHandlersIngest({
         if (!file) {
           continue
         }
-        const absolutePath = window.fluxalloy.preview.getPathForFile(file)
+        const absolutePath = window.velorix.preview.getPathForFile(file)
         if (absolutePath) {
           paths.push(absolutePath)
         }
@@ -101,7 +101,7 @@ export function useFfmpegExportBatchHandlersIngest({
       if (paths.length === 0) {
         return
       }
-      const res = await window.fluxalloy.batchExport.addPaths(paths)
+      const res = await window.velorix.batchExport.addPaths(paths)
       if (res.ok) {
         setBatchAddStatusHint(res)
       } else if ('error' in res) {
@@ -116,7 +116,7 @@ export function useFfmpegExportBatchHandlersIngest({
       setStatusHint(uiText('batchExportNoVideoPaths'))
       return
     }
-    const res = await window.fluxalloy.batchExport.addPaths([previewPath])
+    const res = await window.velorix.batchExport.addPaths([previewPath])
     if (res.ok) {
       setBatchAddStatusHint(res)
     } else if ('error' in res) {
@@ -126,7 +126,7 @@ export function useFfmpegExportBatchHandlersIngest({
 
   const handleBatchAddDownloadsDone = useCallback(
     async (ids?: number[]): Promise<void> => {
-      const res = await window.fluxalloy.batchExport.addFromDownloadsDone(ids)
+      const res = await window.velorix.batchExport.addFromDownloadsDone(ids)
       if (!res.ok) {
         setStatusHint(res.error)
         return

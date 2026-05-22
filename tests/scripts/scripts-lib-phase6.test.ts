@@ -13,8 +13,8 @@ import { WIN_ENGINE_EXE_OPTS, WIN_ENGINE_EXE_OPTS_APP, WIN_ENGINE_EXE_OPTS_LARGE
 
 const pkg = readFileSync(join(REPO_ROOT, 'package.json'), 'utf8');
 if (!WIN_ENGINE_EXE_OPTS.windowsHide || !WIN_ENGINE_EXE_OPTS_LARGE.maxBuffer || !WIN_ENGINE_EXE_OPTS_APP.timeout) throw new Error('win-exec-file-opts');
-if (!pkg.includes('"name": "fluxalloy"')) throw new Error('REPO_ROOT');
-if (!readRepoUtf8('package.json').includes('fluxalloy')) throw new Error('readRepoUtf8');
+if (!pkg.includes('"name": "velorix"')) throw new Error('REPO_ROOT');
+if (!readRepoUtf8('package.json').includes('velorix')) throw new Error('readRepoUtf8');
 const missing = await pickFirstExistingEngine([join(REPO_ROOT, '__scripts-lib-nope__')]);
 if (missing !== null) throw new Error('pickFirstExistingEngine');
 if (!(await isNonEmptyFile(join(REPO_ROOT, 'package.json')))) throw new Error('isNonEmptyFile');

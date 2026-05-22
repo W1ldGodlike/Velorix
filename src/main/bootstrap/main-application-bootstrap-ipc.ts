@@ -44,7 +44,7 @@ import {
   ensurePreviewPlayableMedia,
   resolveUserPathToPreviewSourceFile
 } from '../services/preview/preview-proxy-service'
-import { registerFluxMediaProtocol } from '../core/media-protocol'
+import { registervelorixmediaProtocol } from '../core/media-protocol'
 import { registerFluxHelpProtocol } from '../core/help-assets-protocol'
 import {
   isExportOutputOpenMode,
@@ -66,7 +66,7 @@ import { getMainApplicationSettingsIpcPersist } from './main-application-bootstr
 
 export function registerMainApplicationBootstrapIpc(): void {
   configureMainInspectorWindowBootstrap()
-  registerFluxMediaProtocol()
+  registervelorixmediaProtocol()
   registerFluxHelpProtocol(() =>
     resolveKnowledgeHelpDirectory(
       buildKnowledgeHelpDirCandidates({

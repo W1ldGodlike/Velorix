@@ -229,7 +229,7 @@ export async function createSupportBundleWithDialog(
   const stamp = new Date().toISOString().replace(/[:.]/g, '-')
   const saveOptions = {
     title: S.supportZipSaveTitle,
-    defaultPath: `fluxalloy-support-${stamp}.zip`,
+    defaultPath: `VELORIX-support-${stamp}.zip`,
     filters: [{ name: 'ZIP', extensions: ['zip'] }]
   }
   const result = parent

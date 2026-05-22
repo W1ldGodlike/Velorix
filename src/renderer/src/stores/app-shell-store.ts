@@ -31,7 +31,7 @@ export type AppShellState = {
   knowledgeOpen: boolean
   knowledgeInitialSlug: string | null
   aboutOpen: boolean
-  aboutInfo: Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null
+  aboutInfo: Awaited<ReturnType<typeof window.velorix.about.getInfo>> | null
   enginePathsDraft: EnginePathsDraft
   enginePathsSaving: boolean
   statusHint: string | null

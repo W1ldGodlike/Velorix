@@ -4,7 +4,7 @@
  * основной exe, `resources/bin/*.exe` (bundled engines) и ключевые extraResources.
  * Без shell, только stat — граница безопасности не нарушается.
  *
- * `FLUXALLOY_SKIP_PACK_VERIFY=1` — мягкий пропуск (временный обход / нестандартный runner).
+ * `VELORIX_SKIP_PACK_VERIFY=1` — мягкий пропуск (временный обход / нестандартный runner).
  * Не-Windows: exit 0 с пояснением (скрипт ожидается в CI Windows и локально на Win).
  */
 import { stat } from 'node:fs/promises'
@@ -22,7 +22,7 @@ function log(message) {
 }
 
 function skipRequested() {
-  const v = process.env.FLUXALLOY_SKIP_PACK_VERIFY
+  const v = process.env.VELORIX_SKIP_PACK_VERIFY
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
@@ -48,7 +48,7 @@ function printHelp() {
   console.log(`verify-win-unpacked-layout — проверка dist/win-unpacked после pack:dir
 
 Переменные:
-  FLUXALLOY_SKIP_PACK_VERIFY=1   пропуск проверки
+  VELORIX_SKIP_PACK_VERIFY=1   пропуск проверки
 
 Флаги: --help`)
 }
@@ -60,7 +60,7 @@ async function main() {
   }
 
   if (skipRequested()) {
-    log('FLUXALLOY_SKIP_PACK_VERIFY — пропуск')
+    log('VELORIX_SKIP_PACK_VERIFY — пропуск')
     return
   }
 
@@ -77,7 +77,7 @@ async function main() {
     throw new Error(failures.join('\n'))
   }
 
-  log('OK: FluxAlloy.exe, resources/bin engines, FLUXALLOY_TZ.md, Data/trusted_hashes.json, Help/')
+  log('OK: Velorix.exe, resources/bin engines, VELORIX_TZ.md, Data/trusted_hashes.json, Help/')
 }
 
 main().catch((error) => {

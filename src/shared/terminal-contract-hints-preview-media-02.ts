@@ -224,7 +224,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_02: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· контейнер: diagnostics',
     summary:
-      'Контейнер: filename, probe_score, streams, flags, size, bit_rate, duration, start/real, duration_ts, time_base и probe_size (поля format: сводка как в инспекторе FluxAlloy); путь к медиа подставляется из превью.',
+      'Контейнер: filename, probe_score, streams, flags, size, bit_rate, duration, start/real, duration_ts, time_base и probe_size (поля format: сводка как в инспекторе Velorix); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format=filename,probe_score,nb_streams,nb_programs,flags,size,bit_rate,duration,start_time,start_time_real,duration_ts,time_base,probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

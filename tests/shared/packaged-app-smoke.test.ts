@@ -10,18 +10,18 @@ import {
 
 describe('packaged-app-smoke', () => {
   it('paths under dist/win-unpacked', () => {
-    const prev = process.env['FLUXALLOY_APP_EXE_PATH']
-    process.env['FLUXALLOY_APP_EXE_PATH'] = 'C:\\custom\\FluxAlloy.exe'
+    const prev = process.env['VELORIX_APP_EXE_PATH']
+    process.env['VELORIX_APP_EXE_PATH'] = 'C:\\custom\\Velorix.exe'
     try {
       expect(packagedWinUnpackedRoot('C:\\repo')).toBe('C:\\repo\\dist\\win-unpacked')
-      expect(listPackagedAppExeCandidatePaths('C:\\repo')[0]).toBe('C:\\custom\\FluxAlloy.exe')
-      expect(listPackagedAppExeCandidatePaths('C:\\repo')[1]).toMatch(/FluxAlloy\.exe$/i)
+      expect(listPackagedAppExeCandidatePaths('C:\\repo')[0]).toBe('C:\\custom\\Velorix.exe')
+      expect(listPackagedAppExeCandidatePaths('C:\\repo')[1]).toMatch(/VELORIX\.exe$/i)
       expect(packagedAppAsarPath('C:\\repo')).toContain('resources\\app.asar')
     } finally {
       if (prev === undefined) {
-        delete process.env['FLUXALLOY_APP_EXE_PATH']
+        delete process.env['VELORIX_APP_EXE_PATH']
       } else {
-        process.env['FLUXALLOY_APP_EXE_PATH'] = prev
+        process.env['VELORIX_APP_EXE_PATH'] = prev
       }
     }
   })
@@ -35,7 +35,7 @@ describe('packaged-app-smoke', () => {
   it('formatPackagedAppSmokeDiagnosticLines', () => {
     const lines = formatPackagedAppSmokeDiagnosticLines()
     expect(lines[0]).toContain('smoke:packaged-app')
-    expect(lines.some((l) => l.includes('FLUXALLOY_APP_EXE_PATH'))).toBe(true)
+    expect(lines.some((l) => l.includes('VELORIX_APP_EXE_PATH'))).toBe(true)
     expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
   })
 })

@@ -1,9 +1,9 @@
 {
   "linuxPackagedSmokeSectionTitle": "Ручная проверка Linux (pack:linux:dir)",
   "linuxPackagedSmokePrereq0": "На Linux: npm run build && npm run pack:linux:dir, затем npm run verify:linux-unpacked (движки в bin/ могут быть добавлены перед релизом).",
-  "linuxPackagedSmokePrereq1": "Каталог dist/linux-unpacked/ с fluxalloy или FluxAlloy и resources/bin/{yt-dlp,ffmpeg,ffprobe}.",
+  "linuxPackagedSmokePrereq1": "Каталог dist/linux-unpacked/ с Velorix или Velorix и resources/bin/{yt-dlp,ffmpeg,ffprobe}.",
   "linuxPackagedSmokePrereq2": "Чистый профиль userData (первый запуск) или осознанный тест поверх существующего.",
-  "linuxPackagedSmokeStep_launch": "Запустить dist/linux-unpacked/fluxalloy или FluxAlloy (не npm run dev).",
+  "linuxPackagedSmokeStep_launch": "Запустить dist/linux-unpacked/Velorix или Velorix (не npm run dev).",
   "linuxPackagedSmokeStep_engines": "Статусбар: версии yt-dlp / ffmpeg / ffprobe без ошибок «не найден».",
   "linuxPackagedSmokeStep_open_file": "Редактор: открыть локальный MP4/MKV, превью играет, scrub работает.",
   "linuxPackagedSmokeStep_ytdlp": "Загрузки: короткий URL (10–30 с), очередь до «Готово», лог без ERROR.",

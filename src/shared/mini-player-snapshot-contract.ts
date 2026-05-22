@@ -11,4 +11,4 @@ export type MiniPlayerSnapshot = {
   alwaysOnTop: boolean
 }
 
-export const MINI_PLAYER_SNAPSHOT_PUSH_CHANNEL = 'fluxalloy:mini-player-snapshot' as const
+export const MINI_PLAYER_SNAPSHOT_PUSH_CHANNEL = 'velorix:mini-player-snapshot' as const

@@ -1,7 +1,7 @@
 {
-  "appMainShellAria": "FluxAlloy main window",
+  "appMainShellAria": "Velorix main window",
   "commonNotApplicableShort": "n/a",
-  "mainWindowDocumentTitle": "FluxAlloy",
+  "mainWindowDocumentTitle": "VELORIX",
   "topbarAboutLabel": "About",
   "topbarAboutTitle": "About and diagnostics",
   "topbarActionsToolbarAria": "Actions toolbar: files, tools, and help",
@@ -25,7 +25,7 @@
   "topbarOpenFileTitle": "Pick a video from your PC — it appears in the preview and timeline for trimming and export.",
   "topbarOpenVideoFolderLabel": "Folder",
   "topbarOpenVideoFolderTitle": "Pick a folder — the first video found is opened in preview (same scan as batch and folder drag-and-drop).",
-  "topbarProductName": "FluxAlloy",
+  "topbarProductName": "VELORIX",
   "topbarThemeToggleTitle": "Toggle dark / light theme",
   "topbarThemeUseDark": "Dark theme",
   "topbarThemeUseLight": "Light theme",

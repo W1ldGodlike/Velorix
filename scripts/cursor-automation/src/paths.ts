@@ -6,7 +6,7 @@ const thisDir = dirname(fileURLToPath(import.meta.url))
 /** Корень скриптов автоматизации: scripts/cursor-automation */
 export const automationRoot = join(thisDir, '..')
 
-/** Корень монорепо FluxAlloy (родитель `scripts/`) */
+/** Корень монорепо Velorix (родитель `scripts/`) */
 export const projectRoot = join(thisDir, '..', '..', '..')
 
 export const stopFlagPath = join(automationRoot, 'STOP')

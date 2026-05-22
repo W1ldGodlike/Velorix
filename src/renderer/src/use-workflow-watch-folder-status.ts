@@ -5,13 +5,13 @@ import { uiTextVars } from './locales/ui-text'
 /** §10 — статусбар при detect/run watch-folder. */
 export function useWorkflowWatchFolderStatus(setStatusHint: (hint: string | null) => void): void {
   useEffect(() => {
-    const offDetect = window.fluxalloy.workflows.onWatchFolderDetected((payload) => {
+    const offDetect = window.velorix.workflows.onWatchFolderDetected((payload) => {
       const base = payload.filePath.replace(/^.*[/\\]/, '')
       setStatusHint(
         uiTextVars('workflowWatchFolderDetectedStatus', { file: base, task: payload.taskTitle })
       )
     })
-    const offRun = window.fluxalloy.workflows.onWatchFolderRunFinished((payload) => {
+    const offRun = window.velorix.workflows.onWatchFolderRunFinished((payload) => {
       const base = payload.filePath.replace(/^.*[/\\]/, '')
       if (payload.outcome === 'success' && payload.outputPath) {
         setStatusHint(

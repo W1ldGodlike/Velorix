@@ -36,7 +36,7 @@ export function buildSupportZipPackagedReleaseLines(
     ...formatPackagedYtdlpSmokeDiagnosticLines(),
     ...formatPackagedFfmpegSmokeDiagnosticLines(),
     ...formatPackagedFfprobeSmokeDiagnosticLines(),
-    'env skips: FLUXALLOY_SKIP_PACK_VERIFY, FLUXALLOY_SKIP_*_SMOKE (per engine script)',
+    'env skips: VELORIX_SKIP_PACK_VERIFY, VELORIX_SKIP_*_SMOKE (per engine script)',
     ...formatBundledEnginesTrustedHashDiagnosticLines(),
     ...listPackagedAppExeCandidatePaths(repoRoot).map(
       (p) => `app-candidate: ${p} (${existsSync(p) ? 'present' : 'missing'})`

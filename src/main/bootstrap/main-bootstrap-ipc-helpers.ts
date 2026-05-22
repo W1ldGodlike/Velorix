@@ -112,7 +112,7 @@ export function parseSaveTextDialogPayload(
   let safeName =
     baseFromPayload.length > 0 && baseFromPayload !== '.' && baseFromPayload !== '..'
       ? baseFromPayload
-      : 'fluxalloy-export.json'
+      : 'VELORIX-export.json'
   if (!/\.[a-z0-9]+$/i.test(safeName)) {
     safeName = `${safeName}.json`
   }

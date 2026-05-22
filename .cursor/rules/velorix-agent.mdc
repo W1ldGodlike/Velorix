@@ -1,0 +1,37 @@
+---
+description: Исполняемое — продолжай/+, audit, UI, git по J-NNN, среда агента
+alwaysApply: true
+---
+
+# Agent (исполняемое)
+
+Глоссарий: [`velorix-rules-explicit.mdc`](velorix-rules-explicit.mdc).  
+Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velorix-continue/SKILL.md), [`velorix-journal-entry`](../../.cursor/skills/velorix-journal-entry/SKILL.md), [`velorix-checklist-audit`](../../.cursor/skills/velorix-checklist-audit/SKILL.md), [`velorix-release`](../../.cursor/skills/velorix-release/SKILL.md).
+
+## Продолжай / +
+
+**Если** в чате «продолжай» или `+` **то** skill [`velorix-continue`](../../.cursor/skills/velorix-continue/SKILL.md): продолжить текущую задачу; **если** закончена **то** [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`; при diff — `npm run check:quiet` и одна `J-NNN` (skill journal-entry).
+
+## Итерация и журнал
+
+- **Если** в итерации есть diff в репо **то** ровно **1** строка `J-NNN` (`npm run journal:stamp`); skill **velorix-journal-entry**.
+- **Если** только обсуждение без diff **то** журнал **не** дописывать.
+- **Запрещено:** **микро-J**, **микро-срез** (глоссарий).
+
+## Git по номеру J
+
+- **Следующий commit по J:** **J-1610** (`NNN % 5 === 0`). **Следующий push по J:** **J-1610** (`NNN % 10 === 0`).
+- **Если** в итерации записана новая `J-NNN` и **check:quiet зелёный** **то:** `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push` (без force `main`/`master`). Cursor, SDK, обычный чат — без исключений.
+- **Запрещено:** пропускать `git commit` / `git push` при выполнении условий выше.
+
+## UI
+
+**Запрещено:** `data:text/html`, `build*Html` pop-out, `*-window-ui-strings-*` вне `ui-text` / `locales/**`. **Если** `BrowserWindow` **то** тот же renderer + hash (`#inspector`, `#downloads`). **Обязательно:** `check:ui-surfaces-guard`, `check:ui-copy-quality` в `check:quiet`.
+
+## Audit
+
+**Обязательно:** `npm run check:quiet` перед `git commit` по J. Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs). **Запрещено:** файл в scope **>500** строк без **логического** split **или** `{ glob, reason }` в `AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED` (`npm run audit:structural`; **запрещено:** дробление только ради лимита — [`velorix-simplicity.mdc`](velorix-simplicity.mdc)). Реестры вместо копипасты `parseX` — `npm run check:field-registries`.
+
+## Среда (Windows)
+
+PowerShell; абсолютные пути в tools; **запрещено** bash-only heredoc для обязательных шагов. **Если** `git commit` **то** here-string `$msg = @'…'@`. **Если** меняли `src/`/`tests/` **то** `npm run typecheck`. Отладка CSP/медиа/build: [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md); release: [`docs/RELEASE.md`](../../docs/RELEASE.md).

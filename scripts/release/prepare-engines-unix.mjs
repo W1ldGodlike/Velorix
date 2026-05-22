@@ -44,12 +44,12 @@ function log(message) {
 }
 
 function enginesForce() {
-  const v = process.env.FLUXALLOY_ENGINES_FORCE
+  const v = process.env.VELORIX_ENGINES_FORCE
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
 function engineDownloadTimeoutMs() {
-  const raw = process.env.FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS
+  const raw = process.env.VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS
   const n = raw != null ? Number.parseInt(String(raw).trim(), 10) : Number.NaN
   return Number.isFinite(n) && n > 0 ? n : 600_000
 }
@@ -85,7 +85,7 @@ async function loadTrustedHashes() {
 async function downloadToFile(url, destPath) {
   const response = await fetch(url, {
     redirect: 'follow',
-    headers: { 'User-Agent': 'FluxAlloy/0.1.0 (prepare-engines-unix)', Accept: '*/*' },
+    headers: { 'User-Agent': 'VELORIX/0.1.0 (prepare-engines-unix)', Accept: '*/*' },
     signal: AbortSignal.timeout(engineDownloadTimeoutMs())
   })
   if (!response.ok) {
@@ -136,7 +136,7 @@ function ffmpegTarUrl(archKey) {
 async function ensureYtDlp() {
   const target = join(binDir, 'yt-dlp')
   if (enginesForce() && (await fileExistsNonEmpty(target))) {
-    log('FLUXALLOY_ENGINES_FORCE: удаляю yt-dlp перед повторной загрузкой')
+    log('VELORIX_ENGINES_FORCE: удаляю yt-dlp перед повторной загрузкой')
     await rm(target, { force: true })
   }
   if (await fileExistsNonEmpty(target)) {
@@ -153,7 +153,7 @@ async function ensureFfmpeg(platformKey) {
   const ffprobeTarget = join(binDir, 'ffprobe')
   if (enginesForce()) {
     if ((await fileExistsNonEmpty(ffmpegTarget)) || (await fileExistsNonEmpty(ffprobeTarget))) {
-      log('FLUXALLOY_ENGINES_FORCE: удаляю ffmpeg / ffprobe перед повторной загрузкой')
+      log('VELORIX_ENGINES_FORCE: удаляю ffmpeg / ffprobe перед повторной загрузкой')
       await rm(ffmpegTarget, { force: true })
       await rm(ffprobeTarget, { force: true })
     }
@@ -227,8 +227,8 @@ function printHelp(platformKey) {
   console.log(`prepare-engines-unix (${p.label}) — загрузка yt-dlp + ffmpeg/ffprobe в bin/.
 
 Только на ${p.label}-хосте: npm run engines:prepare:${platformKey}
-FLUXALLOY_ENGINES_FORCE=1 — перекачать
-FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS — таймаут HTTP (мс)
+VELORIX_ENGINES_FORCE=1 — перекачать
+VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS — таймаут HTTP (мс)
 
 После загрузки: npm run engines:doctor`)
 }
@@ -246,8 +246,8 @@ export async function runUnixEnginePrepare(platformKey) {
   }
 
   await mkdir(binDir, { recursive: true })
-  if (process.env.FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS) {
-    log(`FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS=${engineDownloadTimeoutMs()} ms`)
+  if (process.env.VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS) {
+    log(`VELORIX_ENGINE_DOWNLOAD_TIMEOUT_MS=${engineDownloadTimeoutMs()} ms`)
   }
   await ensureYtDlp()
   await ensureFfmpeg(platformKey)

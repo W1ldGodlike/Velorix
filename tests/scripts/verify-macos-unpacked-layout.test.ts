@@ -12,7 +12,7 @@ describe('verify-macos-unpacked-layout.mjs §19', () => {
       windowsHide: true
     })
     expect(result.status).toBe(0)
-    expect(`${result.stdout ?? ''}${result.stderr ?? ''}`).toContain('FLUXALLOY_SKIP_PACK_VERIFY')
+    expect(`${result.stdout ?? ''}${result.stderr ?? ''}`).toContain('VELORIX_SKIP_PACK_VERIFY')
   })
 
   it('layout verify expects Data/trusted_hashes.json in bundle resources', () => {

@@ -3,8 +3,8 @@
  * §7/§19 — smoke bundled ffmpeg после `pack:dir` или из dev `bin/`:
  * `-version`, затем offline `-encoders`.
  *
- * `FLUXALLOY_SKIP_FFMPEG_SMOKE=1` — пропуск.
- * `FLUXALLOY_FFMPEG_SMOKE_ENCODERS=0` — только `-version`.
+ * `VELORIX_SKIP_FFMPEG_SMOKE=1` — пропуск.
+ * `VELORIX_FFMPEG_SMOKE_ENCODERS=0` — только `-version`.
  */
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -20,12 +20,12 @@ function log(message) {
 }
 
 function skipRequested() {
-  const v = process.env.FLUXALLOY_SKIP_FFMPEG_SMOKE
+  const v = process.env.VELORIX_SKIP_FFMPEG_SMOKE
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
 function encodersDisabled() {
-  const v = process.env.FLUXALLOY_FFMPEG_SMOKE_ENCODERS
+  const v = process.env.VELORIX_FFMPEG_SMOKE_ENCODERS
   return v === '0' || (typeof v === 'string' && v.trim().toLowerCase() === 'false')
 }
 
@@ -33,9 +33,9 @@ function printHelp() {
   console.log(`smoke-packaged-ffmpeg — version + offline encoders list
 
 Переменные:
-  FLUXALLOY_SKIP_FFMPEG_SMOKE=1       пропуск
-  FLUXALLOY_FFMPEG_SMOKE_ENCODERS=0   только -version
-  FLUXALLOY_FFMPEG_PATH               явный путь
+  VELORIX_SKIP_FFMPEG_SMOKE=1       пропуск
+  VELORIX_FFMPEG_SMOKE_ENCODERS=0   только -version
+  VELORIX_FFMPEG_PATH               явный путь
 
 Флаги: --help`)
 }
@@ -60,7 +60,7 @@ async function run() {
   } = await import('../lib/smoke-packaged-ffmpeg-lib.mjs')
 
   if (skipRequested()) {
-    log('FLUXALLOY_SKIP_FFMPEG_SMOKE — пропуск')
+    log('VELORIX_SKIP_FFMPEG_SMOKE — пропуск')
     return
   }
 
@@ -72,7 +72,7 @@ async function run() {
   const ffmpegPath = await pickFirstExistingEngine(listPackagedFfmpegCandidatePaths(rootDir))
   if (ffmpegPath === null) {
     throw new Error(
-      'ffmpeg не найден. Выполните npm run engines:prepare:win и/или npm run pack:dir, либо задайте FLUXALLOY_FFMPEG_PATH.'
+      'ffmpeg не найден. Выполните npm run engines:prepare:win и/или npm run pack:dir, либо задайте VELORIX_FFMPEG_PATH.'
     )
   }
 
@@ -83,7 +83,7 @@ async function run() {
   log(`version: ${versionLine} (${ffmpegPath})`)
 
   if (encodersDisabled()) {
-    log('FLUXALLOY_FFMPEG_SMOKE_ENCODERS=0 — только version')
+    log('VELORIX_FFMPEG_SMOKE_ENCODERS=0 — только version')
     return
   }
 

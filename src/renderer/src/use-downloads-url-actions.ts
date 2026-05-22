@@ -23,7 +23,7 @@ export function useDownloadsUrlActions(deps: UseDownloadsUrlActionsDeps): {
       setWorkspaceTab('downloads')
       return
     }
-    const addRes = await window.fluxalloy.downloads.addLines(text)
+    const addRes = await window.velorix.downloads.addLines(text)
     setWorkspaceTab('downloads')
     if (!addRes.ok) {
       setStatusHint(addRes.error)
@@ -46,7 +46,7 @@ export function useDownloadsUrlActions(deps: UseDownloadsUrlActionsDeps): {
       setStatusHint(uiText('statusDownloadsQueueNoUrlsParsed'))
       return
     }
-    const addRes = await window.fluxalloy.downloads.addLines(text)
+    const addRes = await window.velorix.downloads.addLines(text)
     if (!addRes.ok) {
       setStatusHint(addRes.error)
       return
@@ -69,7 +69,7 @@ export function useDownloadsUrlActions(deps: UseDownloadsUrlActionsDeps): {
       return
     }
     setStatusHint(uiText('statusDownloadOpenEditorWorking'))
-    const res = await window.fluxalloy.downloads.downloadFirstUrlOpenInMainEditor(text)
+    const res = await window.velorix.downloads.downloadFirstUrlOpenInMainEditor(text)
     if (!res.ok) {
       setStatusHint(res.error)
       return

@@ -7,7 +7,7 @@ import { spawnSync } from 'node:child_process'
 import { REPO_ROOT } from '../lib/repo-root.mjs'
 
 function parseCounts(output) {
-  const m = output.match(/replacements:\s*(\d+)\s*flux \(поле\) gloss:\s*(\d+)/)
+  const m = output.match(/replacements:\s*(\d+)\s*velorix \(поле\) gloss:\s*(\d+)/)
   if (!m) {
     return null
   }

@@ -1,9 +1,9 @@
 {
   "linuxPackagedSmokeSectionTitle": "Manual Linux packaged smoke (pack:linux:dir)",
   "linuxPackagedSmokePrereq0": "On Linux: npm run build && npm run pack:linux:dir, then npm run verify:linux-unpacked (bundled engines in bin/ may be filled before release).",
-  "linuxPackagedSmokePrereq1": "Folder dist/linux-unpacked/ with fluxalloy or FluxAlloy and resources/bin/{yt-dlp,ffmpeg,ffprobe}.",
+  "linuxPackagedSmokePrereq1": "Folder dist/linux-unpacked/ with Velorix or Velorix and resources/bin/{yt-dlp,ffmpeg,ffprobe}.",
   "linuxPackagedSmokePrereq2": "Clean userData profile (first launch) or intentional test over an existing profile.",
-  "linuxPackagedSmokeStep_launch": "Run dist/linux-unpacked/fluxalloy or FluxAlloy (not npm run dev).",
+  "linuxPackagedSmokeStep_launch": "Run dist/linux-unpacked/Velorix or Velorix (not npm run dev).",
   "linuxPackagedSmokeStep_engines": "Status bar: yt-dlp / ffmpeg / ffprobe versions with no “not found” errors.",
   "linuxPackagedSmokeStep_open_file": "Editor: open a local MP4/MKV; preview plays and scrub works.",
   "linuxPackagedSmokeStep_ytdlp": "Downloads: short URL (10–30 s), queue reaches Done, log has no ERROR.",

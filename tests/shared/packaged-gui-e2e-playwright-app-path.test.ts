@@ -7,11 +7,11 @@ import {
 } from '../../src/shared/packaged-gui-e2e-playwright-app-path'
 
 describe('packaged-gui-e2e-playwright-app-path §21', () => {
-  it('exports FLUXALLOY_E2E_APP env name', () => {
-    expect(PACKAGED_GUI_E2E_APP_ENV_VAR).toBe('FLUXALLOY_E2E_APP')
+  it('exports VELORIX_E2E_APP env name', () => {
+    expect(PACKAGED_GUI_E2E_APP_ENV_VAR).toBe('VELORIX_E2E_APP')
   })
 
-  it('resolvePackagedGuiE2eAppPath prefers FLUXALLOY_E2E_APP when file exists', () => {
+  it('resolvePackagedGuiE2eAppPath prefers VELORIX_E2E_APP when file exists', () => {
     const prev = process.env[PACKAGED_GUI_E2E_APP_ENV_VAR]
     process.env[PACKAGED_GUI_E2E_APP_ENV_VAR] = process.execPath
     expect(resolvePackagedGuiE2eAppPath(process.cwd())).toBe(process.execPath)
@@ -23,11 +23,11 @@ describe('packaged-gui-e2e-playwright-app-path §21', () => {
   })
 
   it('resolvePackagedGuiE2eAppPath returns null for empty repo without unpacked tree', () => {
-    expect(resolvePackagedGuiE2eAppPath('C:\\nonexistent-fluxalloy-e2e-root')).toBeNull()
+    expect(resolvePackagedGuiE2eAppPath('C:\\nonexistent-VELORIX-e2e-root')).toBeNull()
   })
 
   it('formatPackagedGuiE2eAppPathHint mentions env override or pack:dir', () => {
-    const hint = formatPackagedGuiE2eAppPathHint('C:\\nonexistent-fluxalloy-e2e-root')
+    const hint = formatPackagedGuiE2eAppPathHint('C:\\nonexistent-VELORIX-e2e-root')
     expect(hint).toContain(PACKAGED_GUI_E2E_APP_ENV_VAR)
     expect(hint).toMatch(/unset|pack:dir/)
   })

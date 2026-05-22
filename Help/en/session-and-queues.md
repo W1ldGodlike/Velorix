@@ -2,7 +2,7 @@
 
 ## Download queue
 
-The address list is stored in the user data area as a small **queue** file. After restarting FluxAlloy the rows return, but an active download does not resume by itself — start it again.
+The address list is stored in the user data area as a small **queue** file. After restarting Velorix the rows return, but an active download does not resume by itself — start it again.
 
 ## Window layout
 

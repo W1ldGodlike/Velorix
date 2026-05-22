@@ -1,6 +1,6 @@
 {
   "inspectorStandaloneAboutDiagnosticsTitle": "О программе и быстрые действия диагностики",
-  "inspectorStandaloneBrandAria": "FluxAlloy инспектор",
+  "inspectorStandaloneBrandAria": "Velorix инспектор",
   "inspectorStandaloneEmptyHint": "Перетащите видеофайл сюда или нажмите «Открыть…». При запуске из меню подставляется последний файл из превью (если он ещё на диске).",
   "inspectorStandaloneEmptyRegionAria": "Подсказка, когда файл ещё не открыт",
   "inspectorStandaloneFfprobeRefreshDisabledTitle": "Нет файла для обновления",
@@ -19,5 +19,5 @@
   "inspectorStandaloneTopbarEngineLabel": "ffprobe",
   "inspectorTopbarActionsToolbarAria": "Панель инспектора: файл, обновление, справка",
   "inspectorTopbarTrailingGroupAria": "Зона действий справа от заголовка инспектора",
-  "inspectorWindowDocumentTitle": "FluxAlloy — инспектор"
+  "inspectorWindowDocumentTitle": "Velorix — инспектор"
 }

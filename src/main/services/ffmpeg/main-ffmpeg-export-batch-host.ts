@@ -3,12 +3,12 @@ import { BrowserWindow } from 'electron'
 import { sendExportProgress } from '../../core/export-progress-broadcast'
 import type { AppUiLocale } from '../../../shared/app-ui-locale'
 import {
-  fluxLogBatchAutoStartFfmpegMissing,
-  fluxLogBatchAutoStartLaunched,
-  fluxLogBatchAutoStartSkippedBusy,
-  formatFluxLogBatchEnqueueAdded,
-  fluxLogBatchEnqueueSkippedNotVideo
-} from '../../../shared/downloads-flux-log-locale'
+  velorixLogBatchAutoStartFfmpegMissing,
+  velorixLogBatchAutoStartLaunched,
+  velorixLogBatchAutoStartSkippedBusy,
+  formatVelorixLogBatchEnqueueAdded,
+  velorixLogBatchEnqueueSkippedNotVideo
+} from '../../../shared/downloads-velorix-log-locale'
 import { isFfmpegExportBatchVideoPath } from '../../../shared/ffmpeg-export-batch-video-ext'
 import { resolveAppPaths } from '../../core/app-paths'
 import type { AppSettings } from '../settings/settings-store'
@@ -104,7 +104,7 @@ export function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: n
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: fluxLogBatchEnqueueSkippedNotVideo(loc)
+        text: velorixLogBatchEnqueueSkippedNotVideo(loc)
       })
       return
     }
@@ -118,7 +118,7 @@ export function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: n
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: formatFluxLogBatchEnqueueAdded(loc, absoluteFile)
+        text: formatVelorixLogBatchEnqueueAdded(loc, absoluteFile)
       })
       host.revealMainWindowBatchExportPanel()
     }
@@ -132,7 +132,7 @@ export function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: n
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: fluxLogBatchAutoStartSkippedBusy(loc)
+        text: velorixLogBatchAutoStartSkippedBusy(loc)
       })
       return
     }
@@ -143,7 +143,7 @@ export function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: n
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: fluxLogBatchAutoStartFfmpegMissing(loc)
+        text: velorixLogBatchAutoStartFfmpegMissing(loc)
       })
       return
     }
@@ -152,7 +152,7 @@ export function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: n
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: fluxLogBatchAutoStartLaunched(loc)
+        text: velorixLogBatchAutoStartLaunched(loc)
       })
     }
   })()

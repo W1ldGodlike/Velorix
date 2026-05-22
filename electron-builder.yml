@@ -1,5 +1,5 @@
-appId: com.fluxalloy.app
-productName: FluxAlloy
+appId: com.velorix.app
+productName: Velorix
 # §19.3 — installer/taskbar icon (electron-builder derives .ico/.icns from PNG in buildResources).
 icon: resources/icon.png
 # §19 publish signing (dev pack:*:dir may skip): release-code-signing-roadmap.ts + docs/RELEASE.md §4 (win Authenticode/CSC), §4.2 (mac notarize), §4.1 (linux GPG).
@@ -19,8 +19,8 @@ asarUnpack:
   - resources/**
 extraResources:
   # Эти материалы нужны приложению как файлы рядом с resourcesPath, а не внутри JS bundle.
-  - from: FLUXALLOY_TZ.md
-    to: FLUXALLOY_TZ.md
+  - from: VELORIX_TZ.md
+    to: VELORIX_TZ.md
   - from: Help
     to: Help
   - from: Data
@@ -31,16 +31,16 @@ extraResources:
   - from: bin
     to: bin
 win:
-  executableName: FluxAlloy
-  # win.target: nsis + zip only (no portable — single-root policy; см. FLUXALLOY_TZ.md §19 и docs/RELEASE.md §4).
+  executableName: Velorix
+  # win.target: nsis + zip only (no portable — single-root policy; см. VELORIX_TZ.md §19 и docs/RELEASE.md §4).
   # Распаковка: zip / win-unpacked (всё в одной папке + app-data/). Цель portable — один exe с распаковкой в %TEMP%; для single-root не использовать.
   target:
     - nsis
     - target: zip
       arch: [x64]
   extraFiles:
-    - from: build/Uninstall-FluxAlloy.cmd
-      to: Uninstall FluxAlloy.cmd
+    - from: build/Uninstall-Velorix.cmd
+      to: Uninstall Velorix.cmd
   # win: default electron-builder signing/signtool (CSC_LINK / WIN_CSC_LINK on publish — docs/RELEASE.md §4).
   # Значение по умолчанию electron-builder: подпись/правка exe при упаковке. После перезагрузки и
   # выдачи `SeCreateSymbolicLinkPrivilege` / Developer Mode распаковка winCodeSign снова должна проходить.
@@ -69,7 +69,7 @@ linux:
   target:
     - AppImage
     - deb
-  maintainer: fluxalloy
+  maintainer: Velorix
   category: Utility
 # appImage: linux AppImage artifact name; GPG signing on publish — docs/RELEASE.md §4.1.
 appImage:

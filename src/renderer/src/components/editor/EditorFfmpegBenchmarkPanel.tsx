@@ -49,7 +49,7 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
   const canRun = previewMediaPath !== null && previewMediaPath.length > 0 && !chromeBusy
 
   useEffect(() => {
-    const off = window.fluxalloy.export.onBenchmarkProgress((p) => {
+    const off = window.velorix.export.onBenchmarkProgress((p) => {
       setProgressLabel(
         uiTextVars('editorExportBenchmarkProgress', {
           index: String(p.index),
@@ -68,7 +68,7 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
     setBenchmarkBusy(true)
     setResult(null)
     setProgressLabel(uiText('editorExportBenchmarkStarting'))
-    void window.fluxalloy.export
+    void window.velorix.export
       .runBenchmark({
         inputPath: previewMediaPath,
         uiLocale: getUiLocale(),
@@ -105,7 +105,7 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
     (codec: FfmpegExportVideoCodecId): void => {
       bumpManualExportEdit()
       setExportVideoCodec(codec)
-      void window.fluxalloy.settings.setFfmpegExportVideoCodec(codec).catch(console.error)
+      void window.velorix.settings.setFfmpegExportVideoCodec(codec).catch(console.error)
     },
     [bumpManualExportEdit, setExportVideoCodec]
   )
@@ -165,7 +165,7 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
                 Math.max(FFMPEG_EXPORT_BENCHMARK_LOAD_THRESHOLD_MIN, Math.round(n))
               )
               setExportBenchmarkLoadThreshold(clamped)
-              void window.fluxalloy.settings
+              void window.velorix.settings
                 .setFfmpegExportBenchmarkLoadThreshold(clamped)
                 .catch(console.error)
             }}

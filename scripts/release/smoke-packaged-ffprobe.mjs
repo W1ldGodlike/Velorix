@@ -3,8 +3,8 @@
  * §9/§19 — smoke bundled ffprobe после `pack:dir` или из dev `bin/`:
  * `-version`, затем JSON probe короткого lavfi-клипа (ffmpeg в том же каталоге).
  *
- * `FLUXALLOY_SKIP_FFPROBE_SMOKE=1` — пропуск.
- * `FLUXALLOY_FFPROBE_SMOKE_PROBE=0` — только `-version`, без генерации клипа.
+ * `VELORIX_SKIP_FFPROBE_SMOKE=1` — пропуск.
+ * `VELORIX_FFPROBE_SMOKE_PROBE=0` — только `-version`, без генерации клипа.
  */
 import { execFile } from 'node:child_process'
 import { mkdtemp, rm } from 'node:fs/promises'
@@ -23,12 +23,12 @@ function log(message) {
 }
 
 function skipRequested() {
-  const v = process.env.FLUXALLOY_SKIP_FFPROBE_SMOKE
+  const v = process.env.VELORIX_SKIP_FFPROBE_SMOKE
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
 function probeDisabled() {
-  const v = process.env.FLUXALLOY_FFPROBE_SMOKE_PROBE
+  const v = process.env.VELORIX_FFPROBE_SMOKE_PROBE
   return v === '0' || (typeof v === 'string' && v.trim().toLowerCase() === 'false')
 }
 
@@ -36,9 +36,9 @@ function printHelp() {
   console.log(`smoke-packaged-ffprobe — version + JSON probe bundled ffprobe
 
 Переменные:
-  FLUXALLOY_SKIP_FFPROBE_SMOKE=1     пропуск
-  FLUXALLOY_FFPROBE_SMOKE_PROBE=0    только -version
-  FLUXALLOY_FFPROBE_PATH / FLUXALLOY_FFMPEG_PATH  явные пути
+  VELORIX_SKIP_FFPROBE_SMOKE=1     пропуск
+  VELORIX_FFPROBE_SMOKE_PROBE=0    только -version
+  VELORIX_FFPROBE_PATH / VELORIX_FFMPEG_PATH  явные пути
 
 Флаги: --help`)
 }
@@ -108,7 +108,7 @@ async function run() {
   } = await import('../lib/smoke-packaged-ffprobe-lib.mjs')
 
   if (skipRequested()) {
-    log('FLUXALLOY_SKIP_FFPROBE_SMOKE — пропуск')
+    log('VELORIX_SKIP_FFPROBE_SMOKE — пропуск')
     return
   }
 
@@ -120,7 +120,7 @@ async function run() {
   const ffprobePath = await pickFirstExistingEngine(listPackagedFfprobeCandidatePaths(rootDir))
   if (ffprobePath === null) {
     throw new Error(
-      'ffprobe не найден. Выполните npm run engines:prepare:win и/или npm run pack:dir, либо задайте FLUXALLOY_FFPROBE_PATH.'
+      'ffprobe не найден. Выполните npm run engines:prepare:win и/или npm run pack:dir, либо задайте VELORIX_FFPROBE_PATH.'
     )
   }
 
@@ -131,14 +131,14 @@ async function run() {
   log(`version: ${versionLine} (${ffprobePath})`)
 
   if (probeDisabled()) {
-    log('FLUXALLOY_FFPROBE_SMOKE_PROBE=0 — только version')
+    log('VELORIX_FFPROBE_SMOKE_PROBE=0 — только version')
     return
   }
 
   const ffmpegPath = await pickFirstExistingEngine(listPackagedFfmpegCandidatePaths(rootDir))
   if (ffmpegPath === null) {
     throw new Error(
-      'ffmpeg не найден для lavfi-клипа. Выполните npm run engines:prepare:win или задайте FLUXALLOY_FFMPEG_PATH.'
+      'ffmpeg не найден для lavfi-клипа. Выполните npm run engines:prepare:win или задайте VELORIX_FFMPEG_PATH.'
     )
   }
 

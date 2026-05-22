@@ -100,8 +100,8 @@ const sampleProbe: MediaProbeSuccess = {
 
 describe('ffprobe-summary-export', () => {
   it('defaultFfprobeJsonFileName без пути совпадает с прежним контрактом', () => {
-    expect(defaultFfprobeJsonFileName(undefined)).toBe('fluxalloy-ffprobe.json')
-    expect(defaultFfprobeJsonFileName('')).toBe('fluxalloy-ffprobe.json')
+    expect(defaultFfprobeJsonFileName(undefined)).toBe('VELORIX-ffprobe.json')
+    expect(defaultFfprobeJsonFileName('')).toBe('VELORIX-ffprobe.json')
   })
 
   it('defaultFfprobeJsonFileName со путём использует stem', () => {
@@ -109,7 +109,7 @@ describe('ffprobe-summary-export', () => {
   })
 
   it('defaultFfprobeSummaryTxtFileName / HtmlFileName', () => {
-    expect(defaultFfprobeSummaryTxtFileName(undefined)).toBe('fluxalloy-ffprobe-summary.txt')
+    expect(defaultFfprobeSummaryTxtFileName(undefined)).toBe('VELORIX-ffprobe-summary.txt')
     expect(defaultFfprobeSummaryHtmlFileName('D:\\clips\\Demo.mkv')).toBe(
       'Demo-ffprobe-summary.html'
     )
@@ -117,7 +117,7 @@ describe('ffprobe-summary-export', () => {
 
   it('formatProbeSummaryPlainText содержит ключевые поля', () => {
     const t = formatProbeSummaryPlainText(sampleProbe)
-    expect(t).toContain('FluxAlloy — сводка ffprobe')
+    expect(t).toContain('Velorix — сводка ffprobe')
     expect(t).toContain('1920×1080')
     expect(t).toContain('h264')
     expect(t).toContain('Частота кадров (оценка, видео): 24 к/с')
@@ -218,7 +218,7 @@ describe('ffprobe-summary-export', () => {
 
   it('formatProbeSummaryPlainText (en) uses English headings', () => {
     const t = formatProbeSummaryPlainText(sampleProbe, 'en')
-    expect(t).toContain('FluxAlloy — ffprobe summary')
+    expect(t).toContain('Velorix — ffprobe summary')
     expect(t).toContain('Streams: 2')
     expect(t).toContain('FPS (approx., video): 24 fps')
     expect(t).toContain('\tVideo\t')

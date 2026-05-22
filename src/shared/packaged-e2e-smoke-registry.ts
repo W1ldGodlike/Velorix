@@ -20,7 +20,7 @@ export const PACKAGED_E2E_SMOKE_REGISTRY: readonly PackagedE2eSmokeScenario[] = 
     stepId: 'launch',
     automation: 'ci-headless',
     ciSmokeScript: 'smoke:packaged-app',
-    note: 'FluxAlloy.exe + app.asar + ELECTRON_RUN_AS_NODE probe'
+    note: 'Velorix.exe + app.asar + ELECTRON_RUN_AS_NODE probe'
   },
   {
     stepId: 'engines',

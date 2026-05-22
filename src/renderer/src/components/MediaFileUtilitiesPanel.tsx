@@ -24,7 +24,7 @@ export function MediaFileUtilitiesPanel(props: {
   const [imagePath, setImagePath] = useState<string | null>(null)
   const [imageFormat, setImageFormat] = useState<MediaUtilitiesImageFormatId>('png')
   const pickImageFile = useCallback(async (): Promise<void> => {
-    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as AppUiLocale)
+    const result = await window.velorix.preview.openFileDialog(getUiLocale() as AppUiLocale)
     if (!result.ok) {
       if ('error' in result && result.error.length > 0) {
         onStatus(result.error)
@@ -40,7 +40,7 @@ export function MediaFileUtilitiesPanel(props: {
   }, [onStatus])
 
   const pickFile = useCallback(async (): Promise<void> => {
-    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as AppUiLocale)
+    const result = await window.velorix.preview.openFileDialog(getUiLocale() as AppUiLocale)
     if (!result.ok) {
       if ('error' in result && result.error.length > 0) {
         onStatus(result.error)
@@ -58,7 +58,7 @@ export function MediaFileUtilitiesPanel(props: {
     setBusy(true)
     onStatus(uiText('mediaUtilitiesRepairBusy'))
     try {
-      const res = await window.fluxalloy.utilities.repairRemux({
+      const res = await window.velorix.utilities.repairRemux({
         inputPath: mediaPath,
         uiLocale: getUiLocale()
       })
@@ -81,7 +81,7 @@ export function MediaFileUtilitiesPanel(props: {
     setBusy(true)
     onStatus(uiText('mediaUtilitiesIntegrityBusy'))
     try {
-      const res = await window.fluxalloy.utilities.checkIntegrity({
+      const res = await window.velorix.utilities.checkIntegrity({
         inputPath: mediaPath,
         uiLocale: getUiLocale()
       })
@@ -108,7 +108,7 @@ export function MediaFileUtilitiesPanel(props: {
     setBusy(true)
     onStatus(uiText('mediaUtilitiesHashesBusy'))
     try {
-      const res = await window.fluxalloy.utilities.computeFileHash({
+      const res = await window.velorix.utilities.computeFileHash({
         inputPath: mediaPath,
         uiLocale: getUiLocale()
       })
@@ -140,7 +140,7 @@ export function MediaFileUtilitiesPanel(props: {
     setBusy(true)
     onStatus(uiText('mediaUtilitiesNoiseBusy'))
     try {
-      const res = await window.fluxalloy.utilities.generateNoise({
+      const res = await window.velorix.utilities.generateNoise({
         kind: noiseKind,
         durationSec,
         uiLocale: getUiLocale()
@@ -168,7 +168,7 @@ export function MediaFileUtilitiesPanel(props: {
     setBusy(true)
     onStatus(uiText('mediaUtilitiesImageBusy'))
     try {
-      const res = await window.fluxalloy.utilities.convertImage({
+      const res = await window.velorix.utilities.convertImage({
         inputPath: imagePath,
         targetFormat: imageFormat,
         uiLocale: getUiLocale()
