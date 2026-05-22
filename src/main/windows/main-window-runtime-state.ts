@@ -17,13 +17,8 @@ import {
   getCachedSettings
 } from '../services/settings/main-cached-settings-host'
 import { buildApplicationMenu } from '../menu/main-application-menu'
-import { clearMiniPlayerExportProgress } from '../core/export-progress-broadcast'
-import { focusOrCreateMiniPlayerWindow } from './mini-player-window'
 import { createMainWindow } from './main-window'
-import { setMainWindowFocusAccessor } from './main-window-focus'
 import { tryFulfillPendingWindowsExplorerShellLaunch } from '../services/platform/windows-explorer-shell-launch-schedule'
-
-setMainWindowFocusAccessor(() => mainWindowRef)
 
 export let mainWindowRef: BrowserWindow | null = null
 
@@ -39,9 +34,6 @@ export let broadcastFfmpegExportBatchSnapshot: ((win?: BrowserWindow | null) => 
 
 export function setActiveExportAbort(ac: AbortController | null): void {
   activeExportAbort = ac
-  if (ac === null) {
-    clearMiniPlayerExportProgress()
-  }
 }
 
 export function bindFfmpegExportBatchSnapshotBroadcast(
@@ -85,13 +77,6 @@ export function createMainApplicationWindow(): void {
     onQuitAbortConfirmed: () => {
       activeExportAbort?.abort()
       cancelDownloadsRunner()
-    },
-    onQuitMiniPlayerChosen: () => {
-      const win = mainWindowRef
-      if (win && !win.isDestroyed()) {
-        win.hide()
-      }
-      focusOrCreateMiniPlayerWindow()
     },
     mainAppStr,
     buildApplicationMenu

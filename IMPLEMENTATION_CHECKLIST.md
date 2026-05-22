@@ -27,7 +27,7 @@
 - [x] **snap.6** Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] **snap.7** Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] **snap.8** Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] **snap.9** Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`velorixmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **263 / 1860** (J-1609; синхрон с «Тестовый раннер»).
+- [~] **snap.9** Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`velorixmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **260 / 1851** (J-1616; синхрон с «Тестовый раннер»).
 - [~] **snap.10** Есть `Data/`, `Help/`, `VELORIX_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] **snap.11** Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] **snap.12** ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW §16** (resolve + spawn CPU fallback); редкие фильтры — дальше.
@@ -35,7 +35,7 @@
 - [x] **snap.14** Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] **snap.15** Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] **snap.16** ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] **snap.17** Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`263 test files / 1860 tests`** (J-1609); `npm run check:quiet` (**35** шагов: lint, typecheck, Vitest, doc/guards, `check:scripts-wiring`, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
+- [x] **snap.17** Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`260 test files / 1851 tests`** (J-1616); `npm run check:quiet` (**35** шагов: lint, typecheck, Vitest, doc/guards, `check:scripts-wiring`, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
 
 ## Журнал решений и проверок
 
@@ -65,7 +65,7 @@
 
 - [x] **0.E.1** Инициализация: Electron + TS + React, Zustand, themes, workspace Редактор/Загрузки/Терминал, IPC.
 - [x] **0.E.2** Движки: Windows `prepare-engines-win`; macOS/Linux `prepare-engines-unix` + `engines:doctor`; bundled `resources/bin` (J-1596).
-- [x] **0.E.3** Главное окно §4 [x]: preview/toolbar/statusbar/settings, Mini Player, `session.json`, закрытие/очередь/вторичные окна.
+- [x] **0.E.3** Главное окно §4 [x]: preview/toolbar/statusbar/settings, закрытие/очередь/вторичные окна.
 - [~] **0.E.4** Обработка ffmpeg: export + batch §7.3 + snapshot; полировка UI/HW — дальше.
 - [x] **0.E.5** yt-dlp: вкладка + React pop-out `#downloads`; очередь, rail, log, history, pause/resume.
 - [x] **0.E.6** Терминал §8: каталог 839+465, prune, RU summaries, inline-suggest v1 (J-1572–1574).
@@ -79,7 +79,7 @@
 - [x] **1.1** Назначение продукта зафиксировано: графический комбайн yt-dlp + ffmpeg.
 - [x] **1.2** Целевые платформы зафиксированы: Windows приоритет, macOS, Linux.
 - [x] **1.3** Лицензия есть в `LICENSE`.
-- [~] **1.4** Рабочий editor/downloads/terminal workspace (v0 — ориентир); **смена языка без перезапуска** [x] (J-1018); длинные шарды UI → `locales/**` частично; ручная проверка visual/HiDPI/HW — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md); Mini Player; спрайты §7.5.
+- [~] **1.4** Рабочий editor/downloads/terminal workspace (v0 — ориентир); **смена языка без перезапуска** [x] (J-1018); длинные шарды UI → `locales/**` частично; ручная проверка visual/HiDPI/HW — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md); спрайты §7.5.
 - [~] **1.5** Держать основной UX как единый workspace с вкладками `Редактор` / `Загрузки`; логика очереди и обработки остаётся разделённой по сервисам, pop-out окна — вторичный режим.
 
 ### §1.1 UI и UX
@@ -114,7 +114,7 @@
 - [x] **2.2.2** Main process отвечает за окна и настройки.
 - [x] **2.2.3** Preload работает через `contextBridge`.
 - [x] **2.2.4** Renderer не получает Node API напрямую.
-- [~] **2.2.5** Доменные сервисы main: engines, ffprobe, ffmpeg export/snapshot/**batch**, yt-dlp, workflows, diagnostics, logger; Zustand в renderer; дальше — `session.json`, Mini Player, дальнейшее разбиение main.
+- [~] **2.2.5** Доменные сервисы main: engines, ffprobe, ffmpeg export/snapshot/**batch**, yt-dlp, workflows, diagnostics, logger; Zustand в renderer; дальнейшее разбиение main.
 - [x] **2.2.6** Подход к состоянию renderer: **Zustand** (`renderer-state-approach.ts`, `src/renderer/src/stores/*`, `AppRoot` + `check:renderer-state-approach`).
 - [x] **2.2.7** Миграция Zustand закрыта (**J-1126**); временные gate/чеклист удалены (**J-1128**).
 - [x] **2.2.8** Локализация `locales/ru|en/*.json`: 20 шардов, `ui-text-strings-build` только JSON (legacy `ui-text-strings-{ru|en}-NN.ts` удалены J-1142); guards TS↔JSON + ban legacy parts (J-1143).
@@ -179,8 +179,8 @@
 - [x] **4.1** Стартовый размер main: FHD default + fallback `window-hidpi`; сохранённые bounds важнее.
 - [x] **4.2** Адаптивность и DPI 125–200 %: `window-hidpi` + `@120/144/168/192dpi` в `main.css` (редактор, загрузки, терминал, модалки, справка, probe, история; J-989–991); pop-out загрузок = React `#downloads`.
 - [x] **4.3** Верхнее меню: Файл / Настройки / Сервис / Инструменты / Вид / Справка (`main-application-menu-template.ts`).
-- [x] **4.4** Меню `Файл`: открыть файл/папку, менеджер загрузок, вставить URL; при фокусе pop-out/инспектора/mini-player — `auxiliaryFocused`.
-- [x] **4.5** Меню `Инструменты`: инспектор, mini-player, медиа-утилиты, диагностические папки (whitelist), логи, Support ZIP.
+- [x] **4.4** Меню `Файл`: открыть файл/папку, менеджер загрузок, вставить URL; при фокусе pop-out/инспектора — `auxiliaryFocused`.
+- [x] **4.5** Меню `Инструменты`: инспектор, медиа-утилиты, диагностические папки (whitelist), логи, Support ZIP.
 - [x] **4.6** Меню `Сервис`: планировщик, конструктор, импорт/экспорт настроек и пресетов JSON.
 - [x] **4.7** Меню `Справка`: «О программе», открыть ТЗ; база знаний — topbar + `KnowledgeDialog`.
 - [x] **4.8** Статусбар: версии, активность, язык, кодек, GPU tooltip (4.9–4.13).
@@ -201,21 +201,13 @@
 - [x] **4.1.5** Раскрытые панели: `mainWindowUiPanels`, `downloadsWindowUiPanels`, FFmpeg rail/секции §7, `probe*` shared.
 - [x] **4.1.6** Папки: yt-dlp каталог, batch/export/snapshot директории в `settings.json` + диалоги «По умолчанию».
 - [x] **4.1.7** Очередь yt-dlp: `queue.json` (атомарная запись, hydrate, dedup id, `will-quit` flush).
-- [x] **4.1.8** `session.json`: miniPlayer bounds/topmost (J-1153).
-- [x] **4.1.9** Restore: `queue.json` (waiting/cancelled/done, running→waiting), `restoreLastSource`, mini session; полный batch-session — §7.3.
+- [x] **4.1.8** Restore: `queue.json` (waiting/cancelled/done, running→waiting), `restoreLastSource`; полный batch-session — §7.3.
 
 ### §4.2 Подтверждение закрытия
 
 - [x] **4.2.1** Отслеживать активные процессы: `activeExportAbort` + `isDownloadsRunnerBusy()`.
-- [x] **4.2.2** Диалог busy (остаться / mini-player / прервать) при активном экспорте или yt-dlp.
+- [x] **4.2.2** Диалог busy (остаться / прервать) при активном экспорте или yt-dlp.
 - [x] **4.2.3** §4.2: подтверждение закрытия (idle Да/Нет + busy guard + настройка `confirmCloseOnQuit`); очередь waiting/cancelled сохраняется в `queue.json`, текст idle при waiting; pop-out загрузок и инспектор закрываются с main.
-
-### §4.3 Mini Player
-
-- [x] **4.3.1** §4.3 (J-1153–1157): mini-player; snapshot %/speed; busy-close; ПКМ topmost. Ручная visual — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
-- [x] **4.3.2** Прогресс в mini-player: interval 500 ms + `pushMiniPlayerSnapshotIfOpen` на `exportProgress`.
-- [x] **4.3.3** Topmost режим (toggle + persist `session.json`).
-- [x] **4.3.4** Кнопки + `MiniPlayerContextMenu` (ПКМ topmost, focus main).
 
 ### §4.4 Производительность интерфейса
 

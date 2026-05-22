@@ -7,10 +7,10 @@ import {
 } from '../../src/shared/packaged-e2e-smoke-registry'
 
 describe('packaged-e2e-smoke-registry §21 leaf', () => {
-  it('covers 12 manual smoke step ids once', () => {
-    expect(PACKAGED_E2E_SMOKE_REGISTRY).toHaveLength(12)
+  it('covers 11 manual smoke step ids once', () => {
+    expect(PACKAGED_E2E_SMOKE_REGISTRY).toHaveLength(11)
     const ids = PACKAGED_E2E_SMOKE_REGISTRY.map((s) => s.stepId)
-    expect(new Set(ids).size).toBe(12)
+    expect(new Set(ids).size).toBe(11)
   })
 
   it('expands smoke:packaged-engines to CI leaf scripts', () => {
@@ -32,6 +32,6 @@ describe('packaged-e2e-smoke-registry §21 leaf', () => {
       PACKAGED_E2E_SMOKE_REGISTRY.filter((s) => s.automation === kind).length
     expect(count('ci-headless')).toBe(2)
     expect(count('planned-gui-e2e')).toBe(PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT)
-    expect(count('manual-owner')).toBe(2)
+    expect(count('manual-owner')).toBe(1)
   })
 })

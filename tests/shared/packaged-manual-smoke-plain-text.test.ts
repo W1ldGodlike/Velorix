@@ -25,17 +25,17 @@ describe('packaged-manual-smoke-plain-text §3', () => {
     expect(text).toContain('e2e launch: ci-headless')
   })
 
-  it('linux ru copy includes doc line, mini_player step, and §21 e2e appendix', () => {
+  it('linux ru copy includes doc line, video-sprite step, and §21 e2e appendix', () => {
     const text = getPackagedManualSmokePlainTextForUiLocale('linux', 'ru')
     expect(text).toContain('doc: docs/RELEASE.md §4.1')
-    expect(text).toContain('step [mini-player]:')
+    expect(text).toContain('step [video-sprite]:')
     expect(text).toContain(`planned-gui-e2e (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT}):`)
     expect(text).toContain('check:help-workflow-smoke-crosslinks')
   })
 
   it('macos en copy appends the same §21 e2e block as other platforms', () => {
     const text = getPackagedManualSmokePlainTextForUiLocale('macos', 'en')
-    expect(text).toContain('manual-owner (2): video-sprite, mini-player')
+    expect(text).toContain('manual-owner (1): video-sprite')
     expect(text).toContain('e2e settings: planned-gui-e2e')
   })
 

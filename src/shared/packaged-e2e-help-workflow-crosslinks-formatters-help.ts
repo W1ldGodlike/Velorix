@@ -63,13 +63,13 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowA
     : `workflow articles (\`check:help-workflow-smoke-crosslinks\`, ${countSnippet}; ${partition}).`
 }
 
-/** Owner manual smoke Help — manual-owner steps without GUI automation (§7.5 / §4.3). */
+/** Owner manual smoke Help — manual-owner steps without GUI automation (§7.5). */
 export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeManualOwnerClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
-    ? ' **manual-owner** без GUI-автоматизации: `video-sprite`, `mini-player` (§7.5 / §4.3) — при Support ZIP смотрите `terminalHints:` (§8, `check:help-terminal-hints-docs`, 24 статьи).'
-    : ' **manual-owner** without GUI automation: `video-sprite`, `mini-player` (§7.5 / §4.3) — attach Support ZIP `terminalHints:` (§8, `check:help-terminal-hints-docs`, 24 articles).'
+    ? ' **manual-owner** без GUI-автоматизации: `video-sprite` (§7.5) — при Support ZIP смотрите `terminalHints:` (§8, `check:help-terminal-hints-docs`, 24 статьи).'
+    : ' **manual-owner** without GUI automation: `video-sprite` (§7.5) — attach Support ZIP `terminalHints:` (§8, `check:help-terminal-hints-docs`, 24 articles).'
 }
 
 /** Owner manual smoke Help — packaged-windows + workflow articles step Help tail. */
@@ -134,7 +134,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPlaywrightDeferredSuffix(
     : ` §21 Playwright: ${formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiNpmRunClause('en')}`
 }
 
-/** Packaged windows Help — §21 automation groups in Copy paragraph (`2/8/2`). */
+/** Packaged windows Help — §21 automation groups in Copy paragraph (`2/8/1`). */
 export function formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyAutomationGroupsParenthetical(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {

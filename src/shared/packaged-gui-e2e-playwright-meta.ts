@@ -249,7 +249,7 @@ export function formatPackagedGuiE2ePlaywrightReleaseScenariosRegistryAutomation
 
 /** `docs/RELEASE.md` — `check:packaged-e2e-scenarios-registry` guard bullet. */
 export function formatPackagedGuiE2ePlaywrightReleaseScenariosRegistryLine(): string {
-  return `- \`npm run check:packaged-e2e-scenarios-registry\` — §21 реестр: 12 шагов ↔ manual smoke ${formatPackagedGuiE2ePlaywrightReleaseScenariosRegistryAutomationSummary()}; канон stepId — \`PACKAGED_E2E_*_STEP_IDS\` в \`packaged-e2e-smoke-scenarios.ts\`; \`ci-headless\` обязан иметь npm \`ciSmokeScript\`; \`manual-owner\` — без скрипта; несуществующие скрипты — fail; \`PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS\` (parent→leaf) сверяется с \`package.json\`. Уникальные leaf-скрипты — в \`.github/workflows/ci.yml\` (Vitest \`ci-packaged-smoke-steps\`). Support ZIP / owner bundle: per-step \`e2e <id>: <automation> script=…\`.`
+  return `- \`npm run check:packaged-e2e-scenarios-registry\` — §21 реестр: 11 шагов ↔ manual smoke ${formatPackagedGuiE2ePlaywrightReleaseScenariosRegistryAutomationSummary()}; канон stepId — \`PACKAGED_E2E_*_STEP_IDS\` в \`packaged-e2e-smoke-scenarios.ts\`; \`ci-headless\` обязан иметь npm \`ciSmokeScript\`; \`manual-owner\` — без скрипта; несуществующие скрипты — fail; \`PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS\` (parent→leaf) сверяется с \`package.json\`. Уникальные leaf-скрипты — в \`.github/workflows/ci.yml\` (Vitest \`ci-packaged-smoke-steps\`). Support ZIP / owner bundle: per-step \`e2e <id>: <automation> script=…\`.`
 }
 
 /** `docs/RELEASE.md` — owner-visual-smoke locale guard bullet. */
@@ -348,8 +348,8 @@ export function formatPackagedGuiE2ePlaywrightLoggingPlannedGuiScopeClause(
   locale: 'en' | 'ru'
 ): string {
   return locale === 'ru'
-    ? `в Support ZIP — **planned GUI e2e scope** (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} шагов: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`; 2 manual-owner: sprite, mini-player).`
-    : `Support ZIP includes **planned GUI e2e scope** (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`; 2 manual-owner: sprite, mini-player).`
+    ? `в Support ZIP — **planned GUI e2e scope** (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} шагов: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`; manual-owner: video-sprite).`
+    : `Support ZIP includes **planned GUI e2e scope** (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`; manual-owner: video-sprite).`
 }
 
 /** `Help/ru/logging-and-diagnostics.md` — §8 + §21 UI hints on Dev line. */

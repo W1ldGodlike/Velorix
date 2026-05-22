@@ -6,14 +6,9 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import { DownloadsStandaloneApp } from './DownloadsStandaloneApp'
 import { InspectorStandaloneApp } from './InspectorStandaloneApp'
-import { MiniPlayerStandaloneApp } from './MiniPlayerStandaloneApp'
 import { uiText } from './locales/ui-text'
 import { useAppShellStore } from './stores/app-shell-store'
-import {
-  isDownloadsStandaloneSurface,
-  isInspectorStandaloneSurface,
-  isMiniPlayerStandaloneSurface
-} from './renderer-surface'
+import { isDownloadsStandaloneSurface, isInspectorStandaloneSurface } from './renderer-surface'
 
 // Renderer bootstrap intentionally small.
 // Здесь только React и CSS: вся работа с Electron/FS/процессами идёт через preload API,
@@ -81,9 +76,6 @@ function renderSurfaceApp(): JSX.Element {
   }
   if (isDownloadsStandaloneSurface()) {
     return <DownloadsStandaloneApp />
-  }
-  if (isMiniPlayerStandaloneSurface()) {
-    return <MiniPlayerStandaloneApp />
   }
   return <App />
 }

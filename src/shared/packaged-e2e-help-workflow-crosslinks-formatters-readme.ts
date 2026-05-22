@@ -59,7 +59,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksSettingsRegistryGuardAuto
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const groups = formatPackagedE2eHelpWorkflowCrosslinksSettingsAutomationGroupsSummary(locale)
-  return locale === 'ru' ? `§21 e2e (12 шагов: ${groups}):` : `§21 e2e (12 steps: ${groups}):`
+  return locale === 'ru' ? `§21 e2e (11 шагов: ${groups}):` : `§21 e2e (11 steps: ${groups}):`
 }
 
 /** Locales `appSettingsPackagedSmokeCopyAppendixHint` — §21 groups parenthetical. */

@@ -50,7 +50,6 @@ import {
   velorixExport,
   velorixProcessingHistory
 } from './preload-velorix-export'
-import { velorixMiniPlayer } from './preload-velorix-mini-player'
 import { velorixSettings } from './preload-velorix-settings'
 import { sanitizeMainWindowUiPanelState } from './preload-sanitize'
 
@@ -85,7 +84,6 @@ export const velorix = {
       ipcRenderer.invoke(mw.restoreLastSource)
   },
   downloads: velorixDownloads,
-  miniPlayer: velorixMiniPlayer,
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
   inspector: {
     openWindow: (absoluteMediaPath?: string | null): Promise<void> =>

@@ -19,7 +19,6 @@ export const PACKAGED_MANUAL_SMOKE_STEP_SUFFIXES = [
   'snapshot',
   'export',
   'video_sprite',
-  'mini_player',
   'knowledge',
   'support_zip',
   'settings'
@@ -38,7 +37,6 @@ export const PACKAGED_MANUAL_SMOKE_STEPS: ReadonlyArray<{
   { id: 'snapshot', suffix: 'snapshot' },
   { id: 'export', suffix: 'export' },
   { id: 'video-sprite', suffix: 'video_sprite' },
-  { id: 'mini-player', suffix: 'mini_player' },
   { id: 'knowledge', suffix: 'knowledge' },
   { id: 'support-zip', suffix: 'support_zip' },
   { id: 'settings', suffix: 'settings' }

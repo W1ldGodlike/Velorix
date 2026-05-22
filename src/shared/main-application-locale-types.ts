@@ -73,7 +73,6 @@ export type MainApplicationStrings = {
   menuTools: string
   menuMediaFileUtilities: string
   menuInspector: string
-  menuMiniPlayer: string
   menuOpenFolder: string
   menuOpenFolderHint: string
   menuOpenMainLog: string
@@ -96,7 +95,6 @@ export type MainApplicationStrings = {
   quitConfirmIdle: string
   quitConfirmIdleWithQueue: string
   quitStay: string
-  quitMiniPlayer: string
   quitAbort: string
   quitYes: string
   quitNo: string

@@ -63,9 +63,7 @@ vi.mock('../../src/main/services/engines/engine-service', () => ({
 }))
 
 vi.mock('../../src/main/core/export-progress-broadcast', () => ({
-  sendExportProgress: vi.fn(),
-  getMiniPlayerExportProgress: () => null,
-  clearMiniPlayerExportProgress: vi.fn()
+  sendExportProgress: vi.fn()
 }))
 
 import {

@@ -23,7 +23,6 @@ export type MainWindowQuitStrings = {
   quitConfirmIdle: string
   quitConfirmIdleWithQueue: string
   quitStay: string
-  quitMiniPlayer: string
   quitAbort: string
   quitYes: string
   quitNo: string
@@ -44,7 +43,6 @@ export type MainWindowCreateDeps = {
   countDownloadsQueueWaiting: () => number
   onPrepareMainWindowQuit: () => void
   onQuitAbortConfirmed: () => void
-  onQuitMiniPlayerChosen: () => void
   mainAppStr: () => MainWindowQuitStrings
   buildApplicationMenu: () => void
 }
@@ -137,7 +135,7 @@ export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
       void dialog
         .showMessageBox(mainWindow, {
           type: 'warning',
-          buttons: [q.quitStay, q.quitMiniPlayer, q.quitAbort],
+          buttons: [q.quitStay, q.quitAbort],
           defaultId: 0,
           cancelId: 0,
           title: q.quitDialogTitle,
@@ -145,11 +143,7 @@ export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
           noLink: true
         })
         .then(({ response }) => {
-          if (response === 1) {
-            deps.onQuitMiniPlayerChosen()
-            return
-          }
-          if (response !== 2) {
+          if (response !== 1) {
             return
           }
           deps.onQuitAbortConfirmed()

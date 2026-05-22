@@ -7,7 +7,6 @@ import type { ElectronAPI } from '@electron-toolkit/preload'
 import type { VelorixApiSettingsBlock } from './velorix-api-block-settings'
 import type { VelorixApiDownloadsBlock } from './velorix-api-block-downloads'
 import type { VelorixApiInspectorBlock } from './velorix-api-block-inspector'
-import type { VelorixApiMiniPlayerBlock } from './velorix-api-block-mini-player'
 import type { VelorixApiWorkflowsBlock } from './velorix-api-block-workflows'
 import type { VelorixApiEnginesBlock } from './velorix-api-block-engines'
 import type { VelorixApiExportBlock } from './velorix-api-block-export'
@@ -18,7 +17,6 @@ export interface VelorixApi
     VelorixApiSettingsBlock,
     VelorixApiDownloadsBlock,
     VelorixApiInspectorBlock,
-    VelorixApiMiniPlayerBlock,
     VelorixApiWorkflowsBlock,
     VelorixApiEnginesBlock,
     VelorixApiExportBlock,

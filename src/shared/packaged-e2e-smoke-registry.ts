@@ -65,12 +65,6 @@ export const PACKAGED_E2E_SMOKE_REGISTRY: readonly PackagedE2eSmokeScenario[] = 
     note: 'FFmpeg rail sprite sheet §7.5'
   },
   {
-    stepId: 'mini-player',
-    automation: 'manual-owner',
-    ciSmokeScript: null,
-    note: 'Mini Player §4.3 while export/yt-dlp busy'
-  },
-  {
     stepId: 'knowledge',
     automation: 'planned-gui-e2e',
     ciSmokeScript: null,

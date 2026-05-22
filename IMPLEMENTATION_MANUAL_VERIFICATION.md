@@ -16,7 +16,6 @@
 | ---- | ------ | --------- |
 | 0 | Финал релиза | **0.1**–**0.5** |
 | 3 | Packaged-сборки | **3.1**–**3.4** |
-| 4.3 | Мини-плеер | **4.3.1** |
 | 5 | Тема + HiDPI | **5.1.x**, **5.2.x** |
 | 7.4 | Скачать → обработчик / экспорт | **7.4.1** |
 | 7.5 | Спрайт превью | **7.5.1** |
@@ -36,7 +35,7 @@
 
 - [ ] **0.1** §16 + §5: тема, HiDPI, HW (см. **5.x**, **16.x**).
 - [ ] **0.2** §3 + §19: packaged win/linux/macos + NSIS (**3.x**, **19.1**).
-- [ ] **0.3** §7.5 + §4.3: спрайт и мини-плеер на мониторе (**7.5.1**, **4.3.1**).
+- [ ] **0.3** §7.5: спрайт на мониторе (**7.5.1**).
 - [ ] **0.4** §21: Playwright planned GUI — прогон `test:e2e:gui` с `VELORIX_E2E_APP` (**21.x**).
 - [ ] **0.5** §22: сквозные приёмочные сценарии (**22.1**, **22.2**).
 
@@ -55,7 +54,7 @@
 
 ### 3.2 Windows (`dist/win-unpacked`)
 
-- [ ] **3.2.1** Полный прогон 12 packaged-шагов (Help `packaged-windows-smoke.md`; CI headless ≠ монитор).
+- [ ] **3.2.1** Полный прогон 11 packaged-шагов (Help `packaged-windows-smoke.md`; CI headless ≠ монитор).
 - [ ] **3.2.2** Связка с **19.1** после NSIS-установки (если проверяете installer).
 
 ### 3.3 Linux (`linux-unpacked`)
@@ -65,14 +64,6 @@
 ### 3.4 macOS (`Velorix.app`)
 
 - [ ] **3.4.1** Прогон packaged-шагов на macOS (Help `packaged-macos-smoke.md`).
-
----
-
-## 4.3. Мини-плеер
-
-Канон: `locales/*/mini-player-manual-smoke.json` → блок Mini Player в `ownerManualSmoke:`. Код [x] (J-1153–1157).
-
-- [ ] **4.3.1** Visual/HiDPI: Сервис → мини-плеер при busy-задачах; %/speed; ПКМ topmost; restore main; `session.json`.
 
 ---
 

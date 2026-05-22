@@ -2,7 +2,6 @@ import { BrowserWindow, app, nativeTheme } from 'electron'
 import { electronApp } from '@electron-toolkit/utils'
 
 import { resolveAppPaths } from '../core/app-paths'
-import { configureAppSessionStore } from '../core/app-session-store'
 import { createSettingsIpcPersist } from '../services/settings/settings-ipc-persist'
 import { configureDownloadsQueueRunnerHooks } from '../services/downloads/downloads-queue-runner'
 import {
@@ -103,7 +102,6 @@ export function bootstrapMainApplicationHosts(): void {
   logStartupBanner()
   pruneDiagnosticsOnStartup()
   loadCachedSettingsFromDisk()
-  configureAppSessionStore(resolveAppPaths().userData)
   configureMainBootstrapIpcHelpers({
     getMainWindowWebContentsId: () => mainWindowWebContentsId,
     getUiLocaleFromSettings: () => getCachedSettings().uiLocale

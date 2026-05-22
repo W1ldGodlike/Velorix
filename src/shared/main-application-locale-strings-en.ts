@@ -78,7 +78,6 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   menuTools: 'Tools',
   menuMediaFileUtilities: 'File maintenance…',
   menuInspector: 'Media inspector (ffprobe)…',
-  menuMiniPlayer: 'Mini Player (task progress)…',
   menuOpenFolder: 'Open folder…',
   menuOpenFolderHint:
     'Whitelisted folders: app-data, logs, yt-dlp downloads, engines, and temp files.',
@@ -103,7 +102,6 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   quitConfirmIdle: 'Close Velorix?',
   quitConfirmIdleWithQueue: 'Close Velorix? {n} download(s) are waiting in the queue.',
   quitStay: 'Stay',
-  quitMiniPlayer: 'Mini Player',
   quitAbort: 'Quit and cancel',
   quitYes: 'Yes',
   quitNo: 'No',

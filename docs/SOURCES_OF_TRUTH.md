@@ -43,7 +43,6 @@
 | Продуктовый код: IPC / main / preload | `velorix-electron.mdc`, `velorix-react.mdc`, `src/shared/ipc-channels.ts`, main + preload + renderer + тесты, `docs/ARCHITECTURE.md` |
 | UI / copy / Help / packaged e2e / terminal hints | доменные `src/**`, `tests/**`, `Help/**`, `locales/**`; guards перечислены в `npm run check:quiet` (`scripts/gate/run-quiet-check.mjs`) — не дублировать полный список здесь |
 | Renderer Zustand (§2.2) | `src/shared/renderer-state-approach.ts`, `src/renderer/src/stores/`, `docs/ARCHITECTURE.md` |
-| Mini Player / smoke шаги | контракты и окна в `src/**`, JSON smoke и Help по чеклисту §4.3 / §19 |
 | Docs / legacy links | `npm run check:docs-governance` в `check:quiet`; `audit:orphan-scripts` при чистке `scripts/` |
 | Приоритет rules vs шапка | `velorix-rules-explicit.mdc` → синхрон шапок `IMPLEMENTATION_*` при смене формата |
 | Среда агента / ответ в чате | `velorix-agent.mdc`, `agent-contract.txt` |

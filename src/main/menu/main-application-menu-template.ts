@@ -14,7 +14,6 @@ import { isNativeMainMacos } from '../platform'
 import type { AppSettingsDialogSection } from '../../shared/app-settings-dialog-section'
 import { focusOrCreateDownloadsWindow, isDownloadsWindow } from '../windows/downloads-window'
 import { focusOrCreateInspectorWindow, isInspectorWindow } from '../windows/inspector-window'
-import { focusOrCreateMiniPlayerWindow, isMiniPlayerWindow } from '../windows/mini-player-window'
 import { openVideoFolderWithDialog, openVideoWithDialog } from '../services/preview/preview-dialog'
 import { buildDiagnosticsFolderSubmenu } from './main-application-menu-deps'
 import type { MainApplicationMenuDeps } from './main-application-menu-types'
@@ -31,15 +30,12 @@ export function buildApplicationMenuTemplate(
   const isLightPref = themePref === 'light'
   const downloadsFocused = isDownloadsWindow(win)
   const inspectorFocused = isInspectorWindow(win)
-  const miniPlayerFocused = isMiniPlayerWindow(win)
-  const auxiliaryFocused = downloadsFocused || inspectorFocused || miniPlayerFocused
+  const auxiliaryFocused = downloadsFocused || inspectorFocused
   const mainWindowRef = d.getMainWindowRef()
   const mainUiWindow =
     mainWindowRef && !mainWindowRef.isDestroyed()
       ? mainWindowRef
-      : BrowserWindow.getAllWindows().find(
-          (w) => !isDownloadsWindow(w) && !isInspectorWindow(w) && !isMiniPlayerWindow(w)
-        )
+      : BrowserWindow.getAllWindows().find((w) => !isDownloadsWindow(w) && !isInspectorWindow(w))
 
   const getMainUiWindow = (): BrowserWindow | undefined =>
     mainUiWindow && !mainUiWindow.isDestroyed() ? mainUiWindow : undefined
@@ -243,13 +239,6 @@ export function buildApplicationMenuTemplate(
           enabled: !auxiliaryFocused,
           click: (): void => {
             focusOrCreateInspectorWindow(undefined)
-          }
-        },
-        {
-          label: m.menuMiniPlayer,
-          enabled: !auxiliaryFocused,
-          click: (): void => {
-            focusOrCreateMiniPlayerWindow()
           }
         },
         {

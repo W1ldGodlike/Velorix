@@ -28,7 +28,6 @@ export type MainApplicationMenuDeps = {
     menuTools: string
     menuMediaFileUtilities: string
     menuInspector: string
-    menuMiniPlayer: string
     menuOpenFolder: string
     menuOpenFolderHint: string
     menuOpenMainLog: string

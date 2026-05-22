@@ -77,7 +77,6 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
   menuTools: 'Инструменты',
   menuMediaFileUtilities: 'Обслуживание файлов…',
   menuInspector: 'Инспектор медиа (ffprobe)…',
-  menuMiniPlayer: 'Мини-плеер (прогресс задач)…',
   menuOpenFolder: 'Открыть папку…',
   menuOpenFolderHint:
     'Каталоги из белого списка: app-data, журналы, загрузки yt-dlp, движки и временные файлы.',
@@ -102,7 +101,6 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
   quitConfirmIdle: 'Закрыть Velorix?',
   quitConfirmIdleWithQueue: 'Закрыть Velorix? В очереди загрузок ожидает {n} заданий.',
   quitStay: 'Остаться',
-  quitMiniPlayer: 'Мини-плеер',
   quitAbort: 'Закрыть и прервать',
   quitYes: 'Да',
   quitNo: 'Нет',

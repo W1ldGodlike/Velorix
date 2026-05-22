@@ -29,7 +29,7 @@ The folder must contain `VELORIX` or `VELORIX` and `resources/bin/{yt-dlp,ffmpeg
 
 1. Run the binary from `dist/linux-unpacked/`.
 2. Status bar: engine versions with no “not found”.
-3. Editor, downloads, snapshot, export, §7.5 sprite, §4.3 mini player while busy, knowledge base, Support ZIP.
+3. Editor, downloads, snapshot, export, §7.5 sprite, knowledge base, Support ZIP.
 4. Quit and relaunch — no crash.
 
 Details: [`docs/RELEASE.md`](../../docs/RELEASE.md) §4.1.

@@ -181,7 +181,7 @@ npm run verify:linux-unpacked
 
 1. В приложении: **Настройки → Зависимости → Ручной smoke Linux (pack:linux:dir)** — чеклист с копированием (Support ZIP: `linuxPackagedSmoke:`).
 2. Запустите бинарник из `dist/linux-unpacked/` (не `npm run dev`).
-3. Те же сценарии, что в §4 для Windows: движки, редактор, загрузки, снимок, экспорт, спрайт §7.5, мини-плеер §4.3 (при busy-задачах), база знаний, Support ZIP.
+3. Те же сценарии, что в §4 для Windows: движки, редактор, загрузки, снимок, экспорт, спрайт §7.5, база знаний, Support ZIP.
 4. Убедитесь, что в логах и артефактах нет секретов.
 
 **Подпись артефактов (roadmap для публикации за пределами dev-сборки; локальный `pack:linux:dir` может быть без GPG):**
@@ -210,7 +210,7 @@ npm run verify:mac-unpacked
 
 1. **Настройки → Зависимости → Ручной smoke macOS (pack:mac:dir)** — чеклист (Support ZIP: `macosPackagedSmoke:`).
 2. Откройте `Velorix.app` (не `npm run dev`).
-3. Сценарии как в §4 (включая спрайт §7.5 и мини-плеер §4.3); пути движков — `Contents/Resources/bin`.
+3. Сценарии как в §4 (включая спрайт §7.5); пути движков — `Contents/Resources/bin`.
 4. Нет секретов в логах и артефактах.
 
 **Подпись кода и notarization (roadmap для публикации за пределами dev-сборки; локальный `pack:mac:dir` может быть без них):**
@@ -232,7 +232,7 @@ Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-co
 - `npm run check:owner-visual-smoke-locale` — theme/HiDPI + §21 Playwright UI hints (4 settings keys, `formatPackagedGuiE2ePlaywrightUiHintSuffix`) в `locales/{ru,en}/settings.json`;
 - `npm run check:packaged-manual-smoke-parity` — одинаковые `Step_*` и meta (`OwnerLine`, `BundleHeading`, …) в `locales/*/win|linux|macos-packaged-manual-smoke.json`;
 - `npm run check:platform-packaging-scripts` — имена npm-скриптов §19 в `package.json`;
-- `npm run check:packaged-e2e-scenarios-registry` — §21 реестр: 12 шагов ↔ manual smoke (2 ci-headless, 8 planned-gui-e2e, 2 manual-owner); канон stepId — `PACKAGED_E2E_*_STEP_IDS` в `packaged-e2e-smoke-scenarios.ts`; `ci-headless` обязан иметь npm `ciSmokeScript`; `manual-owner` — без скрипта; несуществующие скрипты — fail; `PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS` (parent→leaf) сверяется с `package.json`. Уникальные leaf-скрипты — в `.github/workflows/ci.yml` (Vitest `ci-packaged-smoke-steps`). Support ZIP / owner bundle: per-step `e2e <id>: <automation> script=…`.
+- `npm run check:packaged-e2e-scenarios-registry` — §21 реестр: 11 шагов ↔ manual smoke (2 ci-headless, 8 planned-gui-e2e, 1 manual-owner); канон stepId — `PACKAGED_E2E_*_STEP_IDS` в `packaged-e2e-smoke-scenarios.ts`; `ci-headless` обязан иметь npm `ciSmokeScript`; `manual-owner` — без скрипта; несуществующие скрипты — fail; `PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS` (parent→leaf) сверяется с `package.json`. Уникальные leaf-скрипты — в `.github/workflows/ci.yml` (Vitest `ci-packaged-smoke-steps`). Support ZIP / owner bundle: per-step `e2e <id>: <automation> script=…`.
 - `npm run check:packaged-gui-e2e-playwright-deferred` — §21 Playwright GUI e2e: 8 `planned-gui-e2e`, `npm run test:e2e:gui` → `scripts/e2e/run-planned-gui-e2e-playwright.mjs` (`tests/e2e/gui/planned-gui-e2e-step-runners.ts`); канон — `packaged-gui-e2e-playwright-meta.ts`.
 - Playwright: `tests/e2e/gui/planned-gui-e2e-steps.ts` + `tests/e2e/gui/planned-gui-e2e-step-runners.ts` + `tests/e2e/gui/planned-gui-e2e.spec.ts` (`npm run test:e2e:gui` → orchestrator, 8 steps).
 - Playwright planned notes: `PLANNED_GUI_E2E_STEP_BY_ID` in `tests/e2e/gui/planned-gui-e2e-steps.ts`; Copy/releaseSmoke — `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine`.

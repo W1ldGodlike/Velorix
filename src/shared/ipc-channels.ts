@@ -98,12 +98,6 @@ export const mainWindowIpc = {
   windowsFileAssociationUnregister: 'velorix:windows-file-association-unregister',
   openWindowsDefaultAppsSettings: 'velorix:open-windows-default-apps-settings',
   openDownloadsWindow: 'velorix:open-downloads-window',
-  /** §4.3 — компактное окно прогресса (`#mini-player`). */
-  miniPlayerShow: 'velorix:mini-player-show',
-  miniPlayerHide: 'velorix:mini-player-hide',
-  miniPlayerGetSnapshot: 'velorix:mini-player-get-snapshot',
-  miniPlayerSetAlwaysOnTop: 'velorix:mini-player-set-always-on-top',
-  miniPlayerFocusMain: 'velorix:mini-player-focus-main',
   /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
   openInspectorWindow: 'velorix:open-inspector-window',
   inspectorBootstrap: 'velorix:inspector-bootstrap',

@@ -10,7 +10,6 @@ import { isNativeMainWindows } from './native-main-platform'
 import { formatWindowsShellManualSmokeChecklistLines } from './windows-shell-manual-smoke-checklist'
 import { formatWorkflowOsSchedulerManualSmokeChecklistLines } from './workflow-os-scheduler-manual-smoke-checklist'
 import { formatEditorVideoSpriteManualSmokeChecklistLines } from './editor-video-sprite-manual-smoke-checklist'
-import { formatMiniPlayerManualSmokeChecklistLines } from './mini-player-manual-smoke-checklist'
 import { formatWorkflowScenarioManualSmokeChecklistLines } from './workflow-scenario-manual-smoke-checklist'
 import { appendPackagedManualSmokeE2ePlanLines } from './packaged-manual-smoke-plain-text'
 
@@ -21,7 +20,6 @@ export function formatOwnerManualSmokeBundlePlainText(parts: {
   osPlainText: string | null
   scenarioPlainText: string
   videoSpritePlainText: string
-  miniPlayerPlainText: string
   shellPlainText: string | null
   packagedPlainText: string | null
   uiDpiSnapshot?: readonly string[]
@@ -38,7 +36,6 @@ export function formatOwnerManualSmokeBundlePlainText(parts: {
   ]
   blocks.push('', '=== Scenario builder ===', parts.scenarioPlainText)
   blocks.push('', '=== Video sprite §7.5 ===', parts.videoSpritePlainText)
-  blocks.push('', '=== Mini Player §4.3 ===', parts.miniPlayerPlainText)
   if (parts.packagedPlainText && parts.packagedPlainText.trim().length > 0) {
     blocks.push('', parts.packagedPlainText)
   }
@@ -67,7 +64,7 @@ export function buildOwnerManualSmokeBundleLines(opts?: {
     : []
   const packaged = getOwnerManualSmokePackagedSection(opts?.platform)
   const lines: string[] = [
-    'ownerManualSmoke: Theme + HiDPI + HW + scenario + video sprite + mini player + packaged + OS scheduler + Win shell (owner, not CI)',
+    'ownerManualSmoke: Theme + HiDPI + HW + scenario + video sprite + packaged + OS scheduler + Win shell (owner, not CI)',
     'UI: IMPLEMENTATION_MANUAL_VERIFICATION.md (not in app); Support ZIP ownerManualSmoke:',
     '',
     '=== Theme ===',
@@ -84,9 +81,6 @@ export function buildOwnerManualSmokeBundleLines(opts?: {
     '',
     '=== Video sprite §7.5 ===',
     ...formatEditorVideoSpriteManualSmokeChecklistLines(),
-    '',
-    '=== Mini Player §4.3 ===',
-    ...formatMiniPlayerManualSmokeChecklistLines(),
     ...(packaged ? ['', packaged.heading, ...packaged.lines] : []),
     '',
     '=== OS scheduler ===',

@@ -56,7 +56,7 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
     expect(PACKAGED_E2E_PLANNED_GUI_STEP_IDS).toHaveLength(
       PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT
     )
-    expect(PACKAGED_E2E_MANUAL_OWNER_STEP_IDS).toEqual(['video-sprite', 'mini-player'])
+    expect(PACKAGED_E2E_MANUAL_OWNER_STEP_IDS).toEqual(['video-sprite'])
     expect(listPackagedE2eStepIdsByAutomation('planned-gui-e2e')).toEqual([
       ...PACKAGED_E2E_PLANNED_GUI_STEP_IDS
     ])
@@ -73,10 +73,7 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
       'support-zip',
       'settings'
     ])
-    expect(listPackagedE2eStepIdsByAutomation('manual-owner')).toEqual([
-      'video-sprite',
-      'mini-player'
-    ])
+    expect(listPackagedE2eStepIdsByAutomation('manual-owner')).toEqual(['video-sprite'])
     expect(listPackagedE2eStepIdsByAutomation('ci-headless')).toEqual(['launch', 'engines'])
   })
 

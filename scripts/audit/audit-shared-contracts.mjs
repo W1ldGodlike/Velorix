@@ -9,8 +9,6 @@ import { REPO_ROOT } from '../lib/repo-root.mjs'
 /** Root-level contract modules (one domain or deliberate sub-split). */
 const ALLOWED_CONTRACT_FILES = new Set([
   'about-contract.ts',
-  'app-session-contract.ts',
-  'mini-player-snapshot-contract.ts',
   'diagnostics-contract.ts',
   'downloads-log-contract.ts',
   'engine-contract.ts',

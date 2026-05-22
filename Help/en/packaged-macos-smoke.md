@@ -28,7 +28,7 @@ The bundle must contain `Contents/MacOS/Velorix` and `Contents/Resources/bin/`.
 ## Short order
 
 1. Open `Velorix.app`.
-2. Status bar, editor, downloads, snapshot, export, §7.5 sprite, §4.3 mini player while busy, knowledge base, Support ZIP.
+2. Status bar, editor, downloads, snapshot, export, §7.5 sprite, knowledge base, Support ZIP.
 3. Quit and reopen the bundle — no crash.
 
 Details: [`docs/RELEASE.md`](../../docs/RELEASE.md) §4.2.
