@@ -80,7 +80,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepHelpC
     formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause(locale)
   return locale === 'ru'
     ? ` Help по шагам — [packaged-windows-smoke.md](packaged-windows-smoke.md) и ${workflow}`
-    : ` Step Help — [packaged-windows-smoke.md](../packaged-windows-smoke.md) and ${workflow}`
+    : ` Step Help — [packaged-windows-smoke.md](packaged-windows-smoke.md) and ${workflow}`
 }
 
 /** Owner manual smoke Help — full planned GUI e2e paragraph (inject Playwright UI hints from `packaged-gui-e2e-playwright-meta`). */

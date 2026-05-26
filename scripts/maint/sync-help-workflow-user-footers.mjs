@@ -1,6 +1,6 @@
 /**
  * Strip dev tails from workflow Help articles; append user crosslink footer.
- * Run: node scripts/sync-help-workflow-user-footers.mjs
+ * Run: node scripts/maint/sync-help-workflow-user-footers.mjs
  */
 import fs from 'node:fs'
 import path from 'node:path'

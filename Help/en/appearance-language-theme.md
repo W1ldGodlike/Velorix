@@ -2,11 +2,11 @@
 
 ## Theme
 
-Use the **View** menu or **Settings → General → Theme** to pick dark, light, or **match the system**. The choice persists between launches.
+Variant A product canon is a **single VELORIX NEON theme**. When the migration is complete, the app should no longer expose `dark` / `light` / `system` as user-facing choices; if a transitional build still shows them, treat that UI as legacy compatibility.
 
 ### Visual theme checklist
 
-**Settings → General → Theme** lists checks for each mode: primary button and accent link contrast, Tab focus rings, disabled states, Settings/About modal backdrops, the downloads pop-out, the inspector window, and scenario builder nodes. For **match the system**, change the OS theme and confirm Velorix follows without restarting.
+Verify the unified NEON UI against this checklist: primary button and accent link contrast, Tab focus rings, disabled states, glass/backdrop treatment for Settings/About modals, `Downloads` and `Inspector` surfaces inside the shell, and scenario builder / planner nodes. Standalone pop-out surfaces and `match system` checks are not part of the target UX.
 
 
 ## Interface language
@@ -22,10 +22,10 @@ Language changes button labels, built-in FFmpeg export presets, status messages,
 - which CSS `@120/144/168/192dpi` block is active;
 - a checklist of areas to verify manually (editor, downloads, modals, status bar).
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` verification).
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).
 
 See [getting-started.md](getting-started.md).
 
 ## See also
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` verification).
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).

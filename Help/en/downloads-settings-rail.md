@@ -17,4 +17,4 @@ The stop control sits **next to the URL field** for the active task. You do not 
 
 ## See also
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` verification).
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).

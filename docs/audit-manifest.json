@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T19:27:49.327Z",
+  "generatedAt": "2026-05-26T17:03:53.680Z",
   "repoRoot": "C:\\Users\\truno\\Velorix",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1153,
+  "fileCount": 1158,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -461,6 +461,7 @@
     "src/renderer/src/components/shell/AppShellLayout.tsx",
     "src/renderer/src/components/shell/AppStatusbar.tsx",
     "src/renderer/src/components/shell/AppWorkspaceMain.tsx",
+    "src/renderer/src/components/shell/AppWorkspaceSidebar.tsx",
     "src/renderer/src/components/shell/AppWorkspaceTopbar.tsx",
     "src/renderer/src/components/shell/EnginePathsDialog.tsx",
     "src/renderer/src/components/shell/EnginePathsSettingsSection.tsx",
@@ -836,6 +837,7 @@
     "src/shared/ui-locale-runtime.ts",
     "src/shared/ui-locale-settings-patch.ts",
     "src/shared/ui-reduced-motion-css.ts",
+    "src/shared/velorix-neon-theme-tokens.ts",
     "src/shared/video-frame-snap.ts",
     "src/shared/watch-folder-scan.ts",
     "src/shared/waveform-peaks.ts",
@@ -1100,6 +1102,7 @@
     "tests/shared/main-application-locale-heif.test.ts",
     "tests/shared/main-runtime-locale.test.ts",
     "tests/shared/native-main-platform.test.ts",
+    "tests/shared/no-v0-ui-canon.test.ts",
     "tests/shared/nvidia-smi-gpu-info-parse.test.ts",
     "tests/shared/nvidia-smi-gpu-util-parse.test.ts",
     "tests/shared/packaged-app-smoke.test.ts",
@@ -1150,6 +1153,8 @@
     "tests/shared/ui-locale-settings-patch.test.ts",
     "tests/shared/ui-reduced-motion-css.test.ts",
     "tests/shared/ui-text-session.test.ts",
+    "tests/shared/velorix-neon-reference-asset.test.ts",
+    "tests/shared/velorix-neon-theme-tokens.test.ts",
     "tests/shared/video-frame-snap.test.ts",
     "tests/shared/watch-folder-scan.test.ts",
     "tests/shared/waveform-peaks.test.ts",

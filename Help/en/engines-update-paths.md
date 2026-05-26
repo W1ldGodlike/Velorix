@@ -18,4 +18,4 @@ Windows release builds can enable strict hash checks to guard against tampered b
 
 ## See also
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](../packaged-windows-smoke.md) (post-`pack:dir` verification).
+[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).

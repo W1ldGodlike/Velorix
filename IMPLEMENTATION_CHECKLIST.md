@@ -26,16 +26,16 @@
 - [x] **snap.5** Есть `package.json`, `electron-vite`, `electron-builder`, ESLint, Prettier, TypeScript-конфиги.
 - [x] **snap.6** Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] **snap.7** Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
-- [x] **snap.8** Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] **snap.9** Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`velorixmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **260 / 1851** (J-1616; синхрон с «Тестовый раннер»).
-- [~] **snap.10** Есть `Data/`, `Help/`, `VELORIX_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
+- [~] **snap.8** В runtime ещё живёт legacy-предпочтение `dark` / `light` / `system`, но продуктовый канон уже переключён на **единственный VELORIX NEON UI**; следующий этап — убрать selector, persist и menu wiring старых тем.
+- [~] **snap.9** Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`velorixmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **263 / 1885** (локальная проверка 2026-05-26; синхрон с «Тестовый раннер»).
+- [~] **snap.10** Есть `Data/`, `Help/`, `VELORIX_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки); `npm run audit:inventory` → **1158** файлов в `docs/audit-manifest.json` (локальная проверка 2026-05-26).
 - [x] **snap.11** Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] **snap.12** ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW §16** (resolve + spawn CPU fallback); редкие фильтры — дальше.
 - [~] **snap.13** Движки: Win `engines:prepare:win` (+ `predev`); mac/linux `engines:prepare:mac|linux` (`prepare-engines-unix.mjs`) + `engines:doctor`; SHA256 через `trusted_hashes.json`; `bin/` → `resources/bin` (`extraResources`); бинарники в Git не коммитятся (J-1601).
-- [x] **snap.14** Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
-- [~] **snap.15** Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
-- [~] **snap.16** ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] **snap.17** Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`260 test files / 1851 tests`** (J-1616); `npm run check:quiet` (**35** шагов: lint, typecheck, Vitest, doc/guards, `check:scripts-wiring`, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
+- [x] **snap.14** Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; справка и owner-smoke синхронизируются со sprint-guards.
+- [~] **snap.15** Основная поверхность `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log и историю; legacy `#downloads` ещё жив как переходный маршрут, но **не** является целевым UX Variant A.
+- [~] **snap.16** Инспектор пока split: в редакторе — короткая строка под таймлайном, подробная сводка и таблицы живут в legacy `#inspector`; целевой Variant A — встроенная инспекторная поверхность единого shell по референсу.
+- [x] **snap.17** Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`263 test files / 1885 tests`** (локальная проверка 2026-05-26); `npm run check:quiet` (**35** шагов: lint, typecheck, Vitest, doc/guards, `check:scripts-wiring`, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
 
 ## Журнал решений и проверок
 
@@ -45,9 +45,11 @@
 
 Правило: навигатор **осмысленного кода/CI** для агента («продолжай»), не архив. 3–7 пунктов, ≤220 символов. **Запрещено:** Vitest «на guard» без нового `scripts/gate/*.mjs`; пункты ради счётчика тестов. **sprint.7 — в конце**, когда ниже нечего делать агенту. Ручная приёмка на железе — только [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
 
-- [x] **sprint.lock** `check:quiet` зелёный; снимок **263/1860** (J-1609); дубли guard-Vitest сняты.
-- [x] **sprint.done** Код/CI: открытых `[ ]` в чеклисте нет (кроме **19.9/19.10** → manual); дальше — фича по запросу владельца.
-- [ ] **sprint.7** **(последний)** Ручная приёмка — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) (**3.x**, **19.x**, **21.x**, **22.x**, **7.4.x**, **16.x**).
+- [ ] **sprint.1** Убрать legacy `dark` / `light` / `system` из contracts, settings, menu и renderer wiring; оставить один режим **VELORIX NEON** без параллельной палитры.
+- [ ] **sprint.2** Схлопнуть `#downloads` / `#inspector` в единый shell/sidebar/tab UX по референсам; secondary-window plumbing перевести в cleanup bucket и затем удалить.
+- [ ] **sprint.3** Довести shell/layout/topbar/sidebar/editor/downloads/inspector под референсы 1–27 без legacy topbar/pop-out паттернов.
+- [ ] **sprint.4** Проверить scripts/tests/guards на stale dual-theme и pop-out хвосты; удалять только подтверждённый мусор после замены продуктового поведения.
+- [ ] **sprint.7** **(последний)** Ручная приёмка — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) (**5.x**, **19.x**, **21.x**, **22.x**, **7.4.x**, **16.x**).
 
 ---
 
@@ -63,13 +65,13 @@
 
 ### Этапы
 
-- [x] **0.E.1** Инициализация: Electron + TS + React, Zustand, themes, workspace Редактор/Загрузки/Терминал, IPC.
+- [~] **0.E.1** Инициализация: Electron + TS + React, Zustand, workspace `Редактор` / `Загрузки` / `Терминал`, IPC; legacy multi-theme bootstrapping ещё в коде, но канон Variant A уже single-NEON.
 - [x] **0.E.2** Движки: Windows `prepare-engines-win`; macOS/Linux `prepare-engines-unix` + `engines:doctor`; bundled `resources/bin` (J-1596).
 - [x] **0.E.3** Главное окно §4 [x]: preview/toolbar/statusbar/settings, закрытие/очередь/вторичные окна.
 - [~] **0.E.4** Обработка ffmpeg: export + batch §7.3 + snapshot; полировка UI/HW — дальше.
-- [x] **0.E.5** yt-dlp: вкладка + React pop-out `#downloads`; очередь, rail, log, history, pause/resume.
+- [~] **0.E.5** yt-dlp: основная поверхность в workspace уже есть (очередь, rail, log, history, pause/resume); React pop-out `#downloads` остаётся только как legacy-переходник до cleanup.
 - [x] **0.E.6** Терминал §8: каталог 839+465, prune, RU summaries, inline-suggest v1 (J-1572–1574).
-- [~] **0.E.7** Инспектор §9 [x]; планировщик §10 и конструктор §11 [x] в коде; ручная проверка OS/сценариев — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
+- [~] **0.E.7** Инспектор §9, планировщик §10 и конструктор §11 есть в коде; для инспектора ещё открыт перенос из legacy secondary window в единый NEON shell; ручная проверка OS/сценариев — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
 - [~] **0.E.8** Обслуживание §12 [x]; истории §13 [x]; утилиты §17 в основном [x].
 - [x] **0.E.9** Логирование/диагностика §18 [x]: `logger-service`, rotate, Support ZIP, crash handler.
 - [~] **0.E.10** Дистрибуция §19: Win NSIS/ZIP + CI; macOS/Linux артефакты и подпись — дальше.
@@ -79,17 +81,17 @@
 - [x] **1.1** Назначение продукта зафиксировано: графический комбайн yt-dlp + ffmpeg.
 - [x] **1.2** Целевые платформы зафиксированы: Windows приоритет, macOS, Linux.
 - [x] **1.3** Лицензия есть в `LICENSE`.
-- [~] **1.4** Рабочий editor/downloads/terminal workspace (v0 — ориентир); **смена языка без перезапуска** [x] (J-1018); длинные шарды UI → `locales/**` частично; ручная проверка visual/HiDPI/HW — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md); спрайты §7.5.
-- [~] **1.5** Держать основной UX как единый workspace с вкладками `Редактор` / `Загрузки`; логика очереди и обработки остаётся разделённой по сервисам, pop-out окна — вторичный режим.
+- [~] **1.4** Рабочий editor/downloads/terminal workspace уже есть; визуальный канон — [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md) и Variant A в [`VELORIX_TZ.md`](VELORIX_TZ.md); **смена языка без перезапуска** [x]; manual visual/HiDPI/HW — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md); референсы 1–27 ещё не перенесены 1:1.
+- [~] **1.5** Держать основной UX как единый workspace с поверхностями `Редактор` / `Загрузки` / `Терминал` / `Инспектор` / `Инструменты` / справка; логика доменов остаётся разделённой по сервисам, а pop-out окна считаются legacy и идут под удаление.
 
 ### §1.1 UI и UX
 
 - [~] **1.1.1** Построить главное окно вокруг крупного предпросмотра: базовая зона preview есть, финальная компоновка панелей — дальше.
 - [~] **1.1.2** Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s и ≤96 MiB ответа) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; transport strip и HiDPI `@120/144/168/192dpi` в `main.css` (J-627, J-991); **нативные `<video controls>` отключены** — воспроизведение только через `PreviewTransport`/таймлайн; дальше — редкие контейнеры без fps/`nb_frames`.
 - [~] **1.1.3** Панели кодирования справа: **сворачиваемые секции** + **целиком rail FFmpeg** (`ffmpegSettingsRailOpen` в `mainWindowUiPanels`); persist в `settings.json`; полировка и инспектор — дальше.
-- [~] **1.1.4** Сформировать вкладку `Загрузки` в едином workspace: React слой уже показывает URL-band + живую queue table через общий snapshot broadcast + summary cards + filter chips + progress bars + управление строками/очисткой + pause/resume + встроенный rail основных yt-dlp настроек/network/каталога/cookies + pop-out; **«История» и «Живой лог» под строкой таблицы**; при **узкой ширине** rail **не скрывается**, а уходит **под** журнал (`@media (max-width: 1100px)`), **`#downloads-ytdlp-settings-rail`** — сворачиваемая панель настроек (`downloadsEmbeddedSettingsOpen`, как история/журнал); таблица очереди — `<caption>`/`<th scope="col">`, сброс scroll при смене фильтра; ошибки действий показываются в статусе вместо тихого no-op; pop-out — редкие/длинные settings; дальше — ручная DPI-матрица.
+- [~] **1.1.4** Сформировать поверхность `Загрузки` в едином workspace: React слой уже показывает URL-band + живую queue table через общий snapshot broadcast + summary cards + filter chips + progress bars + управление строками/очисткой + pause/resume + встроенный rail основных yt-dlp настроек/network/каталога/cookies; **«История» и «Живой лог» под строкой таблицы**; при **узкой ширине** rail **не скрывается**, а уходит **под** журнал (`@media (max-width: 1100px)`), **`#downloads-ytdlp-settings-rail`** — сворачиваемая панель настроек (`downloadsEmbeddedSettingsOpen`, как история/журнал); таблица очереди — `<caption>`/`<th scope="col">`, сброс scroll при смене фильтра; ошибки действий показываются в статусе вместо тихого no-op; legacy pop-out не развивать.
 - [~] **1.1.5** Реализовать прогрессивное раскрытие сложных параметров: `details` для **быстрой yt-dlp-полосы** (**`app-url-summary`**, **`quickYtdlpUrlHint`**: поле URL + **«Скачать и добавить в редактор»** + короткие ссылки на справку; **`aria-describedby`**; отдельные кнопки «Из буфера» на вкладках **убраны** — вставка через меню/глобальный Ctrl+V и автодобавление из буфера при фокусе, J-624) + **rail FFmpeg** (секционные hints + **`aria-describedby`**, развёрнутые `title`/PillSwitch J-636) + **превью команды ffmpeg** (`exportCommandPreview`); общая система панелей — дальше.
-- [~] **1.1.6** Базовые токены темы есть; тёмная палитра главного окна приведена к компактному инженерному стилю, v0-референс больше не является центром спринта.
+- [~] **1.1.6** Базовые токены темы есть; канон — **VELORIX NEON** ([`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md), `src/shared/velorix-neon-theme-tokens.ts`); дальше — вычистить legacy light/dark wiring и довести surfaces до 1:1 по референсам.
 - [~] **1.1.7** Бинарные настройки → **pill switch**: yt-dlp (плейлист/аудио/open/batch §7.4) + ffmpeg rail (2-pass, economy, HW-decode, strip metadata/chapters §7.2.13–14); дальше — редкие select с >2 вариантами.
 - [~] **1.1.8** Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; **редактор: focus-ring на полосе быстрого yt-dlp — `app-url-summary`, `app-url-input`, `app-btn` в теле полосы**; **`<video>` предпросмотра — `aria-label` с basename пути**; **окно загрузок: кольцо фокуса на сворачиваемых `summary` (история, журнал, hints) + rail** + **контекстные `aria-describedby` у нижних панелей**; **редкие панели** (бенчмарк, About-утилиты, внешний скрипт) — `role="group"`/`toolbar`, `title`/`aria-label` (J-1023); второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
 - [~] **1.1.9** Убрать все литералы интерфейса в единый слой: `src/renderer/src/locales/ui-text.ts` (`ru/en`) покрывает редактор, вкладку «Загрузки», терминал, статусбар, диалоги, истории, инспектор и HW-кодеки (J-528+, J-1015); дальше — вынести длинные шарды в `locales/**` JSON без дублирования по мере роста словаря.
@@ -159,9 +161,9 @@
 ### §4.A Разделение ролей окон
 
 - [x] **4.1** Главное окно: preview/ffmpeg; toolbar + сворачиваемая правая панель FFmpeg (`EditorFfmpegSettingsRail`).
-- [x] **4.2** Единый workspace `Редактор` / `Загрузки` / `Терминал`; pop-out загрузок — вторичный режим (редкие длинные settings).
+- [~] **4.2** Единый workspace `Редактор` / `Загрузки` / `Терминал` уже есть; следующий этап — встроить `Инспектор`/`Инструменты` в тот же shell и убрать pop-out загрузок как legacy UX.
 - [x] **4.3** Меню «Менеджер загрузок (yt-dlp)…» + IPC; topbar переключает вкладку `Загрузки`.
-- [x] **4.4** Pop-out `BrowserWindow` — тот же React-бандл, hash `#downloads` (legacy HTML удалён, J-984); sync темы/локали/очереди.
+- [~] **4.4** Legacy pop-out `BrowserWindow` использует тот же React-бандл, hash `#downloads` (legacy HTML удалён, J-984); сам secondary-window path помечен к удалению после переноса UX в единый shell.
 
 ### §4.B Единая зона источника
 
@@ -177,7 +179,7 @@
 ### §4.C Прочее
 
 - [x] **4.1** Стартовый размер main: FHD default + fallback `window-hidpi`; сохранённые bounds важнее.
-- [x] **4.2** Адаптивность и DPI 125–200 %: `window-hidpi` + `@120/144/168/192dpi` в `main.css` (редактор, загрузки, терминал, модалки, справка, probe, история; J-989–991); pop-out загрузок = React `#downloads`.
+- [~] **4.2** Адаптивность и DPI 125–200 %: `window-hidpi` + `@120/144/168/192dpi` в `main.css` (редактор, загрузки, терминал, модалки, справка, probe, история; J-989–991); manual-приёмка для Variant A должна уже смотреть единый shell без обязательного pop-out.
 - [x] **4.3** Верхнее меню: Файл / Настройки / Сервис / Инструменты / Вид / Справка (`main-application-menu-template.ts`).
 - [x] **4.4** Меню `Файл`: открыть файл/папку, менеджер загрузок, вставить URL; при фокусе pop-out/инспектора — `auxiliaryFocused`.
 - [x] **4.5** Меню `Инструменты`: инспектор, медиа-утилиты, диагностические папки (whitelist), логи, Support ZIP.
@@ -226,7 +228,7 @@
 ### §4.6 Настройки
 
 - [x] **4.6.1** Окно настроек (модалка с навигацией, J-1014).
-- [x] **4.6.2** Раздел «Общие» (тема, язык, подтверждение закрытия, Ctrl+V URL).
+- [~] **4.6.2** Раздел «Общие» есть (язык, подтверждение закрытия, Ctrl+V URL); блок темы пока legacy и должен быть пересобран под один режим **VELORIX NEON** без `dark` / `light` / `system`.
 - [x] **4.6.3** Раздел «По умолчанию» (yt-dlp каталог, batch output).
 - [x] **4.6.4** Раздел «Зависимости» (пути движков).
 - [x] **4.6.5** Раздел «Горячие клавиши» (таблица ускорителей).
@@ -235,26 +237,19 @@
 
 ## §5. Темизация
 
-- [x] **5.1** Две темы: тёмная/светлая.
-- [x] **5.2** Сохранение выбранной темы.
-- [x] **5.3** Меню переключения темы.
-- [x] **5.4** CSS-токены: полный набор имён в `base.css` (J-1091); WCAG-пары Vitest (J-1097); spacing/font-size/line-height guards (J-1106..1112).
-- [x] **5.5** Имена токенов §5: Background…Disabled + alias `--fa-bg-elevated` (J-1091).
-- [x] **5.6** Проверить контрасты: `theme-contrast-pairs` WCAG AA по hex (J-1097); визуальный прогон — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) (J-1107).
-- [x] **5.7** Focus/hover/disabled: контролы (J-1092) + input/select/textarea (J-1097); бенчмарк/select rare panels (J-1113/1114).
-- [x] **5.8** Исключить стили вне токенов: hex/rgba/radius/spacing/font-size/line-height guards (J-1093..1112); редкие select/benchmark (J-1113/1114).
-- [x] **5.9** Единые радиусы/отступы: `--fa-radius-*` (J-1098), `--fa-space-*` + gap/padding guards (J-1104..1106).
-- [x] **5.10** Типографика: `--fa-font-size-*` + font-size rem/px guard (J-1108); `--fa-line-height-*` (J-1111).
+- [~] **5.1** Продуктовый канон — **один VELORIX NEON UI**; legacy `dark` / `light` / `system` и menu/settings wiring этих режимов ещё не вычищены из runtime.
+- [~] **5.2** Базовые CSS-токены, contrast guards и NEON token-pack уже заведены (`base.css`, `src/renderer/src/assets/themes/velorix-neon/**`, `theme-contrast-pairs`, `velorix-neon-theme-tokens`), но финальная консолидация shell/editor/downloads/inspector ещё впереди.
+- [~] **5.3** Ручная visual smoke-приёмка теперь ориентируется на единый NEON shell и отсутствие legacy pop-out/theme UX — см. [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) §5.
 
-## §6. Окно менеджера загрузок (yt-dlp)
+## §6. Поверхность загрузок (yt-dlp)
 
 ### §6.1 Основная панель
 
-- [x] **6.1.1** Основной менеджер загрузок — вкладка `Загрузки` + pop-out `#downloads` (один React UI); таблица очереди, история→лог, settings rail; legacy HTML удалён (J-984).
+- [~] **6.1.1** Основной менеджер загрузок — поверхность `Загрузки` в главном shell; таблица очереди, история→лог, settings rail уже есть. Legacy `#downloads` ещё существует как переходный маршрут, но не считается целевым UX.
 - [x] **6.1.2** Многострочное поле URL.
 - [x] **6.1.3** Добавление распознанных строк в простую очередь (таблица в том же документе).
 - [x] **6.1.4** Drag-and-Drop URL/текста на поле ввода и на свободную область окна загрузок (не перехватываем drop на `textarea`/`select`/текстовых `input`).
-- [~] **6.1.5** Вставка из главного окна (быстрая URL-полоса с **«Скачать и добавить в редактор»**, поле вкладки, меню/глобальный Ctrl+V, pop-out) → merge в очередь или цепочка «скачать → открыть в редакторе» (J-624).
+- [~] **6.1.5** Вставка из главного окна (быстрая URL-полоса с **«Скачать и добавить в редактор»**, поле вкладки, меню/глобальный Ctrl+V) → merge в очередь или цепочка «скачать → открыть в редакторе» (J-624); legacy pop-out в сценарий больше не расширять.
 - [~] **6.1.6** Таблица: имя (хост+путь/ранний title/path basename), ссылка; колонки Формат/Размер/Прогресс/Скорость/**Осталось**; **Прогресс** — полоска + числовой %, зелёный 100% при «Готово»; `progress` суммарная строка; действия старт/retry/pause/delete/file/folder — **во встроенной React-вкладке icon-only** (`app-icon-btn` + те же пути SVG, что `RowIco` в data HTML); **дублирующая кнопка отмены в футере правого rail yt-dlp убрана** (осталась у поля URL; J-638); `queue.json` §4.1 с дедупликацией id при restore; format/size/title из `[info]`, progress и post-processing строк yt-dlp (`ExtractAudio`, remux, convert); дальше — редкие шаблоны логов.
 - [~] **6.1.7** Старт всей очереди (последовательно, только «Ожидание»).
 - [x] **6.1.8** Старт отдельной строки.
@@ -280,7 +275,7 @@
 
 ### §6.3 Экспертный режим
 
-- [~] **6.3.1** Live preview команды yt-dlp (`commandPreview`: реальный каталог `-o` из userData или override только для превью, первый URL очереди или `https://example.com/`; черновик формы до сохранения; во вкладке rail — поле argv + вставка токена + preview; pop-out — тот же функционал с длинным справочником; заглушки `<downloadDir>`/`<url>` только без контекста превью).
+- [~] **6.3.1** Live preview команды yt-dlp (`commandPreview`: реальный каталог `-o` из userData или override только для превью, первый URL очереди или `https://example.com/`; черновик формы до сохранения; во встроенном rail — поле argv + вставка токена + preview; заглушки `<downloadDir>`/`<url>` только без контекста превью). Длинный справочник должен остаться в shell, без отдельного pop-out UX.
 - [~] **6.3.2** Поле дополнительных аргументов (`ytdlpExtraArgsLine` в settings).
 - [x] **6.3.3** Подсказки из `Data/ytdlp_commands.json` (группы в UI; при необходимости категория в JSON переопределяет встроенную карту в main); **справочник argv** — один сценарий (поиск + список, без второго `<select>`; J-637).
 - [~] **6.3.4** Безопасная сборка аргументов без shell (`parseExtraYtdlpArgsLine`, spawn-массив §21).
@@ -288,7 +283,7 @@
 ### §6.4 Прогресс, лог, комбинированный режим
 
 - [x] **6.4.1** Парсинг прогресса yt-dlp: процент + скорость + «Осталось» + фрагменты/плейлист/retry/HLS prep + редкие `[download]` + post-processing в колонке «Прогресс» (`parseYtdlpQueuePostProcessProgressLine`: merge, audio, remux, convert, embed, concat, fixup, SponsorBlock…; J-1043).
-- [~] **6.4.2** Лог stdout/stderr: IPC `velorix-downloads-log` fan-out в главное окно и pop-out; вкладка `Загрузки` показывает live log, очистку и сохранение видимого текста; pop-out сохраняет compact-layout со счётчиком размера и обрезкой DOM.
+- [~] **6.4.2** Лог stdout/stderr: IPC `velorix-downloads-log`; поверхность `Загрузки` показывает live log, очистку и сохранение видимого текста. Legacy fan-out в pop-out остаётся только до удаления secondary-window plumbing.
 - [x] **6.4.3** «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик Velorix из очереди и истории.
 - [x] **6.4.4** «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок; неуспех авто-открытия пишется в лог строки).
 - [x] **6.4.5** Опционально после успешного авто-открытия — авто-экспорт §7.2 в соседний файл (`name-export.ext` с суффиксом при коллизии), прогресс в главном окне, итог/ошибка в логе очереди.
@@ -379,9 +374,9 @@
 
 ## §9. Инспектор видеофайлов
 
-- [x] **9.1** Запуск ffprobe: grant-пути (IPC); полная сводка + таблица дорожек в **отдельном окне** `#inspector` (`inspector-window.ts`, `windowBounds.inspector`); в главном редакторе — короткая строка видео/аудио под таймлайном (`VideoTimeline`); **в инспекторе** — кнопка «папка с видео» и DnD папки (как §4.B).
-- [x] **9.2** Сводка: контейнер, длительность, bitrate — **в окне инспектора**; в редакторе под превью — имя файла (полный путь в подсказке).
-- [x] **9.3** Таблица дорожек — **в окне инспектора** (`tags`, битрейт/`disposition`, видео `pix_fmt`/SAR/DAR + `color_*`, контекстное меню).
+- [~] **9.1** Запуск ffprobe: grant-пути (IPC); сейчас полная сводка + таблица дорожек живут в legacy `#inspector` (`inspector-window.ts`, `windowBounds.inspector`), а в редакторе — короткая строка видео/аудио под таймлайном (`VideoTimeline`). Цель Variant A — перенести inspector UX в единый shell.
+- [~] **9.2** Сводка: контейнер, длительность, bitrate пока в legacy inspector surface; в редакторе под превью — имя файла (полный путь в подсказке).
+- [~] **9.3** Таблица дорожек пока в legacy inspector surface (`tags`, битрейт/`disposition`, видео `pix_fmt`/SAR/DAR + `color_*`, контекстное меню); дальше — встроить в NEON shell.
 - [x] **9.4** Детали дорожек расширены точечными ffprobe-полями: `codec_tag` hex fallback, `extradata_size`, `initial_padding`, `closed_captions`, `is_avc`, `ticks_per_frame`, `bits_per_coded_sample`, ReplayGain, аудио `language`/`title`/`handler_name`.
 - [x] **9.5** Главы (`-show_chapters`, таблица **в окне инспектора** + TXT/HTML сводка).
 - [x] **9.6** JSON ffprobe: сворачиваемый блок **в окне инспектора** (просмотр/копирование/файл; отдельная вкладка не требуется).
@@ -535,7 +530,7 @@
 - [x] **21.3** IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, save-text-dialog, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [x] **21.4** Вынести сервисы main: **202** модуля из корня `src/main/` → `bootstrap/`, `windows/`, `menu/`, `core/`, `ipc/downloads/`, `services/*` (J-1578); `platform/` без изменений.
 - [~] **21.5** Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
-- [x] **21.6** Unit tests: **`247` файлов / `1804` тестов** (Vitest; J-1595); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. E2e packaged — Playwright §21.9.
+- [x] **21.6** Unit tests: **`263` файлов / `1885` тестов** (Vitest; локальная проверка 2026-05-26); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts|renderer/`. E2e packaged — Playwright §21.9.
 - [x] **21.7** Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [x] **21.8** E2e packaged: реестр §21 + guards + partition + per-step/`ci.yml` в `check:quiet`.
 - [x] **21.9** GUI Playwright e2e: 8 шагов в `planned-gui-e2e.spec.ts` + `planned-gui-e2e-step-runners.ts` (skip без app); `npm run test:e2e:gui` после `pack:dir`.

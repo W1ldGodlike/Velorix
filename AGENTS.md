@@ -10,7 +10,9 @@
 
 **Индекс:** [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md) · [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) · [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) · [`VELORIX_TZ.md`](VELORIX_TZ.md) (без правок без явной просьбы) · SDK [`agent-contract.txt`](scripts/cursor-automation/prompts/agent-contract.txt)
 
-**Проверки:** `npm run check:quiet` — **35** шагов (lint, typecheck, Vitest, doc guards, `check:scripts-wiring`); снимок **260** test files / **1851** tests — [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) (`snap.17`, Vitest lock). Help §15: 44 workflow — user footer (`formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter`); dev §21 — owner/about/logging; sync `node scripts/maint/sync-help-workflow-user-footers.mjs`. После локального `npm run build` — вернуть `src/shared/app-build-info.json` → `dev` ([`docs/RELEASE.md`](docs/RELEASE.md) §1). `npm run audit:moderate` не в `check:quiet` — [`docs/RELEASE.md`](docs/RELEASE.md) §1.
+**Проверки:** `npm run check:quiet` — **35** шагов (lint, typecheck, Vitest, doc guards, `check:scripts-wiring`); снимок **263** test files / **1885** tests — [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) (`snap.17`, локальная проверка 2026-05-26). Help §15: 44 workflow — user footer (`formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter`); dev §21 — owner/about/logging; sync `node scripts/maint/sync-help-workflow-user-footers.mjs`. После локального `npm run build` — вернуть `src/shared/app-build-info.json` → `dev` ([`docs/RELEASE.md`](docs/RELEASE.md) §1). `npm run audit:moderate` не в `check:quiet` — [`docs/RELEASE.md`](docs/RELEASE.md) §1.
+
+**Git author (локально, без `--global`):** `user.name` **W1ldGodlike**, `user.email` **W1ld.Godlike@gmail.com**.
 
 **Git по J-NNN:** `NNN % 5` → commit, `NNN % 10` → push (любой чат); **следующий commit по J** **J-1610**, **следующий push по J** **J-1610** — [`velorix-agent.mdc`](.cursor/rules/velorix-agent.mdc).
 
