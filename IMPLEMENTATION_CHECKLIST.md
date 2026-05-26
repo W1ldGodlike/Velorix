@@ -45,10 +45,11 @@
 
 Правило: навигатор **осмысленного кода/CI** для агента («продолжай»), не архив. 3–7 пунктов, ≤220 символов. **Запрещено:** Vitest «на guard» без нового `scripts/gate/*.mjs`; пункты ради счётчика тестов. **sprint.7 — в конце**, когда ниже нечего делать агенту. Ручная приёмка на железе — только [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
 
-- [ ] **sprint.1** Убрать legacy `dark` / `light` / `system` из contracts, settings, menu и renderer wiring; оставить один режим **VELORIX NEON** без параллельной палитры.
-- [ ] **sprint.2** Схлопнуть `#downloads` / `#inspector` в единый shell/sidebar/tab UX по референсам; secondary-window plumbing перевести в cleanup bucket и затем удалить.
-- [ ] **sprint.3** Довести shell/layout/topbar/sidebar/editor/downloads/inspector под референсы 1–27 без legacy topbar/pop-out паттернов.
-- [ ] **sprint.4** Проверить scripts/tests/guards на stale dual-theme и pop-out хвосты; удалять только подтверждённый мусор после замены продуктового поведения.
+- [ ] **sprint.1** Global shell / Phase D: единый sidebar-route map для `Обработка`, `Загрузки`, `Терминал`, `История`, `Инспектор`, `Планировщик`, `Сценарии`, `Инструменты`, `Настройки`, `База знаний`.
+- [ ] **sprint.2** Tools hub и refs `10–20`: перенести menu/dialog утилиты в NEON-поверхности `Инструменты`, `О программе`, file maintenance, image conversion, noise/slideshow, scenario builder, engine paths, first-run.
+- [ ] **sprint.3** System / recovery и refs `21–25`: quit confirm, FFmpeg error, critical crash, encoder benchmark, plugins manager как целевые поверхности Variant A.
+- [ ] **sprint.4** Component-state sign-off и refs `26–27`: UI State Showcase + UI Components/States как обязательный QA-канон reusable состояний.
+- [ ] **sprint.5** Удаление legacy theme/pop-out runtime: `dark` / `light` / `system`, `#downloads` / `#inspector`, stale scripts/tests/guards — только после переноса поведения в единый shell.
 - [ ] **sprint.7** **(последний)** Ручная приёмка — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) (**5.x**, **19.x**, **21.x**, **22.x**, **7.4.x**, **16.x**).
 
 ---
@@ -240,6 +241,7 @@
 - [~] **5.1** Продуктовый канон — **один VELORIX NEON UI**; legacy `dark` / `light` / `system` и menu/settings wiring этих режимов ещё не вычищены из runtime.
 - [~] **5.2** Базовые CSS-токены, contrast guards и NEON token-pack уже заведены (`base.css`, `src/renderer/src/assets/themes/velorix-neon/**`, `theme-contrast-pairs`, `velorix-neon-theme-tokens`), но финальная консолидация shell/editor/downloads/inspector ещё впереди.
 - [~] **5.3** Ручная visual smoke-приёмка теперь ориентируется на единый NEON shell и отсутствие legacy pop-out/theme UX — см. [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) §5.
+- [ ] **5.4** refs `26–27`: `UI State Showcase` и `UI Components / States` ещё не оформлены как обязательный sign-off слой для reusable состояний, manual QA и финальной parity-сверки.
 
 ## §6. Поверхность загрузок (yt-dlp)
 
@@ -387,7 +389,7 @@
 
 ## §10. Планировщик задач
 
-- [x] **10.1** Модель задач + реестр `userData/workflows/scheduled-tasks.json`; UI планировщик, in-app watch-folder runner, авто-ffmpeg при detect (J-1047..1050).
+- [~] **10.1** Модель задач + реестр `userData/workflows/scheduled-tasks.json`; UI планировщик, in-app watch-folder runner, авто-ffmpeg при detect (J-1047..1050). Для рефа `4` ещё нужен Phase D shell-screen с week grid, execution queue и статистикой.
 - [x] **10.2** OS backends v1: Windows `schtasks`, macOS LaunchAgent, Linux systemd user timer + CLI `--workflow-watch-folder-tick` (J-1052..1055).
 - [x] **10.3** Watch folder in-app (poll, detect IPC, опция `executeScenarioOnDetect`, ffmpeg v1).
 - [x] **10.4** Привязка к `scenarioId` (JSON сценария в `scenarios.json`).
@@ -400,7 +402,7 @@
 
 ## §11. Конструктор сценариев
 
-- [x] **11.1** JSON + блок-схема + ffmpeg v1 (watch-folder, редактор, URL yt-dlp→ffmpeg, J-1047..1053).
+- [~] **11.1** JSON + блок-схема + ffmpeg v1 (watch-folder, редактор, URL yt-dlp→ffmpeg, J-1047..1053); реф `16` требует отдельную NEON-поверхность builder, а реф `7` — отдельный каталог сценариев/запусков.
 - [x] **11.2** Запуск сценария из главного окна по открытому файлу и по URL (§11, J-1051/1053).
 - [x] **11.3** Шаблоны local/URL (`workflow-scenario-templates`, J-1053).
 - [x] **11.4** Load/save/delete в UI + `userData/workflows/scenarios.json`.
@@ -420,7 +422,7 @@
 
 ## §13. История и статистика
 
-- [x] **13.1** Журнал задач: `processing/history.json` пишет export/snapshot/auto-export/workflowScenario из main; панель + live-refresh (J-1063..1069).
+- [~] **13.1** Журнал задач: `processing/history.json` пишет export/snapshot/auto-export/workflowScenario из main; панель + live-refresh (J-1063..1069). Для рефа `3` ещё нужен отдельный shell-screen истории с unified event store, аналитикой и recent errors.
 - [x] **13.2** Фильтры: kind/outcome/query (**в т.ч. `workflowScenario`**, `exportVideoCodecUsed`); загрузки — по outcome.
 - [x] **13.3** Повторить загрузку: история yt-dlp в pop-out и встроенной панели возвращает URL в очередь (J-1067/1068).
 - [x] **13.4** Повторить обработку: «Повторить» / «Повторить сценарий» (file + URL по `sourceUrl`, J-1059/1060).
@@ -445,7 +447,7 @@
 ## §15. База знаний и подсказки
 
 - [x] **15.1** Файлы справки: `Help/ru/*.md` (RU) и `Help/en/*.md` (EN); общие `Help/assets/`.
-- [~] **15.2** Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, списки `-`/`+`/нумерация + перенос пункта с отступом 4+, внутренние `.md` и внешние `https`, **картинки** `![alt](assets/…)` — при `readKnowledgeArticle` мелкие файлы из `Help/assets/**` (до ~512 KiB) **встраиваются** в markdown как `data:image/*;base64` (стабильно в dev и сборке); парсер допускает только whitelist `data:`; `velorixhelp:` + CSP `img-src` остаются как запасной путь.
+- [~] **15.2** Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, списки `-`/`+`/нумерация + перенос пункта с отступом 4+, внутренние `.md` и внешние `https`, **картинки** `![alt](assets/…)` — при `readKnowledgeArticle` мелкие файлы из `Help/assets/**` (до ~512 KiB) **встраиваются** в markdown как `data:image/*;base64` (стабильно в dev и сборке); парсер допускает только whitelist `data:`; `velorixhelp:` + CSP `img-src` остаются как запасной путь. Для рефа `5` ещё нужен full-screen knowledge hub с category pills, preview rail и richer article metadata.
 - [x] **15.3** Оглавление: 7 разделов `knowledge-toc-registry` + FAQ RU/EN (J-983).
 - [x] **15.4** Поиск.
 - [x] **15.5** Язык UI и база: `listArticles`/`readKnowledgeArticle` — RU из `Help/ru/{slug}.md`, EN из `Help/en/{slug}.md` (fallback EN→RU); при смене языка UI список/статья перезапрашиваются.
@@ -473,7 +475,7 @@
 
 ## §17. Дополнительные утилиты
 
-- [x] **17.1** Меню утилит: «Открыть папку…» — hint/toolTip на пунктах + панель в «О программе» (J-1003); enabled при фокусе — как раньше.
+- [~] **17.1** Меню утилит: «Открыть папку…» — hint/toolTip на пунктах + панель в «О программе» (J-1003); enabled при фокусе — как раньше. Для reфа `10` ещё нужен отдельный tools hub с карточками и route в shell.
 - [x] **17.2** Извлечь кадры §7.6 (J-1004–1006): режимы, WebP, topbar, выбор файла, progress-bar.
 - [x] **17.3** Обслуживание файлов: remux repair + проверка целостности (J-1007).
 - [x] **17.4** Генератор шума/тишины WAV + хеши MD5/SHA256 (J-1008).
@@ -481,6 +483,8 @@
 - [x] **17.6** Плагины AviSynth/VapourSynth: меню «Сервис», настройки, `-vf` экспорта (J-1010).
 - [~] **17.7** Открыть папки ресурсов/логов: полный список в «О программе» + быстрые кнопки logs/ZIP (J-1003); отдельное окно настроек — позже.
 - [~] **17.8** Диагностические команды/утилиты обслуживания: IPC/preload для `maintenanceSnapshot`/`cleanMaintenance`, тесты `diagnostics-maintenance`; дальше — отдельное окно настроек и расширение категорий.
+- [ ] **17.9** ref `24`: текущая кнопка «Оценить» есть, но отдельная поверхность `Encoder Benchmark` как workspace/dashboard NEON ещё не собрана.
+- [ ] **17.10** ref `25`: текущий single external script-filter не равен отдельному `Plugins Manager`; нужен отдельный shell-screen и различение manager vs разовый filter-script.
 
 ## §18. Логирование и диагностика
 
@@ -495,6 +499,7 @@
 - [x] **18.9** Копировать детали.
 - [x] **18.10** Открыть лог.
 - [x] **18.11** Support ZIP: `diagnostics.txt` (`ownerManualSmoke:`, `releaseSmoke:`, `terminalHints:` §8 dev guards), `main.log`, `main.log.1`, `session.log`, последние crash dumps, версия, ОС.
+- [ ] **18.12** refs `22–23`: текущие error/crash flows в коде есть, но отдельные NEON-поверхности `FFmpeg Error` и `Critical Crash`, а также отдельный экран диагностики, ещё не доведены до shell parity.
 
 ## §19. Система установки и дистрибуция
 

@@ -16,12 +16,13 @@ npm run dev           # Electron + Vite (predev подтянет движки н
 - **Dependabot (wave 5):** [x] на **`main`** — журнал **J-1558**; см. [`docs/RELEASE.md`](./docs/RELEASE.md) §1.
 
 - **Node.js** **≥ 20.19** (`engines` в `package.json`, ориентир [`.nvmrc`](./.nvmrc) — `24`).
-- **Renderer:** Zustand (`src/renderer/src/stores/*`), один бандл UI; pop-out загрузок/инспектора — тот же renderer + hash `#downloads` / `#inspector` (см. [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)).
+- **Renderer:** Zustand (`src/renderer/src/stores/*`), один бандл UI; legacy `#downloads` / `#inspector` используют тот же renderer только как переходный слой, целевой канон Variant A — единый NEON shell (см. [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)).
 - **Агент Cursor:** [`AGENTS.md`](./AGENTS.md) → [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md); «продолжай» / `+` — skill [`velorix-continue`](./.cursor/skills/velorix-continue/SKILL.md); **следующий commit по J** **J-1580**, **push по J** **J-1580** — [`velorix-agent.mdc`](./.cursor/rules/velorix-agent.mdc).
 - **Git по J-NNN:** см. [`velorix-agent.mdc`](./.cursor/rules/velorix-agent.mdc), [`agent-contract.txt`](./scripts/cursor-automation/prompts/agent-contract.txt).
 
 ### Первичная настройка окружения
 
+0. Git в этом репозитории (один раз): `git config user.name "W1ldGodlike"`; `git config user.email "W1ld.Godlike@gmail.com"` (без `--global`).
 1. Установите [Node.js](https://nodejs.org/) LTS (20.x, 22.x или 24.x).
 2. В корне: `npm install` (postinstall — native deps **electron-builder**; читает [`.npmrc`](./.npmrc) — `legacy-peer-deps=true`, см. блок peer в «Быстрый старт»).
 3. Полная проверка: `npm run check` — то же, что `npm run check:quiet` (единый gate: ESLint, TypeScript, Vitest, trusted hashes, journal, checklist, secrets, UI/locale guards и audit-скрипты; см. [`docs/RELEASE.md`](./docs/RELEASE.md) §1). **Не входит** в `check:quiet`: `npm run audit:moderate` (npm advisory, moderate+; см. [`docs/RELEASE.md`](./docs/RELEASE.md) §1 и job **check** в [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)).

@@ -1,5 +1,7 @@
 /**
  * Ключи locales (settings.json) для визуального theme-smoke (§5).
+ * NB: имя `appSettingsThemeCheckDownloadsPopout` оставлено legacy-совместимым,
+ * но в copy уже означает shell-surface, а не целевой pop-out UX.
  * Канон для AppSettingsThemePanel, owner bundle и проверок локалей.
  */
 

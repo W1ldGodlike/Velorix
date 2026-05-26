@@ -45,6 +45,18 @@
 - При активном export/yt-dlp закрытие главного окна — диалог «Остаться / Закрыть и прервать» ([`main-window.ts`](../src/main/windows/main-window.ts)).
 - **Запрещено** возвращать `buildDownloadsHtml` / отдельные `*-window-ui-strings-*` (guard `check:ui-surfaces-guard`).
 
+### Порядок удаления legacy Variant A
+
+Удаление legacy-путей для `#downloads` / `#inspector` и `dark` / `light` / `system` должно идти только в таком порядке:
+
+1. Сначала синхронизировать канон: `VELORIX_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, `IMPLEMENTATION_MANUAL_VERIFICATION.md`, `docs/VELORIX_NEON_THEME.md`, Help/locales.
+2. Перенести оставшееся нужное поведение из secondary windows в единый shell: downloads queue/details, inspector summary/tables/actions, deep-links и manual smoke.
+3. Только после shell-parity удалить runtime-plumbing вторичных окон: menu routes, focus/create helpers, bounds, hash-only surfaces, legacy copy.
+4. Затем убрать dual-theme runtime: selector в settings/topbar/menu, `AppTheme`-ветки продукта, product-level `system` UX; временная техническая совместимость допустима лишь до момента полного переноса.
+5. В конце дочистить CSS/tests/scripts/guards, которые обслуживали старую модель, и снова прогнать `check:quiet`.
+
+Ключевое правило: **сначала переносим поведение, потом удаляем код**. Потеря действующего workflow ради cleanup запрещена.
+
 ## Структура каталогов (логика, не полный список)
 
 - **`src/main/`** — доменные сервисы (§21, J-1578):

@@ -14,7 +14,7 @@
 | 4b        | [`velorix-agent.mdc`](../.cursor/rules/velorix-agent.mdc) + `check:ui-surfaces-guard`                           | UI, audit, среда; один renderer; `ui-text` / `locales/**`; без HTML-pop-out.                                                                                                   |
 | 5         | [`VELORIX_TZ.md`](../VELORIX_TZ.md)                                                                           | Канон **продукта** (требования). В rules **не** копируется целиком — только чтение нужного §. **Не редактировать** без явной просьбы владельца.                                 |
 | 6         | [`scripts/cursor-automation/prompts/agent-contract.txt`](../scripts/cursor-automation/prompts/agent-contract.txt) | SDK-агент; синхронизировать с 1–4 при смене процесса; git по J — **следующий commit по J** **J-1580** (`velorix-agent.mdc`).                                                                                                      |
-| 7         | [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) · [`docs/RELEASE.md`](RELEASE.md)                                       | IPC/renderer, npm/toolchain, packaging, release/build; отладка CSP/медиа — § в ARCHITECTURE.                                                                                    |
+| 7         | [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) · [`docs/RELEASE.md`](RELEASE.md) · [`docs/VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md) | IPC/renderer, npm/toolchain, packaging, release/build; **VELORIX NEON** — эталоны PNG (реф. 1–27), **вариант A** (единственный UI), workstream'ы shell/recovery/components и cleanup buckets legacy-theme/pop-out.                                                                 |
 
 ## При расхождении
 
@@ -42,6 +42,7 @@
 | Audit кода репо | `velorix-agent.mdc`, `scripts/audit-scope.config.mjs`, `docs/audit-manifest.json`, `npm run audit:inventory` + `audit:inventory-sync`; при затронутых путях — `audit:structural` / `audit:copy-paste` |
 | Продуктовый код: IPC / main / preload | `velorix-electron.mdc`, `velorix-react.mdc`, `src/shared/ipc-channels.ts`, main + preload + renderer + тесты, `docs/ARCHITECTURE.md` |
 | UI / copy / Help / packaged e2e / terminal hints | доменные `src/**`, `tests/**`, `Help/**`, `locales/**`; guards перечислены в `npm run check:quiet` (`scripts/gate/run-quiet-check.mjs`) — не дублировать полный список здесь |
+| VELORIX NEON (единственный UI, вариант A) | [`docs/VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md) § «Вариант A», refs 1–27 + workstream'ы / cleanup buckets, [`docs/reference/`](reference/), `themes/velorix-neon/**`, `velorix-neon-theme-tokens.ts`; legacy `dark`/`light` — **удалить** по завершении переноса; **запрещено** `UX_REFERENCE_V0.OLD.md` |
 | Renderer Zustand (§2.2) | `src/shared/renderer-state-approach.ts`, `src/renderer/src/stores/`, `docs/ARCHITECTURE.md` |
 | Docs / legacy links | `npm run check:docs-governance` в `check:quiet`; `audit:orphan-scripts` при чистке `scripts/` |
 | Приоритет rules vs шапка | `velorix-rules-explicit.mdc` → синхрон шапок `IMPLEMENTATION_*` при смене формата |
