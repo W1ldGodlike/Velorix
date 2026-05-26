@@ -55,7 +55,7 @@ export function VideoTimelineUnifiedPane({
   return (
     <>
       <div
-        className="app-timeline-unified"
+        className="app-timeline-unified app-neon-timeline-unified"
         role="region"
         aria-label={uiText('videoTimelineUnifiedRegionAria')}
         aria-describedby="editor-video-timeline-hint"

@@ -50,10 +50,10 @@ function ytdlpFormatHintFromOutputPath(prefix: string, rawPath: string): string 
 }
 
 /**
- * §6/v0 — краткая подпись целевого формата из строк yt-dlp `[info] … Downloading N format(s): …`.
+ * §6 — краткая подпись целевого формата из строк yt-dlp `[info] … Downloading N format(s): …`.
  */
 /**
- * §6/v0 — фрагмент до `: Downloading N format(s)` в `[info]` для колонки «Название» (не сырой id ролика YouTube).
+ * §6 — фрагмент до `: Downloading N format(s)` в `[info]` для колонки «Название» (не сырой id ролика YouTube).
  */
 export function parseYtdlpInfoDownloadingTitlePrefix(line: string): string | null {
   const t = line.trimEnd()
@@ -93,7 +93,7 @@ export function parseYtdlpInfoFormatSnippet(line: string): string | null {
 }
 
 /**
- * §6/v0 — подпись колонки «Формат»: `[info]` (см. `parseYtdlpInfoFormatSnippet`)
+ * §6 — подпись колонки «Формат»: `[info]` (см. `parseYtdlpInfoFormatSnippet`)
  * плюс типичные строки post-processing (`merge`, audio extract, remux/convert).
  */
 export function parseYtdlpQueueFormatHint(line: string, locale: AppUiLocale = 'ru'): string | null {
@@ -133,7 +133,7 @@ export function parseYtdlpQueueFormatHint(line: string, locale: AppUiLocale = 'r
 }
 
 /**
- * §6/v0 — приблизительный размер из `[info] … Filesize …` до появления `% of …` в `[download]`.
+ * §6 — приблизительный размер из `[info] … Filesize …` до появления `% of …` в `[download]`.
  * Не перезаписывает уже выставленный из прогресса `queueSize` (см. runner).
  */
 export function parseYtdlpInfoQueueSizeHint(line: string): string | null {

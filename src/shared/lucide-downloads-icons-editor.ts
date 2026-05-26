@@ -2,7 +2,7 @@ import type { StrokePrim } from './lucide-downloads-icons-types'
 import { QUEUE_ROW_ACTION_ICONS } from './lucide-downloads-icons-queue'
 
 /**
- * Полоска транспорта под превью редактора (§1.1 / `docs/UX_REFERENCE_V0.md`): lucide-глифы без React-зависимости.
+ * Полоска транспорта под превью редактора (§1.1): lucide-глифы без React-зависимости.
  */
 export const EDITOR_TRANSPORT_ICONS = {
   skipBack: [
@@ -39,7 +39,7 @@ export const EDITOR_TRANSPORT_ICONS = {
   ] as const satisfies readonly StrokePrim[]
 } as const
 
-/** Полоска таймлайна: масштаб времени как в `docs/UX_REFERENCE_V0.md` (zoom-in / zoom-out). */
+/** Полоска таймлайна: zoom-in / zoom-out (§1.1). */
 export const EDITOR_TIMELINE_ICONS = {
   zoomIn: [
     { tag: 'circle', attr: { cx: '11', cy: '11', r: '8' } },
@@ -54,7 +54,7 @@ export const EDITOR_TIMELINE_ICONS = {
   ] as const satisfies readonly StrokePrim[]
 } as const
 
-/** Быстрые действия v0-топбара: поворот / crop-блиц (см. FFmpeg-панель). */
+/** Быстрые действия топбара: поворот / crop-блиц (см. FFmpeg-панель). */
 export const EDITOR_TOPBAR_TOOLS_ICONS = {
   rotateCcw: [
     { tag: 'path', attr: { d: 'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' } },

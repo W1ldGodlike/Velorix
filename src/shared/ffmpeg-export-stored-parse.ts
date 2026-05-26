@@ -62,7 +62,7 @@ export function parseFfmpegExportFps(raw: unknown): number | null {
   return n
 }
 
-/** §7.2 / v0 — двухпроходное libx264; только явный `true`. */
+/** §7.2 — двухпроходное libx264; только явный `true`. */
 export function parseFfmpegExportTwoPass(raw: unknown): boolean {
   return raw === true
 }

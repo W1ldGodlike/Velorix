@@ -1,0 +1,76 @@
+/**
+ * VELORIX NEON — gradient system (surfaces, accents, atmosphere).
+ */
+
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-gradient-bg-vertical: linear-gradient(
+    180deg,
+    var(--vn-color-void) 0%,
+    var(--vn-color-midnight) 42%,
+    var(--vn-color-navy-deep) 100%
+  );
+
+  --vn-gradient-bg-radial-tl: radial-gradient(
+    ellipse 120% 80% at 0% 0%,
+    var(--vn-alpha-violet-22) 0%,
+    transparent 58%
+  );
+
+  --vn-gradient-bg-radial-br: radial-gradient(
+    ellipse 90% 70% at 100% 100%,
+    var(--vn-alpha-magenta-18) 0%,
+    transparent 52%
+  );
+
+  --vn-gradient-bg-radial-cyan: radial-gradient(
+    ellipse 55% 45% at 82% 12%,
+    var(--vn-alpha-cyan-16) 0%,
+    transparent 68%
+  );
+
+  --vn-gradient-surface: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--vn-color-midnight) 88%, var(--vn-color-purple-panel) 12%) 0%,
+    color-mix(in srgb, var(--vn-color-navy-mid) 72%, var(--vn-color-void) 28%) 100%
+  );
+
+  --vn-gradient-surface-elevated: linear-gradient(
+    160deg,
+    color-mix(in srgb, #161633 92%, var(--vn-color-violet-deep) 8%) 0%,
+    color-mix(in srgb, #12122a 90%, var(--vn-color-abyss) 10%) 100%
+  );
+
+  --vn-gradient-accent-primary: linear-gradient(
+    90deg,
+    var(--vn-color-violet-deep) 0%,
+    var(--vn-color-violet-bright) 38%,
+    var(--vn-color-magenta-hot) 100%
+  );
+
+  --vn-gradient-accent-vertical: linear-gradient(
+    180deg,
+    var(--vn-color-violet-rich) 0%,
+    var(--vn-color-magenta-neon) 100%
+  );
+
+  --vn-gradient-progress: linear-gradient(
+    90deg,
+    var(--vn-color-cyan-soft) 0%,
+    var(--vn-color-violet-bright) 48%,
+    var(--vn-color-magenta-hot) 100%
+  );
+
+  --vn-gradient-border-illuminated: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--vn-color-cyan-soft) 55%, transparent) 0%,
+    var(--vn-color-violet-bright) 42%,
+    var(--vn-color-magenta-hot) 100%
+  );
+
+  --vn-gradient-glass-highlight: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0) 38%
+  );
+}

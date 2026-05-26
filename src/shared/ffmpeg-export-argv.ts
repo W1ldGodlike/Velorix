@@ -95,7 +95,7 @@ export interface FfmpegExportPreviewInput {
   probeDurationSec?: number | null
   /** Принудительно отключить `-ss/-t` в превью. По умолчанию решение берётся из `shouldApplyFfmpegExportTrim`. */
   applyTrim?: boolean
-  /** §7.2 / v0 — показать пару команд при включённом двухпроходе и режиме битрейта. */
+  /** §7.2 — показать пару команд при включённом двухпроходе и режиме битрейта. */
   twoPass?: boolean
   /** §7.3 — `-threads 1` в превью argv. */
   economyMode?: boolean

@@ -15,7 +15,7 @@ export default function VideoTimeline(props: VideoTimelineProps): React.JSX.Elem
         {uiText('videoTimelineStackHint')}
       </p>
       <div
-        className="app-timeline-stack"
+        className="app-timeline-stack app-neon-timeline-stack"
         role="region"
         aria-label={uiText('videoTimelineStackAria')}
         aria-describedby="editor-video-timeline-hint"

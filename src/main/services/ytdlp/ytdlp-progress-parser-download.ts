@@ -6,7 +6,7 @@ export interface YtdlpDownloadProgressParts {
   percent: string | null
   speed: string | null
   eta: string | null
-  /** Размер целевого файла из фрагмента «NN% of 12.34MiB», если распознан. §6/v0 таблица. */
+  /** Размер целевого файла из фрагмента «NN% of 12.34MiB», если распознан. §6 таблица. */
   sizeTotal?: string | null
 }
 

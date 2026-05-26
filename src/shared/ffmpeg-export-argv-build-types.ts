@@ -51,7 +51,7 @@ export interface FfmpegExportArgvParams {
   /** После transform и до scale/fps; по умолчанию без crop. */
   cropPreset?: FfmpegExportCropPresetId
   /**
-   * Двухпроход libx264 §7.2 / v0 — только при ненулевом `videoBitrate` (без CRF).
+   * Двухпроход libx264 §7.2 — только при ненулевом `videoBitrate` (без CRF).
    * Проход 1: `-an`, вывод в `nullDevice`; проход 2: обычный звук и `outputPath`.
    */
   twoPass?: { pass: 1 | 2; passlogfile: string; nullDevice: string }

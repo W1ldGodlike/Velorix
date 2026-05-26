@@ -1,0 +1,62 @@
+/**
+ * VELORIX NEON — maps §5 semantic --fa-* tokens (dark theme).
+ * Components keep existing var(--fa-*) usage; palette switches here only.
+ */
+
+html[data-theme='dark'],
+html:not([data-theme]) {
+  /* Surfaces (hex literals — §5 contrast guard + primitives --vn-color-*) */
+  --fa-bg: #05050a;
+  --fa-surface: #0a0a15;
+  --fa-surface-elevated: #12122a;
+  --fa-bg-elevated: var(--fa-surface-elevated);
+
+  /* Borders */
+  --fa-border: #3d2f6b;
+  --fa-border-subtle: #1e1a35;
+
+  /* Text */
+  --fa-text-primary: #f4f0ff;
+  --fa-text-secondary: #b8b0d4;
+  --fa-text-muted: #7a7298;
+
+  /* Accent — rich violet (WCAG AA with white contrast text) */
+  --fa-accent: #8a2be2;
+  --fa-accent-contrast: #ffffff;
+
+  /* Functional */
+  --fa-danger: #ff4d6d;
+  --fa-success: #34f5a0;
+  --fa-warning: #ffb347;
+
+  /* Interaction */
+  --fa-hover: color-mix(in srgb, var(--fa-accent) 18%, var(--fa-surface-elevated) 82%);
+  --fa-focus: rgba(224, 64, 251, 0.52);
+  --fa-focus-ring: var(--fa-focus);
+  --fa-disabled: #6b6585;
+
+  /* Overlay / elevation */
+  --fa-scrim: #020208;
+  --fa-overlay-strong: var(--vn-alpha-scrim-65);
+  --fa-modal-backdrop: color-mix(in srgb, var(--fa-bg) 48%, var(--fa-overlay-strong));
+  --fa-elevation-lg: var(--vn-shadow-elevation-4);
+
+  /* Preview */
+  --fa-preview-video-bg: #000000;
+  --fa-preview-card-bg: color-mix(in srgb, var(--fa-surface) 88%, var(--vn-color-navy-deep) 12%);
+
+  /* NEON extended semantic aliases (opt-in for surfaces / chrome) */
+  --fa-neon-bg-atmosphere: var(--vn-gradient-bg-vertical);
+  --fa-neon-bg-ambient: var(--vn-gradient-bg-radial-tl), var(--vn-gradient-bg-radial-br),
+    var(--vn-gradient-bg-radial-cyan);
+  --fa-neon-surface-gradient: var(--vn-gradient-surface);
+  --fa-neon-surface-elevated-gradient: var(--vn-gradient-surface-elevated);
+  --fa-neon-accent-gradient: var(--vn-gradient-accent-primary);
+  --fa-neon-progress-gradient: var(--vn-gradient-progress);
+  --fa-neon-glow-accent: var(--vn-glow-accent-medium);
+  --fa-neon-glow-focus: var(--vn-glow-focus-ring);
+  --fa-neon-shadow-panel: var(--vn-shadow-panel-lift);
+  --fa-neon-glass-panel: var(--vn-glass-surface);
+  --fa-neon-border-illuminated: var(--vn-border-illuminated-image);
+  --fa-neon-transition: var(--vn-transition-colors);
+}

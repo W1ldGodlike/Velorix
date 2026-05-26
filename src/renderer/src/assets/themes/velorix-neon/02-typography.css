@@ -1,0 +1,48 @@
+/**
+ * VELORIX NEON — typography scale (aliases §5 --fa-font-*; dark only).
+ */
+
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-font-sans:
+    Inter,
+    'Segoe UI Variable',
+    Segoe UI,
+    -apple-system,
+    BlinkMacSystemFont,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    sans-serif;
+  --vn-font-display:
+    Inter,
+    'Segoe UI Variable',
+    Segoe UI,
+    system-ui,
+    sans-serif;
+  --vn-font-mono: var(--fa-font-mono);
+
+  --vn-font-weight-regular: 400;
+  --vn-font-weight-medium: 500;
+  --vn-font-weight-semibold: 600;
+  --vn-font-weight-bold: 700;
+
+  --vn-letter-tight: -0.02em;
+  --vn-letter-normal: 0;
+  --vn-letter-wide: 0.04em;
+  --vn-letter-display: 0.06em;
+
+  /* Scale mirrors --fa-font-size-* for neon-specific composition */
+  --vn-font-size-caption: var(--fa-font-size-caption);
+  --vn-font-size-ui: var(--fa-font-size-ui);
+  --vn-font-size-body: var(--fa-font-size-body);
+  --vn-font-size-subtitle: var(--fa-font-size-subtitle);
+  --vn-font-size-lead: var(--fa-font-size-lead);
+  --vn-font-size-display: var(--fa-font-size-display);
+  --vn-font-size-hero: var(--fa-font-size-xl);
+
+  --vn-line-height-ui: var(--fa-line-height-ui);
+  --vn-line-height-body: var(--fa-line-height-body);
+  --vn-line-height-display: var(--fa-line-height-display);
+}

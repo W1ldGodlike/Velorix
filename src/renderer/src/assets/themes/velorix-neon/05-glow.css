@@ -1,0 +1,28 @@
+/**
+ * VELORIX NEON — glow / bloom system.
+ */
+
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-glow-accent-soft: 0 0 12px var(--vn-alpha-violet-38);
+  --vn-glow-accent-medium: 0 0 20px var(--vn-alpha-magenta-32), 0 0 40px var(--vn-alpha-violet-22);
+  --vn-glow-accent-strong:
+    0 0 8px var(--vn-alpha-magenta-48), 0 0 24px var(--vn-alpha-magenta-32),
+    0 0 48px var(--vn-alpha-violet-22);
+
+  --vn-glow-cyan-soft: 0 0 14px var(--vn-alpha-cyan-28);
+  --vn-glow-cyan-medium: 0 0 10px var(--vn-alpha-cyan-28), 0 0 22px var(--vn-alpha-cyan-16);
+
+  --vn-glow-inner-panel: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 0 24px var(--vn-alpha-violet-12);
+
+  --vn-glow-inner-input: inset 0 1px 2px rgba(0, 0, 0, 0.45), inset 0 0 12px var(--vn-alpha-violet-12);
+
+  --vn-glow-focus-ring: 0 0 0 2px var(--vn-color-midnight), 0 0 0 4px var(--vn-alpha-magenta-48),
+    0 0 18px var(--vn-alpha-magenta-32);
+
+  --vn-glow-playhead: 0 0 6px var(--vn-color-magenta-neon), 0 0 18px var(--vn-alpha-magenta-48);
+
+  --vn-glow-success: 0 0 10px rgba(52, 245, 160, 0.45);
+
+  --vn-text-glow-accent: 0 0 12px var(--vn-alpha-magenta-32);
+}

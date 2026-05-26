@@ -53,7 +53,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
   const previewMediaKey = preview ? `${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}` : ''
   return (
     <section
-      className="app-preview"
+      className="app-preview app-neon-preview"
       aria-label={uiText('editorPreviewDropzoneAria')}
       aria-describedby={preview ? undefined : 'editor-preview-empty-hint'}
       aria-busy={editorPreviewRegionBusy}
@@ -70,7 +70,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
       {preview ? (
         <>
           <div
-            className="app-preview-stack"
+            className="app-preview-stack app-neon-preview-stack"
             ref={previewStackRef}
             role="region"
             aria-label={uiText('editorPreviewStackAria')}
@@ -78,7 +78,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
             aria-busy={editorPreviewRegionBusy}
           >
             <div
-              className="app-preview-media-card"
+              className="app-preview-media-card app-neon-preview-stage"
               role="group"
               aria-label={uiText('editorPreviewMediaCardGroupAria')}
               aria-describedby="editor-preview-transport-hint editor-video-timeline-hint"
@@ -139,7 +139,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
         </>
       ) : (
         <div
-          className="app-preview-placeholder"
+          className="app-preview-placeholder app-neon-preview-placeholder"
           role="region"
           aria-label={uiText('editorPreviewPlaceholderAria')}
           aria-describedby="editor-preview-empty-hint"

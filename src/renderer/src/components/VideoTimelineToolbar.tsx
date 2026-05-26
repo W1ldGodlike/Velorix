@@ -57,7 +57,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps): JSX.Elem
   } = props
   return (
     <div
-      className="app-timeline-toolbar"
+      className="app-timeline-toolbar app-neon-timeline-toolbar"
       role="toolbar"
       aria-orientation="horizontal"
       aria-label={uiText('videoTimelineToolbarAria')}

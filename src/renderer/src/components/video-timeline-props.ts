@@ -11,10 +11,10 @@ export interface TrimMarks {
 export interface VideoTimelineProps {
   /** Совпадает с `key` у `<video>`, чтобы переподписаться при смене источника. */
   mediaKey: string
-  /** `velorixmedia://…` для побочной декодирования waveform без Node API в renderer (§1.1 v0). */
+  /** `velorixmedia://…` для побочной декодирования waveform без Node API в renderer (§1.1). */
   mediaUrl: string
   videoRef: RefObject<HTMLVideoElement | null>
-  /** Сводка ffprobe для строки «Видео / Аудио / Позиция» (`docs/UX_REFERENCE_V0.md`). */
+  /** Сводка ffprobe для строки «Видео / Аудио / Позиция» (§1.1). */
   probe?: MediaProbeSuccess | null
   /** Снимок актуальных маркеров для экспорта §7.1 (родитель держит только ref на последнее значение). */
   onTrimRangeChange?: (range: { inSec: number; outSec: number }) => void

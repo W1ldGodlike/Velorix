@@ -1,0 +1,17 @@
+/**
+ * VELORIX NEON — premium cinematic theme foundation (dark palette).
+ * Import once from base.css; light theme unchanged.
+ */
+
+@import './01-primitives.css';
+@import './02-typography.css';
+@import './03-spacing.css';
+@import './04-gradients.css';
+@import './05-glow.css';
+@import './06-shadows.css';
+@import './07-glass.css';
+@import './08-borders.css';
+@import './09-motion.css';
+@import './10-semantic-bridge.css';
+@import './11-atmosphere.css';
+@import './12-utilities.css';

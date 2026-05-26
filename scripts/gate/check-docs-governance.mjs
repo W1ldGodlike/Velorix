@@ -11,7 +11,12 @@ const JOURNAL_PATH = 'IMPLEMENTATION_JOURNAL.md'
 const MAX_ALWAYS_APPLY_LINES = 120
 
 /** Глоссарий удалённых артефактов — не считать «навигацией» */
-const FORBIDDEN_TEXT_EXEMPT = new Set(['.cursor/rules/velorix-rules-explicit.mdc'])
+const FORBIDDEN_TEXT_EXEMPT = new Set([
+  '.cursor/rules/velorix-rules-explicit.mdc',
+  'docs/UX_REFERENCE_V0.OLD.md',
+  'docs/reference/README.md',
+  'docs/VELORIX_NEON_THEME.md'
+])
 
 /** @type {string[]} */
 const SCAN_ROOTS = ['docs', 'AGENTS.md', 'README.md', '.cursor/rules', '.cursor/skills']
@@ -41,6 +46,14 @@ const FORBIDDEN_TEXT = [
   {
     pattern: /Playwright GUI deferred/i,
     label: 'stale §21 «Playwright GUI deferred» (use wired wording)'
+  },
+  {
+    pattern: /docs\/UX_REFERENCE_V0\.md(?!\.OLD)/,
+    label: 'v0 UX doc removed — use docs/VELORIX_NEON_THEME.md + docs/reference/'
+  },
+  {
+    pattern: /v0-VELORIX-desktop-app\.vercel\.app/,
+    label: 'v0.vercel.app deprecated — use docs/reference/ + VELORIX_NEON_THEME.md'
   }
 ]
 
@@ -56,6 +69,7 @@ const FORBIDDEN_LINK_TARGETS = [
   'docs/AGENT_SESSION_HANDOFF.md',
   'docs/UI_CONSOLIDATION_AND_COPY_PROGRAM.md',
   'docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md',
+  'docs/UX_REFERENCE_V0.md',
   'docs/ZUSTAND_MIGRATION_CHECKLIST_DONE.md',
   'scripts/archive/',
   'src/main/downloads-window-html.ts',

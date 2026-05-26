@@ -1,0 +1,61 @@
+/**
+ * VELORIX NEON — primitive palette (dark theme only).
+ * Canonical visual target: cinematic neon desktop; never flat monochrome.
+ */
+
+html[data-theme='dark'],
+html:not([data-theme]) {
+  /* Ultra dark navy → deep midnight */
+  --vn-color-void: #05050a;
+  --vn-color-midnight: #0a0a15;
+  --vn-color-abyss: #07070f;
+  --vn-color-navy-deep: #0b1024;
+  --vn-color-navy-mid: #101833;
+
+  /* Violet / purple stack */
+  --vn-color-violet-rich: #8a2be2;
+  --vn-color-violet-bright: #a855f7;
+  --vn-color-violet-deep: #6d28d9;
+  --vn-color-purple-dark: #2e1065;
+  --vn-color-purple-panel: #1e0a3c;
+  --vn-color-purple-mist: #3b2667;
+
+  /* Magenta neon */
+  --vn-color-magenta-neon: #ff00ff;
+  --vn-color-magenta-hot: #e040fb;
+  --vn-color-magenta-soft: #d946ef;
+  --vn-color-pink-bloom: #ff6ad5;
+
+  /* Electric accents */
+  --vn-color-cyan-electric: #00ffff;
+  --vn-color-cyan-soft: #5cefff;
+  --vn-color-blue-glow: #3b82f6;
+
+  /* Text on dark */
+  --vn-color-text-bright: #f4f0ff;
+  --vn-color-text-primary: #ebe6ff;
+  --vn-color-text-secondary: #b8b0d4;
+  --vn-color-text-muted: #7a7298;
+  --vn-color-text-dim: #5c5678;
+
+  /* Functional */
+  --vn-color-success-matrix: #34f5a0;
+  --vn-color-success-deep: #00e676;
+  --vn-color-danger-neon: #ff4d6d;
+  --vn-color-warning-amber: #ffb347;
+  --vn-color-disabled: #6b6585;
+
+  /* Alpha stacks (glow / glass / borders) */
+  --vn-alpha-violet-12: rgba(138, 43, 226, 0.12);
+  --vn-alpha-violet-22: rgba(138, 43, 226, 0.22);
+  --vn-alpha-violet-38: rgba(138, 43, 226, 0.38);
+  --vn-alpha-magenta-18: rgba(255, 0, 255, 0.18);
+  --vn-alpha-magenta-32: rgba(255, 0, 255, 0.32);
+  --vn-alpha-magenta-48: rgba(255, 0, 255, 0.48);
+  --vn-alpha-cyan-16: rgba(0, 255, 255, 0.16);
+  --vn-alpha-cyan-28: rgba(92, 239, 255, 0.28);
+  --vn-alpha-scrim-65: rgba(5, 5, 10, 0.65);
+  --vn-alpha-scrim-82: rgba(5, 5, 10, 0.82);
+  --vn-alpha-glass-fill: rgba(18, 18, 42, 0.72);
+  --vn-alpha-glass-edge: rgba(168, 85, 247, 0.35);
+}

@@ -1,0 +1,19 @@
+/**
+ * VELORIX NEON — border styles (illuminated edges, subtle separators).
+ */
+
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-border-width-hairline: 1px;
+  --vn-border-width-accent: 1px;
+
+  --vn-border-subtle: 1px solid color-mix(in srgb, var(--vn-color-purple-mist) 42%, transparent);
+  --vn-border-default: 1px solid color-mix(in srgb, var(--vn-color-violet-deep) 55%, var(--vn-color-abyss) 45%);
+  --vn-border-illuminated: 1px solid transparent;
+  --vn-border-illuminated-image: var(--vn-gradient-border-illuminated);
+  --vn-border-glow-pad: 1px;
+
+  --vn-radius-control: var(--fa-radius-control);
+  --vn-radius-panel: var(--fa-radius-panel);
+  --vn-radius-pill: var(--fa-radius-pill);
+}

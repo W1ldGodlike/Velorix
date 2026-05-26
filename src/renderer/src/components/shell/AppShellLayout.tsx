@@ -14,6 +14,7 @@ import type { AppWorkspaceMainProps } from './AppWorkspaceMain'
 import { AppOverlayDialogs } from './AppOverlayDialogs'
 import { AppStatusbar } from './AppStatusbar'
 import { AppWorkspaceMain } from './AppWorkspaceMain'
+import { AppWorkspaceSidebar } from './AppWorkspaceSidebar'
 import { AppWorkspaceTopbar } from './AppWorkspaceTopbar'
 import { ExportPresetNameDialog } from './ExportPresetNameDialog'
 
@@ -41,8 +42,18 @@ export function AppShellLayout({
       aria-busy={appChromeBusy}
     >
       <AppWorkspaceTopbar {...topbar} />
-      <AppWorkspaceMain {...workspaceMain} />
-      <AppStatusbar {...statusbar} />
+      <div className="app-shell-row">
+        <AppWorkspaceSidebar
+          appChromeBusy={topbar.appChromeBusy}
+          workspaceTab={topbar.workspaceTab}
+          setWorkspaceTab={topbar.setWorkspaceTab}
+          engineVersionsLine={statusbar.engineVersionsLine}
+        />
+        <div className="app-shell-stage">
+          <AppWorkspaceMain {...workspaceMain} />
+          <AppStatusbar {...statusbar} />
+        </div>
+      </div>
       <AppOverlayDialogs {...overlay} />
       <ExportPresetNameDialog {...exportPreset} />
       {appSettings.open ? (

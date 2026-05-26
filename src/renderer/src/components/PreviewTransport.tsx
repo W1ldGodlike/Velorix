@@ -13,7 +13,7 @@ import {
   IconVolumeX
 } from './LucideMiniIcons'
 
-/** Шаг «шеврона» v0-транспорта: не копируем пиксель-в-пиксель, но сохраняем ощущение NLE-компона. */
+/** Шаг «шеврона» транспорта: NLE-компоновка §1.1. */
 const STEP_SEC = 5
 
 interface PreviewTransportProps {
@@ -134,7 +134,7 @@ export default function PreviewTransport({
         {uiText('previewTransportHint')}
       </p>
       <div
-        className="app-preview-transport"
+        className="app-preview-transport app-neon-preview-transport"
         role="toolbar"
         aria-orientation="horizontal"
         aria-label={uiText('previewTransportToolbarAria')}
@@ -142,7 +142,7 @@ export default function PreviewTransport({
         aria-busy={disabled}
       >
         <div
-          className="app-preview-transport-cluster"
+          className="app-preview-transport-cluster app-neon-preview-transport-playback"
           role="group"
           aria-label={uiText('previewTransportPlaybackClusterAria')}
           aria-describedby="editor-preview-transport-hint"
@@ -234,10 +234,10 @@ export default function PreviewTransport({
               {muted ? uiText('previewTransportUnmuteTitle') : miniIconTitle('miniIconVolumeX')}
             </span>
           </button>
-          <label className="app-preview-transport-volume">
+          <label className="app-preview-transport-volume app-neon-preview-transport-volume">
             <span className="app-visually-hidden">{miniIconTitle('miniIconVolume2')}</span>
             <input
-              className="app-preview-transport-volume-range"
+              className="app-preview-transport-volume-range app-neon-preview-transport-volume-range"
               type="range"
               min={0}
               max={1}

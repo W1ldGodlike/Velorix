@@ -18,4 +18,4 @@ alwaysApply: false
 
 - Вызовы только через preload (`window.velorix…`).
 - **Если** в файле уже есть вызов preload с проверкой `result.ok` / `result.error` **то** каждый **новый** вызов в том же файле — тот же паттерн. **Если** в файле паттерна ещё нет **то** скопировать с ближайшего файла той же зоны (`App.tsx`, `downloads-window`, …).
-- UI-строки: `ui-text.ts` и CSS-токены проекта. **Если** sprint TODO или сообщение пользователя содержит `UX`, `layout`, `v0`, `доступность`, `aria` **то** сверяться с [`docs/UX_REFERENCE_V0.md`](../../docs/UX_REFERENCE_V0.md).
+- UI-строки: `ui-text.ts` и CSS-токены проекта. **Если** sprint TODO или сообщение пользователя содержит `UX`, `layout`, `NEON`, `тема`, `доступность`, `aria` **то** сверяться с [`docs/VELORIX_NEON_THEME.md`](../../docs/VELORIX_NEON_THEME.md) и эталон в `docs/reference/`.

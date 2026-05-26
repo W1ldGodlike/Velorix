@@ -1,4 +1,9 @@
 @import './base.css';
+@import './themes/velorix-neon-chrome.css';
+@import './themes/velorix-neon-preview.css';
+@import './themes/velorix-neon-timeline.css';
+@import './themes/velorix-neon-inspector.css';
+@import './themes/velorix-neon-polish.css';
 
 /* Layout главного окна: сверху команды, в центре рабочая область, снизу компактный статус. */
 #root {
@@ -21,7 +26,7 @@
   grid-template-columns: minmax(13rem, auto) 1fr auto;
   align-items: center;
   gap: var(--fa-space-2h);
-  /* v0-референс: «высота topbar около 70px» — целевой коридор без раздувания actions. */
+  /* §1.1 topbar: высота около 70px — целевой коридор без раздувания actions. */
   min-height: 62px;
   padding: var(--fa-space-2) var(--fa-space-3);
   background: color-mix(in srgb, var(--fa-bg) 86%, var(--fa-surface) 14%);
@@ -426,7 +431,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Компактные icon-first кнопки (ориентир v0 / lucide 24×24). */
+/* Компактные icon-first кнопки (§1.1 / lucide 24×24). */
 .app-icon-btn {
   display: inline-flex;
   align-items: center;
@@ -806,7 +811,7 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* §1.1/v0 — основная вкладка «Загрузки» внутри единого workspace; pop-out остаётся вторичным. */
+/* §1.1 — основная вкладка «Загрузки» внутри единого workspace; pop-out остаётся вторичным. */
 .app-downloads-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
@@ -834,7 +839,7 @@
   flex-direction: column;
 }
 
-/** Центральная колонка v0: очередь с прокруткой, история/журнал под ней (без растягивания строк таблицы). */
+/** Центральная колонка загрузок: очередь с прокруткой, история/журнал под ней (без растягивания строк таблицы). */
 .app-downloads-table-zone {
   flex: 1;
   min-height: 0;
@@ -1393,7 +1398,7 @@ button.app-downloads-hint-token:disabled {
   flex-wrap: wrap;
 }
 
-/* v0: иконки очереди — одна строка; общий flex-wrap: wrap раздувал высоту строки. */
+/* §6: иконки очереди — одна строка; общий flex-wrap: wrap раздувал высоту строки. */
 .app-downloads-row-actions {
   display: flex;
   flex-direction: row;
@@ -1593,7 +1598,7 @@ button.app-downloads-hint-token:disabled {
   gap: var(--fa-space-gap-xs);
 }
 
-/* v0: одна строка — дорожка тянется, проценты справа табличными цифрами. */
+/* §6: одна строка — дорожка тянется, проценты справа табличными цифрами. */
 .app-downloads-progress-bar-row {
   display: flex;
   min-width: 0;
@@ -1676,7 +1681,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 @media (max-width: 1100px) {
-  /* §6/v0: очередь + история/журнал сверху, настройки снизу в <details> (как история); прокрутка всей вкладки. */
+  /* §6: очередь + история/журнал сверху, настройки снизу в <details> (как история); прокрутка всей вкладки. */
   .app-downloads-workspace {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto;
@@ -2367,7 +2372,7 @@ button.app-downloads-hint-token:disabled {
   overflow-x: hidden;
 }
 
-/* Единая «карточка» превью: кадр + транспорт (§1.1 / v0). */
+/* Единая «карточка» превью: кадр + транспорт (§1.1). */
 .app-preview-media-card {
   flex: 1;
   /* Не даём карточке сжаться ниже полосы видео + транспорта при узком окне (overflow:hidden). */
@@ -2397,7 +2402,7 @@ button.app-downloads-hint-token:disabled {
   background: color-mix(in srgb, var(--fa-surface) 94%, var(--fa-scrim) 6%);
 }
 
-/* §1.1 / v0: транспорт под превью — единая панель управления без дублирующих нативных controls у `<video>`. */
+/* §1.1: транспорт под превью — единая панель управления без дублирующих нативных controls у `<video>`. */
 .app-preview-transport {
   flex-shrink: 0;
   display: flex;
@@ -4536,7 +4541,7 @@ button.app-downloads-hint-token:disabled {
     font-size: var(--fa-font-size-2xs);
   }
 
-  /* Вкладка «Загрузки» (React workspace): плотность как у v0 под 125 % Windows — без смены глобального rem. */
+  /* Вкладка «Загрузки» (React workspace): плотность компактно под 125 % Windows — без смены глобального rem. */
   .app-downloads-band {
     padding: var(--fa-space-pad-band-y) var(--fa-space-pad-band-x);
   }

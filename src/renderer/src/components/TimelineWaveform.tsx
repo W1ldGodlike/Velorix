@@ -19,7 +19,7 @@ interface TimelineWaveformProps {
   windowLenSec: number
 }
 
-/** Микширование каналов до моно средним — стабильная огибающая без псевдослучайных высот маркерами v0. */
+/** Микширование каналов до моно средним — стабильная огибающая без псевдослучайных высот. */
 function mergeChannelsToMono(decoded: AudioBuffer): Float32Array {
   const len = decoded.length
   const chCount = decoded.numberOfChannels

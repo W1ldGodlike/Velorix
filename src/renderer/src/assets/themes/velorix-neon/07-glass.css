@@ -1,0 +1,33 @@
+/**
+ * VELORIX NEON — glass / layered translucent surfaces.
+ */
+
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-glass-blur-sm: 6px;
+  --vn-glass-blur-md: 12px;
+  --vn-glass-blur-lg: 18px;
+
+  --vn-glass-opacity-panel: 0.78;
+  --vn-glass-opacity-rail: 0.82;
+  --vn-glass-opacity-popover: 0.88;
+
+  --vn-glass-fill: var(--vn-alpha-glass-fill);
+  --vn-glass-border: 1px solid var(--vn-alpha-glass-edge);
+  --vn-glass-highlight: var(--vn-gradient-glass-highlight);
+
+  --vn-glass-surface: color-mix(
+    in srgb,
+    var(--vn-alpha-glass-fill) calc(var(--vn-glass-opacity-panel) * 100%),
+    var(--vn-color-midnight)
+  );
+
+  --vn-glass-surface-elevated: color-mix(
+    in srgb,
+    rgba(22, 22, 51, 0.85) 100%,
+    var(--vn-color-violet-deep) 8%
+  );
+
+  --vn-backdrop-filter-panel: blur(var(--vn-glass-blur-md)) saturate(1.15);
+  --vn-backdrop-filter-popover: blur(var(--vn-glass-blur-lg)) saturate(1.2);
+}

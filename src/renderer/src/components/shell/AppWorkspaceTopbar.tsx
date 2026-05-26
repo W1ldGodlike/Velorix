@@ -6,16 +6,13 @@ import {
   IconBook,
   IconCircleHelp,
   IconCloudDownload,
-  IconDownload,
   IconFilm,
   IconFolder,
   IconFolderOpen,
   IconImage,
   IconMoon,
   IconSettings,
-  IconSun,
-  IconWorkspaceEditor,
-  IconWorkspaceTerminal
+  IconSun
 } from '../LucideMiniIcons'
 import type { WorkspaceTab } from '../../app-terminal-hint-ui'
 import type { EngineSummary } from '../../app-engines-ui'
@@ -49,7 +46,6 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
   const {
     appChromeBusy,
     workspaceTab,
-    setWorkspaceTab,
     engineDownloadBusy,
     engineSummary,
     previewPath,
@@ -78,7 +74,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
 
   return (
     <header
-      className="app-topbar"
+      className="app-topbar app-neon-topbar"
       aria-label={uiText('topbarHeaderAria')}
       aria-describedby={workspaceTabDescId}
       aria-busy={appChromeBusy}
@@ -94,78 +90,6 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
         </span>
         <span className="app-topbar-title">{uiText('topbarProductName')}</span>
       </div>
-      <nav
-        className="app-workspace-tabs"
-        aria-label={uiText('workspaceTabsAria')}
-        aria-describedby={workspaceTabDescId}
-        role="tablist"
-        aria-orientation="horizontal"
-        aria-busy={appChromeBusy}
-      >
-        <button
-          type="button"
-          id="workspace-tab-editor"
-          className={`app-workspace-tab${workspaceTab === 'editor' ? ' app-workspace-tab-active' : ''}`}
-          role="tab"
-          aria-selected={workspaceTab === 'editor'}
-          aria-controls="workspace-panel-editor"
-          aria-describedby="workspace-tab-editor-desc"
-          title={uiText('workspaceTabEditorTooltip')}
-          onClick={() => {
-            setWorkspaceTab('editor')
-          }}
-        >
-          <span aria-hidden className="app-workspace-tab-glyph">
-            <IconWorkspaceEditor title="" size={16} />
-          </span>
-          {uiText('workspaceTabEditor')}
-          <span id="workspace-tab-editor-desc" className="app-visually-hidden">
-            {uiText('editorWorkbenchAria')}
-          </span>
-        </button>
-        <button
-          type="button"
-          id="workspace-tab-downloads"
-          className={`app-workspace-tab${workspaceTab === 'downloads' ? ' app-workspace-tab-active' : ''}`}
-          role="tab"
-          aria-selected={workspaceTab === 'downloads'}
-          aria-controls="workspace-panel-downloads"
-          aria-describedby="workspace-tab-downloads-desc"
-          onClick={() => {
-            setWorkspaceTab('downloads')
-          }}
-          title={uiText('workspaceTabDownloadsTooltip')}
-        >
-          <span aria-hidden className="app-workspace-tab-glyph">
-            <IconDownload title="" size={16} />
-          </span>
-          {uiText('workspaceTabDownloads')}
-          <span id="workspace-tab-downloads-desc" className="app-visually-hidden">
-            {uiText('downloadsWorkbenchAria')}
-          </span>
-        </button>
-        <button
-          type="button"
-          id="workspace-tab-terminal"
-          className={`app-workspace-tab${workspaceTab === 'terminal' ? ' app-workspace-tab-active' : ''}`}
-          role="tab"
-          aria-selected={workspaceTab === 'terminal'}
-          aria-controls="workspace-panel-terminal"
-          aria-describedby="workspace-tab-terminal-desc"
-          onClick={() => {
-            setWorkspaceTab('terminal')
-          }}
-          title={uiText('workspaceTabTerminalTooltip')}
-        >
-          <span aria-hidden className="app-workspace-tab-glyph">
-            <IconWorkspaceTerminal title="" size={16} />
-          </span>
-          {uiText('workspaceTabTerminal')}
-          <span id="workspace-tab-terminal-desc" className="app-visually-hidden">
-            {uiText('terminalWorkbenchAria')}
-          </span>
-        </button>
-      </nav>
       <div
         className="app-topbar-trailing"
         role="group"

@@ -115,7 +115,7 @@ export function createFfmpegExportSettingsPersistersCore(
     return commit(access, next)
   }
 
-  /** §7.2 / v0 — двухпроходное libx264 (требует сохранённого video bitrate при экспорте). */
+  /** §7.2 — двухпроходное libx264 (требует сохранённого video bitrate при экспорте). */
   function persistFfmpegExportTwoPass(raw: unknown): AppSettings {
     const next = { ...access.get() }
     if (parseFfmpegExportTwoPass(raw)) {

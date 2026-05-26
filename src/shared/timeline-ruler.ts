@@ -1,5 +1,5 @@
 /**
- * Равномерные деления для компактной time ruler редактора (§1.1 / `docs/UX_REFERENCE_V0.md`).
+ * Равномерные деления для компактной time ruler редактора (§1.1).
  * Pure helper без React/Electron — удобен для Vitest.
  */
 

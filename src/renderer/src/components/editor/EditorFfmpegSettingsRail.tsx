@@ -44,7 +44,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps): 
   } = props
   return (
     <aside
-      className="app-settings-panel"
+      className="app-settings-panel app-neon-inspector-rail"
       aria-label={uiText('editorFfmpegSettingsAria')}
       aria-describedby="editor-ffmpeg-settings-hint"
       aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}

@@ -1,21 +1,10 @@
 /* Семантические токены §5 VELORIX_TZ.md — один набор имён для тёмной и светлой темы */
 
+@import './themes/velorix-neon/index.css';
+
+/* Тёмная палитра: VELORIX NEON (цвета в themes/velorix-neon/10-semantic-bridge.css). */
 html[data-theme='dark'],
 html:not([data-theme]) {
-  --fa-bg: #020407;
-  --fa-surface: #070a0f;
-  --fa-surface-elevated: #0d1219;
-  --fa-bg-elevated: var(--fa-surface-elevated);
-  --fa-border: #202936;
-  --fa-border-subtle: #151c27;
-  --fa-text-primary: #e8edf5;
-  --fa-text-secondary: #9aa7b7;
-  --fa-text-muted: #5f6b7a;
-  --fa-accent: #2f8cff;
-  --fa-accent-contrast: #031528;
-  --fa-danger: #ef4444;
-  --fa-success: #22c55e;
-  --fa-warning: #e8a838;
   --fa-radius-hairline: 1px;
   --fa-radius-2xs: 2px;
   --fa-radius-xs: 3px;
@@ -110,16 +99,6 @@ html:not([data-theme]) {
   --fa-line-height-loose: 1.42;
   --fa-line-height-ui: 1.45;
   --fa-line-height-display: 1.55;
-  --fa-hover: color-mix(in srgb, var(--fa-accent) 14%, var(--fa-surface-elevated) 86%);
-  --fa-focus: rgba(47, 140, 255, 0.45);
-  --fa-focus-ring: var(--fa-focus);
-  --fa-disabled: #8a939f;
-  --fa-scrim: #000000;
-  --fa-overlay-strong: color-mix(in srgb, var(--fa-scrim) 65%, transparent);
-  --fa-modal-backdrop: color-mix(in srgb, var(--fa-bg) 55%, var(--fa-overlay-strong));
-  --fa-elevation-lg: 0 18px 48px color-mix(in srgb, var(--fa-scrim) 35%, transparent);
-  --fa-preview-video-bg: #000000;
-  --fa-preview-card-bg: var(--fa-bg);
 }
 
 html[data-theme='light'] {
@@ -266,7 +245,7 @@ body {
 
 body {
   color: var(--fa-text-primary);
-  background: var(--fa-bg);
+  background-color: var(--fa-bg);
   line-height: 1.5;
   font-family:
     Inter,

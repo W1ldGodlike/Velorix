@@ -47,11 +47,11 @@ export interface WindowBoundsConfig {
 }
 
 /**
- * §4.1 / v0 — раскрытие collapsible в главном окне (React `details` FFmpeg / быстрый yt-dlp).
+ * §4.1 — раскрытие collapsible в главном окне (React `details` FFmpeg / быстрый yt-dlp).
  * Не заданные ключи при отображении трактуются как дефолты в renderer.
  */
 export interface MainWindowUiPanelState {
-  /** §4.1 / v0 — видимость правой колонки «Настройки FFmpeg»; `false` — только превью (больше места под таймлайн). */
+  /** §4.1 — видимость правой колонки «Настройки FFmpeg»; `false` — только превью (больше места под таймлайн). */
   ffmpegSettingsRailOpen?: boolean
   quickYtdlp?: boolean
   /** §7.3 — панель пакетного экспорта над workbench. */
@@ -63,7 +63,7 @@ export interface MainWindowUiPanelState {
   /** §11 — блок «Сценарий» в правой панели FFmpeg. */
   workflowScenario?: boolean
   ffmpegOutput?: boolean
-  /** §4.1 / v0 — блок превью argv ffmpeg в секции «Вывод». */
+  /** §4.1 — блок превью argv ffmpeg в секции «Вывод». */
   exportCommandPreview?: boolean
   /** §13 — журнал завершённых обработок FFmpeg в правой панели главного окна. */
   processingHistory?: boolean
@@ -77,7 +77,7 @@ export interface MainWindowUiPanelState {
 /** Сколько карточек показывать в панели истории загрузок (вкладка и отдельное окно). */
 export type DownloadsHistoryListMode = 'compact' | 'full'
 
-/** §4.1 / v0 — раскрытие секций окна загрузок (React `#downloads`). */
+/** §4.1 — раскрытие секций окна загрузок (React `#downloads`). */
 export interface DownloadsWindowUiPanelState {
   /** Узкая вкладка «Загрузки»: свёрнутая панель «Настройки yt-dlp» под очередью (как история/журнал). */
   settings?: boolean
@@ -159,7 +159,7 @@ export interface AppSettings {
   ffmpegExportCrf?: number
   /** §7.2: video bitrate одним argv-токеном; если задан — заменяет CRF mode. */
   ffmpegExportVideoBitrate?: string
-  /** §7.2 / v0 — двухпроходное libx264 (только вместе с `ffmpegExportVideoBitrate`, не с CRF). */
+  /** §7.2 — двухпроходное libx264 (только вместе с `ffmpegExportVideoBitrate`, не с CRF). */
   ffmpegExportTwoPass?: boolean
   /** §7.3 — экономный режим: `-threads 1` в argv ffmpeg. */
   ffmpegExportEconomyMode?: boolean

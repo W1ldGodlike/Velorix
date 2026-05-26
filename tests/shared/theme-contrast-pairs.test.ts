@@ -9,9 +9,13 @@ import {
 } from '../../src/shared/theme-contrast-pairs'
 
 const BASE_CSS_PATH = join(process.cwd(), 'src/renderer/src/assets/base.css')
+const NEON_BRIDGE_PATH = join(
+  process.cwd(),
+  'src/renderer/src/assets/themes/velorix-neon/10-semantic-bridge.css'
+)
 
 describe('theme-contrast-pairs §5', () => {
-  const css = readFileSync(BASE_CSS_PATH, 'utf8')
+  const css = `${readFileSync(BASE_CSS_PATH, 'utf8')}\n${readFileSync(NEON_BRIDGE_PATH, 'utf8')}`
 
   it.each(['dark', 'light'] as const)(
     '%s theme semantic token pairs meet WCAG thresholds',

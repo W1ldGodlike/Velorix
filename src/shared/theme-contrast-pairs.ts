@@ -77,8 +77,17 @@ export function readThemeHexTokensFromBaseCss(
   css: string,
   theme: 'dark' | 'light'
 ): Map<string, string> {
-  const re = theme === 'dark' ? THEME_BASE_CSS_DARK_BLOCK : THEME_BASE_CSS_LIGHT_BLOCK
-  const block = css.match(re)?.[1]
+  if (theme === 'dark') {
+    const tokens = new Map<string, string>()
+    for (const match of css.matchAll(HEX_TOKEN_LINE)) {
+      const name = match[1]!
+      if (name.startsWith('--fa-')) {
+        tokens.set(name, match[2]!.toLowerCase())
+      }
+    }
+    return tokens
+  }
+  const block = css.match(THEME_BASE_CSS_LIGHT_BLOCK)?.[1]
   if (!block) {
     throw new Error(`missing ${theme} theme block in base.css`)
   }

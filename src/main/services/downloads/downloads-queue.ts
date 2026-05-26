@@ -20,13 +20,13 @@ export interface DownloadsQueueRow {
   status: string
   /** Best-effort путь фактически созданного файла yt-dlp, если удалось распознать stdout/stderr. */
   outputPath?: string
-  /** §6/v0 — строка формата из `[info] … format(s): …`; best-effort. */
+  /** §6 — строка формата из `[info] … format(s): …`; best-effort. */
   queueFmt?: string
-  /** §6/v0 — размер из «% of 12.34MiB». */
+  /** §6 — размер из «% of 12.34MiB». */
   queueSize?: string
-  /** §6/v0 — скорость или вспомогательная строка фрагмента/плейлиста. */
+  /** §6 — скорость или вспомогательная строка фрагмента/плейлиста. */
   queueSpeed?: string
-  /** §6/v0 — оставшееся время из строки yt-dlp (колонка «Осталось»). */
+  /** §6 — оставшееся время из строки yt-dlp (колонка «Осталось»). */
   queueEta?: string
 }
 

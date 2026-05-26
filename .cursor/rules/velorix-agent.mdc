@@ -18,6 +18,10 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 - **Если** только обсуждение без diff **то** журнал **не** дописывать.
 - **Запрещено:** **микро-J**, **микро-срез** (глоссарий).
 
+## Git author
+
+**Обязательно** в этом репозитории: `git config user.name "W1ldGodlike"`; `git config user.email "W1ld.Godlike@gmail.com"` (без `--global`).
+
 ## Git по номеру J
 
 - **Следующий commit по J:** **J-1610** (`NNN % 5 === 0`). **Следующий push по J:** **J-1610** (`NNN % 10 === 0`).

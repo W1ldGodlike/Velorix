@@ -16,7 +16,7 @@ export const IconDownload = createLucideMiniIcon(DOWNLOADS_TOPBAR_CLUSTER_ICONS.
   titleKey: 'miniIconDownload'
 })
 
-/** §6 / v0 — иконка `clipboard` (stroke как `DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard`). */
+/** §6 — иконка `clipboard` (stroke как `DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard`). */
 export const IconClipboardPaste = createLucideMiniIcon(DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard, {
   titleKey: 'miniIconClipboardPaste',
   defaultSize: 18
