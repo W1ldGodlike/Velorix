@@ -1,8 +1,10 @@
 import { Suspense, type Dispatch, type JSX, type SetStateAction } from 'react'
 
+import type { WorkspaceTab } from '../../app-terminal-hint-ui'
 import { AppLazyPanelFallback, LazyKnowledgeDialog } from '../../app-lazy-panels'
 import { AboutDialog } from '../AboutDialog'
 export type AppOverlayDialogsProps = {
+  workspaceTab: WorkspaceTab
   aboutOpen: boolean
   aboutInfo: Awaited<ReturnType<typeof window.velorix.about.getInfo>> | null
   setAboutOpen: Dispatch<SetStateAction<boolean>>
@@ -15,6 +17,7 @@ export type AppOverlayDialogsProps = {
 }
 
 export function AppOverlayDialogs({
+  workspaceTab,
   aboutOpen,
   aboutInfo,
   setAboutOpen,
@@ -41,7 +44,7 @@ export function AppOverlayDialogs({
         }}
       />
 
-      {knowledgeOpen ? (
+      {knowledgeOpen && workspaceTab !== 'knowledge' ? (
         <Suspense fallback={<AppLazyPanelFallback />}>
           <LazyKnowledgeDialog
             open={knowledgeOpen}

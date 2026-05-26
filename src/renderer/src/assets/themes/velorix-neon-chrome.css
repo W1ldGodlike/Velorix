@@ -153,6 +153,9 @@ html:not([data-theme]) .app-neon-sidebar-nav {
   gap: var(--fa-space-gap-sm);
   flex: 1;
   min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  padding-right: var(--fa-space-gap-2xs);
 }
 
 html[data-theme='dark'] .app-neon-sidebar-nav-item,

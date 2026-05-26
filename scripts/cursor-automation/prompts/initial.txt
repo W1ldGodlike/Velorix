@@ -2,7 +2,9 @@
 
 Крупный блок по `## Ближайший TODO спринта` в `IMPLEMENTATION_CHECKLIST.md`.
 
-Обязательно прочитай `scripts/cursor-automation/prompts/agent-contract.txt` (канон SDK; не перечитывай целиком на каждом «продолжай» без причины).
+Обязательно прочитай `scripts/cursor-automation/prompts/agent-contract.txt` (канон SDK; не перечитывай целиком на каждом «продолжай» / `+` без причины).
+
+«продолжай» и `+` — равнозначные триггеры продолжения.
 
 Журнал: последние 30–50 строк `IMPLEMENTATION_JOURNAL.md` — последний `J-NNN`, без дубля. Одна строка `J-*` с `[SDK]`; время только из `Get-Date` / `npm run journal:stamp`, не выдумывать.
 

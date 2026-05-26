@@ -794,6 +794,50 @@
   gap: var(--fa-space-3);
 }
 
+.app-workspace-route-stage {
+  justify-content: center;
+}
+
+.app-workspace-route-bridge-card {
+  width: min(100%, 52rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-inline);
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: var(--fa-radius-preview);
+  padding: var(--fa-space-4);
+  background: color-mix(in srgb, var(--fa-bg-elevated) 82%, transparent);
+  box-shadow: 0 20px 48px color-mix(in srgb, var(--fa-scrim) 18%, transparent);
+}
+
+.app-workspace-route-bridge-kicker {
+  margin: 0;
+  font-size: var(--fa-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fa-accent);
+}
+
+.app-workspace-route-bridge-title {
+  margin: 0;
+  font-size: var(--fa-font-size-title);
+  font-weight: 700;
+  color: var(--fa-text-primary);
+}
+
+.app-workspace-route-bridge-copy,
+.app-workspace-route-bridge-note {
+  margin: 0;
+  max-width: 44rem;
+  color: var(--fa-text-secondary);
+  line-height: var(--fa-line-height-body);
+}
+
+.app-workspace-route-bridge-note {
+  font-size: var(--fa-font-size-ui-md);
+}
+
 .app-workbench {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
@@ -3307,6 +3351,16 @@ button.app-downloads-hint-token:disabled {
   overflow: hidden;
 }
 
+.app-settings-dialog-embedded {
+  flex: 1;
+  min-height: 0;
+  padding: var(--fa-space-4) var(--fa-space-5) var(--fa-space-4);
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: var(--fa-radius-preview);
+  background: color-mix(in srgb, var(--fa-bg-elevated) 82%, transparent);
+  box-shadow: 0 20px 48px color-mix(in srgb, var(--fa-scrim) 18%, transparent);
+}
+
 .app-settings-dialog-grid {
   display: grid;
   grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
@@ -3900,6 +3954,16 @@ button.app-downloads-hint-token:disabled {
   min-height: 0;
   max-height: min(90vh, 640px);
   overflow: hidden;
+}
+
+.app-knowledge-dialog-embedded {
+  flex: 1;
+  min-height: 0;
+  padding: var(--fa-space-4) var(--fa-space-5) var(--fa-space-4);
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: var(--fa-radius-preview);
+  background: color-mix(in srgb, var(--fa-bg-elevated) 82%, transparent);
+  box-shadow: 0 20px 48px color-mix(in srgb, var(--fa-scrim) 18%, transparent);
 }
 
 .app-knowledge-dialog .app-modal-header-row {

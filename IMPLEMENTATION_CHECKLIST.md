@@ -8,7 +8,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~74%** (J-1354 toolchain; **J-1454** dev Win; §8 terminal **закрыт** J-1572–1574; §21 Playwright wired J-1594–1595). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg + **пакет §7.3**, терминал §8 [x], инспектор §9, workflow §10–11, истории §13, shell §14, Help §15 (`Help/ru` + `Help/en`), HW §16, утилиты §17, диагностика §18, CI/release + guards в `check:quiet`. Впереди: ручная проверка на железе ([`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)), mac/linux артефакты.
+- **Оценка: ~58%**. Функциональное ядро Electron/React/Zustand уже покрывает yt-dlp §6, ffmpeg + batch §7.3, терминал §8, инспектор §9, workflows §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностику §18, CI/release и guards `check:quiet`; но **Variant A / single-NEON shell ещё не доведён**: refs `1–27`, route map, shell-поверхности, удаление legacy theme/pop-out runtime и ручная приёмка владельца остаются крупным открытым пластом.
 
 ## Легенда
 
@@ -35,7 +35,8 @@
 - [x] **snap.14** Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; справка и owner-smoke синхронизируются со sprint-guards.
 - [~] **snap.15** Основная поверхность `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log и историю; legacy `#downloads` ещё жив как переходный маршрут, но **не** является целевым UX Variant A.
 - [~] **snap.16** Инспектор пока split: в редакторе — короткая строка под таймлайном, подробная сводка и таблицы живут в legacy `#inspector`; целевой Variant A — встроенная инспекторная поверхность единого shell по референсу.
-- [x] **snap.17** Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`263 test files / 1885 tests`** (локальная проверка 2026-05-26); `npm run check:quiet` (**35** шагов: lint, typecheck, Vitest, doc/guards, `check:scripts-wiring`, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
+- [x] **snap.17** Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`263 test files / 1885 tests`** (локальная проверка 2026-05-26); `npm run check:quiet` проходит (lint, typecheck, Vitest, doc/guards, `check:scripts-wiring`, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
+- [~] **snap.18** Нижние § этого файла — матрица покрытия ТЗ и исторического прогресса, а **не** автоматический список следующего шага для агента. Для `продолжай` канон: **текущая задача → `## Ближайший TODO спринта` → [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md) § Variant A / workstream'ы**.
 
 ## Журнал решений и проверок
 
@@ -43,9 +44,9 @@
 
 ## Ближайший TODO спринта
 
-Правило: навигатор **осмысленного кода/CI** для агента («продолжай»), не архив. 3–7 пунктов, ≤220 символов. **Запрещено:** Vitest «на guard» без нового `scripts/gate/*.mjs`; пункты ради счётчика тестов. **sprint.7 — в конце**, когда ниже нечего делать агенту. Ручная приёмка на железе — только [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
+Правило: **это главный навигатор для `продолжай`**, а не архив. 3–7 пунктов, ≤220 символов. **Если** нижние `[x]/[~]` конфликтуют с текущим каноном Variant A, для агента выигрывают **этот блок** и [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md). **Запрещено:** Vitest «на guard» без нового `scripts/gate/*.mjs`; пункты ради счётчика тестов. **sprint.7 — в конце**, когда ниже нечего делать агенту. Ручная приёмка на железе — только [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
 
-- [ ] **sprint.1** Global shell / Phase D: единый sidebar-route map для `Обработка`, `Загрузки`, `Терминал`, `История`, `Инспектор`, `Планировщик`, `Сценарии`, `Инструменты`, `Настройки`, `База знаний`.
+- [~] **sprint.1** Global shell / Phase D: foundation готов, `Настройки` и `База знаний` уже shell-surface; дальше по одному заменить bridge для `История` / `Инспектор` / `Планировщик` / `Сценарии` / `Инструменты`.
 - [ ] **sprint.2** Tools hub и refs `10–20`: перенести menu/dialog утилиты в NEON-поверхности `Инструменты`, `О программе`, file maintenance, image conversion, noise/slideshow, scenario builder, engine paths, first-run.
 - [ ] **sprint.3** System / recovery и refs `21–25`: quit confirm, FFmpeg error, critical crash, encoder benchmark, plugins manager как целевые поверхности Variant A.
 - [ ] **sprint.4** Component-state sign-off и refs `26–27`: UI State Showcase + UI Components/States как обязательный QA-канон reusable состояний.
@@ -63,6 +64,7 @@
 - [x] **0.5** Базовые темы и IPC настроек заведены.
 - [x] **0.6** Локальный Git-репозиторий создан.
 - [x] **0.7** Процесс обновления чеклиста и журнала — skill `velorix-checklist-audit`, глоссарий (J при diff); **запрещено** правки `VELORIX_TZ.md` без явной просьбы владельца.
+- [x] **0.8** Для команды `продолжай` следующий шаг определяется по **текущей задаче** и `## Ближайший TODO спринта`; нижние § служат матрицей покрытия ТЗ/доменов и не подменяют Variant A workstream'ы.
 
 ### Этапы
 

@@ -51,7 +51,7 @@ alwaysApply: true
 |--------|-------------|
 | **Итерация** | Ровно **один** полный ответ агента до конца turn (в т.ч. сообщение «продолжай» / `+`). |
 | **check:quiet зелёный** | `npm run check:quiet` вернул **exit code 0**. |
-| **Продолжай / +** | Продолжить **текущую** задачу; **если** закончена **то** [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`. Skill: [`.cursor/skills/velorix-continue/SKILL.md`](../skills/velorix-continue/SKILL.md). |
+| **Продолжай / +** | Команды **«продолжай»** и **`+`** равнозначны: продолжить **текущую** задачу; **если** закончена **то** [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`. Skill: [`.cursor/skills/velorix-continue/SKILL.md`](../skills/velorix-continue/SKILL.md). |
 | **UI-поверхности (постоянно)** | [`velorix-agent.mdc`](velorix-agent.mdc): один renderer на фичу; **запрещены** HTML-pop-out и `*-window-ui-strings-*` вне `ui-text`; `check:ui-surfaces-guard` + `check:ui-copy-quality`. |
 | **Git по J-NNN** | **Если** в итерации записана новая `J-NNN` и **check:quiet зелёный** **то:** `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push` (без force `main`/`master`). Любой чат (Cursor, SDK). **Следующий commit по J:** **J-1580**; **следующий push по J:** **J-1580** — [`velorix-agent.mdc`](velorix-agent.mdc). **Запрещено:** пропускать commit/push при выполнении условий выше. |
 | **Явная просьба владельца** | В сообщении пользователя в **этом** чате: «правь/измени/добавь» + путь к файлу; **или** «редактируй ТЗ» / `VELORIX_TZ.md`; **или** «удали rule …». Фраза **«явная договорённость»** в шапках `IMPLEMENTATION_*` = **тот же** порог для `VELORIX_TZ.md`. |

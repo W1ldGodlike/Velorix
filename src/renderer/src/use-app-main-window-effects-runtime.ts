@@ -173,7 +173,7 @@ export function useAppMainWindowEffectsRuntime(
         }
         const trimmed = raw.trim()
         if (editorUrlPasteBehavior === 'download_open_editor') {
-          setWorkspaceTab('editor')
+          setWorkspaceTab('processing')
           setDownloadsUrl(trimmed)
           setStatusHint(uiText('statusDownloadOpenEditorWorking'))
           void window.velorix.downloads.downloadFirstUrlOpenInMainEditor(trimmed).then((res) => {

@@ -23,6 +23,7 @@ export default function AppRoot(): JSX.Element {
     workspaceTab,
     panelOpen,
     persistMainWindowUiPanelToggle,
+    appSettingsRoute: layoutChrome.appSettings,
     ...editor
   }
 

@@ -80,7 +80,7 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
       setProbeInfo(null)
       setStatusHint(null)
       setPreview(payload)
-      setWorkspaceTab('editor')
+      setWorkspaceTab('processing')
     },
     [setPreview, setProbeInfo, setStatusHint, setWorkspaceTab]
   )

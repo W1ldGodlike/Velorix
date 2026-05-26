@@ -4,11 +4,121 @@ import {
   formatTerminalHintRowLabel,
   formatTerminalHintRowSummary
 } from '../../shared/terminal-hint-ui-copy'
+import type { UiTextKey } from './locales/ui-text-strings'
 import { getUiLocale } from './locales/ui-text'
 import type { YtdlpCommandHintEntry } from '../../shared/ytdlp-download-contract'
 import { uiText, uiTextVars } from './locales/ui-text'
 
-export type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
+export type WorkspaceTab =
+  | 'processing'
+  | 'downloads'
+  | 'terminal'
+  | 'history'
+  | 'inspector'
+  | 'planner'
+  | 'scenarios'
+  | 'tools'
+  | 'settings'
+  | 'knowledge'
+
+export type WorkspaceRouteMeta = {
+  id: WorkspaceTab
+  labelKey: UiTextKey
+  tooltipKey: UiTextKey
+  ariaKey: UiTextKey
+}
+
+export const WORKSPACE_ROUTE_ORDER: readonly WorkspaceTab[] = [
+  'processing',
+  'downloads',
+  'terminal',
+  'history',
+  'inspector',
+  'planner',
+  'scenarios',
+  'tools',
+  'settings',
+  'knowledge'
+]
+
+const WORKSPACE_ROUTE_META_BY_ID: Record<WorkspaceTab, WorkspaceRouteMeta> = {
+  processing: {
+    id: 'processing',
+    labelKey: 'workspaceTabProcessing',
+    tooltipKey: 'workspaceTabProcessingTooltip',
+    ariaKey: 'processingWorkbenchAria'
+  },
+  downloads: {
+    id: 'downloads',
+    labelKey: 'workspaceTabDownloads',
+    tooltipKey: 'workspaceTabDownloadsTooltip',
+    ariaKey: 'downloadsWorkbenchAria'
+  },
+  terminal: {
+    id: 'terminal',
+    labelKey: 'workspaceTabTerminal',
+    tooltipKey: 'workspaceTabTerminalTooltip',
+    ariaKey: 'terminalWorkbenchAria'
+  },
+  history: {
+    id: 'history',
+    labelKey: 'workspaceTabHistory',
+    tooltipKey: 'workspaceTabHistoryTooltip',
+    ariaKey: 'historyWorkbenchAria'
+  },
+  inspector: {
+    id: 'inspector',
+    labelKey: 'workspaceTabInspector',
+    tooltipKey: 'workspaceTabInspectorTooltip',
+    ariaKey: 'inspectorWorkbenchAria'
+  },
+  planner: {
+    id: 'planner',
+    labelKey: 'workspaceTabPlanner',
+    tooltipKey: 'workspaceTabPlannerTooltip',
+    ariaKey: 'plannerWorkbenchAria'
+  },
+  scenarios: {
+    id: 'scenarios',
+    labelKey: 'workspaceTabScenarios',
+    tooltipKey: 'workspaceTabScenariosTooltip',
+    ariaKey: 'scenariosWorkbenchAria'
+  },
+  tools: {
+    id: 'tools',
+    labelKey: 'workspaceTabTools',
+    tooltipKey: 'workspaceTabToolsTooltip',
+    ariaKey: 'toolsWorkbenchAria'
+  },
+  settings: {
+    id: 'settings',
+    labelKey: 'workspaceTabSettings',
+    tooltipKey: 'workspaceTabSettingsTooltip',
+    ariaKey: 'settingsWorkbenchAria'
+  },
+  knowledge: {
+    id: 'knowledge',
+    labelKey: 'workspaceTabKnowledge',
+    tooltipKey: 'workspaceTabKnowledgeTooltip',
+    ariaKey: 'knowledgeWorkbenchAria'
+  }
+}
+
+export function getWorkspaceRouteMeta(route: WorkspaceTab): WorkspaceRouteMeta {
+  return WORKSPACE_ROUTE_META_BY_ID[route]
+}
+
+export function workspaceTabId(route: WorkspaceTab): string {
+  return `workspace-tab-${route}`
+}
+
+export function workspacePanelId(route: WorkspaceTab): string {
+  return `workspace-panel-${route}`
+}
+
+export function workspaceTabDescId(route: WorkspaceTab): string {
+  return `${workspaceTabId(route)}-desc`
+}
 
 /** §8 — расширенный порядок подсказок терминала при открытом медиа в превью. */
 export const TERMINAL_HINT_VIDEO_EXTS = new Set([

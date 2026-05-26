@@ -4,6 +4,7 @@ import { APP_SETTINGS_HOTKEY_ROWS } from '../../../../shared/app-settings-hotkey
 import type { AppTheme } from '../../../../shared/settings-contract'
 import type { EditorUrlPasteBehaviorId } from '../../../../shared/editor-url-paste-behavior'
 import type { AppUiLocale } from '../../../../shared/app-ui-locale'
+import type { WorkspaceTab } from '../../app-terminal-hint-ui'
 import {
   getUiLocale,
   setUiLocaleForSession,
@@ -164,7 +165,7 @@ export function AppSettingsDefaultsPane(props: {
   batchOutputPath: string | null
   setDownloadsOutputPath: Dispatch<SetStateAction<string | null>>
   setBatchOutputPath: Dispatch<SetStateAction<string | null>>
-  setWorkspaceTab: Dispatch<SetStateAction<'editor' | 'downloads' | 'terminal'>>
+  setWorkspaceTab: Dispatch<SetStateAction<WorkspaceTab>>
   onClose: () => void
 }): JSX.Element {
   const {

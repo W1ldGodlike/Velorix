@@ -3,7 +3,7 @@ import type { JSX } from 'react'
 import Versions from '../Versions'
 import type { EngineSummary } from '../../app-engines-ui'
 import { engineSummaryText } from '../../app-engines-ui'
-import type { WorkspaceTab } from '../../app-terminal-hint-ui'
+import { type WorkspaceTab, workspaceTabDescId } from '../../app-terminal-hint-ui'
 import { uiText } from '../../locales/ui-text'
 import type { AppUiLocale } from '../../../../shared/app-ui-locale'
 import { formatStatusbarLocaleShort } from '../../statusbar-locale-display'
@@ -51,12 +51,7 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
     statusbarActivityActive
   } = props
 
-  const workspaceTabDescId =
-    workspaceTab === 'editor'
-      ? 'workspace-tab-editor-desc'
-      : workspaceTab === 'downloads'
-        ? 'workspace-tab-downloads-desc'
-        : 'workspace-tab-terminal-desc'
+  const currentWorkspaceTabDescId = workspaceTabDescId(workspaceTab)
 
   const localeShort = formatStatusbarLocaleShort(uiLocale)
   const localeTitle =
@@ -66,14 +61,14 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
     <footer
       className="app-statusbar"
       aria-label={uiText('appStatusbarAria')}
-      aria-describedby={workspaceTabDescId}
+      aria-describedby={currentWorkspaceTabDescId}
       aria-busy={appChromeBusy}
     >
       <div
         role="group"
         aria-label={uiText('statusbarActivityClusterAria')}
         className="app-statusbar-cluster app-statusbar-activity"
-        aria-describedby={workspaceTabDescId}
+        aria-describedby={currentWorkspaceTabDescId}
       >
         <span
           className={
@@ -92,7 +87,7 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
         role="group"
         aria-label={uiText('statusbarLocaleClusterAria')}
         className="app-statusbar-cluster"
-        aria-describedby={workspaceTabDescId}
+        aria-describedby={currentWorkspaceTabDescId}
       >
         <span className="app-statusbar-locale" title={localeTitle} lang={uiLocale}>
           {localeShort}
@@ -103,7 +98,7 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
         role="group"
         aria-label={uiText('statusbarEnginesClusterAria')}
         className="app-statusbar-cluster"
-        aria-describedby={workspaceTabDescId}
+        aria-describedby={currentWorkspaceTabDescId}
         aria-busy={engineDownloadBusy || engineSummary === 'checking'}
       >
         <span>{engineSummaryText(engineSummary)}</span>
@@ -116,12 +111,12 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
           </>
         ) : null}
       </div>
-      {workspaceTab === 'editor' ? (
+      {workspaceTab === 'processing' ? (
         <div
           role="group"
           aria-label={uiText('statusbarExportCodecClusterAria')}
           className="app-statusbar-cluster"
-          aria-describedby="workspace-tab-editor-desc"
+          aria-describedby={workspaceTabDescId('processing')}
           aria-busy={
             exportBusy || snapshotBusy || exportCancelBusy || probePending || batchExportBusy
           }
@@ -143,7 +138,7 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
             className="app-statusbar-extra"
             role="status"
             aria-live="polite"
-            aria-describedby={workspaceTabDescId}
+            aria-describedby={currentWorkspaceTabDescId}
           >
             {statusHint}
           </span>
@@ -152,7 +147,7 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
       <span className="app-statusbar-sep" aria-hidden />
       <Versions
         statusBusy={engineDownloadBusy || engineSummary === 'checking'}
-        ariaDescribedBy={workspaceTabDescId}
+        ariaDescribedBy={currentWorkspaceTabDescId}
       />
     </footer>
   )

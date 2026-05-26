@@ -10,7 +10,7 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 
 ## Продолжай / +
 
-**Если** в чате «продолжай» или `+` **то** skill [`velorix-continue`](../../.cursor/skills/velorix-continue/SKILL.md): продолжить текущую задачу; **если** закончена **то** [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`; при diff — `npm run check:quiet` и одна `J-NNN` (skill journal-entry).
+**Если** в чате «продолжай» или `+` (**равнозначные команды**) **то** skill [`velorix-continue`](../../.cursor/skills/velorix-continue/SKILL.md): продолжить текущую задачу; **если** закончена **то** [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`; при diff — `npm run check:quiet` и одна `J-NNN` (skill journal-entry).
 
 ## Итерация и журнал
 

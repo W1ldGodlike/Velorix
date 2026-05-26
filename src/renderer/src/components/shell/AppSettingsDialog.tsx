@@ -17,6 +17,7 @@ import type { EditorUrlPasteBehaviorId } from '../../../../shared/editor-url-pas
 import type { AppUiLocale } from '../../../../shared/app-ui-locale'
 import type { EngineId } from '../../../../shared/engine-contract'
 import type { EnginePathsDraft } from '../../app-engines-ui'
+import type { WorkspaceTab } from '../../app-terminal-hint-ui'
 import { uiText } from '../../locales/ui-text'
 import {
   AppSettingsDefaultsPane,
@@ -37,12 +38,14 @@ export type AppSettingsDialogProps = {
   section: AppSettingsDialogSection
   onSectionChange: (section: AppSettingsDialogSection) => void
   onClose: () => void
+  presentation?: 'dialog' | 'embedded'
+  onExitEmbedded?: () => void
   onStatus: (message: string) => void
   setTheme: Dispatch<SetStateAction<'dark' | 'light'>>
   onUiLocalePersisted: (locale: AppUiLocale) => void
   editorUrlPasteBehavior: EditorUrlPasteBehaviorId
   setEditorUrlPasteBehavior: Dispatch<SetStateAction<EditorUrlPasteBehaviorId>>
-  setWorkspaceTab: Dispatch<SetStateAction<'editor' | 'downloads' | 'terminal'>>
+  setWorkspaceTab: Dispatch<SetStateAction<WorkspaceTab>>
   onOpenAbout: () => void
   onOpenWorkflowPlanner?: () => void
   onOpenWorkflowScenarioBuilder?: () => void
@@ -65,6 +68,8 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     section,
     onSectionChange,
     onClose,
+    presentation = 'dialog',
+    onExitEmbedded,
     onStatus,
     setTheme,
     onUiLocalePersisted,
@@ -150,6 +155,152 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     return null
   }
 
+  const renderSettingsChrome = (embedded: boolean): JSX.Element => (
+    <div
+      className={
+        embedded
+          ? 'app-settings-dialog app-settings-dialog-embedded'
+          : 'app-modal app-modal-wide app-settings-dialog'
+      }
+      role={embedded ? 'region' : 'dialog'}
+      aria-modal={embedded ? undefined : 'true'}
+      aria-busy={shellBusy}
+      aria-labelledby={`${dialogHintId}-title`}
+      aria-describedby={dialogHintId}
+      onMouseDown={
+        embedded
+          ? undefined
+          : (e) => {
+              e.stopPropagation()
+            }
+      }
+    >
+      <div className="app-modal-header-row">
+        <SettingsDialogHeaderTitle dialogHintId={dialogHintId} />
+        <button
+          type="button"
+          className="app-btn"
+          disabled={shellBusy}
+          title={uiText('closeButton')}
+          aria-label={uiText('appSettingsCloseAria')}
+          onClick={embedded ? (onExitEmbedded ?? onClose) : onClose}
+        >
+          {uiText('closeButton')}
+        </button>
+      </div>
+
+      <div className="app-settings-dialog-grid">
+        <nav
+          className="app-settings-dialog-nav"
+          aria-label={uiText('appSettingsNavAria')}
+          aria-describedby={dialogHintId}
+        >
+          {nav.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={`app-settings-dialog-nav-btn${item.selected ? ' app-settings-dialog-nav-btn-active' : ''}`}
+              aria-current={item.selected ? 'page' : undefined}
+              disabled={shellBusy}
+              onClick={() => {
+                onSectionChange(item.id)
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <section
+          className="app-settings-dialog-pane"
+          aria-labelledby={`${dialogHintId}-section-title`}
+          aria-describedby={sectionHintId}
+          aria-busy={shellBusy}
+        >
+          <h3 id={`${dialogHintId}-section-title`} className="app-settings-dialog-pane-title">
+            {sectionTitle}
+          </h3>
+          <p id={sectionHintId} className="app-modal-hint">
+            {uiText(SECTION_HINT_KEYS[section])}
+          </p>
+
+          {section === 'general' ? (
+            <AppSettingsGeneralPane
+              sectionHintId={sectionHintId}
+              shellBusy={shellBusy}
+              themePref={themePref}
+              onThemePrefChange={onThemePrefChange}
+              onUiLocalePersisted={onUiLocalePersisted}
+              confirmCloseOnQuit={confirmCloseOnQuit}
+              setConfirmCloseOnQuit={setConfirmCloseOnQuit}
+              editorUrlPasteBehavior={editorUrlPasteBehavior}
+              setEditorUrlPasteBehavior={setEditorUrlPasteBehavior}
+              onStatus={onStatus}
+              {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
+            />
+          ) : null}
+
+          {section === 'defaults' ? (
+            <AppSettingsDefaultsPane
+              sectionHintId={sectionHintId}
+              shellBusy={shellBusy}
+              downloadsOutputPath={downloadsOutputPath}
+              batchOutputPath={batchOutputPath}
+              setDownloadsOutputPath={setDownloadsOutputPath}
+              setBatchOutputPath={setBatchOutputPath}
+              setWorkspaceTab={setWorkspaceTab}
+              onClose={onClose}
+            />
+          ) : null}
+
+          {section === 'dependencies' ? (
+            <div className="app-settings-stack">
+              <EnginePathsSettingsSection
+                sectionId="app-settings-deps"
+                enginePathsSaving={enginePathsSaving}
+                engineDownloadBusy={engineDownloadBusy}
+                enginePathsDraft={enginePathsDraft}
+                setEnginePathsDraft={setEnginePathsDraft}
+                onPickEngine={onPickEngine}
+                onClearDownloadedEngines={onClearDownloadedEngines}
+                onCheckEngineUpdates={onCheckEngineUpdates}
+                onSave={onSaveEnginePaths}
+              />
+            </div>
+          ) : null}
+
+          {section === 'hotkeys' ? <AppSettingsHotkeysPane sectionHintId={sectionHintId} /> : null}
+
+          {section === 'logs' ? (
+            <AppSettingsLogsPane
+              sectionHintId={sectionHintId}
+              shellBusy={shellBusy}
+              onStatus={onStatus}
+              onOpenAbout={onOpenAbout}
+              onClose={onClose}
+            />
+          ) : null}
+
+          {section === 'reset' ? (
+            <AppSettingsResetPane
+              sectionHintId={sectionHintId}
+              shellBusy={shellBusy}
+              resetConfirm={resetConfirm}
+              setResetConfirm={setResetConfirm}
+              setResetBusy={setResetBusy}
+              onStatus={onStatus}
+              onClose={onClose}
+            />
+          ) : null}
+        </section>
+      </div>
+    </div>
+  )
+
+  if (presentation === 'embedded') {
+    return renderSettingsChrome(true)
+  }
+
   return (
     <div
       className="app-modal-backdrop"
@@ -163,139 +314,7 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
         }
       }}
     >
-      <div
-        className="app-modal app-modal-wide app-settings-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-busy={shellBusy}
-        aria-labelledby={`${dialogHintId}-title`}
-        aria-describedby={dialogHintId}
-        onMouseDown={(e) => {
-          e.stopPropagation()
-        }}
-      >
-        <div className="app-modal-header-row">
-          <SettingsDialogHeaderTitle dialogHintId={dialogHintId} />
-          <button
-            type="button"
-            className="app-btn"
-            disabled={shellBusy}
-            title={uiText('closeButton')}
-            aria-label={uiText('appSettingsCloseAria')}
-            onClick={onClose}
-          >
-            {uiText('closeButton')}
-          </button>
-        </div>
-
-        <div className="app-settings-dialog-grid">
-          <nav
-            className="app-settings-dialog-nav"
-            aria-label={uiText('appSettingsNavAria')}
-            aria-describedby={dialogHintId}
-          >
-            {nav.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`app-settings-dialog-nav-btn${item.selected ? ' app-settings-dialog-nav-btn-active' : ''}`}
-                aria-current={item.selected ? 'page' : undefined}
-                disabled={shellBusy}
-                onClick={() => {
-                  onSectionChange(item.id)
-                }}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-
-          <section
-            className="app-settings-dialog-pane"
-            aria-labelledby={`${dialogHintId}-section-title`}
-            aria-describedby={sectionHintId}
-            aria-busy={shellBusy}
-          >
-            <h3 id={`${dialogHintId}-section-title`} className="app-settings-dialog-pane-title">
-              {sectionTitle}
-            </h3>
-            <p id={sectionHintId} className="app-modal-hint">
-              {uiText(SECTION_HINT_KEYS[section])}
-            </p>
-
-            {section === 'general' ? (
-              <AppSettingsGeneralPane
-                sectionHintId={sectionHintId}
-                shellBusy={shellBusy}
-                themePref={themePref}
-                onThemePrefChange={onThemePrefChange}
-                onUiLocalePersisted={onUiLocalePersisted}
-                confirmCloseOnQuit={confirmCloseOnQuit}
-                setConfirmCloseOnQuit={setConfirmCloseOnQuit}
-                editorUrlPasteBehavior={editorUrlPasteBehavior}
-                setEditorUrlPasteBehavior={setEditorUrlPasteBehavior}
-                onStatus={onStatus}
-                {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
-              />
-            ) : null}
-
-            {section === 'defaults' ? (
-              <AppSettingsDefaultsPane
-                sectionHintId={sectionHintId}
-                shellBusy={shellBusy}
-                downloadsOutputPath={downloadsOutputPath}
-                batchOutputPath={batchOutputPath}
-                setDownloadsOutputPath={setDownloadsOutputPath}
-                setBatchOutputPath={setBatchOutputPath}
-                setWorkspaceTab={setWorkspaceTab}
-                onClose={onClose}
-              />
-            ) : null}
-
-            {section === 'dependencies' ? (
-              <div className="app-settings-stack">
-                <EnginePathsSettingsSection
-                  sectionId="app-settings-deps"
-                  enginePathsSaving={enginePathsSaving}
-                  engineDownloadBusy={engineDownloadBusy}
-                  enginePathsDraft={enginePathsDraft}
-                  setEnginePathsDraft={setEnginePathsDraft}
-                  onPickEngine={onPickEngine}
-                  onClearDownloadedEngines={onClearDownloadedEngines}
-                  onCheckEngineUpdates={onCheckEngineUpdates}
-                  onSave={onSaveEnginePaths}
-                />
-              </div>
-            ) : null}
-
-            {section === 'hotkeys' ? (
-              <AppSettingsHotkeysPane sectionHintId={sectionHintId} />
-            ) : null}
-
-            {section === 'logs' ? (
-              <AppSettingsLogsPane
-                sectionHintId={sectionHintId}
-                shellBusy={shellBusy}
-                onStatus={onStatus}
-                onOpenAbout={onOpenAbout}
-                onClose={onClose}
-              />
-            ) : null}
-
-            {section === 'reset' ? (
-              <AppSettingsResetPane
-                sectionHintId={sectionHintId}
-                shellBusy={shellBusy}
-                resetConfirm={resetConfirm}
-                setResetConfirm={setResetConfirm}
-                setResetBusy={setResetBusy}
-                onStatus={onStatus}
-                onClose={onClose}
-              />
-            ) : null}
-          </section>
-        </div>
-      </div>
+      {renderSettingsChrome(false)}
     </div>
   )
 }

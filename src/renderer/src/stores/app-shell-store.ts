@@ -69,7 +69,7 @@ export type AppShellStore = AppShellState &
   }
 
 export const initialAppShellState: AppShellState = {
-  workspaceTab: 'editor',
+  workspaceTab: 'processing',
   theme: 'dark',
   engineSummary: 'checking',
   enginesOfferDownload: false,

@@ -74,7 +74,7 @@ export function useDownloadsUrlActions(deps: UseDownloadsUrlActionsDeps): {
       setStatusHint(res.error)
       return
     }
-    setWorkspaceTab('editor')
+    setWorkspaceTab('processing')
     setStatusHint(uiText('statusDownloadOpenEditorSuccess'))
     setDownloadsUrl('')
   }, [downloadsUrl, setDownloadsUrl, setStatusHint, setWorkspaceTab])

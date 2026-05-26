@@ -47,7 +47,7 @@ export type UseAppShellLayoutPropsInput = {
     AppStatusbarProps,
     'exportCodecStatusbarLabel' | 'exportCodecStatusbarTitle' | 'exportCodecStatusbarAria'
   >
-  overlay: AppOverlayDialogsProps
+  overlay: Omit<AppOverlayDialogsProps, 'workspaceTab'>
   exportPreset: {
     dialog: ExportPresetNameDialogState
     exportPresetSaving: boolean
@@ -109,7 +109,7 @@ export type AppShellLayoutChromeProps = {
   appChromeBusy: boolean
   topbar: AppWorkspaceTopbarProps
   statusbar: AppStatusbarProps
-  overlay: AppOverlayDialogsProps
+  overlay: Omit<AppOverlayDialogsProps, 'workspaceTab'>
   exportPreset: ExportPresetNameDialogProps
   appSettings: AppSettingsDialogProps
   externalFilterScript: {
@@ -205,13 +205,15 @@ export function useAppShellLayoutProps(
 
   const onOpenAppSettings = useCallback((): void => {
     setAppSettingsSection('general')
-    setAppSettingsOpen(true)
-  }, [setAppSettingsOpen, setAppSettingsSection])
+    setAppSettingsOpen(false)
+    setWorkspaceTab('settings')
+  }, [setAppSettingsOpen, setAppSettingsSection, setWorkspaceTab])
 
   const onOpenKnowledge = useCallback((): void => {
     setKnowledgeInitialSlug(null)
-    setKnowledgeOpen(true)
-  }, [setKnowledgeInitialSlug, setKnowledgeOpen])
+    setKnowledgeOpen(false)
+    setWorkspaceTab('knowledge')
+  }, [setKnowledgeInitialSlug, setKnowledgeOpen, setWorkspaceTab])
 
   const onOpenAbout = useCallback((): void => {
     void window.velorix.about.getInfo().then((info) => {

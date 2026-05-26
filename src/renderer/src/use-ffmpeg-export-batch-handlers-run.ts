@@ -39,7 +39,7 @@ export function useFfmpegExportBatchHandlersRun({
         return
       }
       if (mode === 'preview') {
-        setWorkspaceTab('editor')
+        setWorkspaceTab('processing')
       }
     },
     [setStatusHint, setWorkspaceTab]
@@ -53,7 +53,7 @@ export function useFfmpegExportBatchHandlersRun({
         return
       }
       if (mode === 'preview') {
-        setWorkspaceTab('editor')
+        setWorkspaceTab('processing')
         setStatusHint(uiText('processingHistoryOpenInputDone'))
       }
     },

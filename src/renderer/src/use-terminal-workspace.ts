@@ -117,7 +117,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     )
     const scenarioPrefix: TerminalCommandHintEntry[] = [
       ...(workspaceTab === 'downloads' ? TERMINAL_SCENARIO_HINTS_DOWNLOADS : []),
-      ...(workspaceTab === 'editor' || workspaceTab === 'terminal'
+      ...(workspaceTab === 'processing' || workspaceTab === 'terminal'
         ? mediaInPreview
           ? TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA
           : []

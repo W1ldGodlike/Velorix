@@ -54,9 +54,9 @@ export function AppShellLayout({
           <AppStatusbar {...statusbar} />
         </div>
       </div>
-      <AppOverlayDialogs {...overlay} />
+      <AppOverlayDialogs {...overlay} workspaceTab={topbar.workspaceTab} />
       <ExportPresetNameDialog {...exportPreset} />
-      {appSettings.open ? (
+      {appSettings.open && topbar.workspaceTab !== 'settings' ? (
         <Suspense fallback={<AppLazyPanelFallback />}>
           <LazyAppSettingsDialog {...appSettings} />
         </Suspense>

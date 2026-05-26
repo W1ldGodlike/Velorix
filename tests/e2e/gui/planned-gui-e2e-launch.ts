@@ -57,7 +57,7 @@ export async function launchPackagedVELORIX(executablePath: string): Promise<Ele
 }
 
 export async function waitForMainShell(page: Page): Promise<void> {
-  await page.waitForSelector('#workspace-tab-editor', { timeout: 60_000 })
+  await page.waitForSelector('#workspace-tab-processing', { timeout: 60_000 })
 }
 
 export async function openLocalVideoViaTopbar(page: Page, mediaPath: string): Promise<void> {
