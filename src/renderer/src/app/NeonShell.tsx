@@ -2,6 +2,7 @@ import type { JSX } from 'react'
 
 import { useAppShellStore } from '../stores/app-shell-store'
 import { WORKSPACE_TAB_LABELS, WORKSPACE_TABS, type WorkspaceTab } from './workspace-tab'
+import { CommandPalette } from './CommandPalette'
 import { SystemModals } from './SystemModals'
 import { WorkspaceOutlet, WorkspaceRailOutlet } from './WorkspaceOutlet'
 
@@ -62,9 +63,9 @@ export function NeonShell(): JSX.Element {
           <WorkspaceRailOutlet />
         </div>
         <footer className="neon-shell__status">
-          <span>Project 001</span>
-          <span>00:12:34</span>
-          <span>3840×2160</span>
+          <span>НОВЫЙ СЕЗОН.vlrix</span>
+          <span>01:36:53:08</span>
+          <span>3840×2160 · 4K</span>
           <span className="app-ui-showcase-status-pill app-ui-showcase-status-pill--ready">
             Готово
           </span>
@@ -78,6 +79,7 @@ export function NeonShell(): JSX.Element {
         </footer>
       </div>
       <SystemModals />
+      <CommandPalette />
     </div>
   )
 }

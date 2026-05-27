@@ -9,7 +9,7 @@ import { InspectorRail, InspectorScreen } from '../features/inspector/InspectorS
 import { SettingsRail, SettingsScreen } from '../features/settings/SettingsScreen'
 import { TerminalRail, TerminalScreen } from '../features/terminal/TerminalScreen'
 import { HelpRail, HelpScreen } from '../features/help/HelpScreen'
-import { ToolsRail, ToolsHubScreen } from '../features/tools/ToolsHubScreen'
+import { ToolsRailOutlet, ToolsWorkspace } from '../features/tools/ToolsWorkspace'
 import { ProcessingRail, ProcessingScreen } from '../features/processing/ProcessingScreen'
 import { useAppShellStore } from '../stores/app-shell-store'
 
@@ -35,7 +35,7 @@ export function WorkspaceOutlet(): JSX.Element {
     case 'terminal':
       return <TerminalScreen />
     case 'tools':
-      return <ToolsHubScreen />
+      return <ToolsWorkspace />
     case 'help':
       return <HelpScreen />
     default:
@@ -77,7 +77,7 @@ export function WorkspaceRailOutlet(): JSX.Element | null {
     return <TerminalRail />
   }
   if (tab === 'tools') {
-    return <ToolsRail />
+    return <ToolsRailOutlet />
   }
   if (tab === 'help') {
     return <HelpRail />

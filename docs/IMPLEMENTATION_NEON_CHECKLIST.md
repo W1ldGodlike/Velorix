@@ -46,9 +46,9 @@
 | Область | ~% | Комментарий |
 | ------- | -- | ----------- |
 | Токены / тема в renderer | **~25** | `velorix-neon/*` + `ref27-showcase*.css`; kit ~28 карточек; sign-off PNG — нет. |
-| Shell layout (Phase D.2) | **~20** | `NeonShell` + `#ref1`; sign-off ref.1 PNG — нет. |
-| Визуал экранов refs **1–9** | **~28** | ref.1–10 bootstrap в `#ref1` shell; sign-off PNG — нет. |
-| Модалки / утилиты refs **10–25** | **0** | Только PNG. |
+| Shell layout (Phase D.2) | **~24** | `NeonShell` + ref.1 center tabs (Редактор/Загрузки/Консоль); sign-off PNG — нет. |
+| Визуал экранов refs **1–9** | **~36** | ref.1 preview IPC (`velorixmedia`); 2–10 bootstrap; sign-off PNG — нет. |
+| Модалки / утилиты refs **10–25** | **~35** | modals 11, 18–23 + tools full-screen 12–17, 24–25; sign-off PNG — нет. |
 | Showcase refs **26–27** | **0** | Только PNG. |
 | Функционал «вишек» с PNG | **0** | Backend отдельно; UI не сверен. |
 | Motion / анимации | **0** | После layout 1:1. |
@@ -91,10 +91,10 @@
 
 - [ ] **X.1** Brand: horizontal/stacked logo по зонам (sidebar, about, splash).
 - [ ] **X.2** Иконка app ↔ `resources/icon.png` ↔ ref app-icon.
-- [~] **X.3** Единый modal chrome — `SystemModals`+`neon-modal.css` (about/quit/ffmpeg/preset); остальные refs 11–25 — нет.
+- [~] **X.3** Единый modal chrome — `SystemModals` refs 11, 18–23 bootstrap; refs 12–17, 24–25 full-screen в tools; sign-off PNG — нет.
 - [ ] **X.4** **Motion system:** duration/easing tokens; hover glow; route transition; reduced-motion.
 - [ ] **X.5** GPU/CPU/RAM виджеты в sidebar как на PNG (если в scope).
-- [ ] **X.6** Ctrl+K command palette где на mockup (knowledge, scenarios, …).
+- [~] **X.6** Ctrl+K `CommandPalette` — навигация, open media, modals; polish vs PNG — нет.
 - [ ] **X.7** Типографика / плотность / spacing scale 1:1 с ref.27.
 
 ## Workstreams VA — переклассификация
@@ -102,7 +102,7 @@
 **Было [x] в журнале = код/маршруты, не визуал.**
 
 - [ ] **VA.1** Routes — журнал J-1633..1640 **не** sign-off; UI ZERO.
-- [ ] **VA.2** Tools hub refs 10–20 — UI ZERO.
+- [~] **VA.2** Tools hub refs 10–17, 24–25 — bootstrap full-screen; sign-off PNG — нет.
 - [ ] **VA.3** System refs 21–25 — UI ZERO.
 - [ ] **VA.4** Showcase 26–27 — UI ZERO.
 - [x] **VA.5** Pop-out/theme cleanup (**J-1651..1667**) — legacy снят.

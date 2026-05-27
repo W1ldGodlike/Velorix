@@ -26,6 +26,18 @@
   box-shadow: var(--fa-elevation-lg);
 }
 
+.app-modal--wide {
+  width: min(100%, 40rem);
+  max-height: min(90vh, 36rem);
+}
+
+.app-modal--danger {
+  border-color: color-mix(in srgb, var(--fa-danger) 45%, var(--fa-border-subtle));
+  box-shadow:
+    var(--fa-elevation-lg),
+    0 0 24px color-mix(in srgb, var(--fa-danger) 18%, transparent);
+}
+
 .app-modal__title {
   margin: 0;
   font-size: var(--fa-font-size-lg);
@@ -58,4 +70,85 @@
   justify-content: flex-end;
   gap: var(--fa-space-2);
   margin-top: var(--fa-space-2);
+}
+
+.app-modal__actions--split {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.app-modal__actions-end {
+  display: flex;
+  gap: var(--fa-space-2);
+}
+
+.app-modal__body--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-3);
+}
+
+.app-modal__engines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-3);
+}
+
+.app-modal__engine-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-2);
+  padding: var(--fa-space-3);
+  border-radius: var(--fa-radius-control);
+}
+
+.app-modal__engine-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fa-space-2);
+}
+
+.app-modal__engine-path-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fa-space-2);
+}
+
+.app-modal__engine-path-row .app-input {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.app-modal__engine-ok {
+  margin: 0;
+  color: var(--fa-success);
+  font-size: var(--fa-font-size-xs);
+}
+
+.app-modal__steps {
+  margin: 0;
+  padding-left: var(--fa-space-4);
+  color: var(--fa-text-secondary);
+  font-size: var(--fa-font-size-body-sm);
+}
+
+.app-modal__step--done {
+  color: var(--fa-success);
+}
+
+.app-modal__stack {
+  margin: 0;
+  padding: var(--fa-space-3);
+  border-radius: var(--fa-radius-control);
+  background: color-mix(in srgb, var(--fa-danger) 8%, var(--fa-surface));
+  font-family: var(--fa-font-mono);
+  font-size: var(--fa-font-size-xs);
+  line-height: var(--fa-line-height-ui);
+  overflow: auto;
+  max-height: 8rem;
+  white-space: pre-wrap;
 }

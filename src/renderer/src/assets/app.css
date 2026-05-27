@@ -8,7 +8,9 @@
 @import './portal-screens.css';
 @import './neon-motion-v1.css';
 @import './inspector-terminal-tools.css';
+@import './utility-screens.css';
 @import './neon-modal.css';
+@import './command-palette.css';
 
 html,
 body,

@@ -12,6 +12,7 @@ const SECTIONS = [
 
 export function SettingsScreen(): JSX.Element {
   const openModal = useAppShellStore((s) => s.openModal)
+  const hydrateEnginePathDraft = useAppShellStore((s) => s.hydrateEnginePathDraft)
   return (
     <div className="portal-screen settings-screen">
       <header className="portal-screen__head">
@@ -32,6 +33,10 @@ export function SettingsScreen(): JSX.Element {
               onClick={() => {
                 if (section.title === 'Приложение') {
                   openModal('about')
+                } else if (section.title === 'Обработка') {
+                  void hydrateEnginePathDraft().then(() => openModal('engine-paths'))
+                } else {
+                  openModal('first-run-engines')
                 }
               }}
             >
@@ -45,6 +50,8 @@ export function SettingsScreen(): JSX.Element {
 }
 
 export function SettingsRail(): JSX.Element {
+  const openModal = useAppShellStore((s) => s.openModal)
+  const hydrateEnginePathDraft = useAppShellStore((s) => s.hydrateEnginePathDraft)
   return (
     <aside className="portal-rail vn-surface-glass">
       <h2 className="portal-rail__title">Раздел</h2>
@@ -59,6 +66,20 @@ export function SettingsRail(): JSX.Element {
           </button>
         ))}
       </nav>
+      <div className="settings-rail__shortcuts">
+        <button
+          type="button"
+          className="app-btn app-btn-secondary"
+          onClick={() => {
+            void hydrateEnginePathDraft().then(() => openModal('engine-paths'))
+          }}
+        >
+          Пути движков
+        </button>
+        <button type="button" className="app-btn" onClick={() => openModal('first-run-engines')}>
+          Первый запуск
+        </button>
+      </div>
     </aside>
   )
 }

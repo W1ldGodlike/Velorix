@@ -1,6 +1,16 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
-  "include": ["tests/**/*.ts", "vitest.config.ts", "src/main/**/*", "src/shared/**/*"],
+  "include": [
+    "tests/**/*.ts",
+    "vitest.config.ts",
+    "src/main/**/*",
+    "src/shared/**/*",
+    "src/renderer/src/lib/**/*.ts",
+    "src/renderer/src/app/command-palette.ts",
+    "src/renderer/src/app/workspace-tab.ts",
+    "src/renderer/src/app/system-modal.ts",
+    "src/preload/*.d.ts"
+  ],
   "exclude": ["tests/e2e/gui/*.spec.ts"],
   "compilerOptions": {
     "allowImportingTsExtensions": true,

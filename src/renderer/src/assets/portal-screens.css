@@ -149,6 +149,15 @@
   font-weight: 600;
 }
 
+.settings-rail__shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-2);
+  margin-top: auto;
+  padding-top: var(--fa-space-3);
+  border-top: 1px solid var(--fa-border-subtle);
+}
+
 .settings-rail__link--active {
   border-color: color-mix(in srgb, var(--fa-accent) 35%, var(--fa-border));
   color: var(--fa-text-primary);
