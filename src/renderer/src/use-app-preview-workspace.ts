@@ -26,6 +26,7 @@ export type UseAppPreviewWorkspaceDeps = {
   previewBlobUrl: string | null
   setPreviewBlobUrl: Dispatch<SetStateAction<string | null>>
   setProbeInfo: Dispatch<SetStateAction<MediaProbeSuccess | null>>
+  setProbeError: Dispatch<SetStateAction<string | null>>
   setStatusHint: Dispatch<SetStateAction<string | null>>
   setWorkspaceTab: Dispatch<SetStateAction<WorkspaceTab>>
   persistMainWindowUiPanelToggle: (key: MainWindowUiPanelKey, open: boolean) => void
@@ -54,6 +55,7 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
     previewBlobUrl,
     setPreviewBlobUrl,
     setProbeInfo,
+    setProbeError,
     setStatusHint,
     setWorkspaceTab,
     persistMainWindowUiPanelToggle,
@@ -78,11 +80,12 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
   const applyPreview = useCallback(
     (payload: PreviewOpenedPayload): void => {
       setProbeInfo(null)
+      setProbeError(null)
       setStatusHint(null)
       setPreview(payload)
       setWorkspaceTab('processing')
     },
-    [setPreview, setProbeInfo, setStatusHint, setWorkspaceTab]
+    [setPreview, setProbeError, setProbeInfo, setStatusHint, setWorkspaceTab]
   )
 
   const handlePreviewVideoError = useCallback(

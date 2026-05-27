@@ -1,5 +1,4 @@
 import type { SettingsIpcPersistApi } from '../services/settings/settings-ipc-persist'
-import type { AppSettingsView, AppTheme } from '../services/settings/settings-store'
 
 let settingsIpcPersist: SettingsIpcPersistApi | undefined
 
@@ -12,8 +11,4 @@ export function getMainApplicationSettingsIpcPersist(): SettingsIpcPersistApi {
     throw new Error('main application bootstrap: settings IPC persist not initialized')
   }
   return settingsIpcPersist
-}
-
-export function persistMainApplicationThemePreference(pref: AppTheme): AppSettingsView {
-  return getMainApplicationSettingsIpcPersist().persistThemePreference(pref)
 }

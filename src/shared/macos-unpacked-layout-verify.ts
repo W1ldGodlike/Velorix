@@ -34,9 +34,9 @@ export function listMacosUnpackedLayoutChecks(bundleRoot: string): MacosUnpacked
       label: 'Contents/Resources/bin'
     },
     {
-      path: join(resources, 'VELORIX_TZ.md'),
+      path: join(resources, 'VELORIX_NEON_THEME.md'),
       kind: 'file',
-      label: 'Contents/Resources/VELORIX_TZ.md'
+      label: 'Contents/Resources/VELORIX_NEON_THEME.md'
     },
     {
       path: join(resources, 'Data', 'trusted_hashes.json'),
@@ -132,7 +132,7 @@ export function formatMacosUnpackedLayoutVerifyDiagnosticLines(
         ]
   return [
     'command: npm run verify:mac-unpacked (после pack:mac:dir на macOS)',
-    'checks: Velorix.app/Contents/MacOS, Resources/bin, VELORIX_TZ.md, Data, Help',
+    'checks: Velorix.app/Contents/MacOS, Resources/bin, VELORIX_NEON_THEME.md, Data, Help',
     'env: VELORIX_SKIP_PACK_VERIFY',
     ...layoutLines
   ]

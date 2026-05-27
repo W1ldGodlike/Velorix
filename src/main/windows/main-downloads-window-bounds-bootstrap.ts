@@ -23,21 +23,14 @@ import {
   persistYtdlpDownloadDirectory
 } from '../services/settings/main-ytdlp-settings-persist'
 import type { DownloadsWindowUiPanelState } from '../../shared/settings-contract'
-import type {
-  AppSettings,
-  ResolvedAppTheme,
-  StoredWindowRect
-} from '../services/settings/settings-store'
+import type { AppSettings } from '../services/settings/settings-store'
 import { resolveYtdlpOutputDirectory } from '../services/ytdlp/ytdlp-download-output'
 
 export type MainDownloadsWindowBoundsBootstrapAccess = {
   getMainWindowWebContentsId: () => number | null
-  getSavedDownloadsBounds: () => StoredWindowRect | undefined
-  persistDownloadsBounds: (rect: StoredWindowRect) => void
   mainDownloadsUiLocale: () => AppUiLocale
   getSettings: () => AppSettings
   mergeDownloadsWindowUiPanelsPatch: (patch: Partial<DownloadsWindowUiPanelState>) => void
-  resolveEffectiveTheme: (pref: AppSettings['theme']) => ResolvedAppTheme
   openDownloadedFileInMainHandler: (
     absoluteFile: string
   ) => Promise<{ ok: true } | { ok: false; error: string }>
@@ -48,8 +41,6 @@ export function configureMainDownloadsWindowBoundsBootstrap(
 ): void {
   configureDownloadsWindowBoundsHooks({
     isMainWindowSender: (sender) => sender.id === access.getMainWindowWebContentsId(),
-    getSavedDownloadsBounds: access.getSavedDownloadsBounds,
-    persistDownloadsBounds: access.persistDownloadsBounds,
     pickYtdlpOutputDirectory: async (win: BrowserWindow) => {
       const Y = getYtdlpCliValidationCopy(access.mainDownloadsUiLocale())
       const result = await dialog.showOpenDialog(win, {
@@ -142,7 +133,6 @@ export function configureMainDownloadsWindowBoundsBootstrap(
       access.openDownloadedFileInMainHandler(absoluteFile),
     getDownloadsWindowUiPanelsSnapshot: () => access.getSettings().downloadsWindowUiPanels,
     mergeDownloadsWindowUiPanelsPatch: access.mergeDownloadsWindowUiPanelsPatch,
-    getAppTheme: (): ResolvedAppTheme => access.resolveEffectiveTheme(access.getSettings().theme),
     getDownloadsUiLocale: access.mainDownloadsUiLocale
   })
 }

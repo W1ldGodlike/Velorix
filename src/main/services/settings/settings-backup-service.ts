@@ -10,7 +10,7 @@ import {
   buildSettingsBackupFileV1,
   extractSettingsPayloadFromBackupJson
 } from '../../../shared/settings-backup-parse'
-import type { AppSettings, AppTheme, ResolvedAppTheme } from './settings-store'
+import type { AppSettings } from './settings-store'
 import { stripExportUserPresetsFromSettingsForDisk } from '../presets/presets-export-disk-store'
 import { hydrateAppSettingsFromPartial, settingsStoreDefaults } from './settings-store-hydrate'
 
@@ -18,13 +18,10 @@ export type SettingsBackupServiceHooks = {
   getSettings: () => AppSettings
   replaceSettings: (next: AppSettings) => void
   saveSettings: () => void
-  resolveEffectiveTheme: (pref: AppTheme) => ResolvedAppTheme
   buildApplicationMenu: () => void
   refreshEnginePathOverridesSnapshot: () => void
   refreshYtdlpFromSettings: () => void
-  syncDownloadsPopoutHtmlToLocale: (
-    locale: import('../../../shared/app-ui-locale').AppUiLocale
-  ) => void
+  syncDownloadsWindowLocale: (locale: import('../../../shared/app-ui-locale').AppUiLocale) => void
   mainAppStr: () => {
     settingsBackupExportTitle: string
     settingsBackupExportFilter: string
@@ -60,19 +57,10 @@ function requireHooks(): SettingsBackupServiceHooks {
 
 function broadcastSettingsReplacements(prev: AppSettings, next: AppSettings): void {
   const h = requireHooks()
-  const resolved = h.resolveEffectiveTheme(next.theme)
-  const prevResolved = h.resolveEffectiveTheme(prev.theme)
-  if (resolved !== prevResolved || next.theme !== prev.theme) {
-    BrowserWindow.getAllWindows().forEach((w) => {
-      if (!w.isDestroyed()) {
-        w.webContents.send(mw.themeChanged, resolved)
-      }
-    })
-  }
   const nextLoc = parseAppUiLocale(next.uiLocale)
   const prevLoc = parseAppUiLocale(prev.uiLocale)
   if (nextLoc !== undefined && nextLoc !== prevLoc) {
-    h.syncDownloadsPopoutHtmlToLocale(nextLoc)
+    h.syncDownloadsWindowLocale(nextLoc)
     for (const w of BrowserWindow.getAllWindows()) {
       if (!w.isDestroyed()) {
         w.webContents.send(mw.uiLocaleChanged, nextLoc)

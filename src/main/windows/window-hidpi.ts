@@ -87,7 +87,7 @@ export function defaultInspectorWindowSize(
 /** §4.C / §2.2 — пороги logical scaleFactor для min-размеров окон (100–200 %). */
 export const WINDOW_LOGICAL_SCALE_TIERS = [1, 1.25, 1.5, 1.75, 2] as const
 
-/** Support ZIP — связка с CSS @media в main.css и downloads pop-out. */
+/** Support ZIP — связка с CSS @media в main.css и shell-вкладкой «Загрузки». */
 export function formatWindowHidpiDiagnosticLines(): string[] {
   return [
     'window min sizes: logicalScaleFactor thresholds >=1.25 and >=1.5 (main, downloads, inspector)',

@@ -7,10 +7,20 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { readRepoUtf8, REPO_ROOT } from '../lib/repo-root.mjs'
 
+/** Variant A: hash-bootstrap pop-out routes must not return in renderer entrypoints. */
+const RENDERER_HASH_BOOTSTRAP_RE =
+  /#(?:downloads|inspector)\b|location\.hash\s*[=!].*(?:downloads|inspector)/i
+
+const RENDERER_HASH_BOOTSTRAP_SCAN_ROOTS = [
+  'src/renderer/src/main.tsx',
+  'src/renderer/src/App.tsx',
+  'src/renderer/src/app-lazy-panels.tsx'
+]
+
 const PLAN_PATH = 'docs/UI_CONSOLIDATION_AND_COPY_PROGRAM.md'
 const PROGRAM_GATE_RULE = '.cursor/rules/VELORIX-program-gate.mdc'
 const UI_SURFACES_RULE = '.cursor/rules/velorix-agent.mdc'
-const CHECKLIST_PATH = 'IMPLEMENTATION_CHECKLIST.md'
+const CHECKLIST_PATH = 'docs/IMPLEMENTATION_NEON_CHECKLIST.md'
 const QUIET_CHECK_PATH = 'scripts/gate/run-quiet-check.mjs'
 const PACKAGE_JSON_PATH = 'package.json'
 
@@ -189,6 +199,12 @@ function main() {
       errors.push(
         'program ended: downloads-window.ts still uses buildDownloadsHtml or data:text/html'
       )
+    }
+    for (const rel of RENDERER_HASH_BOOTSTRAP_SCAN_ROOTS) {
+      const text = readRepoOptional(rel)
+      if (text && RENDERER_HASH_BOOTSTRAP_RE.test(text)) {
+        errors.push(`program ended: ${rel} still references #downloads/#inspector hash bootstrap`)
+      }
     }
     for (const { rel, patterns } of FORBIDDEN_TEXT_WHEN_PROGRAM_ENDED) {
       const text = readRepoOptional(rel)

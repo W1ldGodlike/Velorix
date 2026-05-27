@@ -24,6 +24,9 @@ export default function AppRoot(): JSX.Element {
     panelOpen,
     persistMainWindowUiPanelToggle,
     appSettingsRoute: layoutChrome.appSettings,
+    exportPresetRoute: layoutChrome.exportPreset,
+    workflowPlannerRoute: layoutChrome.workflowPlanner,
+    workflowScenarioBuilderRoute: layoutChrome.workflowScenarioBuilder,
     ...editor
   }
 

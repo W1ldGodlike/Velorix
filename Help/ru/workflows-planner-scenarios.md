@@ -37,7 +37,8 @@
 - Итог прогона — строка состояния и запись в **Истории обработки** (тип `workflowScenario`).
 - macOS LaunchAgent: логи в `~/Library/Logs/Velorix/watch-<taskId>.log`.
 - Linux timer: `journalctl --user -u Velorix-watch-<taskId>.service`.
+- Справка Help: 44 статьи workflow (см. also в каждой).
 
 ## См. также
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).
+[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (после `pack:dir`).

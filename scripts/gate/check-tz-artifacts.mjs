@@ -1,37 +1,38 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
- * Сверка ключевых артефактов VELORIX_TZ с репозиторием (§2.2 / §3 / IPC).
+ * Сверка ключевых путей репозитория (§2.2 / IPC / renderer state) — без VELORIX_TZ (архив).
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { REPO_ROOT } from '../lib/repo-root.mjs'
 
-const TZ_PATH = join(REPO_ROOT, 'VELORIX_TZ.md')
 const IPC_PATH = join(REPO_ROOT, 'src', 'shared', 'ipc-channels.ts')
+const NEON_CHECKLIST = join(REPO_ROOT, 'docs', 'IMPLEMENTATION_NEON_CHECKLIST.md')
 
 const REQUIRED_PATHS = [
   'src/main/index.ts',
   'src/preload/index.ts',
   'src/renderer/src/stores/app-shell-store.ts',
   'src/shared/renderer-state-approach.ts',
+  'docs/VELORIX_NEON_THEME.md',
   'Data/trusted_hashes.json',
   'locales/ru/common.json',
   'locales/en/common.json'
 ]
 
-const TZ_KEYWORDS = ['Electron', 'React', 'TypeScript', 'ffmpeg', 'yt-dlp', 'ffprobe']
+const FORBIDDEN_ROOT_ARTIFACTS = ['VELORIX_TZ.md', 'IMPLEMENTATION_CHECKLIST.md']
 
 function main() {
   const violations = []
-  if (!existsSync(TZ_PATH)) {
-    violations.push('missing VELORIX_TZ.md')
-  } else {
-    const tz = readFileSync(TZ_PATH, 'utf8')
-    for (const kw of TZ_KEYWORDS) {
-      if (!tz.includes(kw)) {
-        violations.push(`VELORIX_TZ.md: missing keyword ${kw}`)
-      }
+
+  if (!existsSync(NEON_CHECKLIST)) {
+    violations.push('missing docs/IMPLEMENTATION_NEON_CHECKLIST.md')
+  }
+
+  for (const rel of FORBIDDEN_ROOT_ARTIFACTS) {
+    if (existsSync(join(REPO_ROOT, rel))) {
+      violations.push(`forbidden root artifact (use docs/archive): ${rel}`)
     }
   }
 

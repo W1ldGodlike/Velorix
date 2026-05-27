@@ -8,7 +8,7 @@ import { formatFfmpegHwManualSmokeChecklistLines } from '../../../shared/ffmpeg-
 import { formatLinuxPackagedManualSmokeChecklistLines } from '../../../shared/linux-packaged-manual-smoke-checklist'
 import { formatMacosPackagedManualSmokeChecklistLines } from '../../../shared/macos-packaged-manual-smoke-checklist'
 import { formatWinPackagedManualSmokeChecklistLines } from '../../../shared/win-packaged-manual-smoke-checklist'
-import { buildOwnerManualSmokeBundleLines } from '../../../shared/owner-manual-smoke-bundle'
+import { buildOwnerHardwareChecklistBundleLines } from '../../../shared/owner-hardware-checklist-bundle'
 import { formatWorkflowOsSchedulerManualSmokeChecklistLines } from '../../../shared/workflow-os-scheduler-manual-smoke-checklist'
 import { buildSupportZipPackagedReleaseLines } from '../../../shared/packaged-release-smoke'
 import { formatTerminalContractHintsSupportZipLines } from '../../../shared/terminal-contract-hints-meta'
@@ -22,6 +22,8 @@ import {
   formatMainProcessErrorClipboardHeader,
   getMainApplicationStrings
 } from '../../../shared/main-application-locale'
+import { mainWindowIpc as mw } from '../../../shared/ipc-channels'
+import type { ProcessErrorDialogPayload } from '../../../shared/process-error-dialog-contract'
 import { resolveAppPaths } from '../../core/app-paths'
 import { ENGINE_IDS, getEnginesStatus } from '../engines/engine-service'
 import {
@@ -128,7 +130,7 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
   const macosPackagedSmokeChecklistLines = formatMacosPackagedManualSmokeChecklistLines()
   const workflowOsSchedulerSmokeChecklistLines =
     formatWorkflowOsSchedulerManualSmokeChecklistLines()
-  const ownerManualSmokeBundleLines = buildOwnerManualSmokeBundleLines({
+  const ownerHardwareChecklistBundleLines = buildOwnerHardwareChecklistBundleLines({
     uiDpiLines,
     platform: process.platform
   })
@@ -168,7 +170,7 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     linuxPackagedSmokeChecklistLines,
     macosPackagedSmokeChecklistLines,
     workflowOsSchedulerSmokeChecklistLines,
-    ownerManualSmokeBundleLines
+    ownerHardwareChecklistBundleLines
   }
 }
 
@@ -292,29 +294,67 @@ function formatProcessErrorDetails(
   ].join('\n')
 }
 
+function buildProcessErrorDialogPayload(
+  kind: 'uncaughtException' | 'unhandledRejection',
+  reason: unknown,
+  locale: AppUiLocale
+): ProcessErrorDialogPayload {
+  const S = getMainApplicationStrings(locale)
+  return {
+    kind,
+    title: S.processErrorTitle,
+    message: S.processErrorMessage,
+    detail: formatProcessErrorDetails(kind, reason, locale),
+    copyLabel: S.processErrorCopyDetails,
+    openLogLabel: S.processErrorOpenLog,
+    supportZipLabel: S.processErrorSupportZip,
+    closeLabel: S.processErrorClose
+  }
+}
+
+function reportProcessErrorToRenderer(
+  win: BrowserWindow | undefined,
+  payload: ProcessErrorDialogPayload
+): boolean {
+  if (
+    !win ||
+    win.isDestroyed() ||
+    win.webContents.isDestroyed() ||
+    win.webContents.isLoadingMainFrame()
+  ) {
+    return false
+  }
+  try {
+    win.webContents.send(mw.processErrorReported, payload)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export async function showProcessErrorDialog(
   kind: 'uncaughtException' | 'unhandledRejection',
   reason: unknown
 ): Promise<void> {
-  if (processErrorDialogOpen || !app.isReady()) {
+  if (!app.isReady()) {
+    return
+  }
+  const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+  const loc = requireAccess().mainDownloadsUiLocale()
+  const payload = buildProcessErrorDialogPayload(kind, reason, loc)
+  if (reportProcessErrorToRenderer(win, payload)) {
+    return
+  }
+  if (processErrorDialogOpen) {
     return
   }
   processErrorDialogOpen = true
-  const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
-  const loc = requireAccess().mainDownloadsUiLocale()
-  const S = getMainApplicationStrings(loc)
-  const detail = formatProcessErrorDetails(kind, reason, loc)
   const messageBoxOptions: Electron.MessageBoxOptions = {
     type: 'error',
-    title: S.processErrorTitle,
-    message: S.processErrorMessage,
-    detail,
-    buttons: [
-      S.processErrorCopyDetails,
-      S.processErrorOpenLog,
-      S.processErrorSupportZip,
-      S.processErrorClose
-    ],
+    title: payload.title,
+    message: payload.message,
+    detail: payload.detail,
+    buttons: [payload.copyLabel, payload.openLogLabel, payload.supportZipLabel, payload.closeLabel],
     defaultId: 3,
     cancelId: 3,
     noLink: true
@@ -325,7 +365,7 @@ export async function showProcessErrorDialog(
       : await dialog.showMessageBox(messageBoxOptions)
   processErrorDialogOpen = false
   if (result.response === 0) {
-    clipboard.writeText(detail)
+    clipboard.writeText(payload.detail)
   } else if (result.response === 1) {
     await openMainLogFile()
   } else if (result.response === 2) {

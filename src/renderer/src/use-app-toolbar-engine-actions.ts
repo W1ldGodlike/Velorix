@@ -29,7 +29,6 @@ export type UseAppToolbarEngineActionsDeps = {
 }
 
 export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps): {
-  toggleTheme: () => Promise<void>
   handleUiLocaleToggle: () => void
   handleOpenToolbar: () => Promise<void>
   handleOpenVideoFolderToolbar: () => Promise<void>
@@ -50,15 +49,6 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
     setAppSettingsOpen,
     setEnginePathsSaving
   } = deps
-
-  const toggleTheme = useCallback(async (): Promise<void> => {
-    const s = await window.velorix.settings.get()
-    if (s.theme === 'system') {
-      void window.velorix.settings.setTheme(s.effectiveTheme === 'dark' ? 'light' : 'dark')
-    } else {
-      void window.velorix.settings.setTheme(s.theme === 'dark' ? 'light' : 'dark')
-    }
-  }, [])
 
   const handleUiLocaleToggle = useCallback((): void => {
     const next: AppUiLocale = getUiLocale() === 'ru' ? 'en' : 'ru'
@@ -183,7 +173,6 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
   )
 
   return {
-    toggleTheme,
     handleUiLocaleToggle,
     handleOpenToolbar,
     handleOpenVideoFolderToolbar,

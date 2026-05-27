@@ -2,13 +2,22 @@ import type { JSX } from 'react'
 
 import { PreviewProbeBody } from './PreviewProbeBody'
 import { uiText } from '../locales/ui-text'
-import type { InspectorStandaloneAppModel } from '../use-inspector-standalone-app'
+import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
+import type { ProbeInspectorUiState } from '../inspector-workspace-probe-ui'
+import type { PreviewProbeSectionKey } from './media-probe-panel-helpers'
 
-export function InspectorStandaloneAppMain(
-  props: InspectorStandaloneAppModel & {
-    onOpenKnowledgeArticle?: (slug: string) => void
-  }
-): JSX.Element {
+export type InspectorWorkspaceMainProps = {
+  mediaPath: string | null
+  probePending: boolean
+  displayedProbeInfo: MediaProbeSuccess | null
+  displayedProbeError: string | null
+  probeUiPanels: ProbeInspectorUiState
+  persistProbeSection: (key: PreviewProbeSectionKey, open: boolean) => void
+  handleDrop: (files: FileList | null) => Promise<void>
+  onOpenKnowledgeArticle?: (slug: string) => void
+}
+
+export function InspectorWorkspaceMain(props: InspectorWorkspaceMainProps): JSX.Element {
   const {
     mediaPath,
     probePending,
@@ -21,10 +30,10 @@ export function InspectorStandaloneAppMain(
   } = props
 
   return (
-    <main
-      className="app-main inspector-standalone-main"
-      aria-label={uiText('inspectorStandaloneMainAria')}
-      aria-describedby={mediaPath ? undefined : 'inspector-standalone-empty-hint'}
+    <section
+      className="app-main inspector-workspace-main app-inspector-workspace-main"
+      aria-label={uiText('inspectorWorkspaceMainAria')}
+      aria-describedby={mediaPath ? undefined : 'inspector-workspace-empty-hint'}
       aria-busy={probePending}
       onDragOver={(event) => {
         event.preventDefault()
@@ -37,21 +46,21 @@ export function InspectorStandaloneAppMain(
       }}
     >
       <p
-        id="inspector-standalone-empty-hint"
-        className={mediaPath ? 'app-visually-hidden' : 'inspector-standalone-hint'}
+        id="inspector-workspace-empty-hint"
+        className={mediaPath ? 'app-visually-hidden' : 'inspector-workspace-hint'}
       >
-        {uiText('inspectorStandaloneEmptyHint')}
+        {uiText('inspectorWorkspaceEmptyHint')}
       </p>
       {!mediaPath ? (
         <div
           role="region"
-          aria-label={uiText('inspectorStandaloneEmptyRegionAria')}
-          aria-describedby="inspector-standalone-empty-hint"
+          aria-label={uiText('inspectorWorkspaceEmptyRegionAria')}
+          aria-describedby="inspector-workspace-empty-hint"
           aria-busy={probePending}
         />
       ) : null}
       {mediaPath && !displayedProbeInfo ? (
-        <p id="inspector-standalone-probe-hint" className="app-visually-hidden">
+        <p id="inspector-workspace-probe-hint" className="app-visually-hidden">
           {uiText('probePanelOverviewHint')}
         </p>
       ) : null}
@@ -59,17 +68,17 @@ export function InspectorStandaloneAppMain(
         <p
           className="app-preview-probe-error"
           role="alert"
-          aria-describedby="inspector-standalone-probe-hint inspector-standalone-empty-hint"
+          aria-describedby="inspector-workspace-probe-hint inspector-workspace-empty-hint"
         >
           {displayedProbeError}
         </p>
       ) : null}
       {displayedProbeInfo ? (
         <div
-          className="app-preview-probe inspector-standalone-probe"
+          className="app-preview-probe inspector-workspace-probe"
           aria-live="polite"
           role="region"
-          aria-label={uiText('inspectorStandaloneProbeStackAria')}
+          aria-label={uiText('inspectorWorkspaceProbeStackAria')}
           aria-describedby="probePanelOverviewHint"
           aria-busy={probePending && mediaPath !== null}
         >
@@ -92,15 +101,15 @@ export function InspectorStandaloneAppMain(
       ) : null}
       {mediaPath ? (
         <footer
-          className="inspector-standalone-path"
+          className="inspector-workspace-path"
           title={mediaPath}
-          aria-label={uiText('inspectorStandalonePathFooterAria')}
-          aria-describedby="inspector-standalone-empty-hint"
+          aria-label={uiText('inspectorWorkspacePathFooterAria')}
+          aria-describedby="inspector-workspace-empty-hint"
           aria-busy={probePending}
         >
           {mediaPath}
         </footer>
       ) : null}
-    </main>
+    </section>
   )
 }

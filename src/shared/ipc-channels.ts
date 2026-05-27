@@ -7,7 +7,6 @@
 export const mainWindowIpc = {
   settingsGet: 'velorix:settings-get',
   settingsSetUiLocale: 'velorix:settings-set-ui-locale',
-  settingsSetTheme: 'velorix:settings-set-theme',
   settingsSetFfmpegExportEncodePreset: 'velorix:settings-set-ffmpeg-export-encode-preset',
   settingsSetFfmpegExportVideoCodec: 'velorix:settings-set-ffmpeg-export-video-codec',
   settingsSetFfmpegExportContainer: 'velorix:settings-set-ffmpeg-export-container',
@@ -98,11 +97,10 @@ export const mainWindowIpc = {
   windowsFileAssociationUnregister: 'velorix:windows-file-association-unregister',
   openWindowsDefaultAppsSettings: 'velorix:open-windows-default-apps-settings',
   openDownloadsWindow: 'velorix:open-downloads-window',
-  /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
+  openDownloadsRoute: 'velorix:open-downloads-route',
+  /** §9 — открыть вкладку `Инспектор` в главном shell (внешние вызовы сохраняют совместимость). */
   openInspectorWindow: 'velorix:open-inspector-window',
-  inspectorBootstrap: 'velorix:inspector-bootstrap',
-  /** Main → renderer окна инспектора: проанализировать указанный путь. */
-  inspectorTargetMediaPath: 'velorix:inspector-target-media-path',
+  openInspectorRoute: 'velorix:open-inspector-route',
   exportStart: 'velorix:export-start',
   exportBenchmarkEncoders: 'velorix:export-benchmark-encoders',
   exportBenchmarkProgress: 'velorix:export-benchmark-progress',
@@ -147,8 +145,10 @@ export const mainWindowIpc = {
   snapshotFrame: 'velorix:snapshot-frame',
   logRenderer: 'velorix:log-renderer',
   previewOpened: 'velorix:preview-opened',
-  themeChanged: 'velorix:theme-changed',
   uiLocaleChanged: 'velorix:ui-locale-changed',
+  quitConfirmRequested: 'velorix:quit-confirm-requested',
+  quitConfirmRespond: 'velorix:quit-confirm-respond',
+  processErrorReported: 'velorix:process-error-reported',
   openEnginePaths: 'velorix:open-engine-paths',
   /** Main → renderer: открыть единое окно настроек; payload — `AppSettingsDialogSection` или пусто. */
   openSettings: 'velorix:open-settings',
@@ -193,11 +193,11 @@ export const mainWindowIpc = {
   openWorkflowScenarioBuilder: 'velorix:open-workflow-scenario-builder',
   /** Main → все окна с главным preload: актуальный снимок `mainWindowUiPanels` после merge §4.1. */
   mainWindowUiPanelsChanged: 'velorix:main-window-ui-panels-changed',
-  /** Main → главное окно: снимок `downloadsWindowUiPanels` после merge (вкладка «Загрузки» ↔ pop-out). */
+  /** Main → shell: снимок `downloadsWindowUiPanels` после merge (вкладка «Загрузки»). */
   downloadsWindowUiPanelsChanged: 'velorix:downloads-window-ui-panels-changed',
-  /** Main → вкладка «Загрузки» и pop-out: каталог вывода yt-dlp после pick/clear/merge settings. */
+  /** Main → shell-вкладка «Загрузки»: каталог вывода yt-dlp после pick/clear/merge settings. */
   downloadsOutputDirectoryChanged: 'velorix:downloads-output-directory-changed',
-  /** Main → вкладка «Загрузки» и pop-out: yt-dlp CLI/options изменились (клиенты делают getCliOptions). */
+  /** Main → shell-вкладка «Загрузки»: yt-dlp CLI/options изменились (клиенты делают getCliOptions). */
   downloadsCliOptionsChanged: 'velorix:downloads-cli-options-changed'
 } as const
 

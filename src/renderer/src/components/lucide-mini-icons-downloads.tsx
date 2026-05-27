@@ -28,17 +28,11 @@ export const IconCopy = createLucideMiniIcon(QUEUE_ROW_ACTION_ICONS.copy, {
   defaultSize: 18
 })
 
-/** §6 — отдельное окно yt-dlp (pop-out), тот же глиф, что external-link в очереди. */
-export const IconPopOutWindow = createLucideMiniIcon(DOWNLOADS_TOPBAR_CLUSTER_ICONS.popOutWindow, {
-  titleKey: 'miniIconPopOutWindow',
-  defaultSize: 18
-})
-
 export const IconFilm = createLucideMiniIcon(DOWNLOADS_TOPBAR_CLUSTER_ICONS.film, {
   titleKey: 'miniIconFilm'
 })
 
-/** §6 rail — «По умолчанию» для каталога (тот же `home`, что топбар pop-out). */
+/** §6 rail — «По умолчанию» для каталога (тот же `home`, что в топбаре загрузок). */
 export const IconHome = createLucideMiniIcon(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home, {
   titleKey: 'miniIconHome',
   defaultSize: 18
@@ -67,7 +61,7 @@ export const IconQueueChevronDown = createLucideMiniIcon(QUEUE_ROW_ACTION_ICONS.
   defaultSize: 18
 })
 
-/** §6 — добавить URL в очередь (lucide `plus`, тот же путь, что `RowIco.plus` в pop-out). */
+/** §6 — добавить URL в очередь (lucide `plus`, тот же путь, что `RowIco.plus` в очереди). */
 export const IconQueuePlus = createLucideMiniIcon(QUEUE_ROW_ACTION_ICONS.plus, {
   titleKey: 'miniIconQueuePlus',
   defaultSize: 18

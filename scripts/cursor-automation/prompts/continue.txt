@@ -1,3 +1,3 @@
-Продолжай или + — равнозначно. Sprint: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`. Skills: `.cursor/skills/velorix-continue/SKILL.md`, journal-entry при diff. Rules: `velorix-agent.mdc`.
+Продолжай или + — равнозначно. Срез: `docs/VELORIX_NEON_THEME.md` → sprint `docs/IMPLEMENTATION_NEON_CHECKLIST.md`. Запрещено: `docs/archive/*`. Skills: velorix-continue, journal-entry при diff.
 
 Конец: `check:quiet` → при diff `journal:stamp` + одна J. Git по J: `NNN % 5` → commit, `NNN % 10` → push; **следующий commit по J** **J-1580** — `velorix-agent.mdc`. Контракт: `scripts/cursor-automation/prompts/agent-contract.txt`.

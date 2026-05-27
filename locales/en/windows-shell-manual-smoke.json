@@ -11,5 +11,5 @@
   "windowsShellSmokeStep_unregister": "(Optional) «Unregister» removes Explorer entries; re-register works.",
   "windowsShellSmokePass0": "A second shell-open while the app is running does not spawn another process.",
   "windowsShellSmokePass1": "NSIS install/uninstall (if testing the installer) — register/unregister without errors in the log.",
-  "windowsShellSmokePass2": "Support ZIP includes ownerManualSmoke: with the shell block (on Windows)."
+  "windowsShellSmokePass2": "Support ZIP includes ownerHardwareChecklist: with the shell block (on Windows)."
 }

@@ -17,7 +17,7 @@ import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
 import { isDownloadsLogPayload, sanitizeDownloadsWindowUiPanelState } from './preload-sanitize'
 
-/** downloads.* — очередь yt-dlp, история, pop-out sync (main preload). */
+/** downloads.* — очередь yt-dlp, история, shell sync (main preload). */
 export const velorixDownloads = {
   openWindow: (
     initial?: string | { text?: string; uiLocale?: 'ru' | 'en' } | null
@@ -123,12 +123,12 @@ export const velorixDownloads = {
       ipcRenderer.removeListener(d.log, handler)
     }
   },
-  /** Общее с pop-out §6: `downloadsWindowUiPanels` в settings (санитайз в main). */
+  /** §6: `downloadsWindowUiPanels` в settings (санитайз в main). */
   mergeUiPanels: (
     patch: Partial<DownloadsWindowUiPanelState>
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(d.mergeUiPanels, patch),
-  /** Main → renderer: полный снимок панелей после merge (вкладка «Загрузки» и pop-out). */
+  /** Main → renderer: полный снимок панелей после merge (shell-вкладка «Загрузки»). */
   onDownloadsWindowUiPanelsChanged: (
     listener: (panels: DownloadsWindowUiPanelState) => void
   ): (() => void) => {
@@ -141,7 +141,7 @@ export const velorixDownloads = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
-  /** Main → renderer: каталог вывода yt-dlp после pick/clear (вкладка «Загрузки» ↔ pop-out). */
+  /** Main → renderer: каталог вывода yt-dlp после pick/clear (shell-вкладка «Загрузки»). */
   onDownloadsOutputDirectoryChanged: (
     listener: (snap: DownloadsOutputDirectorySnapshot) => void
   ): (() => void) => {

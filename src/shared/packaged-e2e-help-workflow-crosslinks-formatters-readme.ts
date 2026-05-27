@@ -26,8 +26,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
-    ? '[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).'
-    : '[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).'
+    ? '[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (после `pack:dir`).'
+    : '[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir`).'
 }
 
 /** EN vs RU crosslinks count snippet for a Help path (`Help/en/…` → EN). */
@@ -109,8 +109,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksSettingsCopyAppendixHintB
   const intro = locale === 'ru' ? '«Скопировать» дописывает ' : 'Copy checklist also appends '
   const sameBlock =
     locale === 'ru'
-      ? ' — тот же блок, что в ownerManualSmoke: и releaseSmoke:.'
-      : ' — same block as ownerManualSmoke: and releaseSmoke:.'
+      ? ' — тот же блок, что в ownerHardwareChecklist: и releaseSmoke:.'
+      : ' — same block as ownerHardwareChecklist: and releaseSmoke:.'
   return (
     intro +
     formatPackagedE2eHelpWorkflowCrosslinksSettingsCopyAppendixGroupsParenthetical(locale) +
@@ -222,7 +222,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine(): st
 
 /** bin/README — registry guard requires partition in all workflow Help. */
 export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine(): string {
-  return `- Help workflow crosslinks (\`formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine\`): \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` — user footer (\`owner-manual-smoke\` + \`packaged-windows-smoke\`) in all ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow Help; sync \`node scripts/maint/sync-help-workflow-user-footers.mjs\`.`
+  return `- Help workflow crosslinks (\`formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine\`): \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` — user footer (\`about-support-logs\` + \`packaged-windows-smoke\`) in all ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow Help; sync \`node scripts/maint/sync-help-workflow-user-footers.mjs\`.`
 }
 
 /** Help §15 anchor articles with explicit crosslinks count (RU). */
@@ -241,11 +241,11 @@ export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLi
 
 /** Knowledge hub Help (RU+EN) — §13 workflow crosslinks dev line. */
 
-/** All Help files checked by `check:help-owner-smoke-docs` (same 8 as count anchors). */
+/** All Help files checked by `check:help-owner-hardware-checklist-docs` (same 8 as count anchors). */
 
 /** Guard substring in Help owner/about/packaged (`check:help-*-smoke-docs`). */
 
-/** Required substrings — `check:help-owner-smoke-docs` / `check:help-packaged-smoke-docs`. */
+/** Required substrings — `check:help-owner-hardware-checklist-docs` / `check:help-packaged-smoke-docs`. */
 
 /** Planner Help — user crosslinks only (dev §21 guards live in owner/about/logging). */
 

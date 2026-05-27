@@ -95,7 +95,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     `terminal hints shards: ${formatTerminalContractHintsDiagnosticLine()}`,
     formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnosticLine(),
     'packaged owner-smoke: npm run check:packaged-manual-smoke-parity (win/linux/macos Step_* + meta)',
-    'owner visual smoke: npm run check:owner-visual-smoke-locale (theme/HiDPI settings.json ru/en)',
+    'owner visual smoke: npm run check:owner-hardware-checklist-locale (theme/HiDPI settings.json ru/en)',
     'packaging scripts: npm run check:platform-packaging-scripts (PLATFORM_PACKAGING_NPM_SCRIPTS)',
     `help workflow smoke: ${formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine()}`,
     `help workflow partition: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}`,

@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useId,
   useMemo,
@@ -12,13 +13,19 @@ import {
   APP_SETTINGS_DIALOG_SECTIONS,
   type AppSettingsDialogSection
 } from '../../../../shared/app-settings-dialog-section'
-import type { AppTheme } from '../../../../shared/settings-contract'
 import type { EditorUrlPasteBehaviorId } from '../../../../shared/editor-url-paste-behavior'
 import type { AppUiLocale } from '../../../../shared/app-ui-locale'
 import type { EngineId } from '../../../../shared/engine-contract'
 import type { EnginePathsDraft } from '../../app-engines-ui'
 import type { WorkspaceTab } from '../../app-terminal-hint-ui'
+import { hydrateEditorExportFieldsFromSettings } from '../../editor-export-settings-hydrate'
 import { uiText } from '../../locales/ui-text'
+import {
+  EditorFfmpegBenchmarkPanel,
+  type EditorFfmpegBenchmarkPanelProps
+} from '../editor/EditorFfmpegBenchmarkPanel'
+import type { LastFfmpegError } from '../../stores/app-shell-store'
+import { useExportSettingsStore } from '../../stores/export-settings-store'
 import {
   AppSettingsDefaultsPane,
   AppSettingsGeneralPane,
@@ -27,6 +34,7 @@ import {
   AppSettingsResetPane,
   SettingsDialogHeaderTitle
 } from './app-settings-dialog-panes'
+import { AppSettingsPluginsPane } from './AppSettingsPluginsPane'
 import {
   APP_SETTINGS_SECTION_HINT_KEYS as SECTION_HINT_KEYS,
   APP_SETTINGS_SECTION_LABEL_KEYS as SECTION_LABEL_KEYS
@@ -41,7 +49,6 @@ export type AppSettingsDialogProps = {
   presentation?: 'dialog' | 'embedded'
   onExitEmbedded?: () => void
   onStatus: (message: string) => void
-  setTheme: Dispatch<SetStateAction<'dark' | 'light'>>
   onUiLocalePersisted: (locale: AppUiLocale) => void
   editorUrlPasteBehavior: EditorUrlPasteBehaviorId
   setEditorUrlPasteBehavior: Dispatch<SetStateAction<EditorUrlPasteBehaviorId>>
@@ -60,6 +67,9 @@ export type AppSettingsDialogProps = {
   onSaveEnginePaths: () => void
   resetBusy: boolean
   setResetBusy: Dispatch<SetStateAction<boolean>>
+  editorFfmpegBenchmark?: EditorFfmpegBenchmarkPanelProps
+  lastFfmpegError?: LastFfmpegError | null
+  setLastFfmpegError?: Dispatch<SetStateAction<LastFfmpegError | null>>
 }
 
 export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | null {
@@ -71,7 +81,6 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     presentation = 'dialog',
     onExitEmbedded,
     onStatus,
-    setTheme,
     onUiLocalePersisted,
     editorUrlPasteBehavior,
     setEditorUrlPasteBehavior,
@@ -87,7 +96,10 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     onCheckEngineUpdates,
     onSaveEnginePaths,
     resetBusy,
-    setResetBusy
+    setResetBusy,
+    editorFfmpegBenchmark,
+    lastFfmpegError,
+    setLastFfmpegError
   } = props
 
   const dialogHintId = useId()
@@ -95,26 +107,15 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
   const [downloadsOutputPath, setDownloadsOutputPath] = useState<string | null>(null)
   const [batchOutputPath, setBatchOutputPath] = useState<string | null>(null)
   const [resetConfirm, setResetConfirm] = useState(false)
-  const [themePref, setThemePref] = useState<AppTheme>('dark')
   const [confirmCloseOnQuit, setConfirmCloseOnQuit] = useState(true)
+  const exportSettings = useExportSettingsStore()
   const shellBusy = enginePathsSaving || resetBusy
-
-  const onThemePrefChange = useMemo(
-    () => (pref: AppTheme) => {
-      void window.velorix.settings.setTheme(pref).then((s) => {
-        setThemePref(pref)
-        setTheme(s.effectiveTheme)
-      })
-    },
-    [setTheme]
-  )
 
   useEffect(() => {
     if (!open) {
       return
     }
     void window.velorix.settings.get().then((s) => {
-      setThemePref(s.theme)
       setConfirmCloseOnQuit(s.confirmCloseOnQuit !== false)
     })
     void window.velorix.downloads.getOutputDirectory().then((dir) => {
@@ -140,6 +141,20 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
   }, [open, section, setEnginePathsDraft])
 
   const sectionTitle = uiText(SECTION_LABEL_KEYS[section])
+  const ffmpegErrorSourceLabel =
+    lastFfmpegError?.source === 'export'
+      ? uiText('appSettingsFfmpegErrorSourceExport')
+      : lastFfmpegError?.source === 'snapshot'
+        ? uiText('appSettingsFfmpegErrorSourceSnapshot')
+        : lastFfmpegError?.source === 'extractFrames'
+          ? uiText('appSettingsFfmpegErrorSourceExtractFrames')
+          : lastFfmpegError?.source === 'videoSprite'
+            ? uiText('appSettingsFfmpegErrorSourceVideoSprite')
+            : lastFfmpegError?.source === 'batch'
+              ? uiText('appSettingsFfmpegErrorSourceBatch')
+              : lastFfmpegError?.source === 'benchmark'
+                ? uiText('appSettingsFfmpegErrorSourceBenchmark')
+                : null
 
   const nav = useMemo(
     () =>
@@ -150,6 +165,11 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
       })),
     [section]
   )
+  const syncExternalFilterSettings = useCallback(() => {
+    void window.velorix.settings.get().then((loaded) => {
+      hydrateEditorExportFieldsFromSettings(loaded, exportSettings)
+    })
+  }, [exportSettings])
 
   if (!open) {
     return null
@@ -228,8 +248,6 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
             <AppSettingsGeneralPane
               sectionHintId={sectionHintId}
               shellBusy={shellBusy}
-              themePref={themePref}
-              onThemePrefChange={onThemePrefChange}
               onUiLocalePersisted={onUiLocalePersisted}
               confirmCloseOnQuit={confirmCloseOnQuit}
               setConfirmCloseOnQuit={setConfirmCloseOnQuit}
@@ -266,6 +284,82 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                 onCheckEngineUpdates={onCheckEngineUpdates}
                 onSave={onSaveEnginePaths}
               />
+            </div>
+          ) : null}
+
+          {section === 'system' ? (
+            <div className="app-settings-stack">
+              <AppSettingsPluginsPane
+                sectionHintId={sectionHintId}
+                onStatus={onStatus}
+                onApplied={syncExternalFilterSettings}
+              />
+              <section
+                className="app-settings-system-error"
+                aria-labelledby={`${dialogHintId}-ffmpeg-error-title`}
+                aria-describedby={sectionHintId}
+              >
+                <div className="app-settings-row">
+                  <span
+                    id={`${dialogHintId}-ffmpeg-error-title`}
+                    className="app-settings-row-label"
+                  >
+                    {uiText('appSettingsFfmpegErrorTitle')}
+                  </span>
+                </div>
+                <p className="app-modal-hint">
+                  {ffmpegErrorSourceLabel
+                    ? `${uiText('appSettingsFfmpegErrorSourceLabel')}: ${ffmpegErrorSourceLabel}`
+                    : uiText('appSettingsFfmpegErrorEmpty')}
+                </p>
+                <pre className="app-settings-system-error-detail">
+                  {lastFfmpegError?.detail ?? uiText('appSettingsFfmpegErrorEmptyDetail')}
+                </pre>
+                <div
+                  className="app-settings-actions"
+                  role="toolbar"
+                  aria-orientation="horizontal"
+                  aria-label={uiText('appSettingsFfmpegErrorToolbarAria')}
+                >
+                  <button
+                    type="button"
+                    className="app-btn"
+                    disabled={!lastFfmpegError}
+                    onClick={() => {
+                      if (!lastFfmpegError) {
+                        return
+                      }
+                      void window.velorix.clipboard
+                        .writeText(lastFfmpegError.detail)
+                        .then((result) => {
+                          onStatus(
+                            result.ok
+                              ? uiText('appSettingsFfmpegErrorCopied')
+                              : uiText('appSettingsFfmpegErrorCopyFailed')
+                          )
+                        })
+                    }}
+                  >
+                    {uiText('appSettingsFfmpegErrorCopy')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn"
+                    disabled={!lastFfmpegError || !setLastFfmpegError}
+                    onClick={() => {
+                      setLastFfmpegError?.(null)
+                    }}
+                  >
+                    {uiText('appSettingsFfmpegErrorClear')}
+                  </button>
+                </div>
+              </section>
+              {editorFfmpegBenchmark ? (
+                <EditorFfmpegBenchmarkPanel
+                  {...editorFfmpegBenchmark}
+                  describedById={sectionHintId}
+                />
+              ) : null}
             </div>
           ) : null}
 

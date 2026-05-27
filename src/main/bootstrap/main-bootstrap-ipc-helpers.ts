@@ -1,6 +1,6 @@
 import { basename } from 'path'
 
-import { BrowserWindow, app, ipcMain } from 'electron'
+import { app, ipcMain } from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
@@ -10,7 +10,6 @@ import {
   type AppUiLocale
 } from '../../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../../shared/main-application-locale'
-import { isInspectorWindow } from '../windows/inspector-window'
 import { logFromRendererSafe } from '../core/logger-service'
 
 /** Совпадает с лимитом буфера обмена в main: защита от огромных строк из renderer. */
@@ -154,10 +153,7 @@ export function isMainWindowSender(event: IpcMainEvent): boolean {
 
 export function isMainWindowUiPanelSender(event: IpcMainInvokeEvent): boolean {
   const id = requireAccess().getMainWindowWebContentsId()
-  if (id !== null && event.sender.id === id) {
-    return true
-  }
-  return isInspectorWindow(BrowserWindow.fromWebContents(event.sender))
+  return id !== null && event.sender.id === id
 }
 
 export function clearRendererLogBucket(webContentsId: number): void {

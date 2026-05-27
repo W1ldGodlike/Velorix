@@ -12,7 +12,7 @@ import {
   getPackagedManualSmokePlainTextForUiLocale,
   PACKAGED_MANUAL_SMOKE_E2E_APPENDIX_HEADING
 } from '../../src/shared/packaged-manual-smoke-plain-text'
-import { getOwnerManualSmokePackagedSectionForUiLocale } from '../../src/shared/owner-manual-smoke-packaged-section'
+import { getOwnerHardwareChecklistPackagedSectionForUiLocale } from '../../src/shared/owner-hardware-checklist-packaged-section'
 
 describe('packaged-manual-smoke-plain-text §3', () => {
   it('win en copy includes owner meta, launch step id, and §21 e2e appendix', () => {
@@ -53,7 +53,7 @@ describe('packaged-manual-smoke-plain-text §3', () => {
   })
 
   it('checklist body matches owner packaged section plus §21 appendix', () => {
-    const section = getOwnerManualSmokePackagedSectionForUiLocale('en', 'win32')
+    const section = getOwnerHardwareChecklistPackagedSectionForUiLocale('en', 'win32')
     expect(section).not.toBeNull()
     const plain = getPackagedManualSmokePlainTextForUiLocale('win', 'en')
     const body = section!.lines.join('\n')

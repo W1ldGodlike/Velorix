@@ -50,7 +50,7 @@ export interface SupportBundleRuntimeInfo {
   /** §10 — ручной smoke OS scheduler watch-folder. */
   workflowOsSchedulerSmokeChecklistLines: readonly string[]
   /** §16/§1.1/§10 — единый пакет owner smoke (HiDPI + HW + OS scheduler). */
-  ownerManualSmokeBundleLines: readonly string[]
+  ownerHardwareChecklistBundleLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {

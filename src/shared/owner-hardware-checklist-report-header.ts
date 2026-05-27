@@ -1,6 +1,6 @@
 import { formatAboutBuildIdDisplay, formatBuiltAtUtcLine } from './app-build-info'
 
-export type OwnerManualSmokeBundleReportHeader = {
+export type OwnerHardwareChecklistReportHeader = {
   appName: string
   appVersion: string
   buildId: string
@@ -9,11 +9,11 @@ export type OwnerManualSmokeBundleReportHeader = {
 }
 
 /** Строки в начале буфера при «Скопировать весь пакет» (не в Support ZIP). */
-export function formatOwnerManualSmokeBundleReportHeaderLines(
-  header: OwnerManualSmokeBundleReportHeader
+export function formatOwnerHardwareChecklistReportHeaderLines(
+  header: OwnerHardwareChecklistReportHeader
 ): string[] {
   const lines = [
-    'report: owner-manual-smoke (owner hardware, not CI)',
+    'report: owner-hardware-checklist (owner hardware, not CI)',
     `app: ${header.appName} ${header.appVersion}`,
     `buildId: ${formatAboutBuildIdDisplay(header.buildId)}`
   ]
@@ -27,7 +27,7 @@ export function formatOwnerManualSmokeBundleReportHeaderLines(
   return lines
 }
 
-export function prependOwnerManualSmokeReportHeader(
+export function prependOwnerHardwareChecklistReportHeader(
   checklistPlainText: string,
   headerLines: readonly string[]
 ): string {

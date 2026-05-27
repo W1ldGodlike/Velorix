@@ -1,8 +1,7 @@
 import type { JSX } from 'react'
 
-import { IconBan, IconPopOutWindow, IconQueuePlus, IconQueueTrash } from '../LucideMiniIcons'
-import { getUiLocale, uiText, uiTextVars } from '../../locales/ui-text'
-import { isDownloadsStandaloneSurface } from '../../renderer-surface'
+import { IconBan, IconQueuePlus, IconQueueTrash } from '../LucideMiniIcons'
+import { uiText, uiTextVars } from '../../locales/ui-text'
 import type { DownloadsWorkspaceMainProps } from './downloads-workspace-main-props'
 
 export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): JSX.Element {
@@ -16,9 +15,6 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
     downloadsRows,
     setStatusHint
   } = props
-
-  const standaloneSurface = isDownloadsStandaloneSurface()
-  const pageHintKey = standaloneSurface ? 'downloadsStandalonePageHint' : 'downloadsPageHint'
 
   return (
     <>
@@ -38,34 +34,8 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
         >
           <h2 className="app-downloads-title">{uiText('downloadsPageTitle')}</h2>
           <p id="downloads-page-hint" className="app-downloads-hint">
-            {uiText(pageHintKey)}
+            {uiText('downloadsPageHint')}
           </p>
-        </div>
-        <div
-          className="app-downloads-actions"
-          role="toolbar"
-          aria-orientation="horizontal"
-          aria-label={uiText('downloadsBandToolbarAria')}
-          aria-describedby="downloads-page-hint"
-          aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-        >
-          {standaloneSurface ? null : (
-            <button
-              type="button"
-              className="app-btn app-btn-icon-leading"
-              aria-describedby="downloads-page-hint"
-              title={uiText('downloadsPopOut')}
-              onClick={() => {
-                void window.velorix.downloads.openWindow({
-                  ...(downloadsUrl.trim().length > 0 ? { text: downloadsUrl } : {}),
-                  uiLocale: getUiLocale()
-                })
-              }}
-            >
-              <IconPopOutWindow title="" size={17} />
-              {uiText('downloadsPopOut')}
-            </button>
-          )}
         </div>
       </div>
       <div

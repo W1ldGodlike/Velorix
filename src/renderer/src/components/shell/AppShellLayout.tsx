@@ -55,28 +55,33 @@ export function AppShellLayout({
         </div>
       </div>
       <AppOverlayDialogs {...overlay} workspaceTab={topbar.workspaceTab} />
-      <ExportPresetNameDialog {...exportPreset} />
+      {topbar.workspaceTab !== 'tools' ? <ExportPresetNameDialog {...exportPreset} /> : null}
       {appSettings.open && topbar.workspaceTab !== 'settings' ? (
         <Suspense fallback={<AppLazyPanelFallback />}>
-          <LazyAppSettingsDialog {...appSettings} />
+          <LazyAppSettingsDialog
+            {...appSettings}
+            editorFfmpegBenchmark={workspaceMain.editorFfmpeg}
+          />
         </Suspense>
       ) : null}
-      {externalFilterScript.open ? (
+      {externalFilterScript.open &&
+      topbar.workspaceTab !== 'tools' &&
+      topbar.workspaceTab !== 'settings' ? (
         <Suspense fallback={<AppLazyPanelFallback />}>
           <LazyExternalFilterScriptDialog {...externalFilterScript} />
         </Suspense>
       ) : null}
-      {mediaFileUtilities.open ? (
+      {mediaFileUtilities.open && topbar.workspaceTab !== 'tools' ? (
         <Suspense fallback={<AppLazyPanelFallback />}>
           <LazyMediaFileUtilitiesDialog {...mediaFileUtilities} />
         </Suspense>
       ) : null}
-      {workflowPlanner.open ? (
+      {workflowPlanner.open && topbar.workspaceTab !== 'planner' ? (
         <Suspense fallback={<AppLazyPanelFallback />}>
           <LazyWorkflowPlannerDialog {...workflowPlanner} />
         </Suspense>
       ) : null}
-      {workflowScenarioBuilder.open ? (
+      {workflowScenarioBuilder.open && topbar.workspaceTab !== 'scenarios' ? (
         <Suspense fallback={<AppLazyPanelFallback />}>
           <LazyWorkflowScenarioBuilderDialog {...workflowScenarioBuilder} />
         </Suspense>

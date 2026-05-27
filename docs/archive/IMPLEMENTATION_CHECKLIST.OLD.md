@@ -1,14 +1,16 @@
-# Velorix — рабочий чек-лист реализации
+# Velorix — рабочий чек-лист реализации (ARCHIVE)
 
-Источник требований: **[`VELORIX_TZ.md`](VELORIX_TZ.md)**. **Запрещено** правки ТЗ без **явной просьбы владельца** (глоссарий `velorix-rules-explicit.mdc`). Состояние по §, спринту и TODO — **в этом файле**; **ручная проверка на железе (владелец)** — в **[`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)**; хронологию решений и длинные заметки — в **[`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md)**.
+> **ARCHIVE — матрица по старому ТЗ, не навигатор.** Активный чеклист: [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](../IMPLEMENTATION_NEON_CHECKLIST.md). «продолжай» / `+` → [`docs/VELORIX_NEON_THEME.md`](../VELORIX_NEON_THEME.md).
 
-**Канон формата спринта и меток — этот файл** (раздел «Ближайший TODO спринта» ниже). Исполняемая копия для Cursor: [`.cursor/rules/velorix-checklist.mdc`](.cursor/rules/velorix-checklist.mdc). Иерархия: [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md). «продолжай» / `+`: [`.cursor/skills/velorix-continue/SKILL.md`](.cursor/skills/velorix-continue/SKILL.md).
+Источник требований (исторически): **[`VELORIX_TZ.OLD.md`](VELORIX_TZ.OLD.md)**. **Запрещено** правки ТЗ без **явной просьбы владельца** (глоссарий `velorix-rules-explicit.mdc`). Состояние по § и историческому прогрессу — **в этом файле** (матрица, не навигатор агента). **Работа агента по UI/UX/NEON:** [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md). Хронология — **[`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md)**.
 
-**Нумерация:** как в [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) — **N.M.K** по § ТЗ (`### §6.3` → **6.3.1**, **6.3.2**, …; `## §19` без подраздела → **19.1**, **19.2**, …). Исключения: **snap.*** — «Текущий снимок»; **sprint.*** — спринт; **0.E.*** — этапы §0. Ручная проверка на железе — только в manual-файле (**19.1.1** там ≠ **19.8** здесь).
+**Канон формата меток — этот файл.** **Запрещено:** брать «продолжай» / `+` только из этого файла — канон в [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md). Исполняемая копия формата: [`.cursor/rules/velorix-checklist.mdc`](.cursor/rules/velorix-checklist.mdc). Иерархия: [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md). «продолжай» / `+`: [`.cursor/skills/velorix-continue/SKILL.md`](.cursor/skills/velorix-continue/SKILL.md).
+
+**Нумерация:** **N.M.K** по § ТЗ (`### §6.3` → **6.3.1** …). Исключения: **snap.*** — снимок; **sprint.*** — история Variant A; **0.E.*** — этапы §0. Ручная проверка на железе (владелец) — Support ZIP `ownerHardwareChecklist:` (О программе → архив).
 
 ## Готовность полного итога
 
-- **Оценка: ~58%**. Функциональное ядро Electron/React/Zustand уже покрывает yt-dlp §6, ffmpeg + batch §7.3, терминал §8, инспектор §9, workflows §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностику §18, CI/release и guards `check:quiet`; но **Variant A / single-NEON shell ещё не доведён**: refs `1–27`, route map, shell-поверхности, удаление legacy theme/pop-out runtime и ручная приёмка владельца остаются крупным открытым пластом.
+- **Оценка: ~72%**. **Variant A VA.1–VA.5** закрыты в коде; **открыто для агента:** Phase D и пробелы VA в [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md) (визуал 1:1, UI/UX, функционал под PNG).
 
 ## Легенда
 
@@ -26,17 +28,17 @@
 - [x] **snap.5** Есть `package.json`, `electron-vite`, `electron-builder`, ESLint, Prettier, TypeScript-конфиги.
 - [x] **snap.6** Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] **snap.7** Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
-- [~] **snap.8** В runtime ещё живёт legacy-предпочтение `dark` / `light` / `system`, но продуктовый канон уже переключён на **единственный VELORIX NEON UI**; следующий этап — убрать selector, persist и menu wiring старых тем.
-- [~] **snap.9** Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`velorixmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **263 / 1885** (локальная проверка 2026-05-26; синхрон с «Тестовый раннер»).
-- [~] **snap.10** Есть `Data/`, `Help/`, `VELORIX_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки); `npm run audit:inventory` → **1158** файлов в `docs/audit-manifest.json` (локальная проверка 2026-05-26).
+- [x] **snap.8** Продуктовый runtime — **единственный VELORIX NEON UI** (`dark` persist fallback); selector/menu `dark`/`light`/`system` и theme IPC сняты (**J-1653**).
+- [~] **snap.9** Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`velorixmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **263 / 1884** (локальная проверка 2026-05-27; синхрон с «Тестовый раннер»).
+- [~] **snap.10** Есть `Data/`, `Help/`, `VELORIX_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки); `npm run audit:inventory` → **1156** файлов в `docs/audit-manifest.json` (локальная проверка 2026-05-27).
 - [x] **snap.11** Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] **snap.12** ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW §16** (resolve + spawn CPU fallback); редкие фильтры — дальше.
 - [~] **snap.13** Движки: Win `engines:prepare:win` (+ `predev`); mac/linux `engines:prepare:mac|linux` (`prepare-engines-unix.mjs`) + `engines:doctor`; SHA256 через `trusted_hashes.json`; `bin/` → `resources/bin` (`extraResources`); бинарники в Git не коммитятся (J-1601).
 - [x] **snap.14** Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; справка и owner-smoke синхронизируются со sprint-guards.
-- [~] **snap.15** Основная поверхность `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log и историю; legacy `#downloads` ещё жив как переходный маршрут, но **не** является целевым UX Variant A.
-- [~] **snap.16** Инспектор пока split: в редакторе — короткая строка под таймлайном, подробная сводка и таблицы живут в legacy `#inspector`; целевой Variant A — встроенная инспекторная поверхность единого shell по референсу.
-- [x] **snap.17** Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`263 test files / 1885 tests`** (локальная проверка 2026-05-26); `npm run check:quiet` проходит (lint, typecheck, Vitest, doc/guards, `check:scripts-wiring`, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
-- [~] **snap.18** Нижние § этого файла — матрица покрытия ТЗ и исторического прогресса, а **не** автоматический список следующего шага для агента. Для `продолжай` канон: **текущая задача → `## Ближайший TODO спринта` → [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md) § Variant A / workstream'ы**.
+- [x] **snap.15** Поверхность `Загрузки` — shell-route в едином NEON (`openDownloadsWindow` → refocus main); очередь, rail, log, history, pause/resume; pop-out runtime снят (**J-1651..1655**).
+- [x] **snap.16** Инспектор: полная ffprobe-сводка на shell-route `inspector` (`InspectorWorkspaceConnected`); под таймлайном редактора — короткая строка (`VideoTimeline`); pop-out/hash-bootstrap снят (**J-1640**, **J-1652**).
+- [x] **snap.17** Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`263 test files / 1884 tests`** (локальная проверка 2026-05-27); `npm run check:quiet` проходит (lint, typecheck, Vitest, doc/guards, `check:scripts-wiring`, 3 audit). Домены: yt-dlp §6, ffmpeg §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, toolchain baseline test.
+- [~] **snap.18** Нижние § — матрица покрытия ТЗ. Для `продолжай` канон: **текущая задача → [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md)** (Phase D, refs 1–27, открытые пробелы VA).
 
 ## Журнал решений и проверок
 
@@ -44,14 +46,13 @@
 
 ## Ближайший TODO спринта
 
-Правило: **это главный навигатор для `продолжай`**, а не архив. 3–7 пунктов, ≤220 символов. **Если** нижние `[x]/[~]` конфликтуют с текущим каноном Variant A, для агента выигрывают **этот блок** и [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md). **Запрещено:** Vitest «на guard» без нового `scripts/gate/*.mjs`; пункты ради счётчика тестов. **sprint.7 — в конце**, когда ниже нечего делать агенту. Ручная приёмка на железе — только [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
+Правило: **архив Variant A** (sprint.1–5). **Навигатор агента для `продолжай` / `+`:** [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md) — Phase D, refs 1–27, «Открытые пробелы VA». **Запрещено:** Vitest «на guard» без нового `scripts/gate/*.mjs`.
 
-- [~] **sprint.1** Global shell / Phase D: foundation готов, `Настройки` и `База знаний` уже shell-surface; дальше по одному заменить bridge для `История` / `Инспектор` / `Планировщик` / `Сценарии` / `Инструменты`.
-- [ ] **sprint.2** Tools hub и refs `10–20`: перенести menu/dialog утилиты в NEON-поверхности `Инструменты`, `О программе`, file maintenance, image conversion, noise/slideshow, scenario builder, engine paths, first-run.
-- [ ] **sprint.3** System / recovery и refs `21–25`: quit confirm, FFmpeg error, critical crash, encoder benchmark, plugins manager как целевые поверхности Variant A.
-- [ ] **sprint.4** Component-state sign-off и refs `26–27`: UI State Showcase + UI Components/States как обязательный QA-канон reusable состояний.
-- [ ] **sprint.5** Удаление legacy theme/pop-out runtime: `dark` / `light` / `system`, `#downloads` / `#inspector`, stale scripts/tests/guards — только после переноса поведения в единый shell.
-- [ ] **sprint.7** **(последний)** Ручная приёмка — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) (**5.x**, **19.x**, **21.x**, **22.x**, **7.4.x**, **16.x**).
+- [x] **sprint.1** Global shell: sidebar-route map, `История` / `Инспектор` lifted (**J-1633..1640**).
+- [x] **sprint.2** Tools hub / refs `10–20` (**J-1641..1644**).
+- [x] **sprint.3** System / recovery / refs `21–25` (**J-1645..1649**).
+- [x] **sprint.4** Component sign-off / refs `26–27` (**J-1650**).
+- [x] **sprint.5** Legacy cleanup (**J-1651..1663**). Дальше — **NEON-трекер**, не новые sprint-пункты здесь.
 
 ---
 
@@ -68,13 +69,13 @@
 
 ### Этапы
 
-- [~] **0.E.1** Инициализация: Electron + TS + React, Zustand, workspace `Редактор` / `Загрузки` / `Терминал`, IPC; legacy multi-theme bootstrapping ещё в коде, но канон Variant A уже single-NEON.
+- [x] **0.E.1** Инициализация: Electron + TS + React, Zustand, workspace `Редактор` / `Загрузки` / `Терминал` / shell-routes, IPC; single-NEON runtime без user theme selector (**J-1653**).
 - [x] **0.E.2** Движки: Windows `prepare-engines-win`; macOS/Linux `prepare-engines-unix` + `engines:doctor`; bundled `resources/bin` (J-1596).
 - [x] **0.E.3** Главное окно §4 [x]: preview/toolbar/statusbar/settings, закрытие/очередь/вторичные окна.
 - [~] **0.E.4** Обработка ffmpeg: export + batch §7.3 + snapshot; полировка UI/HW — дальше.
-- [~] **0.E.5** yt-dlp: основная поверхность в workspace уже есть (очередь, rail, log, history, pause/resume); React pop-out `#downloads` остаётся только как legacy-переходник до cleanup.
+- [x] **0.E.5** yt-dlp: shell-route `Загрузки` (очередь, rail, log, history, pause/resume); pop-out `BrowserWindow` и hash-bootstrap сняты (**J-1651..1655**).
 - [x] **0.E.6** Терминал §8: каталог 839+465, prune, RU summaries, inline-suggest v1 (J-1572–1574).
-- [~] **0.E.7** Инспектор §9, планировщик §10 и конструктор §11 есть в коде; для инспектора ещё открыт перенос из legacy secondary window в единый NEON shell; ручная проверка OS/сценариев — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
+- [~] **0.E.7** Инспектор §9 lifted в shell-route; планировщик §10 и конструктор §11 в коде; ручная проверка OS/сценариев — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)).
 - [~] **0.E.8** Обслуживание §12 [x]; истории §13 [x]; утилиты §17 в основном [x].
 - [x] **0.E.9** Логирование/диагностика §18 [x]: `logger-service`, rotate, Support ZIP, crash handler.
 - [~] **0.E.10** Дистрибуция §19: Win NSIS/ZIP + CI; macOS/Linux артефакты и подпись — дальше.
@@ -84,21 +85,21 @@
 - [x] **1.1** Назначение продукта зафиксировано: графический комбайн yt-dlp + ffmpeg.
 - [x] **1.2** Целевые платформы зафиксированы: Windows приоритет, macOS, Linux.
 - [x] **1.3** Лицензия есть в `LICENSE`.
-- [~] **1.4** Рабочий editor/downloads/terminal workspace уже есть; визуальный канон — [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md) и Variant A в [`VELORIX_TZ.md`](VELORIX_TZ.md); **смена языка без перезапуска** [x]; manual visual/HiDPI/HW — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md); референсы 1–27 ещё не перенесены 1:1.
-- [~] **1.5** Держать основной UX как единый workspace с поверхностями `Редактор` / `Загрузки` / `Терминал` / `Инспектор` / `Инструменты` / справка; логика доменов остаётся разделённой по сервисам, а pop-out окна считаются legacy и идут под удаление.
+- [~] **1.4** Рабочий editor/downloads/terminal workspace уже есть; визуальный канон — [`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md) и Variant A в [`VELORIX_TZ.md`](VELORIX_TZ.md); **смена языка без перезапуска** [x]; manual visual/HiDPI/HW — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)); референсы 1–27 ещё не перенесены 1:1.
+- [x] **1.5** Основной UX — единый workspace/shell с поверхностями `Редактор` / `Загрузки` / `Терминал` / `Инспектор` / `Инструменты` / справка; pop-out runtime снят (**sprint.5**).
 
 ### §1.1 UI и UX
 
 - [~] **1.1.1** Построить главное окно вокруг крупного предпросмотра: базовая зона preview есть, финальная компоновка панелей — дальше.
 - [~] **1.1.2** Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s и ≤96 MiB ответа) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; transport strip и HiDPI `@120/144/168/192dpi` в `main.css` (J-627, J-991); **нативные `<video controls>` отключены** — воспроизведение только через `PreviewTransport`/таймлайн; дальше — редкие контейнеры без fps/`nb_frames`.
 - [~] **1.1.3** Панели кодирования справа: **сворачиваемые секции** + **целиком rail FFmpeg** (`ffmpegSettingsRailOpen` в `mainWindowUiPanels`); persist в `settings.json`; полировка и инспектор — дальше.
-- [~] **1.1.4** Сформировать поверхность `Загрузки` в едином workspace: React слой уже показывает URL-band + живую queue table через общий snapshot broadcast + summary cards + filter chips + progress bars + управление строками/очисткой + pause/resume + встроенный rail основных yt-dlp настроек/network/каталога/cookies; **«История» и «Живой лог» под строкой таблицы**; при **узкой ширине** rail **не скрывается**, а уходит **под** журнал (`@media (max-width: 1100px)`), **`#downloads-ytdlp-settings-rail`** — сворачиваемая панель настроек (`downloadsEmbeddedSettingsOpen`, как история/журнал); таблица очереди — `<caption>`/`<th scope="col">`, сброс scroll при смене фильтра; ошибки действий показываются в статусе вместо тихого no-op; legacy pop-out не развивать.
+- [x] **1.1.4** Поверхность `Загрузки` в shell-route: URL-band, queue table, summary/filter/progress, pause/resume, yt-dlp rail, история/журнал под таблицей; узкая ширина — rail под журнал (`@media (max-width: 1100px)`); `downloadsEmbeddedSettingsOpen` как collapsible rail (**sprint.1/5**).
 - [~] **1.1.5** Реализовать прогрессивное раскрытие сложных параметров: `details` для **быстрой yt-dlp-полосы** (**`app-url-summary`**, **`quickYtdlpUrlHint`**: поле URL + **«Скачать и добавить в редактор»** + короткие ссылки на справку; **`aria-describedby`**; отдельные кнопки «Из буфера» на вкладках **убраны** — вставка через меню/глобальный Ctrl+V и автодобавление из буфера при фокусе, J-624) + **rail FFmpeg** (секционные hints + **`aria-describedby`**, развёрнутые `title`/PillSwitch J-636) + **превью команды ffmpeg** (`exportCommandPreview`); общая система панелей — дальше.
-- [~] **1.1.6** Базовые токены темы есть; канон — **VELORIX NEON** ([`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md), `src/shared/velorix-neon-theme-tokens.ts`); дальше — вычистить legacy light/dark wiring и довести surfaces до 1:1 по референсам.
+- [~] **1.1.6** Базовые токены темы и **VELORIX NEON** ([`docs/VELORIX_NEON_THEME.md`](docs/VELORIX_NEON_THEME.md)); legacy light/dark wiring снят (**J-1653**); дальше — 1:1 surfaces vs PNG (Phase D).
 - [~] **1.1.7** Бинарные настройки → **pill switch**: yt-dlp (плейлист/аудио/open/batch §7.4) + ffmpeg rail (2-pass, economy, HW-decode, strip metadata/chapters §7.2.13–14); дальше — редкие select с >2 вариантами.
-- [~] **1.1.8** Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; **редактор: focus-ring на полосе быстрого yt-dlp — `app-url-summary`, `app-url-input`, `app-btn` в теле полосы**; **`<video>` предпросмотра — `aria-label` с basename пути**; **окно загрузок: кольцо фокуса на сворачиваемых `summary` (история, журнал, hints) + rail** + **контекстные `aria-describedby` у нижних панелей**; **редкие панели** (бенчмарк, About-утилиты, внешний скрипт) — `role="group"`/`toolbar`, `title`/`aria-label` (J-1023); второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
+- [~] **1.1.8** Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и route `Загрузки` (токены `--fa-*`/`focus-ring`) сближены; **редактор: focus-ring на полосе быстрого yt-dlp**; **`<video>` — `aria-label` с basename**; **route `Загрузки`: focus на `summary`/rail + `aria-describedby`**; **редкие панели** — `role="group"`/`toolbar` (J-1023); **инспектор**: topbar-хром + `probe*` через `mergeMainWindowUiPanels`; финал vs PNG — Phase D / manual §5.
 - [~] **1.1.9** Убрать все литералы интерфейса в единый слой: `src/renderer/src/locales/ui-text.ts` (`ru/en`) покрывает редактор, вкладку «Загрузки», терминал, статусбар, диалоги, истории, инспектор и HW-кодеки (J-528+, J-1015); дальше — вынести длинные шарды в `locales/**` JSON без дублирования по мере роста словаря.
-- [x] **1.1.10** Масштабирование 100/125/150/200%: `ui-hidpi-scale-tiers` + HiDPI для `AppSettingsDialog`/статусбара в `main.css` (J-1016); ручная сверка на мониторе — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
+- [x] **1.1.10** Масштабирование 100/125/150/200%: `ui-hidpi-scale-tiers` + HiDPI для `AppSettingsDialog`/статусбара в `main.css` (J-1016); ручная сверка на мониторе — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)).
 
 ## §2. Среда, инструменты и проект
 
@@ -157,16 +158,16 @@
 - [x] **3.20** Настройки: ручной override путей к движкам.
 - [x] **3.21** UI: версии движков в статусбаре (краткая сводка + строка `ffmpeg`/`ffprobe`/`yt-dlp` с токенами версий; J-1036).
 
-**Ручная проверка (§3 packaged, §5 тема/HiDPI):** [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) — не CI.
+**Ручная проверка (§3 packaged, §5 тема/HiDPI):** Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)) — не CI.
 
 ## §4. Главное окно и глобальные элементы
 
 ### §4.A Разделение ролей окон
 
 - [x] **4.1** Главное окно: preview/ffmpeg; toolbar + сворачиваемая правая панель FFmpeg (`EditorFfmpegSettingsRail`).
-- [~] **4.2** Единый workspace `Редактор` / `Загрузки` / `Терминал` уже есть; следующий этап — встроить `Инспектор`/`Инструменты` в тот же shell и убрать pop-out загрузок как legacy UX.
-- [x] **4.3** Меню «Менеджер загрузок (yt-dlp)…» + IPC; topbar переключает вкладку `Загрузки`.
-- [~] **4.4** Legacy pop-out `BrowserWindow` использует тот же React-бандл, hash `#downloads` (legacy HTML удалён, J-984); сам secondary-window path помечен к удалению после переноса UX в единый shell.
+- [x] **4.2** Единый shell: `Редактор` / `Загрузки` / `Терминал` / `Инспектор` / `Инструменты` / `История` / системные routes без pop-out окон (**sprint.1–5**).
+- [x] **4.3** Меню «Менеджер загрузок (yt-dlp)…» + IPC; sidebar/topbar → shell-route `downloads`.
+- [x] **4.4** Secondary-window pop-out path снят: `openDownloadsWindow` / `openInspectorWindow` refocus main shell; hash-bootstrap и standalone renderer удалены (**J-1651..1655**).
 
 ### §4.B Единая зона источника
 
@@ -175,8 +176,8 @@
 - [x] **4.3** Системные диалоги открытия (файл/папка превью, входы и папка выхода пакета) стартуют из **`lastOpenedSourcePath`** / **`ffmpegExportBatchOutputDirectory`** где возможно (`defaultPath`).
 - [x] **4.4** Drag-and-Drop локального файла (`getPathForFile` → IPC `grantPath`).
 - [x] **4.5** Drag-and-Drop **папки** в превью и в зону пакета: main резолвит первое видео (превью) / полный scan (очередь), как «добавить папку».
-- [x] **4.6** Поле URL + глобальный Ctrl/Cmd+V (вне текстовых полей) + меню «Вставить URL…» → очередь/pop-out; поведение `editorUrlPasteBehavior` в настройках.
-- [x] **4.7** Открытое второе окно принимает URL/текст, добавляет строки в очередь и запускает yt-dlp через main.
+- [x] **4.6** Поле URL + глобальный Ctrl/Cmd+V (вне текстовых полей) + меню «Вставить URL…» → очередь/shell-route `Загрузки`; поведение `editorUrlPasteBehavior` в настройках.
+- [x] **4.7** `openDownloadsWindow` (меню/IPC) refocus main shell, merge URL/текст в очередь и yt-dlp через main (**без** второго окна, J-1651).
 - [x] **4.8** Режим `download_open_editor`: `downloadFirstUrlOpenInMainEditor` + Ctrl+V; авто-open после успеха из очереди (`ytdlpOpenInHandlerOnComplete`).
 
 ### §4.C Прочее
@@ -184,7 +185,7 @@
 - [x] **4.1** Стартовый размер main: FHD default + fallback `window-hidpi`; сохранённые bounds важнее.
 - [~] **4.2** Адаптивность и DPI 125–200 %: `window-hidpi` + `@120/144/168/192dpi` в `main.css` (редактор, загрузки, терминал, модалки, справка, probe, история; J-989–991); manual-приёмка для Variant A должна уже смотреть единый shell без обязательного pop-out.
 - [x] **4.3** Верхнее меню: Файл / Настройки / Сервис / Инструменты / Вид / Справка (`main-application-menu-template.ts`).
-- [x] **4.4** Меню `Файл`: открыть файл/папку, менеджер загрузок, вставить URL; при фокусе pop-out/инспектора — `auxiliaryFocused`.
+- [x] **4.4** Меню `Файл`: открыть файл/папку, менеджер загрузок, вставить URL; маршруты shell без auxiliary pop-out.
 - [x] **4.5** Меню `Инструменты`: инспектор, медиа-утилиты, диагностические папки (whitelist), логи, Support ZIP.
 - [x] **4.6** Меню `Сервис`: планировщик, конструктор, импорт/экспорт настроек и пресетов JSON.
 - [x] **4.7** Меню `Справка`: «О программе», открыть ТЗ; база знаний — topbar + `KnowledgeDialog`.
@@ -212,7 +213,7 @@
 
 - [x] **4.2.1** Отслеживать активные процессы: `activeExportAbort` + `isDownloadsRunnerBusy()`.
 - [x] **4.2.2** Диалог busy (остаться / прервать) при активном экспорте или yt-dlp.
-- [x] **4.2.3** §4.2: подтверждение закрытия (idle Да/Нет + busy guard + настройка `confirmCloseOnQuit`); очередь waiting/cancelled сохраняется в `queue.json`, текст idle при waiting; pop-out загрузок и инспектор закрываются с main.
+- [x] **4.2.3** §4.2: подтверждение закрытия (idle Да/Нет + busy guard + настройка `confirmCloseOnQuit`); очередь waiting/cancelled сохраняется в `queue.json`, текст idle при waiting; quit path без secondary pop-out.
 
 ### §4.4 Производительность интерфейса
 
@@ -231,7 +232,7 @@
 ### §4.6 Настройки
 
 - [x] **4.6.1** Окно настроек (модалка с навигацией, J-1014).
-- [~] **4.6.2** Раздел «Общие» есть (язык, подтверждение закрытия, Ctrl+V URL); блок темы пока legacy и должен быть пересобран под один режим **VELORIX NEON** без `dark` / `light` / `system`.
+- [x] **4.6.2** Раздел «Общие» (язык, подтверждение закрытия, Ctrl+V URL); user-facing выбор темы снят — единый **VELORIX NEON** (**J-1653**).
 - [x] **4.6.3** Раздел «По умолчанию» (yt-dlp каталог, batch output).
 - [x] **4.6.4** Раздел «Зависимости» (пути движков).
 - [x] **4.6.5** Раздел «Горячие клавиши» (таблица ускорителей).
@@ -240,25 +241,25 @@
 
 ## §5. Темизация
 
-- [~] **5.1** Продуктовый канон — **один VELORIX NEON UI**; legacy `dark` / `light` / `system` и menu/settings wiring этих режимов ещё не вычищены из runtime.
+- [x] **5.1** Продуктовый канон — **один VELORIX NEON UI**; legacy `dark` / `light` / `system` selector, theme IPC и settings/topbar wiring сняты (**J-1653**).
 - [~] **5.2** Базовые CSS-токены, contrast guards и NEON token-pack уже заведены (`base.css`, `src/renderer/src/assets/themes/velorix-neon/**`, `theme-contrast-pairs`, `velorix-neon-theme-tokens`), но финальная консолидация shell/editor/downloads/inspector ещё впереди.
-- [~] **5.3** Ручная visual smoke-приёмка теперь ориентируется на единый NEON shell и отсутствие legacy pop-out/theme UX — см. [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) §5.
-- [ ] **5.4** refs `26–27`: `UI State Showcase` и `UI Components / States` ещё не оформлены как обязательный sign-off слой для reusable состояний, manual QA и финальной parity-сверки.
+- [~] **5.3** Ручная visual smoke-приёмка теперь ориентируется на единый NEON shell и отсутствие legacy pop-out/theme UX — см. Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)) §5.
+- [x] **5.4** refs `26–27`: embedded `UI State Showcase` + `UI Components / States` в route `tools` (**sprint.4**, **J-1650**); финальная parity vs PNG — Phase D + manual §5.
 
 ## §6. Поверхность загрузок (yt-dlp)
 
 ### §6.1 Основная панель
 
-- [~] **6.1.1** Основной менеджер загрузок — поверхность `Загрузки` в главном shell; таблица очереди, история→лог, settings rail уже есть. Legacy `#downloads` ещё существует как переходный маршрут, но не считается целевым UX.
+- [x] **6.1.1** Менеджер загрузок — shell-route `Загрузки` (таблица, история→лог, settings rail); pop-out runtime снят.
 - [x] **6.1.2** Многострочное поле URL.
 - [x] **6.1.3** Добавление распознанных строк в простую очередь (таблица в том же документе).
 - [x] **6.1.4** Drag-and-Drop URL/текста на поле ввода и на свободную область окна загрузок (не перехватываем drop на `textarea`/`select`/текстовых `input`).
-- [~] **6.1.5** Вставка из главного окна (быстрая URL-полоса с **«Скачать и добавить в редактор»**, поле вкладки, меню/глобальный Ctrl+V) → merge в очередь или цепочка «скачать → открыть в редакторе» (J-624); legacy pop-out в сценарий больше не расширять.
-- [~] **6.1.6** Таблица: имя (хост+путь/ранний title/path basename), ссылка; колонки Формат/Размер/Прогресс/Скорость/**Осталось**; **Прогресс** — полоска + числовой %, зелёный 100% при «Готово»; `progress` суммарная строка; действия старт/retry/pause/delete/file/folder — **во встроенной React-вкладке icon-only** (`app-icon-btn` + те же пути SVG, что `RowIco` в data HTML); **дублирующая кнопка отмены в футере правого rail yt-dlp убрана** (осталась у поля URL; J-638); `queue.json` §4.1 с дедупликацией id при restore; format/size/title из `[info]`, progress и post-processing строк yt-dlp (`ExtractAudio`, remux, convert); дальше — редкие шаблоны логов.
+- [x] **6.1.5** Вставка из главного окна (быстрая URL-полоса **«Скачать и добавить в редактор»**, поле route `Загрузки`, меню/глобальный Ctrl+V) → merge в очередь или «скачать → открыть в редакторе» (J-624).
+- [~] **6.1.6** Таблица: имя (хост+путь/ранний title/path basename), ссылка; колонки Формат/Размер/Прогресс/Скорость/**Осталось**; **Прогресс** — полоска + числовой %, зелёный 100% при «Готово»; `progress` суммарная строка; действия старт/retry/pause/delete/file/folder — **icon-only** на route `Загрузки` (`app-icon-btn`); **дублирующая кнопка отмены в футере rail убрана** (J-638); `queue.json` §4.1 с дедупликацией id при restore; format/size/title из `[info]`, progress и post-processing строк yt-dlp; дальше — редкие шаблоны логов.
 - [~] **6.1.7** Старт всей очереди (последовательно, только «Ожидание»).
 - [x] **6.1.8** Старт отдельной строки.
-- [x] **6.1.9** Отмена текущего yt-dlp (SIGKILL процессу spawn; на Windows при удалении строки — `taskkill` через **`execFileSync`**, J-623) из вкладки и pop-out.
-- [~] **6.1.10** Пауза/продолжение где возможно: SIGSTOP/SIGCONT на POSIX; Windows показывает недоступность; UI есть во вкладке и pop-out.
+- [x] **6.1.9** Отмена текущего yt-dlp (SIGKILL; Windows `taskkill` через **`execFileSync`**, J-623) на route `Загрузки`.
+- [x] **6.1.10** Пауза/продолжение: SIGSTOP/SIGCONT на POSIX; Windows — явный отказ; UI на route `Загрузки`.
 - [x] **6.1.11** Удаление строки (ожидание остановки runner; очистка `.part`/`.ytdl` рекурсивно до глубины 2 и без эвристики «только YouTube», J-621–J-622).
 - [x] **6.1.12** Reorder (вверх/вниз).
 
@@ -269,17 +270,17 @@
 - [~] **6.2.3** Аудио-only (`-x --audio-format best`; ffmpeg должен быть доступен yt-dlp; без выбора кодека).
 - [x] **6.2.4** Субтитры (пресет §6.2: выкл. / `--write-subs` / `--write-auto-subs`; опционально `--sub-langs` без пробелов; persist в settings).
 - [~] **6.2.5** Плейлист/одиночный ролик (`--yes-playlist` / по умолчанию `--no-playlist`).
-- [~] **6.2.6** Cookies / профиль браузера: файл Netscape (`--cookies`) + whitelist `--cookies-from-browser` (Chrome/Edge/Firefox) во вкладке и pop-out; **профиль/контейнер** (`ytdlpCookiesBrowserProfile` → `chrome:…` / `edge:…` / `firefox:…` в argv, валидация длины/управляющих символов).
+- [~] **6.2.6** Cookies / профиль браузера: файл Netscape (`--cookies`) + whitelist `--cookies-from-browser` (Chrome/Edge/Firefox) в shell-rail `Загрузки`; **профиль/контейнер** (`ytdlpCookiesBrowserProfile` → `chrome:…` / `edge:…` / `firefox:…` в argv, валидация длины/управляющих символов).
 - [x] **6.2.7** `--impersonate`: whitelist chrome / edge / firefox (`ytdlpImpersonate` в settings, без версионирования строкой из UI); дубль `--impersonate` в доп. argv запрещён.
 - [x] **6.2.8** Шаблон имени `-o` (относительно каталога загрузки, проверка выхода из каталога, `%(ext)s`; `ytdlpFilenameTemplate` в settings).
-- [x] **6.2.9** Каталог загрузки (выбор папки во вкладке/pop-out + `ytdlpDownloadDirectory` в `settings.json`; по умолчанию `userData/downloads/ytdlp`).
-- [x] **6.2.10** Открыть текущий каталог загрузки из вкладки/pop-out.
+- [x] **6.2.9** Каталог загрузки (выбор папки на route `Загрузки` + `ytdlpDownloadDirectory` в `settings.json`; по умолчанию `userData/downloads/ytdlp`).
+- [x] **6.2.10** Открыть текущий каталог загрузки с route `Загрузки`.
 - [x] **6.2.11** Ограничения скорости/ретраи (`--limit-rate`, `--retries`, `--fragment-retries`); профили **повтора строки очереди** при ненулевом exit (`off`/`light`/`normal`/`persistent`).
 - [x] **6.2.12** Дополнительные параметры в сворачиваемых секциях: экспертные argv/preview/справочник по категориям §6.3 (`optgroup`, карта токенов в main, опциональный `category` в JSON).
 
 ### §6.3 Экспертный режим
 
-- [~] **6.3.1** Live preview команды yt-dlp (`commandPreview`: реальный каталог `-o` из userData или override только для превью, первый URL очереди или `https://example.com/`; черновик формы до сохранения; во встроенном rail — поле argv + вставка токена + preview; заглушки `<downloadDir>`/`<url>` только без контекста превью). Длинный справочник должен остаться в shell, без отдельного pop-out UX.
+- [~] **6.3.1** Live preview команды yt-dlp (`commandPreview`: реальный каталог `-o` из userData или override только для превью, первый URL очереди или `https://example.com/`; черновик формы до сохранения; во встроенном rail — поле argv + вставка токена + preview; заглушки `<downloadDir>`/`<url>` только без контекста превью). Справочник argv — в shell.
 - [~] **6.3.2** Поле дополнительных аргументов (`ytdlpExtraArgsLine` в settings).
 - [x] **6.3.3** Подсказки из `Data/ytdlp_commands.json` (группы в UI; при необходимости категория в JSON переопределяет встроенную карту в main); **справочник argv** — один сценарий (поиск + список, без второго `<select>`; J-637).
 - [~] **6.3.4** Безопасная сборка аргументов без shell (`parseExtraYtdlpArgsLine`, spawn-массив §21).
@@ -287,13 +288,13 @@
 ### §6.4 Прогресс, лог, комбинированный режим
 
 - [x] **6.4.1** Парсинг прогресса yt-dlp: процент + скорость + «Осталось» + фрагменты/плейлист/retry/HLS prep + редкие `[download]` + post-processing в колонке «Прогресс» (`parseYtdlpQueuePostProcessProgressLine`: merge, audio, remux, convert, embed, concat, fixup, SponsorBlock…; J-1043).
-- [~] **6.4.2** Лог stdout/stderr: IPC `velorix-downloads-log`; поверхность `Загрузки` показывает live log, очистку и сохранение видимого текста. Legacy fan-out в pop-out остаётся только до удаления secondary-window plumbing.
+- [x] **6.4.2** Лог stdout/stderr: IPC `velorix-downloads-log`; route `Загрузки` показывает live log, очистку и сохранение видимого текста; broadcast только main shell (**J-1655**).
 - [x] **6.4.3** «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик Velorix из очереди и истории.
 - [x] **6.4.4** «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок; неуспех авто-открытия пишется в лог строки).
 - [x] **6.4.5** Опционально после успешного авто-открытия — авто-экспорт §7.2 в соседний файл (`name-export.ext` с суффиксом при коллизии), прогресс в главном окне, итог/ошибка в логе очереди.
 - [~] **6.4.6** Обработка ошибок: приоритет текста `ERROR:`; иначе последняя строка stderr; явное завершение по сигналу ОС; `--retries`/`--fragment-retries` yt-dlp + повторы очереди §6.4 (в т.ч. профиль `persistent`) + ручной retry строки; пропуск повторов очереди по тексту (`private video`, HTTP 403/404, DRM, «нет форматов»/unsupported URL, завершённый live/premiere, **нет места на диске / errno 28**, **ffmpeg/ffprobe not found**, пустой файл и т.п.) с приоритетом транзиентных сетевых маркеров (408/502/503/504/500/429/**521/522/523/520**, таймаут/broken pipe/premature close/**EOF/SSL handshake**, signature extraction/rate limit exceeded и т.д.); `classifyYtdlpQueueFailureKind` (+ коды **2** параметры, **100** перезапуск, **101** лимит загрузок, см. апстрим yt-dlp) и суффиксы в статусе строки; код **1** по-прежнему без отдельного кода — через текстовые маркеры.
-- [x] **6.4.7** Пауза/продолжить активный yt-dlp: POSIX SIGSTOP/SIGCONT + IPC + кнопка во вкладке/pop-out; Windows — явный отказ (без Job suspend).
-- [x] **6.4.8** История загрузок (файл `downloads/history.json`, атомарная запись temp+rename после yt-dlp, IPC, UI во вкладке/pop-out; **во встроенной панели** — фильтр по outcome + экспорт JSON + «Повторить»; в pop-out — фильтр по исходу и открытие файла/папки при наличии `outputPath`).
+- [x] **6.4.7** Пауза/продолжить активный yt-dlp: POSIX SIGSTOP/SIGCONT + IPC + кнопка на route `Загрузки`; Windows — явный отказ (без Job suspend).
+- [x] **6.4.8** История загрузок (`downloads/history.json`, IPC, UI на route `Загрузки`: фильтр outcome, экспорт JSON, «Повторить», открытие файла/папки при `outputPath`).
 
 ## §7. Главное окно: обработка (ffmpeg)
 
@@ -342,13 +343,13 @@
 
 - [x] **7.4.1** URL на обработке: `editorUrlPasteBehavior` + быстрая полоса yt-dlp + глобальный Ctrl+V.
 - [x] **7.4.2** Очередь/история → пакет: `enqueueBatchOnDownloadComplete`, `autoStartBatchAfterEnqueue`, кнопка «В пакет» в таблице и истории.
-- [x] **7.4.3** «Скачать и обработать»: `openInHandlerOnComplete` + `autoExportAfterOpenInHandler` + Vitest completion chain; headless на железе — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) **7.4.x**.
+- [x] **7.4.3** «Скачать и обработать»: `openInHandlerOnComplete` + `autoExportAfterOpenInHandler` + Vitest completion chain; headless на железе — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)) **7.4.x**.
 
 ### §7.5 Изображения
 
 - [x] **7.5.1** Конвертация изображений + слайд-шоу MP4 в «Обслуживание файлов» (J-1012, J-1590).
 - [x] **7.5.2** Спрайты: IPC `generateVideoSprite`, UI, PTS drawtext, packaged smoke guard (J-1145..1147).
-- [~] **7.5.3** Чеклист спрайта в `ownerManualSmoke:` (J-1151); прогон на железе — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
+- [~] **7.5.3** Чеклист спрайта в `ownerHardwareChecklist:` (J-1151); прогон на железе — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)).
 - [x] **7.5.4** Слайд-шоу → MP4: xfade-переходы + HEIC при libheif (`ffmpeg-image-slideshow-*`, probe `-decoders`).
 - [x] **7.5.5** Форматы выхода: JPG/PNG/WebP/BMP/TIFF (конвертация, snapshot, спрайт).
 
@@ -378,12 +379,12 @@
 
 ## §9. Инспектор видеофайлов
 
-- [~] **9.1** Запуск ffprobe: grant-пути (IPC); сейчас полная сводка + таблица дорожек живут в legacy `#inspector` (`inspector-window.ts`, `windowBounds.inspector`), а в редакторе — короткая строка видео/аудио под таймлайном (`VideoTimeline`). Цель Variant A — перенести inspector UX в единый shell.
-- [~] **9.2** Сводка: контейнер, длительность, bitrate пока в legacy inspector surface; в редакторе под превью — имя файла (полный путь в подсказке).
-- [~] **9.3** Таблица дорожек пока в legacy inspector surface (`tags`, битрейт/`disposition`, видео `pix_fmt`/SAR/DAR + `color_*`, контекстное меню); дальше — встроить в NEON shell.
+- [x] **9.1** ffprobe grant + полная сводка на shell-route `inspector` (`InspectorWorkspaceConnected`); в редакторе — короткая строка под таймлайном (`VideoTimeline`).
+- [x] **9.2** Сводка: контейнер, длительность, bitrate в shell-route `inspector`; в редакторе под превью — имя файла (полный путь в подсказке).
+- [x] **9.3** Таблица дорожек в shell-route `inspector` (`tags`, битрейт/`disposition`, видео `pix_fmt`/SAR/DAR + `color_*`, контекстное меню).
 - [x] **9.4** Детали дорожек расширены точечными ffprobe-полями: `codec_tag` hex fallback, `extradata_size`, `initial_padding`, `closed_captions`, `is_avc`, `ticks_per_frame`, `bits_per_coded_sample`, ReplayGain, аудио `language`/`title`/`handler_name`.
 - [x] **9.5** Главы (`-show_chapters`, таблица **в окне инспектора** + TXT/HTML сводка).
-- [x] **9.6** JSON ffprobe: сворачиваемый блок **в окне инспектора** (просмотр/копирование/файл; отдельная вкладка не требуется).
+- [x] **9.6** JSON ffprobe: сворачиваемый блок на route `inspector` (просмотр/копирование/файл; отдельная вкладка не требуется).
 - [x] **9.7** Копирование JSON (форматированный текст в буфер); сохранение в файл через IPC/main (`save-text-dialog-contract`).
 - [x] **9.8** Сохранение TXT/HTML (сводка инспектора через `saveTextWithDialog`, генераторы в `ffprobe-summary-export`).
 - [x] **9.9** Контекстные действия из таблиц (ПКМ по строке дорожки / главы → копирование в буфер через preload).
@@ -400,7 +401,7 @@
 - [x] **10.7** Вкл/выкл, удаление, pick folder.
 - [x] **10.8** Валидация parse (`scheduled-task-parse`, Vitest).
 - [x] **10.9** Чеклист ручной проверки OS scheduler в планировщике + Support ZIP `workflowOsSchedulerSmoke:` (J-1057).
-- [~] **10.10** Ручная проверка OS scheduler на Win/macOS/Linux — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) (`docs/RELEASE.md` §4.3, Help; J-1082).
+- [~] **10.10** Ручная проверка OS scheduler на Win/macOS/Linux — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)) (`docs/RELEASE.md` §4.3, Help; J-1082).
 
 ## §11. Конструктор сценариев
 
@@ -412,7 +413,7 @@
 - [x] **11.6** Deep-link Help из редактора и конструктора (J-1056).
 - [x] **11.7** Reorder/add/remove и drag-and-link (порты + `edges` JSON, J-1074/1076/1078).
 
-**Ручная проверка §11 (конструктор):** [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
+**Ручная проверка §11 (конструктор):** Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)).
 
 ## §12. Очистка кэша и обслуживание
 
@@ -426,7 +427,7 @@
 
 - [~] **13.1** Журнал задач: `processing/history.json` пишет export/snapshot/auto-export/workflowScenario из main; панель + live-refresh (J-1063..1069). Для рефа `3` ещё нужен отдельный shell-screen истории с unified event store, аналитикой и recent errors.
 - [x] **13.2** Фильтры: kind/outcome/query (**в т.ч. `workflowScenario`**, `exportVideoCodecUsed`); загрузки — по outcome.
-- [x] **13.3** Повторить загрузку: история yt-dlp в pop-out и встроенной панели возвращает URL в очередь (J-1067/1068).
+- [x] **13.3** Повторить загрузку: история yt-dlp на route `Загрузки` возвращает URL в очередь (J-1067/1068).
 - [x] **13.4** Повторить обработку: «Повторить» / «Повторить сценарий» (file + URL по `sourceUrl`, J-1059/1060).
 - [x] **13.5** Недельная сводка: 7 дней + chips-фильтры по клику (J-1069).
 - [x] **13.6** Экспорт истории: JSON schema 2 + `uiLocale` для processing и downloads (J-1066/1067).
@@ -444,7 +445,7 @@
 - [x] **14.9** «Открыть с помощью»: HKCU OpenWithProgids + Applications SupportedTypes; настройки, NSIS, headless CLI (J-1073).
 - [x] **14.10** Приложение по умолчанию: кнопка «Приложения по умолчанию…» → `ms-settings:defaultapps` (J-1077); reg UserChoice — не делаем.
 
-**Ручная проверка §14 (Windows shell):** [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) (код [x], прогон владельца — там же).
+**Ручная проверка §14 (Windows shell):** Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)) (код [x], прогон владельца — там же).
 
 ## §15. База знаний и подсказки
 
@@ -473,7 +474,7 @@
 - [x] **16.12** Кнопка «Оценить» (семпл 15 с, таблица fps/ETA/размер, рекомендация, выбор кодека по клику; J-997).
 - [x] **16.13** Порог нагрузки CPU/GPU в бенчмарке: nvidia-smi, колонка GPU, max(cpu,gpu) для «Рекомендовано» (J-999).
 
-**Ручная проверка §16 (HW на железе):** [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md). Argv-таблицы в CI: `ffmpeg-export-nvenc-vtb-argv-table.test.ts`, `ffmpeg-export-vaapi-linux-argv-table.test.ts`.
+**Ручная проверка §16 (HW на железе):** Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)). Argv-таблицы в CI: `ffmpeg-export-nvenc-vtb-argv-table.test.ts`, `ffmpeg-export-vaapi-linux-argv-table.test.ts`.
 
 ## §17. Дополнительные утилиты
 
@@ -500,21 +501,21 @@
 - [x] **18.8** Диалог ошибки: кратко + детали.
 - [x] **18.9** Копировать детали.
 - [x] **18.10** Открыть лог.
-- [x] **18.11** Support ZIP: `diagnostics.txt` (`ownerManualSmoke:`, `releaseSmoke:`, `terminalHints:` §8 dev guards), `main.log`, `main.log.1`, `session.log`, последние crash dumps, версия, ОС.
+- [x] **18.11** Support ZIP: `diagnostics.txt` (`ownerHardwareChecklist:`, `releaseSmoke:`, `terminalHints:` §8 dev guards), `main.log`, `main.log.1`, `session.log`, последние crash dumps, версия, ОС.
 - [ ] **18.12** refs `22–23`: текущие error/crash flows в коде есть, но отдельные NEON-поверхности `FFmpeg Error` и `Critical Crash`, а также отдельный экран диагностики, ещё не доведены до shell parity.
 
 ## §19. Система установки и дистрибуция
 
 - [x] **19.1** `electron-builder.yml` есть.
-- [x] **19.2** `npm run build:win` проходит (ручная приёмка packaged/installer — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)).
+- [x] **19.2** `npm run build:win` проходит (ручная приёмка packaged/installer — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md))).
 - [x] **19.3** `npm run build:unpack` проходит.
 - [~] **19.4** `Data/`, `Help/`, `VELORIX_TZ.md` добавлены в `extraResources`.
 - [~] **19.5** `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + **`engines:doctor`** со строгой проверкой структуры `trusted_hashes` и логом версий; локально **`check:release`** / **`release:win*`** после prepare тоже через `engines:doctor` (`VELORIX_ENGINES_STRICT=1` — ручной релизный gate для непустых exe-хешей).
 - [x] **19.6** Dependabot: `.github/dependabot.yml` (npm weekly, GitHub Actions monthly); разовые настройки Actions и расшифровка писем CI — `docs/RELEASE.md` §5.
 - [x] **19.7** Иконка: `resources/icon.png` + `electron-builder.yml` `icon:` + main window (приёмка в установщике — manual **19.3.1**).
-- [~] **19.8** Windows NSIS + ZIP (без цели `portable` — single-root); `installer.nsh` / `Uninstall Velorix.cmd` — опциональное удаление `app-data/` (по умолчанию нет); `verify:win-unpacked` после `pack:dir`; интерактивная проверка installer/packaged — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md) §19.
-- [ ] **19.9** macOS dmg/zip (targets в builder [x]; прогон — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)).
-- [ ] **19.10** Linux AppImage/deb/tar (targets [x]; прогон — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md)).
+- [~] **19.8** Windows NSIS + ZIP (без цели `portable` — single-root); `installer.nsh` / `Uninstall Velorix.cmd` — опциональное удаление `app-data/` (по умолчанию нет); `verify:win-unpacked` после `pack:dir`; интерактивная проверка installer/packaged — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)) §19.
+- [ ] **19.9** macOS dmg/zip (targets в builder [x]; прогон — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md))).
+- [ ] **19.10** Linux AppImage/deb/tar (targets [x]; прогон — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md))).
 - [x] **19.11** Подпись Windows — roadmap [`docs/RELEASE.md`](docs/RELEASE.md) §4 + `release-code-signing-roadmap.ts` (J-1498); Authenticode/CSC в CI — позже.
 - [x] **19.12** Подпись/notarization macOS — roadmap [`docs/RELEASE.md`](docs/RELEASE.md) §4.2 + Help packaged-macos (J-1496..1497).
 - [x] **19.13** Подпись Linux (GPG deb/AppImage) — roadmap [`docs/RELEASE.md`](docs/RELEASE.md) §4.1 + Help packaged-linux (J-1499); CI — позже.
@@ -537,7 +538,7 @@
 - [x] **21.3** IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, save-text-dialog, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [x] **21.4** Вынести сервисы main: **202** модуля из корня `src/main/` → `bootstrap/`, `windows/`, `menu/`, `core/`, `ipc/downloads/`, `services/*` (J-1578); `platform/` без изменений.
 - [~] **21.5** Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
-- [x] **21.6** Unit tests: **`263` файлов / `1885` тестов** (Vitest; локальная проверка 2026-05-26); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts|renderer/`. E2e packaged — Playwright §21.9.
+- [x] **21.6** Unit tests: **`263` файлов / `1884` тестов** (Vitest; локальная проверка 2026-05-27); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts|renderer/`. E2e packaged — Playwright §21.9.
 - [x] **21.7** Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [x] **21.8** E2e packaged: реестр §21 + guards + partition + per-step/`ci.yml` в `check:quiet`.
 - [x] **21.9** GUI Playwright e2e: 8 шагов в `planned-gui-e2e.spec.ts` + `planned-gui-e2e-step-runners.ts` (skip без app); `npm run test:e2e:gui` после `pack:dir`.
@@ -549,11 +550,11 @@
 - [x] **22.1** `npm run check` проходит.
 - [x] **22.2** `npm run build` проходит.
 - [x] **22.3** `npm run build:win` проходит.
-- [x] **22.4** `npm run dev` (Win): PATH; главное окно + превью/ffprobe после Vite 8 fix (**J-1454**); pop-out `#downloads`/`#inspector` — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
-- [~] **22.5** Windows installer с реальными ресурсами: сборка [x]; приёмка — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
-- [~] **22.6** macOS / Linux артефакты: сборка/guards [x]; прогон — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
+- [x] **22.4** `npm run dev` (Win): PATH; главное окно + превью/ffprobe после Vite 8 fix (**J-1454**); shell-routes `downloads`/`inspector` — ручная visual/HiDPI в Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)) §5.
+- [~] **22.5** Windows installer с реальными ресурсами: сборка [x]; приёмка — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)).
+- [~] **22.6** macOS / Linux артефакты: сборка/guards [x]; прогон — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)).
 - [x] **22.7** Версия в «О программе» (вместе с Electron/Chromium/Node).
-- [~] **22.8** Приёмочный сценарий: открыть файл → preview → экспорт/отмена → открыть файл/показать в папке/вернуть в preview/скопировать путь; интерактивно — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md); дерево `win-unpacked` после `pack:dir` — CI и `check:release`.
-- [~] **22.9** Приёмочный сценарий: URL → yt-dlp → открыть/показать файл / авто-в обработчик (флаг) → дальше экспорт ffmpeg; полный headless «скачал и перекодировал» — [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](IMPLEMENTATION_MANUAL_VERIFICATION.md).
+- [~] **22.8** Приёмочный сценарий: открыть файл → preview → экспорт/отмена → открыть файл/показать в папке/вернуть в preview/скопировать путь; интерактивно — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)); дерево `win-unpacked` после `pack:dir` — CI и `check:release`.
+- [~] **22.9** Приёмочный сценарий: URL → yt-dlp → открыть/показать файл / авто-в обработчик (флаг) → дальше экспорт ffmpeg; полный headless «скачал и перекодировал» — Support ZIP `ownerHardwareChecklist:` (Help [about-support-logs.md](Help/ru/about-support-logs.md)).
 
-**Финал проекта (только владелец):** [`IMPLEMENTATION_MANUAL_VERIFICATION.md` — §0](IMPLEMENTATION_MANUAL_VERIFICATION.md#0-финал-проекта).
+**Финал на железе (владелец):** Support ZIP `ownerHardwareChecklist:` + `releaseSmoke:` — [about-support-logs.md](Help/ru/about-support-logs.md).

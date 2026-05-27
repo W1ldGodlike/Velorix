@@ -16,8 +16,9 @@ const PUSH_KEYS = new Set([
   'extractFramesProgress',
   'enginesProgress',
   'previewOpened',
-  'themeChanged',
   'uiLocaleChanged',
+  'quitConfirmRequested',
+  'processErrorReported',
   'openEnginePaths',
   'openSettings',
   'enginePathsChanged',
@@ -31,19 +32,20 @@ const PUSH_KEYS = new Set([
   'settingsBackupImported',
   'exportPresetsDiskChanged',
   'processingHistoryChanged',
+  'openDownloadsRoute',
+  'openInspectorRoute',
   'downloadsHistoryChanged',
   'mainWindowUiPanelsChanged',
   'downloadsWindowUiPanelsChanged',
   'downloadsOutputDirectoryChanged',
   'downloadsCliOptionsChanged',
   'batchExportSnapshot',
-  'inspectorTargetMediaPath',
   'queueSnapshot',
   'log'
 ])
 
 /** Renderer → main one-way (`ipcMain.on` + `ipcRenderer.send`). */
-const MAIN_ON_KEYS = new Set(['logRenderer'])
+const MAIN_ON_KEYS = new Set(['logRenderer', 'quitConfirmRespond'])
 
 function parseIpcObject(exportName) {
   const start = channelsText.indexOf(`export const ${exportName}`)

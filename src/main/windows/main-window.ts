@@ -1,9 +1,14 @@
 import { join } from 'path'
 
-import { BrowserWindow, dialog } from 'electron'
+import { BrowserWindow, dialog, ipcMain } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
 import icon from '../../../resources/icon.png?asset'
+import { mainWindowIpc as mw } from '../../shared/ipc-channels'
+import {
+  parseQuitConfirmResponsePayload,
+  type QuitConfirmRequestPayload
+} from '../../shared/quit-confirm-contract'
 import { installExternalNavigationGuard, openAllowedExternalUrl } from '../core/external-url'
 import { resolvePreloadOutFile } from '../core/preload-resolve'
 import type { WindowBoundsConfig } from '../services/settings/settings-store'
@@ -68,6 +73,21 @@ function busyQuitMessage(
   return q.quitConfirmDownloads
 }
 
+function buildQuitConfirmRequestPayload(
+  requestId: number,
+  exportBusy: boolean,
+  downloadsBusy: boolean,
+  waitingCount: number
+): QuitConfirmRequestPayload {
+  return {
+    requestId,
+    mode: exportBusy || downloadsBusy ? 'busy' : 'idle',
+    exportBusy,
+    downloadsBusy,
+    waitingCount
+  }
+}
+
 export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
   const savedMain = deps.getSavedMainBounds()
   const rect = savedMain ? rectifyBoundsForRestore(savedMain) : null
@@ -106,11 +126,88 @@ export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
   })
 
   deps.setAllowMainWindowClose(false)
+  let quitConfirmRequestSeq = 0
+  let quitConfirmPending = false
 
   const finishConfirmedQuit = (): void => {
     deps.onPrepareMainWindowQuit()
     deps.setAllowMainWindowClose(true)
     mainWindow.close()
+  }
+
+  const showNativeBusyQuitDialog = (
+    q: MainWindowQuitStrings,
+    exportBusy: boolean,
+    downloadsBusy: boolean
+  ): void => {
+    void dialog
+      .showMessageBox(mainWindow, {
+        type: 'warning',
+        buttons: [q.quitStay, q.quitAbort],
+        defaultId: 0,
+        cancelId: 0,
+        title: q.quitDialogTitle,
+        message: busyQuitMessage(q, exportBusy, downloadsBusy),
+        noLink: true
+      })
+      .then(({ response }) => {
+        if (response !== 1) {
+          return
+        }
+        deps.onQuitAbortConfirmed()
+        finishConfirmedQuit()
+      })
+  }
+
+  const showNativeIdleQuitDialog = (q: MainWindowQuitStrings, waitingCount: number): void => {
+    void dialog
+      .showMessageBox(mainWindow, {
+        type: 'question',
+        buttons: [q.quitNo, q.quitYes],
+        defaultId: 0,
+        cancelId: 0,
+        title: q.quitDialogTitle,
+        message: formatIdleQuitMessage(q, waitingCount),
+        noLink: true
+      })
+      .then(({ response }) => {
+        if (response !== 1) {
+          return
+        }
+        finishConfirmedQuit()
+      })
+  }
+
+  const requestRendererQuitConfirm = (
+    payload: QuitConfirmRequestPayload
+  ): Promise<boolean | null> => {
+    if (
+      mainWindow.isDestroyed() ||
+      mainWindow.webContents.isDestroyed() ||
+      mainWindow.webContents.isLoadingMainFrame()
+    ) {
+      return Promise.resolve(null)
+    }
+    return new Promise((resolve) => {
+      const onResponse = (event: Electron.IpcMainEvent, raw: unknown): void => {
+        if (event.sender.id !== mainWindow.webContents.id) {
+          return
+        }
+        const parsed = parseQuitConfirmResponsePayload(raw)
+        if (!parsed || parsed.requestId !== payload.requestId) {
+          return
+        }
+        ipcMain.removeListener(mw.quitConfirmRespond, onResponse)
+        resolve(parsed.confirmed)
+      }
+      ipcMain.on(mw.quitConfirmRespond, onResponse)
+      try {
+        mainWindow.webContents.send(mw.quitConfirmRequested, payload)
+      } catch {
+        ipcMain.removeListener(mw.quitConfirmRespond, onResponse)
+        resolve(null)
+      }
+    })
   }
 
   mainWindow.on('close', (e) => {
@@ -130,45 +227,37 @@ export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
 
     e.preventDefault()
     const q = deps.mainAppStr()
-
-    if (needsBusyDialog) {
-      void dialog
-        .showMessageBox(mainWindow, {
-          type: 'warning',
-          buttons: [q.quitStay, q.quitAbort],
-          defaultId: 0,
-          cancelId: 0,
-          title: q.quitDialogTitle,
-          message: busyQuitMessage(q, exportBusy, downloadsBusy),
-          noLink: true
-        })
-        .then(({ response }) => {
-          if (response !== 1) {
-            return
-          }
-          deps.onQuitAbortConfirmed()
-          finishConfirmedQuit()
-        })
+    const waitingCount = deps.countDownloadsQueueWaiting()
+    if (quitConfirmPending) {
       return
     }
+    quitConfirmPending = true
+    const requestId = ++quitConfirmRequestSeq
+    const request = buildQuitConfirmRequestPayload(
+      requestId,
+      exportBusy,
+      downloadsBusy,
+      waitingCount
+    )
 
-    const waitingCount = deps.countDownloadsQueueWaiting()
-    void dialog
-      .showMessageBox(mainWindow, {
-        type: 'question',
-        buttons: [q.quitNo, q.quitYes],
-        defaultId: 0,
-        cancelId: 0,
-        title: q.quitDialogTitle,
-        message: formatIdleQuitMessage(q, waitingCount),
-        noLink: true
-      })
-      .then(({ response }) => {
-        if (response !== 1) {
+    void requestRendererQuitConfirm(request).then((confirmed) => {
+      quitConfirmPending = false
+      if (confirmed === null) {
+        if (needsBusyDialog) {
+          showNativeBusyQuitDialog(q, exportBusy, downloadsBusy)
           return
         }
-        finishConfirmedQuit()
-      })
+        showNativeIdleQuitDialog(q, waitingCount)
+        return
+      }
+      if (!confirmed) {
+        return
+      }
+      if (needsBusyDialog) {
+        deps.onQuitAbortConfirmed()
+      }
+      finishConfirmedQuit()
+    })
   })
 
   deps.attachBoundsPersistence(mainWindow)

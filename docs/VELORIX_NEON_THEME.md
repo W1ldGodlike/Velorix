@@ -1,5 +1,7 @@
 # VELORIX NEON — план и чеклист темы
 
+**Навигатор агента:** UI/UX, NEON, Phase D, refs **1–27**, открытые пробелы Variant A, новый функционал под PNG. **«продолжай» / `+`:** этот файл → sprint TODO в [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md). **Запрещено:** [`docs/archive/`](archive/README.md) как навигатор. Ручная проверка на железе (владелец) — Support ZIP `ownerHardwareChecklist:`.
+
 **Эталон UI — «Обработка» (реф. 1):** [`reference/velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png)  
 **Эталон иконки приложения:** [`reference/velorix-neon-app-icon-reference.png`](reference/velorix-neon-app-icon-reference.png) → в сборке: `resources/icon.png` (по явной просьбе владельца).  
 **Эталон логотипа (горизонтальный):** [`reference/velorix-neon-logo-wordmark-reference.png`](reference/velorix-neon-logo-wordmark-reference.png) — mark слева, **VELORIX** справа (этап 2 sidebar/topbar).  
@@ -33,7 +35,7 @@
 **Реестр (TS):** `velorix-neon-theme-tokens.ts` — `VELORIX_NEON_REFERENCE_SCREEN_RELS` (реф. 1–27 экраны/модалки/showcase) + иконка/логотипы.  
 **Каталог mockup:** [`reference/README.md`](reference/README.md) · `VELORIX_REFERENCE_ASSETS_DIR`
 
-> **Устарело:** [`UX_REFERENCE_V0.OLD.md`](UX_REFERENCE_V0.OLD.md) — не использовать.
+> **Устарело:** [`UX_REFERENCE_V0.OLD.md`](archive/UX_REFERENCE_V0.OLD.md) — не использовать.
 
 ---
 
@@ -46,7 +48,7 @@
 | Было | Станет |
 |------|--------|
 | Две палитры (`dark` / `light`) + NEON как слой поверх старого тёмного | **Один** визуальный продукт — **VELORIX NEON** |
-| Серый LosslessCut-like UI и отдельные `velorix-neon-*.css` поверх `main.css` | **UI с нуля** по PNG: layout, компоненты, токены — без наследия старых тем |
+| Старый shell (topbar-grid, правый rail) и `velorix-neon-*.css` поверх `main.css` | **UI с нуля** по PNG; legacy layout **удалять** (burn-down), не «скин» |
 | Переключатель темы в настройках | **Убрать**; альтернативных тем в релизе **нет** |
 | Pop-out окна, дубли nav | **Не** целевой UX (см. решение про pop-out ниже) |
 
@@ -72,14 +74,16 @@
 |---|---------|
 | 1 | **Референс = канон.** Визуал (layout, плотность, цвет, glow, иконки, rails) — **максимально 1:1** с соответствующим PNG; новые PNG владельца добавляются в `docs/reference/` и реестр **до** верстки экрана. |
 | 2 | **Функционал не ломать.** IPC, ffmpeg, yt-dlp, settings persistence, workflows — **сохранить**; в срезе «только UI» не менять контракты без отдельной задачи. |
-| 3 | **UI с нуля, не «скин».** Старые `dark`/`light` палитры, переключатель темы, стили «как LosslessCut» в `main.css` для shell — **вывести из эксплуатации** и **удалить** по завершении переноса (не держать параллельно). |
+| 3 | **UI с нуля, не «скин».** Старые `dark`/`light`, переключатель темы, `main.css` layout shell — **удалить** при burn-down (см. NEON-чеклист § burn-down); **не** держать параллельно. |
 | 4 | **Без мусора.** Запрещены: второй sidebar, pop-out Загрузки/Инспектор, дублирующие пункты меню, неиспользуемые CSS-файлы старых тем, «оставили на всякий случай» ветки layout. |
 | 5 | **Фичи с PNG без кода.** Сначала вёрстка по референсу; логика (NLE tracks, AI в базе знаний, …) — **отдельный** срез с ТЗ/IPC, не подменять пустышкой без пометки в чеклисте. |
 | 6 | **Названия.** Мелкие отличия подписей mockup vs `ui-text` — допустимы; композиция и иерархия — **нет**. |
+| 7 | **Удалять мешающее.** Устаревший код/doc/guard/UX, который блокирует план или реализацию — **удалить** или заменить в той же итерации; **не** копить legacy «из страха» и **не** дублировать старый+новый путь. Глоссарий: **«Удаление мешающего legacy»** в `velorix-rules-explicit.mdc`. |
+| 8 | **Burn-down UI.** Единственная визуальная истина — **PNG refs 1–27**. Старый shell/layout/компоненты — **срезать** при внедрении ref-экрана; backend (IPC/stores) — сохранить. **Запрещено:** LosslessCut/чужие IDE как ориентир. |
 
 ### Конфликт с другими документами
 
-- **`VELORIX_TZ.md` §5 (две темы):** на момент принятия A — **устарело** для целевого продукта. Синхронизация ТЗ — **только** по **явной просьбе** владельца («редактируй ТЗ»).
+- **Архив ТЗ:** [`docs/archive/VELORIX_TZ.OLD.md`](archive/VELORIX_TZ.OLD.md) — **не** spec. Вспомогательный стек — [`ARCHITECTURE.md`](ARCHITECTURE.md). §5 (две темы) и др. **не** блокируют Variant A.
 - **Этапы 1–6 ниже:** черновик CSS на **старом** layout (J-1621…1625); при варианте A после sign-off vs PNG либо **пересмотр** под новый shell, либо замена фазой D + полная зачистка legacy — не считать закрытым «по старому коду».
 
 ### Чеклист «вариант A выполнен» (для финала программы, не сейчас)
@@ -88,7 +92,7 @@
 - [ ] В настройках и меню **нет** выбора `light` / `dark` / `system` — только NEON.
 - [ ] Удалены неиспользуемые CSS/компоненты старых тем; `main.css` не дублирует `velorix-neon-*`.
 - [ ] Pop-out downloads/inspector **не** в целевом UX (код вычищен или сведён к shell).
-- [ ] `npm run check:quiet` зелёный; ручные smoke по § `IMPLEMENTATION_MANUAL_VERIFICATION.md` при необходимости.
+- [ ] `npm run check:quiet` зелёный; приёмка на железе — Support ZIP `ownerHardwareChecklist:`.
 
 ---
 
@@ -204,11 +208,11 @@
 
 ### Что есть в коде **сегодня** (editor timeline)
 
-- **Один** медиа-поток на таймлайне: waveform + **trim in/out** (LosslessCut-стиль), маркеры, zoom окна, playhead — `VideoTimeline`, `VideoTimelineUnifiedPane`, `VideoTimelineToolbar`.
+- **Сейчас в коде (legacy, под удаление):** waveform + trim in/out — `VideoTimeline*`. **Цель ref.1:** layout и поведение **по PNG**, не клон старого trim-редактора.
 - Toolbar: **In/Out**, reset trim, zoom, save frame, export jump — **не** blade/link/snap/multi-track.
 - Нет модели **клипов**, **дорожек V1–V3 / A1–A2**, drag-and-drop на линии, split/join на timeline.
 
-`VELORIX_TZ.md` (§4, §7.2.2): центр — **предпросмотр + таймлайн с двумя маркерами обрезки**; это **ближе к LosslessCut**, чем к NLE на референсе 1.
+Архив ТЗ описывал trim-редактор; **канон — ref.1 PNG** (NLE-визуал на mockup). Legacy `VideoTimeline*` снять при внедрении ref.1.
 
 ### Классификация работ (чтобы не смешать с NEON 1–6)
 
@@ -217,7 +221,7 @@
 | **NEON 1–6** | Только **визуал** зон (цвет, glow, плотность контролов) | По команде «делай этап N»; **без** новых дорожек/IPC |
 | **Фаза D** | Layout 1:1 с PNG (sidebar слева, rail справа, плотность) | После sign-off 1–6 |
 | **Продукт / NLE** | Модель timeline: tracks, clips, razor, snap, link, envelopes, multi-asset | **Отдельный** срез: ТЗ + state + IPC + main; **не** в промптах NEON |
-| **ТЗ** | Синхронизировать vision с референсом 1 | Только по **явной просьбе** владельца (`VELORIX_TZ.md`) |
+| **Архив ТЗ** | Синхронизировать vision с референсом 1 | Только по **явной просьбе** владельца (`docs/archive/VELORIX_TZ.OLD.md`) |
 
 **Вывод:** референс 1 задаёт **целевой pro-NLE UX** (multi-track + монтаж), а текущий Velorix — **trim/export hub** с одной шкалой. Этап **4 NEON** должен визуально приблизить **внешний вид** таймлайна к PNG (дорожки, клипы, toolbar **как стили**), но **реальная** нарезка/склейка/несколько файлов — отдельная продуктовая фаза после D или параллельно с обновлением ТЗ.
 
@@ -321,7 +325,7 @@
 |------|----------|
 | **Этап 6** | Общие токены таблиц, tags (success/error/pause), charts |
 | **Фаза D** | Отдельный route/вкладка «История» с layout как PNG |
-| **Продукт** | Unified event store (processing + downloads + system), пагинация, агрегаты — IPC + модель; возможно правка `VELORIX_TZ.md` |
+| **Продукт** | Unified event store (processing + downloads + system), пагинация, агрегаты — IPC + модель |
 
 **Вывод:** реф. 3 — **центральный audit log** продукта; сейчас история **встроена** в редактор и загрузки, а не выделена в самостоятельный экран с аналитикой.
 
@@ -399,7 +403,7 @@
 | **Фаза D** | Вкладка «База знаний» / «Справка» в global shell (одно имя в UI на выбор) |
 | **Продукт** | Search index, analytics (views), AI assist, attachments API — опционально поверх существующего Help |
 
-**Вывод:** реф. 5 — **documentation portal**; сейчас knowledge — **диалог поверх редактора**, без каталога и без AI entry point.
+**Вывод:** реф. 5 — **documentation portal**; сейчас knowledge — **диалог поверх редактора**, без каталога и без AI entry point. **Контент:** `Help/*.md` — переходный слой; целевая модель — не «только markdown» (см. `ARCHITECTURE.md` вспомогательный стек; контент — portal, не только markdown).
 
 ---
 
@@ -916,27 +920,30 @@ Avoid generic SaaS appearance at all costs.
 
 ### Workstream'ы Variant A (после синхрона канона)
 
-- [ ] **VA.1 Global shell / route map**: единый sidebar-shell для `Обработка`, `Загрузки`, `Терминал`, `История`, `Инспектор`, `Планировщик`, `Сценарии`, `Инструменты`, `Настройки`, `База знаний`.
-- [ ] **VA.2 Tools hub / refs 10–20**: хаб `Инструменты`, `О программе`, file maintenance, image conversion, noise generator, slideshow, scenario builder, external script-filter, export-preset-name, engine paths, first-run engines.
-- [ ] **VA.3 System / recovery / refs 21–25**: quit confirm, FFmpeg error, critical crash, encoder benchmark, plugins manager.
-- [ ] **VA.4 Component sign-off / refs 26–27**: UI State Showcase и UI Components / States как канон reusable состояний, QA и финальной parity-приёмки.
-- [ ] **VA.5 Legacy cleanup**: theme selector, dual-theme runtime, `#downloads` / `#inspector`, старые shell-паттерны, stale docs/tests/guards.
+**Честная метка:** **[x] в журнале J-1633..1667** = маршруты/зачистка кода, **не** визуал 1:1. Активная матрица — [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md).
+
+- [~] **VA.1** sidebar routes — shell частично; layout refs 1–9 — открыто.
+- [~] **VA.2** Tools hub refs 10–20 — не full-screen 1:1.
+- [~] **VA.3** System refs 21–25 — диалоги, не 1:1 PNG.
+- [~] **VA.4** Showcase 26–27 — эталон компонентов, не весь app.
+- [x] **VA.5** Legacy cleanup (pop-out/theme) — снято.
 
 ### Cleanup buckets (первый проход)
 
 **Confirmed-remove / confirmed-cleanup**
 
-- stale path references вокруг `scripts/maint/sync-help-workflow-user-footers.mjs`;
-- stale help/manual/checklist строки, которые продолжают описывать dual-theme или pop-out как целевой UX;
+- ~~stale path references вокруг `scripts/maint/sync-help-workflow-user-footers.mjs`~~ — Help keyboard/inspector copy (**J-1662**);
+- ~~stale help/manual/checklist строки, которые продолжают описывать dual-theme или pop-out как целевой UX~~ — первый проход после sprint.5 (**J-1657**);
 - хвосты про «нет референса» там, где это уже закрыто рефами 23–27;
 - устаревшие формулировки вида «осталась только ручная приёмка», если они конфликтуют с Variant A program.
 
-**Investigate bucket**
+**Investigate bucket** (закрыт или не блокирует NEON)
 
-- `scripts/gate/check-ui-surfaces-guard.mjs` (подозрительно разросшийся guard, не удалять без разборки роли);
-- chain theme-codemod / tokenizer scripts в `scripts/maint/`;
-- возможные дубли packaging/help-smoke tests;
-- runtime pop-out/theme removal, пока shell-parity ещё не закрыла нужный функционал.
+- ~~`check-ui-surfaces-guard` hash regression~~ — **J-1658**.
+- ~~`theme:tokenize-main-css` maint chain~~ — одноразовые скрипты, оставить в `package.json`.
+- ~~packaging/help-smoke duplicates~~ — отдельные домены, не дубли.
+- ~~renderer/CSS pop-out copy~~ — sprint.5.
+- Дальше по продукту: Phase D, VA «Открытые пробелы» ниже — не агентский pop-out хвост.
 
 ### Открытые пробелы Variant A
 
@@ -990,7 +997,7 @@ src/renderer/src/assets/themes/
 - [ ] **C.2** Focus / disabled / danger на железе.
 - [ ] **C.3** Сверка с PNG по **каждому** этапу 1–6 (таблица Sign-off выше).
 - [ ] **C.4** Help — только по просьбе владельца.
-- [ ] **C.5** `VELORIX_TZ.md` — только по просьбе владельца.
+- [ ] **C.5** Help — только по просьбе владельца.
 
 ## Токены — шпаргалка
 

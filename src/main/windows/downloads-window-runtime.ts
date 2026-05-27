@@ -2,16 +2,10 @@ export {
   configureDownloadsWindowBoundsHooks,
   DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL,
   getDownloadsBoundsHooks,
-  getDownloadsPopoutWindow,
-  getLastDownloadsPopoutResolvedUiLocale,
   ipcStr,
   ipcUiLocale,
   isDownloadsOrMainSender,
-  isDownloadsSender,
-  isDownloadsWindow,
-  resolveMainEditorWindow,
-  setDownloadsPopoutWindow,
-  setLastDownloadsPopoutResolvedUiLocale
+  resolveMainEditorWindow
 } from './downloads-window-runtime-hooks'
 export {
   getDownloadsQueueSnapshotForRenderer,

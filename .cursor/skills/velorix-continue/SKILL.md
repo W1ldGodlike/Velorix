@@ -1,6 +1,6 @@
 ---
 name: Velorix-continue
-description: «продолжай» и `+` — равнозначные команды; продолжить текущую задачу или взять пункт из IMPLEMENTATION_CHECKLIST.md § Ближайший TODO спринта.
+description: «продолжай» и `+` — равнозначные команды; продолжить текущую задачу или следующий срез по docs/VELORIX_NEON_THEME.md и docs/IMPLEMENTATION_NEON_CHECKLIST.md.
 ---
 
 # Продолжай / +
@@ -8,8 +8,11 @@ description: «продолжай» и `+` — равнозначные кома
 **Если** в чате «продолжай» или `+` (**равнозначные команды**) **то:**
 
 1. Продолжить **текущую** задачу из сообщения или контекста.
-2. **Если** текущая задача закрыта **то** взять следующий пункт из [`IMPLEMENTATION_CHECKLIST.md`](../../../IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`. **Запрещено:** пункты «владелец» / «на железе» / «приёмка» — только [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](../../../IMPLEMENTATION_MANUAL_VERIFICATION.md).
-3. `npm run check:quiet` при diff в репо; при diff — одна `J-NNN` (skill [`velorix-journal-entry`](../velorix-journal-entry/SKILL.md)).
-4. **Git по J-NNN** — [`velorix-agent.mdc`](../../rules/velorix-agent.mdc): при новой J и зелёном quiet — `NNN % 5` → `git commit`, `NNN % 10` → также `git push` (любой чат).
+2. **Если** текущая задача закрыта **то:**
+   - [`docs/VELORIX_NEON_THEME.md`](../../../docs/VELORIX_NEON_THEME.md) — Phase D, refs **1–27**, открытые пробелы VA, workstream'ы;
+   - [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](../../../docs/IMPLEMENTATION_NEON_CHECKLIST.md) — `## Ближайший TODO спринта` (3–7 пунктов).
+3. **Запрещено:** [`docs/archive/`](../../../docs/archive/), корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`.
+4. `npm run check:quiet` при diff; одна `J-NNN` (skill [`velorix-journal-entry`](../velorix-journal-entry/SKILL.md)).
+5. **Git по J-NNN** — [`velorix-agent.mdc`](../../rules/velorix-agent.mdc).
 
-Исполняемое: [`velorix-agent.mdc`](../../rules/velorix-agent.mdc). ТЗ без явной просьбы не править.
+Исполняемое: [`velorix-agent.mdc`](../../rules/velorix-agent.mdc).

@@ -13,9 +13,13 @@ const MAX_ALWAYS_APPLY_LINES = 120
 /** Глоссарий удалённых артефактов — не считать «навигацией» */
 const FORBIDDEN_TEXT_EXEMPT = new Set([
   '.cursor/rules/velorix-rules-explicit.mdc',
-  'docs/UX_REFERENCE_V0.OLD.md',
+  'docs/archive/README.md',
+  'docs/archive/VELORIX_TZ.OLD.md',
+  'docs/archive/IMPLEMENTATION_CHECKLIST.OLD.md',
+  'docs/archive/UX_REFERENCE_V0.OLD.md',
   'docs/reference/README.md',
-  'docs/VELORIX_NEON_THEME.md'
+  'docs/VELORIX_NEON_THEME.md',
+  'IMPLEMENTATION_JOURNAL.md'
 ])
 
 /** @type {string[]} */
@@ -59,6 +63,8 @@ const FORBIDDEN_TEXT = [
 
 /** Paths removed in GOV B / J-984 — must not appear as markdown link targets */
 const FORBIDDEN_LINK_TARGETS = [
+  'VELORIX_TZ.md',
+  'IMPLEMENTATION_CHECKLIST.md',
   '.cursor/rules/VELORIX-iteration-batch.mdc',
   '.cursor/rules/VELORIX-project-audit.mdc',
   '.cursor/rules/VELORIX-ui-surfaces.mdc',
@@ -238,6 +244,9 @@ function main() {
   const files = collectNavFiles()
 
   for (const rel of files) {
+    if (rel.startsWith('docs/archive/')) {
+      continue
+    }
     for (const label of checkForbiddenText(rel)) {
       errors.push(`${rel}: forbidden reference (${label})`)
     }

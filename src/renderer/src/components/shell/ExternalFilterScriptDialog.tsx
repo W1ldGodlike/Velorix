@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type JSX } from 'react'
+import { useCallback, useEffect, useId, useState, type JSX } from 'react'
 
 import type { ExternalFilterScriptKind } from '../../../../shared/external-filter-script-contract'
 import { getUiLocale, uiText, uiTextVars } from '../../locales/ui-text'
@@ -8,15 +8,27 @@ export type ExternalFilterScriptDialogProps = {
   onClose: () => void
   onStatus: (message: string) => void
   onApplied: () => void
+  presentation?: 'dialog' | 'embedded'
+  onExitEmbedded?: () => void
+  showCancelAction?: boolean
 }
 
 export function ExternalFilterScriptDialog(
   props: ExternalFilterScriptDialogProps
 ): JSX.Element | null {
-  const { open, onClose, onStatus, onApplied } = props
+  const {
+    open,
+    onClose,
+    onStatus,
+    onApplied,
+    presentation = 'dialog',
+    onExitEmbedded,
+    showCancelAction = true
+  } = props
   const [kind, setKind] = useState<ExternalFilterScriptKind>('off')
   const [scriptPath, setScriptPath] = useState('')
   const [busy, setBusy] = useState(false)
+  const dialogId = useId()
 
   useEffect(() => {
     if (!open) {
@@ -86,6 +98,105 @@ export function ExternalFilterScriptDialog(
     return null
   }
 
+  const exit = presentation === 'embedded' ? (onExitEmbedded ?? onClose) : onClose
+
+  const renderExternalFilterChrome = (embedded: boolean): JSX.Element => (
+    <div
+      className={`app-modal external-filter-script-dialog${embedded ? ' external-filter-script-dialog-embedded' : ''}`}
+      role={embedded ? 'region' : 'dialog'}
+      aria-modal={embedded ? undefined : 'true'}
+      aria-busy={busy}
+      aria-labelledby={`${dialogId}-title`}
+      aria-describedby={`${dialogId}-hint`}
+      onMouseDown={
+        embedded
+          ? undefined
+          : (e) => {
+              e.stopPropagation()
+            }
+      }
+    >
+      <h2 id={`${dialogId}-title`} className="app-modal-title">
+        {uiText('externalFilterScriptDialogTitle')}
+      </h2>
+      <p id={`${dialogId}-hint`} className="app-modal-hint">
+        {uiText('externalFilterScriptDialogHint')}
+      </p>
+      <div className="app-settings-field-row">
+        <label
+          className="app-settings-label"
+          htmlFor={`${dialogId}-kind`}
+          title={uiText('externalFilterScriptKindTitle')}
+        >
+          {uiText('externalFilterScriptKindLabel')}
+        </label>
+        <select
+          id={`${dialogId}-kind`}
+          className="app-settings-select"
+          title={uiText('externalFilterScriptKindTitle')}
+          disabled={busy}
+          value={kind}
+          onChange={(e) => {
+            setKind(e.target.value as ExternalFilterScriptKind)
+          }}
+        >
+          <option value="off">{uiText('externalFilterScriptKindOff')}</option>
+          <option value="avisynth">{uiText('externalFilterScriptKindAvs')}</option>
+          <option value="vapoursynth">{uiText('externalFilterScriptKindVpy')}</option>
+        </select>
+      </div>
+      <p className="app-modal-hint" title={scriptPath}>
+        {scriptPath.length > 0
+          ? scriptPath.replace(/^.*[/\\]/, '')
+          : uiText('externalFilterScriptNoFile')}
+      </p>
+      <div
+        className="app-settings-benchmark-actions"
+        role="toolbar"
+        aria-label={uiText('externalFilterScriptToolbarAria')}
+        aria-describedby={`${dialogId}-hint`}
+      >
+        <button
+          type="button"
+          className="app-btn app-btn-compact"
+          disabled={busy || kind === 'off'}
+          title={uiText('externalFilterScriptPickTitle')}
+          onClick={() => {
+            void pickScript()
+          }}
+        >
+          {uiText('externalFilterScriptPick')}
+        </button>
+        <button
+          type="button"
+          className="app-btn app-btn-primary app-btn-compact"
+          disabled={busy}
+          title={uiText('externalFilterScriptSaveTitle')}
+          onClick={() => {
+            void save()
+          }}
+        >
+          {uiText('externalFilterScriptSave')}
+        </button>
+        {showCancelAction ? (
+          <button
+            type="button"
+            className="app-btn app-btn-compact"
+            disabled={busy}
+            title={uiText('externalFilterScriptCancelTitle')}
+            onClick={exit}
+          >
+            {uiText('externalFilterScriptCancel')}
+          </button>
+        ) : null}
+      </div>
+    </div>
+  )
+
+  if (presentation === 'embedded') {
+    return renderExternalFilterChrome(true)
+  }
+
   return (
     <div
       className="app-modal-backdrop"
@@ -99,90 +210,7 @@ export function ExternalFilterScriptDialog(
         }
       }}
     >
-      <div
-        className="app-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-busy={busy}
-        aria-labelledby="external-filter-script-title"
-        aria-describedby="external-filter-script-hint"
-        onMouseDown={(e) => {
-          e.stopPropagation()
-        }}
-      >
-        <h2 id="external-filter-script-title" className="app-modal-title">
-          {uiText('externalFilterScriptDialogTitle')}
-        </h2>
-        <p id="external-filter-script-hint" className="app-modal-hint">
-          {uiText('externalFilterScriptDialogHint')}
-        </p>
-        <div className="app-settings-field-row">
-          <label
-            className="app-settings-label"
-            htmlFor="external-filter-kind"
-            title={uiText('externalFilterScriptKindTitle')}
-          >
-            {uiText('externalFilterScriptKindLabel')}
-          </label>
-          <select
-            id="external-filter-kind"
-            className="app-settings-select"
-            title={uiText('externalFilterScriptKindTitle')}
-            disabled={busy}
-            value={kind}
-            onChange={(e) => {
-              setKind(e.target.value as ExternalFilterScriptKind)
-            }}
-          >
-            <option value="off">{uiText('externalFilterScriptKindOff')}</option>
-            <option value="avisynth">{uiText('externalFilterScriptKindAvs')}</option>
-            <option value="vapoursynth">{uiText('externalFilterScriptKindVpy')}</option>
-          </select>
-        </div>
-        <p className="app-modal-hint" title={scriptPath}>
-          {scriptPath.length > 0
-            ? scriptPath.replace(/^.*[/\\]/, '')
-            : uiText('externalFilterScriptNoFile')}
-        </p>
-        <div
-          className="app-settings-benchmark-actions"
-          role="toolbar"
-          aria-label={uiText('externalFilterScriptToolbarAria')}
-          aria-describedby="external-filter-script-hint"
-        >
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            disabled={busy || kind === 'off'}
-            title={uiText('externalFilterScriptPickTitle')}
-            onClick={() => {
-              void pickScript()
-            }}
-          >
-            {uiText('externalFilterScriptPick')}
-          </button>
-          <button
-            type="button"
-            className="app-btn app-btn-primary app-btn-compact"
-            disabled={busy}
-            title={uiText('externalFilterScriptSaveTitle')}
-            onClick={() => {
-              void save()
-            }}
-          >
-            {uiText('externalFilterScriptSave')}
-          </button>
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            disabled={busy}
-            title={uiText('externalFilterScriptCancelTitle')}
-            onClick={onClose}
-          >
-            {uiText('externalFilterScriptCancel')}
-          </button>
-        </div>
-      </div>
+      {renderExternalFilterChrome(false)}
     </div>
   )
 }

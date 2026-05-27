@@ -8,7 +8,6 @@ export {
   IconFilm,
   IconFolderOpen,
   IconHome,
-  IconPopOutWindow,
   IconQueueChevronDown,
   IconQueueChevronUp,
   IconQueueFile,

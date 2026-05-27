@@ -53,7 +53,7 @@ export const formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail =
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail
 
 /** Owner manual smoke — workflow articles crosslinks clause (§16/§21). */
-export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause(
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWorkflowArticlesClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
@@ -64,7 +64,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowA
 }
 
 /** Owner manual smoke Help — manual-owner steps without GUI automation (§7.5). */
-export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeManualOwnerClause(
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistManualOwnerClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
@@ -73,18 +73,18 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeManualOwn
 }
 
 /** Owner manual smoke Help — packaged-windows + workflow articles step Help tail. */
-export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepHelpClause(
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepHelpClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const workflow =
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause(locale)
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWorkflowArticlesClause(locale)
   return locale === 'ru'
     ? ` Help по шагам — [packaged-windows-smoke.md](packaged-windows-smoke.md) и ${workflow}`
     : ` Step Help — [packaged-windows-smoke.md](packaged-windows-smoke.md) and ${workflow}`
 }
 
 /** Owner manual smoke Help — full planned GUI e2e paragraph (inject Playwright UI hints from `packaged-gui-e2e-playwright-meta`). */
-export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeScaffoldClause(
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistScaffoldClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   void locale
@@ -92,7 +92,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeScaffoldC
 }
 
 /** Owner manual smoke Help — planned step notes map (Copy/releaseSmoke diagnostic). */
-export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdClause(
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
@@ -101,7 +101,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdC
 }
 
 /** Owner/about/logging hub Help — Playwright specs handoff (§21). */
-export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHandoffClause(
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
@@ -109,19 +109,19 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHan
     : ` Specs: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\``
 }
 
-export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiParagraph(
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistPlannedGuiParagraph(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale,
   ownerPlaywrightUiHintsClause: string
 ): string {
   return (
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiClause(locale) +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeScaffoldClause(locale) +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdClause(locale) +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHandoffClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistPlannedGuiClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistScaffoldClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(locale) +
     '.' +
     ownerPlaywrightUiHintsClause +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeManualOwnerClause(locale) +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepHelpClause(locale)
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistManualOwnerClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepHelpClause(locale)
   )
 }
 
@@ -151,11 +151,13 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxPlannedGu
   const count = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_E2E_COUNT
   const module = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_SCENARIOS_MODULE
   const exportsInline = formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiScaffoldExportsInline()
-  const stepById = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdClause(locale)
-  const wiring = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHandoffClause(locale)
+  const stepById =
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(locale)
+  const wiring =
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(locale)
   return locale === 'ru'
-    ? `§21 planned GUI e2e (${count} шагов) — [owner-manual-smoke.md](owner-manual-smoke.md); канон stepId: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; \`${module}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${exportsInline}).${stepById}${wiring}.`
-    : `§21 planned GUI e2e (${count} steps) — [owner-manual-smoke.md](owner-manual-smoke.md); canonical ids: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; \`${module}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${exportsInline}).${stepById}${wiring}.`
+    ? `§21 planned GUI e2e (${count} шагов) — [about-support-logs.md](about-support-logs.md); канон stepId: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; \`${module}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${exportsInline}).${stepById}${wiring}.`
+    : `§21 planned GUI e2e (${count} steps) — [about-support-logs.md](about-support-logs.md); canonical ids: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; \`${module}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${exportsInline}).${stepById}${wiring}.`
 }
 
 const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE =
@@ -173,9 +175,12 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClau
 ): string {
   const count = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_E2E_COUNT
   const reserved = formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiReservedClause(locale)
-  const scaffold = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeScaffoldClause(locale)
-  const stepById = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdClause(locale)
-  const wiring = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHandoffClause(locale)
+  const scaffold =
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistScaffoldClause(locale)
+  const stepById =
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(locale)
+  const wiring =
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(locale)
   return locale === 'ru'
     ? `**Planned GUI e2e** (${count} шагов, Playwright wired) — ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}${scaffold}${stepById}${wiring}.`
     : `**Planned GUI e2e** (${count} steps, Playwright wired): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}${scaffold}${stepById}${wiring}.`
@@ -216,7 +221,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedCopyPlannedGuiTai
 }
 
 /** Owner manual smoke Help — planned GUI e2e clause (Playwright deferred). */
-export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiClause(
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistPlannedGuiClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const count = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_E2E_COUNT
@@ -247,13 +252,13 @@ export function formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeD
 }
 
 /** Owner manual smoke — Support ZIP archive bullet (§15 hub). */
-export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeArchiveSupportClause(
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistArchiveSupportClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const signing = formatPackagedE2eHelpWorkflowCrosslinksGettingStartedSigningRoadmapClause(locale)
   return locale === 'ru'
-    ? `3. **Архив поддержки** — \`ownerManualSmoke:\` в \`diagnostics.txt\` (дублирует те же шаги); \`releaseSmoke:\` — CI packaged pipeline, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` (\`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\`) для \`electron-vite build\` на Linux/CI, и план §21 e2e;${signing} dev-блок \`terminalHints:\` (§8 guards) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md).`
-    : `3. **Support ZIP** — \`ownerManualSmoke:\` in \`diagnostics.txt\`; \`releaseSmoke:\` — CI packaged pipeline, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` (\`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\`) for Linux/CI \`electron-vite build\`, and §21 e2e plan;${signing} dev block \`terminalHints:\` (§8 guards) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md).`
+    ? `3. **Архив поддержки** — \`ownerHardwareChecklist:\` в \`diagnostics.txt\` (дублирует те же шаги); \`releaseSmoke:\` — CI packaged pipeline, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` (\`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\`) для \`electron-vite build\` на Linux/CI, и план §21 e2e;${signing} dev-блок \`terminalHints:\` (§8 guards) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md).`
+    : `3. **Support ZIP** — \`ownerHardwareChecklist:\` in \`diagnostics.txt\`; \`releaseSmoke:\` — CI packaged pipeline, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET}\` (\`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH}\`) for Linux/CI \`electron-vite build\`, and §21 e2e plan;${signing} dev block \`terminalHints:\` (§8 guards) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md).`
 }
 
 /** About support Help — `releaseSmoke:` dev tail + Playwright UI hint (inject from `packaged-gui-e2e-playwright-meta`). */
@@ -263,9 +268,9 @@ export function formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeD
 ): string {
   return (
     formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale) +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeScaffoldClause(locale) +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdClause(locale) +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHandoffClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistScaffoldClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(locale) +
     '.' +
     aboutPlaywrightUiHintSuffix
   )
@@ -284,8 +289,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksLoggingCopyE2eClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
-    ? ' Support ZIP `ownerManualSmoke:` / `releaseSmoke:` дописывает **§21 packaged e2e (CI vs owner)**; '
-    : ' Support ZIP `ownerManualSmoke:` / `releaseSmoke:` appends **§21 packaged e2e (CI vs owner)**; '
+    ? ' Support ZIP `ownerHardwareChecklist:` / `releaseSmoke:` дописывает **§21 packaged e2e (CI vs owner)**; '
+    : ' Support ZIP `ownerHardwareChecklist:` / `releaseSmoke:` appends **§21 packaged e2e (CI vs owner)**; '
 }
 
 /** Logging Help — full Dev line (inject planned GUI scope + UI hints from `packaged-gui-e2e-playwright-meta`). */
@@ -299,9 +304,9 @@ export function formatPackagedE2eHelpWorkflowCrosslinksLoggingDevParagraph(
     formatPackagedE2eHelpWorkflowCrosslinksLoggingTerminalShardClause(locale) +
     formatPackagedE2eHelpWorkflowCrosslinksLoggingCopyE2eClause(locale) +
     plannedGuiScopeClause +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeScaffoldClause(locale) +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeStepByIdClause(locale) +
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWiringHandoffClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistScaffoldClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(locale) +
+    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(locale) +
     '.' +
     loggingDiagnosticsUiHintSuffix
   )

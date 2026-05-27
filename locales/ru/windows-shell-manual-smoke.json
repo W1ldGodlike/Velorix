@@ -11,5 +11,5 @@
   "windowsShellSmokeStep_unregister": "(Опц.) «Снять регистрацию» — пункты исчезают из Проводника; повторная регистрация OK.",
   "windowsShellSmokePass0": "Повторный shell-open при уже запущенном приложении не создаёт второй процесс.",
   "windowsShellSmokePass1": "NSIS install/uninstall (если тестируете установщик) — register/unregister без ошибки в логе.",
-  "windowsShellSmokePass2": "Support ZIP содержит ownerManualSmoke: с блоком shell (на Win)."
+  "windowsShellSmokePass2": "Support ZIP содержит ownerHardwareChecklist: с блоком shell (на Win)."
 }

@@ -8,13 +8,15 @@ export const TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT = 'J-1580' as const
 export const TOOLCHAIN_BASELINE_WIP_NEXT_J_PUSH = 'J-1580' as const
 export const TOOLCHAIN_BASELINE_WIP_MAIN_SHA = 'ff89765' as const
 
-/** Заголовок спринта в IMPLEMENTATION_CHECKLIST (слово T+ODO — вне audit:todo-debt). */
+export const IMPLEMENTATION_NEON_CHECKLIST_PATH = 'docs/IMPLEMENTATION_NEON_CHECKLIST.md' as const
+
+/** Заголовок спринта в NEON-чеклисте (слово T+ODO — вне audit:todo-debt). */
 export const IMPLEMENTATION_CHECKLIST_SPRINT_HEADING =
   `## Ближайший ${'T' + 'ODO'} спринта` as const
 
 /** Velorix-continue SKILL.md — «продолжай» / «+». */
 export function formatToolchainBaselineContinuePromptLine(): string {
-  return `«продолжай» или «+» — продолжить текущую задачу; если закончена — следующий пункт из \`IMPLEMENTATION_CHECKLIST.md\` → \`${IMPLEMENTATION_CHECKLIST_SPRINT_HEADING}\`.`
+  return `«продолжай» или «+» — текущая задача; если закончена — \`docs/VELORIX_NEON_THEME.md\` → \`${IMPLEMENTATION_NEON_CHECKLIST_PATH}\` → \`${IMPLEMENTATION_CHECKLIST_SPRINT_HEADING}\`.`
 }
 
 /** RELEASE.md §1 toolchain baseline paragraph. */
@@ -37,7 +39,7 @@ export function formatToolchainBaselineWipHandoffSdkContractJournalGitFragment()
   return `journal ${TOOLCHAIN_BASELINE_WIP_JOURNAL_RANGE}; commit по J ${TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT}`
 }
 
-/** `IMPLEMENTATION_CHECKLIST.md` — sprint Wave 5 Dependabot bullet. */
+/** NEON-чеклист — sprint Wave 5 Dependabot bullet (исторический). */
 export function formatToolchainBaselineWipHandoffChecklistSprintWave5Line(): string {
   return `- [x] Wave 5 Dependabot: push→gh (journal **J-1558**); git по J: **J%5** commit / **J%10** push.`
 }
@@ -54,7 +56,7 @@ export function formatToolchainBaselineWipHandoffSdkContinuePromptSprintChecklis
 
 /** `scripts/cursor-automation/README.md` — sprint Wave 5 checklist bullet. */
 export function formatToolchainBaselineWipHandoffSdkAutomationReadmeChecklistSprintLine(): string {
-  return `- Sprint Wave 5 (\`IMPLEMENTATION_CHECKLIST\`): \`formatToolchainBaselineWipHandoffChecklistSprintWave5Line\` (**${TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT}**).`
+  return `- Sprint Wave 5 (\`${IMPLEMENTATION_NEON_CHECKLIST_PATH}\`): \`formatToolchainBaselineWipHandoffChecklistSprintWave5Line\` (**${TOOLCHAIN_BASELINE_WIP_NEXT_J_COMMIT}**).`
 }
 
 /** SOURCES_OF_TRUTH.md priority-7 fragment (SDK row). */

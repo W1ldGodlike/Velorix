@@ -39,14 +39,12 @@ import type {
 import type {
   AppSettings,
   AppSettingsView,
-  AppTheme,
   MainWindowUiPanelState
 } from '../shared/settings-contract'
 export type VelorixApiSettingsBlock = {
   settings: {
     get: () => Promise<AppSettingsView>
     setUiLocale: (locale: AppUiLocale) => Promise<AppSettings>
-    setTheme: (theme: AppTheme) => Promise<AppSettingsView>
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch) => Promise<AppSettings>
     pickEngineExecutable: (engineId: EngineId) => Promise<string | null>
     setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId) => Promise<AppSettings>

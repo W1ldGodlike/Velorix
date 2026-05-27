@@ -4,6 +4,7 @@ import type { FfmpegExportBatchSnapshot } from '../../shared/ffmpeg-export-batch
 import { formatFfmpegExportBatchReportText } from '../../shared/ffmpeg-export-batch-report'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
 import type { WorkspaceTab } from './app-terminal-hint-ui'
+import { useAppShellStore } from './stores/app-shell-store'
 
 export function useFfmpegExportBatchHandlersRun({
   setStatusHint,
@@ -31,6 +32,8 @@ export function useFfmpegExportBatchHandlersRun({
   handleBatchSaveReport: () => Promise<void>
   handleBatchRemoveWaiting: () => Promise<void>
 } {
+  const setLastFfmpegError = useAppShellStore.getState().setLastFfmpegError
+
   const handleBatchOpenOutput = useCallback(
     async (outputPath: string, mode: 'file' | 'folder' | 'preview'): Promise<void> => {
       const res = await window.velorix.export.openOutput(outputPath, mode)
@@ -64,13 +67,15 @@ export function useFfmpegExportBatchHandlersRun({
     if (pipelineBusy) {
       return
     }
+    setLastFfmpegError(null)
     const res = await window.velorix.batchExport.start(buildExportOverrides())
     if (!res.ok) {
+      setLastFfmpegError({ source: 'batch', detail: res.error })
       setStatusHint(res.error)
       return
     }
     setStatusHint(uiText('batchExportStarted'))
-  }, [buildExportOverrides, pipelineBusy, setStatusHint])
+  }, [buildExportOverrides, pipelineBusy, setLastFfmpegError, setStatusHint])
 
   const handleBatchCancel = useCallback(async (): Promise<void> => {
     await window.velorix.batchExport.cancel()
@@ -105,13 +110,15 @@ export function useFfmpegExportBatchHandlersRun({
     if (pipelineBusy) {
       return
     }
+    setLastFfmpegError(null)
     const res = await window.velorix.batchExport.retryFailedAndStart(buildExportOverrides())
     if (!res.ok) {
+      setLastFfmpegError({ source: 'batch', detail: res.error })
       setStatusHint(res.error)
       return
     }
     setStatusHint(uiText('batchExportStarted'))
-  }, [buildExportOverrides, pipelineBusy, setStatusHint])
+  }, [buildExportOverrides, pipelineBusy, setLastFfmpegError, setStatusHint])
 
   const handleBatchCopyInputPaths = useCallback(async (): Promise<void> => {
     const listed = await window.velorix.batchExport.listInputPaths()

@@ -51,6 +51,7 @@ export function useAppShellPropsInputHooks(state: RendererAppState): AppShellPro
     previewBlobUrl: state.previewBlobUrl,
     setPreviewBlobUrl: state.setPreviewBlobUrl,
     setProbeInfo: state.setProbeInfo,
+    setProbeError: state.setProbeError,
     setStatusHint: state.setStatusHint,
     setWorkspaceTab: state.setWorkspaceTab,
     persistMainWindowUiPanelToggle: state.persistMainWindowUiPanelToggle,
@@ -149,6 +150,7 @@ export function useAppShellPropsInputHooks(state: RendererAppState): AppShellPro
     previewMediaUrl: state.preview?.mediaUrl,
     setPreviewBlobUrl: state.setPreviewBlobUrl,
     setProbeInfo: state.setProbeInfo,
+    setProbeError: state.setProbeError,
     setProbePending: state.setProbePending,
     setStatusHint: state.setStatusHint,
     setEngineSummary: state.setEngineSummary,
@@ -164,6 +166,8 @@ export function useAppShellPropsInputHooks(state: RendererAppState): AppShellPro
     setMediaFileUtilitiesOpen: state.setMediaFileUtilitiesOpen,
     setWorkflowPlannerOpen: state.setWorkflowPlannerOpen,
     setWorkflowScenarioBuilderOpen: state.setWorkflowScenarioBuilderOpen,
+    setProcessErrorDialog: state.setProcessErrorDialog,
+    setQuitConfirmRequest: state.setQuitConfirmRequest,
     setAboutInfo: state.setAboutInfo,
     setAboutOpen: state.setAboutOpen,
     editorUrlPasteBehavior: state.editorUrlPasteBehavior,
@@ -281,7 +285,6 @@ export function useAppShellPropsInputHooks(state: RendererAppState): AppShellPro
   })
 
   const {
-    toggleTheme,
     handleUiLocaleToggle,
     handleOpenToolbar,
     handleOpenVideoFolderToolbar,
@@ -382,7 +385,6 @@ export function useAppShellPropsInputHooks(state: RendererAppState): AppShellPro
     exportPreviewCommand,
     exportPreviewHint,
     handleCopyExportPreview,
-    toggleTheme,
     handleUiLocaleToggle,
     handleOpenToolbar,
     handleOpenVideoFolderToolbar,

@@ -1,7 +1,6 @@
 import type { Dispatch, JSX, SetStateAction } from 'react'
 
 import { APP_SETTINGS_HOTKEY_ROWS } from '../../../../shared/app-settings-hotkeys-catalog'
-import type { AppTheme } from '../../../../shared/settings-contract'
 import type { EditorUrlPasteBehaviorId } from '../../../../shared/editor-url-paste-behavior'
 import type { AppUiLocale } from '../../../../shared/app-ui-locale'
 import type { WorkspaceTab } from '../../app-terminal-hint-ui'
@@ -14,7 +13,6 @@ import {
 } from '../../locales/ui-text'
 import type { UiTextKey } from '../../locales/ui-text-strings'
 import { AppSettingsHidpiStatusPanel } from './AppSettingsHidpiStatusPanel'
-import { AppSettingsThemePanel } from './AppSettingsThemePanel'
 import { WindowsExplorerContextMenuSettings } from './WindowsExplorerContextMenuSettings'
 
 const HOTKEY_LABEL_KEYS: Record<(typeof APP_SETTINGS_HOTKEY_ROWS)[number]['id'], UiTextKey> = {
@@ -40,8 +38,6 @@ export function SettingsDialogHeaderTitle(props: { dialogHintId: string }): JSX.
 export function AppSettingsGeneralPane(props: {
   sectionHintId: string
   shellBusy: boolean
-  themePref: AppTheme
-  onThemePrefChange: (pref: AppTheme) => void
   onUiLocalePersisted: (locale: AppUiLocale) => void
   confirmCloseOnQuit: boolean
   setConfirmCloseOnQuit: Dispatch<SetStateAction<boolean>>
@@ -53,8 +49,6 @@ export function AppSettingsGeneralPane(props: {
   const {
     sectionHintId,
     shellBusy,
-    themePref,
-    onThemePrefChange,
     onUiLocalePersisted,
     confirmCloseOnQuit,
     setConfirmCloseOnQuit,
@@ -67,14 +61,6 @@ export function AppSettingsGeneralPane(props: {
 
   return (
     <div className="app-settings-stack" aria-describedby={sectionHintId}>
-      <AppSettingsThemePanel
-        sectionHintId={sectionHintId}
-        shellBusy={shellBusy}
-        themePref={themePref}
-        onThemePrefChange={onThemePrefChange}
-        {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
-      />
-
       <div className="app-settings-row">
         <span className="app-settings-row-label">{uiText('appSettingsUiLocaleLabel')}</span>
         <div

@@ -22,11 +22,12 @@ import type { AppAboutInfo } from '../shared/about-contract'
 import type { EnginesStatusSnapshot } from '../shared/engine-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
-import type { MainWindowUiPanelState, ResolvedAppTheme } from '../shared/settings-contract'
+import type { MainWindowUiPanelState } from '../shared/settings-contract'
 import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
 } from '../shared/save-text-dialog-contract'
+import { parseProcessErrorDialogPayload } from '../shared/process-error-dialog-contract'
 import type {
   TerminalCommandHintEntry,
   TerminalRunRequest,
@@ -40,6 +41,7 @@ import type {
 } from '../shared/knowledge-contract'
 import type { FfmpegHwEncodersProbeResult } from '../shared/ffmpeg-hw-encoder-probe'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
+import { parseQuitConfirmRequestPayload } from '../shared/quit-confirm-contract'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
@@ -84,24 +86,10 @@ export const velorix = {
       ipcRenderer.invoke(mw.restoreLastSource)
   },
   downloads: velorixDownloads,
-  /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
+  /** §9 — внешний вызов route-aware открытия вкладки `Инспектор` в main shell. */
   inspector: {
     openWindow: (absoluteMediaPath?: string | null): Promise<void> =>
-      ipcRenderer.invoke(mw.openInspectorWindow, absoluteMediaPath ?? null),
-    bootstrap: (): Promise<{ initialMediaPath: string | null }> =>
-      ipcRenderer.invoke(mw.inspectorBootstrap),
-    onTargetMediaPath: (listener: (absolutePath: string) => void): (() => void) => {
-      const ch = mw.inspectorTargetMediaPath
-      const handler = (_event: unknown, raw: unknown): void => {
-        if (typeof raw === 'string' && raw.length > 0) {
-          listener(raw)
-        }
-      }
-      ipcRenderer.on(ch, handler)
-      return (): void => {
-        ipcRenderer.removeListener(ch, handler)
-      }
-    }
+      ipcRenderer.invoke(mw.openInspectorWindow, absoluteMediaPath ?? null)
   },
   clipboard: {
     readText: (): Promise<string> => ipcRenderer.invoke(mw.clipboardReadText),
@@ -361,19 +349,6 @@ export const velorix = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
-  onThemeChanged: (listener: (theme: ResolvedAppTheme) => void): (() => void) => {
-    const channel = mw.themeChanged
-    const handler = (_: unknown, raw: unknown): void => {
-      // События из IPC валидируем так же, как invoke-аргументы: renderer не доверяет raw payload.
-      if (raw === 'light' || raw === 'dark') {
-        listener(raw)
-      }
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  },
   onUiLocaleChanged: (listener: (locale: AppUiLocale) => void): (() => void) => {
     const channel = mw.uiLocaleChanged
     const handler = (_: unknown, raw: unknown): void => {
@@ -386,6 +361,41 @@ export const velorix = {
     return (): void => {
       ipcRenderer.removeListener(channel, handler)
     }
+  },
+  onProcessErrorReported: (
+    listener: (
+      payload: import('../shared/process-error-dialog-contract').ProcessErrorDialogPayload
+    ) => void
+  ): (() => void) => {
+    const channel = mw.processErrorReported
+    const handler = (_: unknown, raw: unknown): void => {
+      const payload = parseProcessErrorDialogPayload(raw)
+      if (payload) {
+        listener(payload)
+      }
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onQuitConfirmRequested: (
+    listener: (payload: import('../shared/quit-confirm-contract').QuitConfirmRequestPayload) => void
+  ): (() => void) => {
+    const channel = mw.quitConfirmRequested
+    const handler = (_: unknown, raw: unknown): void => {
+      const payload = parseQuitConfirmRequestPayload(raw)
+      if (payload) {
+        listener(payload)
+      }
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  respondQuitConfirm: (requestId: number, confirmed: boolean): void => {
+    ipcRenderer.send(mw.quitConfirmRespond, { requestId, confirmed })
   },
   onOpenEnginePaths: (listener: () => void): (() => void) =>
     subscribeVoidIpc(mw.openEnginePaths, listener),
@@ -408,6 +418,10 @@ export const velorix = {
   onProcessingHistoryChanged: (listener: () => void): (() => void) =>
     subscribeVoidIpc(mw.processingHistoryChanged, listener),
   onOpenAbout: (listener: () => void): (() => void) => subscribeVoidIpc(mw.openAbout, listener),
+  onOpenDownloadsRoute: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.openDownloadsRoute, listener),
+  onOpenInspectorRoute: (listener: () => void): (() => void) =>
+    subscribeVoidIpc(mw.openInspectorRoute, listener),
   onOpenMediaFileUtilities: (listener: () => void): (() => void) =>
     subscribeVoidIpc(mw.openMediaFileUtilities, listener),
   onOpenExternalFilterScript: (listener: () => void): (() => void) =>

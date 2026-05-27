@@ -37,4 +37,4 @@
 
 **Правило для агента:** новые референсы сохранять **сюда** (`docs/reference/<имя>.png`), константу пути добавить в `src/shared/velorix-neon-theme-tokens.ts`, ссылку — в [`VELORIX_NEON_THEME.md`](../VELORIX_NEON_THEME.md).
 
-**Не использовать:** [`UX_REFERENCE_V0.OLD.md`](../UX_REFERENCE_V0.OLD.md) и v0.vercel.app.
+**Не использовать:** [`UX_REFERENCE_V0.OLD.md`](../archive/UX_REFERENCE_V0.OLD.md) и v0.vercel.app.

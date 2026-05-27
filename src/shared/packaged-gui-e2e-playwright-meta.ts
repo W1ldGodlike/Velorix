@@ -53,7 +53,7 @@ export function formatPackagedGuiE2ePlaywrightNpmScriptWiredPhrase(locale: 'en' 
     : `Playwright: ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT} (\`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}; ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} skipped steps)`
 }
 
-/** Раньше — подсказки в Настройках; UI убран, чеклисты только в IMPLEMENTATION_MANUAL_VERIFICATION.md. */
+/** Раньше — подсказки в Настройках; чеклисты железа — Support ZIP ownerHardwareChecklist: (+ about-support-logs Help). */
 export const PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS = [] as const
 
 export type PackagedGuiE2ePlaywrightSettingsUiHintKey =
@@ -70,14 +70,14 @@ export const PACKAGED_GUI_E2E_PLAYWRIGHT_QUIET_ORDER_ANCHORS = [
   'terminal-hints-guards-package-json'
 ] as const
 
-/** `IMPLEMENTATION_CHECKLIST.md` — sprint §21 Playwright deferred bullet. */
+/** Historical sprint §21 Playwright bullet. */
 export function formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line(): string {
   return `- [x] §21: GUI Playwright — \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ORCHESTRATOR_MODULE}\` (\`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\`, ${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} шагов).`
 }
 
 /** `docs/SOURCES_OF_TRUTH.md` — sprint §21 Playwright checklist index. */
 export function formatPackagedGuiE2ePlaywrightSourcesSprintChecklistFragment(): string {
-  return `sprint §21 Playwright bullet — formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line; IMPLEMENTATION_CHECKLIST.md`
+  return `sprint §21 Playwright bullet — formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line; archive checklist`
 }
 
 /** continue.txt / initial.txt — sprint §21 Playwright checklist fragment. */
@@ -87,7 +87,7 @@ export function formatPackagedGuiE2ePlaywrightSdkContinuePromptSprintChecklistFr
 
 /** `scripts/cursor-automation/README.md` — sprint §21 Playwright checklist bullet. */
 export function formatPackagedGuiE2ePlaywrightSdkAutomationReadmeChecklistSprintLine(): string {
-  return `- Sprint §21 Playwright (\`IMPLEMENTATION_CHECKLIST\`): \`formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps).`
+  return `- Sprint §21 Playwright (archive): \`formatPackagedGuiE2ePlaywrightChecklistSprintSection21Line\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} steps).`
 }
 
 /** Platform-packaging / §21 diagnostics line. */
@@ -117,7 +117,7 @@ export function formatPackagedGuiE2ePlaywrightReleaseStepByIdBullet(): string {
 
 /** `docs/RELEASE.md` — owner handoff when wiring Playwright (flip deferred guard). */
 export function formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet(): string {
-  return `- §21 Playwright: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (skip без \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`); \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` после \`pack:dir\`; приёмка на железе — \`IMPLEMENTATION_MANUAL_VERIFICATION.md\` **21.x**.`
+  return `- §21 Playwright: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (skip без \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`); \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` после \`pack:dir\`; приёмка на железе — Support ZIP \`ownerHardwareChecklist:\`.`
 }
 
 /** About / Settings Dependencies — tail for `aboutSupportZipDiagnosticsSectionsHint` (§18/§21). */
@@ -183,7 +183,7 @@ export function formatPackagedGuiE2ePlaywrightRootReadmeLine(): string {
 
 /** Root README — Help UiHintSuffix coverage tail (§15/§19). */
 export function formatPackagedGuiE2ePlaywrightRootReadmeHelpUiHintsTail(): string {
-  return ` Help UiHintSuffix: AGENTS + 4 §15 anchors + 6 packaged (\`formatPackagedGuiE2ePlaywright*HelpUiHintSuffix\`; \`check:help-owner-smoke-docs\`, \`check:help-packaged-smoke-docs\`).`
+  return ` Help UiHintSuffix: AGENTS + 4 §15 anchors + 6 packaged (\`formatPackagedGuiE2ePlaywright*HelpUiHintSuffix\`; \`check:help-owner-hardware-checklist-docs\`, \`check:help-packaged-smoke-docs\`).`
 }
 
 /** Root README — Playwright wiring handoff pointer (§21; full steps in RELEASE). */
@@ -224,7 +224,7 @@ export function formatPackagedGuiE2ePlaywrightSourcesOfTruthWiringHandoffNote():
 
 /** `docs/ARCHITECTURE.md` — Playwright deferred UI hints (settings + about). */
 export function formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause(): string {
-  return `Playwright UI hints: ${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.join(', ')} + ${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY} via formatPackagedGuiE2ePlaywrightUiHintSuffix (check:owner-visual-smoke-locale, check:support-bundle-terminal-hints)`
+  return `Playwright UI hints: ${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.join(', ')} + ${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY} via formatPackagedGuiE2ePlaywrightUiHintSuffix (check:owner-hardware-checklist-locale, check:support-bundle-terminal-hints)`
 }
 
 /** `docs/ARCHITECTURE.md` — deferred Playwright scaffold module (§21). */
@@ -252,9 +252,9 @@ export function formatPackagedGuiE2ePlaywrightReleaseScenariosRegistryLine(): st
   return `- \`npm run check:packaged-e2e-scenarios-registry\` — §21 реестр: 11 шагов ↔ manual smoke ${formatPackagedGuiE2ePlaywrightReleaseScenariosRegistryAutomationSummary()}; канон stepId — \`PACKAGED_E2E_*_STEP_IDS\` в \`packaged-e2e-smoke-scenarios.ts\`; \`ci-headless\` обязан иметь npm \`ciSmokeScript\`; \`manual-owner\` — без скрипта; несуществующие скрипты — fail; \`PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS\` (parent→leaf) сверяется с \`package.json\`. Уникальные leaf-скрипты — в \`.github/workflows/ci.yml\` (Vitest \`ci-packaged-smoke-steps\`). Support ZIP / owner bundle: per-step \`e2e <id>: <automation> script=…\`.`
 }
 
-/** `docs/RELEASE.md` — owner-visual-smoke locale guard bullet. */
+/** `docs/RELEASE.md` — owner-hardware-checklist locale guard bullet. */
 export function formatPackagedGuiE2ePlaywrightReleaseOwnerVisualSmokeLocaleLine(): string {
-  return `- \`npm run check:owner-visual-smoke-locale\` — theme/HiDPI + §21 Playwright UI hints (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} settings keys, \`formatPackagedGuiE2ePlaywrightUiHintSuffix\`) в \`locales/{ru,en}/settings.json\`;`
+  return `- \`npm run check:owner-hardware-checklist-locale\` — theme/HiDPI + §21 Playwright UI hints (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} settings keys, \`formatPackagedGuiE2ePlaywrightUiHintSuffix\`) в \`locales/{ru,en}/settings.json\`;`
 }
 
 /** `docs/RELEASE.md` — deferred Playwright guard bullet. */
@@ -264,7 +264,7 @@ export function formatPackagedGuiE2ePlaywrightReleaseDeferredBullet(): string {
 
 /** `bin/README.md` — Playwright UI hints (locales settings + about). */
 export function formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine(): string {
-  return `- §21 Playwright UI hints (locales): \`check:owner-visual-smoke-locale\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} settings keys, \`formatPackagedGuiE2ePlaywrightUiHintSuffix\`); about — \`check:support-bundle-terminal-hints\`.`
+  return `- §21 Playwright UI hints (locales): \`check:owner-hardware-checklist-locale\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length} settings keys, \`formatPackagedGuiE2ePlaywrightUiHintSuffix\`); about — \`check:support-bundle-terminal-hints\`.`
 }
 
 /** `bin/README.md` — deferred Playwright scaffold module (before `test:e2e:gui` in package.json). */
@@ -309,7 +309,7 @@ export function formatPackagedGuiE2ePlaywrightAgentsMdWiringClause(): string {
 
 /** `AGENTS.md` — Playwright deferred UI hints tail (§21). */
 export function formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail(): string {
-  return ` UI hints: \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
+  return ` UI hints: \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:owner-hardware-checklist-locale\`, \`check:support-bundle-terminal-hints\`).`
 }
 
 /** `AGENTS.md` Help §21 — contiguous Playwright deferred + scaffold + UI hints block. */
@@ -323,11 +323,11 @@ export function formatPackagedGuiE2ePlaywrightAgentsMdHelpPlaywrightSection(): s
   )
 }
 
-/** `Help/ru/owner-manual-smoke.md` — Settings UI hints clause (RU/EN). */
+/** About/logging Help — Settings UI hints clause (RU/EN). */
 export function formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause(locale: 'en' | 'ru'): string {
   return locale === 'ru'
-    ? ` Ручные чеклисты — \`IMPLEMENTATION_MANUAL_VERIFICATION.md\` (не в UI); about Support ZIP — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`).`
-    : ` Manual checklists — \`IMPLEMENTATION_MANUAL_VERIFICATION.md\` (not in app UI); about Support ZIP — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`).`
+    ? ` Ручные чеклисты — Support ZIP \`ownerHardwareChecklist:\` (не в UI); about — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`).`
+    : ` Manual checklists — Support ZIP \`ownerHardwareChecklist:\` (not in app UI); about — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`).`
 }
 
 /** `Help/ru/about-support-logs.md` — About UI hint on `releaseSmoke:` dev line (§18/§21). */
@@ -335,8 +335,8 @@ export function formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(
   locale: 'en' | 'ru'
 ): string {
   return locale === 'ru'
-    ? ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\` — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`; settings — \`check:owner-visual-smoke-locale\`).`
-    : ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\` — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`; settings — \`check:owner-visual-smoke-locale\`).`
+    ? ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\` — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`; settings — \`check:owner-hardware-checklist-locale\`).`
+    : ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\` — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (\`check:support-bundle-terminal-hints\`; settings — \`check:owner-hardware-checklist-locale\`).`
 }
 
 /** §8 settings key cited from logging Help (leaf — id matches `terminal-contract-hints-meta`). */
@@ -357,8 +357,8 @@ export function formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix
   locale: 'en' | 'ru'
 ): string {
   return locale === 'ru'
-    ? ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_LOGGING_TERMINAL_UI_HINT_KEY}\` (\`check:terminal-hints-locale\`); Playwright — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
-    : ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_LOGGING_TERMINAL_UI_HINT_KEY}\` (\`check:terminal-hints-locale\`); Playwright — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
+    ? ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_LOGGING_TERMINAL_UI_HINT_KEY}\` (\`check:terminal-hints-locale\`); Playwright — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-hardware-checklist-locale\`, \`check:support-bundle-terminal-hints\`).`
+    : ` UiHintSuffix: \`${PACKAGED_GUI_E2E_PLAYWRIGHT_LOGGING_TERMINAL_UI_HINT_KEY}\` (\`check:terminal-hints-locale\`); Playwright — \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-hardware-checklist-locale\`, \`check:support-bundle-terminal-hints\`).`
 }
 
 /** Help crosslinks — settings + about Playwright UI hints (§21). */
@@ -367,8 +367,8 @@ export function formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix(
 ): string {
   const settingsCount = PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.length
   return locale === 'ru'
-    ? ` UiHintSuffix: \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (${settingsCount} settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
-    : ` UiHintSuffix: \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (${settingsCount} settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-visual-smoke-locale\`, \`check:support-bundle-terminal-hints\`).`
+    ? ` UiHintSuffix: \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (${settingsCount} settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-hardware-checklist-locale\`, \`check:support-bundle-terminal-hints\`).`
+    : ` UiHintSuffix: \`formatPackagedGuiE2ePlaywrightUiHintSuffix\` (${settingsCount} settings + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY}\`; \`check:owner-hardware-checklist-locale\`, \`check:support-bundle-terminal-hints\`).`
 }
 
 /** `Help/ru/workflows-planner-scenarios.md` — §10/§21 UI hints on owner-smoke crosslinks line. */

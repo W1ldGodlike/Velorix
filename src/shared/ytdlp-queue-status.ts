@@ -1,6 +1,6 @@
 /**
  * §6 — canonical `DownloadsQueueRow.status` strings (Russian) persisted in `queue.json`.
- * Single source of truth for main, pop-out downloads window, and renderer matching.
+ * Single source of truth for main shell, downloads route, and renderer matching.
  */
 
 export const YTDLP_QUEUE_STATUS_WAITING = 'Ожидание'

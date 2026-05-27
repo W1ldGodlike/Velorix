@@ -53,17 +53,13 @@ export function useAppMainWindowEffectsBootstrap(
   }, [currentSourcePath, trimSnapshotRef])
 
   useEffect(() => {
-    const offTheme = window.velorix.onThemeChanged((next) => {
-      applyTheme(next)
-    })
     const offPanels = window.velorix.onMainWindowUiPanelsChanged((panels) => {
       hydrateMainWindowUiPanels(panels)
     })
     return (): void => {
-      offTheme()
       offPanels()
     }
-  }, [applyTheme, hydrateMainWindowUiPanels])
+  }, [hydrateMainWindowUiPanels])
 
   useEffect(() => {
     let cancelled = false

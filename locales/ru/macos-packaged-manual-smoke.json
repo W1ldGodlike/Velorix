@@ -10,7 +10,7 @@
   "macosPackagedSmokeStep_editor_from_dl": "Из очереди/истории: «В редактор» для готового файла.",
   "macosPackagedSmokeStep_snapshot": "Снимок кадра PNG/JPEG сохраняется.",
   "macosPackagedSmokeStep_export": "Экспорт MP4 сегмента (libx264) завершается без ошибки.",
-  "macosPackagedSmokeStep_video_sprite": "§7.5: FFmpeg rail → спрайт превью (PNG/JPEG), файл сетки сохраняется; см. ownerManualSmoke Video sprite.",
+  "macosPackagedSmokeStep_video_sprite": "§7.5: FFmpeg rail → спрайт превью (PNG/JPEG), файл сетки сохраняется; см. ownerHardwareChecklist Video sprite.",
   "macosPackagedSmokeStep_knowledge": "База знаний: открыть статью, внутренняя ссылка .md работает.",
   "macosPackagedSmokeStep_support_zip": "О программе → Support ZIP: архив создаётся, без секретов в тексте.",
   "macosPackagedSmokeStep_settings": "Настройки → Зависимости: пути движков указывают на Contents/Resources/bin.",

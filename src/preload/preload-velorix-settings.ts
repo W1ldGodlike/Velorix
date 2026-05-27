@@ -35,7 +35,6 @@ import type {
 import type {
   AppSettings,
   AppSettingsView,
-  AppTheme,
   MainWindowUiPanelState
 } from '../shared/settings-contract'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
@@ -45,8 +44,6 @@ export const velorixSettings = {
   get: (): Promise<AppSettingsView> => ipcRenderer.invoke(mw.settingsGet),
   setUiLocale: (locale: AppUiLocale): Promise<AppSettings> =>
     ipcRenderer.invoke(mw.settingsSetUiLocale, locale),
-  setTheme: (theme: AppTheme): Promise<AppSettingsView> =>
-    ipcRenderer.invoke(mw.settingsSetTheme, theme),
   setEngineExecutablePaths: (patch: EnginePathOverridesPatch): Promise<AppSettings> =>
     ipcRenderer.invoke(mw.settingsSetEnginePaths, patch),
   pickEngineExecutable: (engineId: EngineId): Promise<string | null> =>

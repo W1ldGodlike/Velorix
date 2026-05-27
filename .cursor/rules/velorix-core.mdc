@@ -1,30 +1,23 @@
----
-description: Velorix — вход, карта артефактов, стек
-alwaysApply: true
----
-
 # Velorix — ядро
 
 **Обязательно:** агент действует как pragmatic senior engineer maintaining a real desktop application with limited complexity budget: минимальный проверяемый diff, существующие паттерны, без нового слоя абстракции без требования из [`velorix-simplicity.mdc`](velorix-simplicity.mdc).
 
 **Toolchain baseline (выполнен):** Electron 42, Vite 8, TS 6, ESLint 9 — `package.json` / `package-lock.json`; lock — `tests/shared/toolchain-baseline-package.test.ts`; журнал **J-1354**. Корневой [`.npmrc`](../../.npmrc): `legacy-peer-deps=true`.
 
-Глоссарий: [`velorix-rules-explicit.mdc`](velorix-rules-explicit.mdc).  
-Индекс: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).  
+Глоссарий: [`velorix-rules-explicit.mdc`](velorix-rules-explicit.mdc). 
+Индекс: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md). 
 Исполняемое: [`velorix-agent.mdc`](velorix-agent.mdc), [`velorix-simplicity.mdc`](velorix-simplicity.mdc).
 
 | Артефакт | Роль |
-|----------|------|
-| [`VELORIX_TZ.md`](../../VELORIX_TZ.md) | Продукт; **запрещено** правки без **явной просьбы владельца** |
-| [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) | Sprint `## Ближайший TODO спринта`; `npm run check:checklist` |
+|----|---|
+| [`docs/VELORIX_NEON_THEME.md`](../../docs/VELORIX_NEON_THEME.md) | **Навигатор агента** — NEON, Phase D, refs 1–27 |
+| [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](../../docs/IMPLEMENTATION_NEON_CHECKLIST.md) | Sprint TODO, snap.*; `npm run check:checklist` |
 | [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) | Хроника; J при diff — skill journal-entry |
-| [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC/renderer; обновлять при новом канале |
-| [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velorix-continue/SKILL.md) | «продолжай» / `+` → спринт; git по J — [`velorix-agent.mdc`](velorix-agent.mdc) |
+| [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC, packaging, вспомогательный стек |
+| [`docs/archive/`](../../docs/archive/) | **ARCHIVE** — старые ТЗ/чеклист; не открывать по «продолжай» |
 
-**Стек:** Electron + React + TypeScript; main/preload/renderer; Zustand — [`renderer-state-approach.ts`](../../src/shared/renderer-state-approach.ts).
-
-**Запрещено:** WinUI без просьбы владельца; ослаблять `Data/trusted_hashes.json`; **drive-by рефактор** (глоссарий).
+**Запрещено:** WinUI без просьбы владельца; ослаблять `Data/trusted_hashes.json`; **drive-by рефактор** (глоссарий); корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`; копить legacy, который мешает задаче (глоссарий **«Удаление мешающего legacy»** — **удалять**).
 
 **Автономность:** **запрещено** спрашивать «запустить npm?» — запускать `npm run` самому.
 
-**Если** неясность по ТЗ **то** один вопрос владельцу, код не менять.
+**Если** неясность по требованиям **то** порядок: [`docs/VELORIX_NEON_THEME.md`](../../docs/VELORIX_NEON_THEME.md) → [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) → код; **если** ответа нет **то** один вопрос владельцу (≤3 предложения), код не менять.

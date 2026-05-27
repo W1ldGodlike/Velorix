@@ -10,7 +10,7 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 
 ## Продолжай / +
 
-**Если** в чате «продолжай» или `+` (**равнозначные команды**) **то** skill [`velorix-continue`](../../.cursor/skills/velorix-continue/SKILL.md): продолжить текущую задачу; **если** закончена **то** [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`; при diff — `npm run check:quiet` и одна `J-NNN` (skill journal-entry).
+**Если** в чате «продолжай» или `+` (**равнозначные команды**) **то** skill [`velorix-continue`](../../.cursor/skills/velorix-continue/SKILL.md): NEON-трекер → [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](../../docs/IMPLEMENTATION_NEON_CHECKLIST.md) sprint TODO. **Запрещено:** `docs/archive/*`, корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`. При diff — `npm run check:quiet` и одна `J-NNN` (skill journal-entry).
 
 ## Итерация и журнал
 
@@ -31,6 +31,10 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 ## UI
 
 **Запрещено:** `data:text/html`, `build*Html` pop-out, `*-window-ui-strings-*` вне `ui-text` / `locales/**`. **Если** `BrowserWindow` **то** тот же renderer + hash (`#inspector`, `#downloads`). **Обязательно:** `check:ui-surfaces-guard`, `check:ui-copy-quality` в `check:quiet`.
+
+## Legacy (удалять, не копить)
+
+**Если** устаревший артефакт **мешает** задаче или NEON-плану **то** удалить/заменить в той же итерации; `npm run check:quiet`. **Запрещено:** оставлять «на всякий случай», параллельный старый+новый путь, обход новым слоем. Канон: глоссарий **«Удаление мешающего legacy»**, [`velorix-simplicity.mdc`](velorix-simplicity.mdc) § «Рефакторинг и legacy».
 
 ## Audit
 

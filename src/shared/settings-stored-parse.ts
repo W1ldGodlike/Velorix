@@ -1,7 +1,6 @@
 /**
  * Whitelist-парсинг полей settings.json (stored) — без копипасты `if (raw === …)`.
  */
-import { parseWhitelistEnum } from './parse-whitelist'
 
 /** Точное совпадение `raw` со строкой из whitelist; иначе `undefined` (поле не сохраняем). */
 export function parseStoredWhitelistEnum<T extends string>(
@@ -29,6 +28,7 @@ export function parseStoredTrimmedWhitelistEnum<T extends string>(
   return undefined
 }
 
-export function parseStoredTheme(raw: unknown): 'light' | 'dark' | 'system' {
-  return parseWhitelistEnum(raw, ['light', 'dark', 'system'], 'dark')
+export function parseStoredTheme(_raw: unknown): 'dark' {
+  void _raw
+  return 'dark'
 }

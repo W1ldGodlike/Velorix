@@ -19,8 +19,8 @@ asarUnpack:
   - resources/**
 extraResources:
   # Эти материалы нужны приложению как файлы рядом с resourcesPath, а не внутри JS bundle.
-  - from: VELORIX_TZ.md
-    to: VELORIX_TZ.md
+  - from: docs/VELORIX_NEON_THEME.md
+    to: VELORIX_NEON_THEME.md
   - from: Help
     to: Help
   - from: Data
@@ -32,7 +32,7 @@ extraResources:
     to: bin
 win:
   executableName: Velorix
-  # win.target: nsis + zip only (no portable — single-root policy; см. VELORIX_TZ.md §19 и docs/RELEASE.md §4).
+  # win.target: nsis + zip only (no portable — single-root policy; см. docs/RELEASE.md §4).
   # Распаковка: zip / win-unpacked (всё в одной папке + app-data/). Цель portable — один exe с распаковкой в %TEMP%; для single-root не использовать.
   target:
     - nsis

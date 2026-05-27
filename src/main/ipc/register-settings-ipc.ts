@@ -13,7 +13,7 @@ import {
   resetAppSettingsToDefaultsKeepingWindowBounds
 } from '../services/settings/settings-backup-service'
 import type { PresetsExportCloneBuiltinRequest } from '../../shared/presets-export-contract'
-import type { AppSettings, AppSettingsView, AppTheme } from '../services/settings/settings-store'
+import type { AppSettings, AppSettingsView } from '../services/settings/settings-store'
 import type { EnginePathOverridesPatch } from '../services/engines/engine-service'
 
 let ipcRegistered = false
@@ -113,7 +113,6 @@ export type SettingsIpcDeps = {
   copyCachedSettings: () => AppSettings
   persistUiLocale: (raw: unknown) => AppSettings
   persistConfirmCloseOnQuit: (raw: unknown) => AppSettings
-  persistThemePreference: (pref: AppTheme) => AppSettingsView
   persistEnginePathOverridesPatch: (patch: EnginePathOverridesPatch) => AppSettings
   persistMainWindowUiPanelsMerge: (raw: unknown) => AppSettings
   isMainWindowUiPanelSender: (event: IpcMainInvokeEvent) => boolean
@@ -137,16 +136,6 @@ export function registerSettingsIpcHandlers(deps: SettingsIpcDeps): void {
     mw.settingsSetConfirmCloseOnQuit,
     (_, raw: unknown): AppSettings => deps.persistConfirmCloseOnQuit(raw)
   )
-
-  ipcMain.handle(mw.settingsSetTheme, (_, theme: unknown): AppSettingsView => {
-    let next: AppTheme = 'dark'
-    if (theme === 'light') {
-      next = 'light'
-    } else if (theme === 'system') {
-      next = 'system'
-    }
-    return deps.persistThemePreference(next)
-  })
 
   for (const { channel, key } of FFMPEG_EXPORT_SETTING_CHANNELS) {
     ipcMain.handle(channel, (_, raw: unknown): AppSettings => deps.ffmpegExport[key](raw))

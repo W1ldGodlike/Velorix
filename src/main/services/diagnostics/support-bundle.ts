@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from 'fs'
 import { dirname, join } from 'path'
 
+import { OWNER_HARDWARE_CHECKLIST_SUPPORT_ZIP_SECTION_HEADING } from '../../../shared/owner-hardware-checklist-bundle'
 import { TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING } from '../../../shared/terminal-contract-hints-meta'
 import { resolveAppTempDirectory } from '../../core/app-data-root-paths'
 import { getDiagnosticsMaintenanceSnapshot } from './diagnostics-maintenance'
@@ -97,8 +98,12 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     ...(info.workflowOsSchedulerSmokeChecklistLines.length > 0
       ? ['', 'workflowOsSchedulerSmoke:', ...info.workflowOsSchedulerSmokeChecklistLines]
       : []),
-    ...(info.ownerManualSmokeBundleLines.length > 0
-      ? ['', 'ownerManualSmoke:', ...info.ownerManualSmokeBundleLines]
+    ...(info.ownerHardwareChecklistBundleLines.length > 0
+      ? [
+          '',
+          OWNER_HARDWARE_CHECKLIST_SUPPORT_ZIP_SECTION_HEADING,
+          ...info.ownerHardwareChecklistBundleLines
+        ]
       : [])
   ].join('\n')
 }

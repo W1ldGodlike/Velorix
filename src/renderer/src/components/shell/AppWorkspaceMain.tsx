@@ -6,6 +6,9 @@ import {
   LazyDownloadsWorkspaceConnected,
   LazyEditorFfmpegSettingsRail,
   LazyKnowledgeDialog,
+  LazyToolsWorkspacePanel,
+  LazyWorkflowPlannerDialog,
+  LazyWorkflowScenarioBuilderDialog,
   LazyTerminalWorkspacePanelConnected
 } from '../../app-lazy-panels'
 import { EditorBatchExportBar } from '../editor/EditorBatchExportBar'
@@ -22,7 +25,12 @@ import { EditorPreviewSection } from '../editor/EditorPreviewSection'
 import type { EditorPreviewSectionProps } from '../editor/EditorPreviewSection'
 import { EditorQuickYtdlpBar } from '../editor/EditorQuickYtdlpBar'
 import type { EditorQuickYtdlpBarProps } from '../editor/EditorQuickYtdlpBar'
+import { InspectorWorkspaceConnected } from '../InspectorWorkspaceConnected'
+import { ProcessingHistoryPanelConnected } from '../ProcessingHistoryPanelConnected'
 import type { AppSettingsDialogProps } from './AppSettingsDialog'
+import type { ExportPresetNameDialogProps } from './ExportPresetNameDialog'
+import type { WorkflowPlannerDialogProps } from './WorkflowPlannerDialog'
+import type { WorkflowScenarioBuilderDialogProps } from './WorkflowScenarioBuilderDialog'
 import { uiText } from '../../locales/ui-text'
 import { useAppShellStore } from '../../stores/app-shell-store'
 import type { MainWindowUiPanelKey } from '../../stores/panels-store'
@@ -39,6 +47,9 @@ export type AppWorkspaceMainProps = {
     'ffmpegSettingsRailOpen' | 'onShowFfmpegSettingsRail'
   >
   appSettingsRoute: AppSettingsDialogProps
+  exportPresetRoute: ExportPresetNameDialogProps
+  workflowPlannerRoute: WorkflowPlannerDialogProps
+  workflowScenarioBuilderRoute: WorkflowScenarioBuilderDialogProps
   editorFfmpeg: Omit<
     EditorFfmpegSettingsRailProps,
     'panelOpen' | 'persistMainWindowUiPanelToggle' | 'onCollapseRail'
@@ -54,6 +65,9 @@ export function AppWorkspaceMain({
   editorBatch,
   editorPreview,
   appSettingsRoute,
+  exportPresetRoute,
+  workflowPlannerRoute,
+  workflowScenarioBuilderRoute,
   editorFfmpeg
 }: AppWorkspaceMainProps): JSX.Element {
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
@@ -64,34 +78,19 @@ export function AppWorkspaceMain({
   const knowledgeInitialSlug = useAppShellStore((s) => s.knowledgeInitialSlug)
   const setWorkflowPlannerOpen = useAppShellStore((s) => s.setWorkflowPlannerOpen)
   const setWorkflowScenarioBuilderOpen = useAppShellStore((s) => s.setWorkflowScenarioBuilderOpen)
-  const setMediaFileUtilitiesOpen = useAppShellStore((s) => s.setMediaFileUtilitiesOpen)
-  const previewPath = useAppShellStore((s) => s.preview?.path ?? null)
 
   const renderBridgeWorkspace = (): JSX.Element => {
     const routeMeta = getWorkspaceRouteMeta(workspaceTab)
     const openCurrentImplementation =
-      workspaceTab === 'history'
+      workspaceTab === 'planner'
         ? (): void => {
-            persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', true)
-            setWorkspaceTab('processing')
+            setWorkflowPlannerOpen(true)
           }
-        : workspaceTab === 'inspector'
+        : workspaceTab === 'scenarios'
           ? (): void => {
-              void window.velorix.inspector.openWindow(previewPath)
+              setWorkflowScenarioBuilderOpen(true)
             }
-          : workspaceTab === 'planner'
-            ? (): void => {
-                setWorkflowPlannerOpen(true)
-              }
-            : workspaceTab === 'scenarios'
-              ? (): void => {
-                  setWorkflowScenarioBuilderOpen(true)
-                }
-              : workspaceTab === 'tools'
-                ? (): void => {
-                    setMediaFileUtilitiesOpen(true)
-                  }
-                : null
+          : null
 
     return (
       <main
@@ -183,11 +182,12 @@ export function AppWorkspaceMain({
           role="tabpanel"
           aria-labelledby={workspaceTabId('settings')}
           aria-describedby={workspaceTabDescId('settings')}
-          className="app-main"
+          className="app-main app-main-surface"
         >
           <Suspense fallback={<AppLazyPanelFallback />}>
             <LazyAppSettingsDialog
               {...appSettingsRoute}
+              editorFfmpegBenchmark={editorFfmpeg}
               open
               presentation="embedded"
               onExitEmbedded={() => {
@@ -203,7 +203,7 @@ export function AppWorkspaceMain({
           role="tabpanel"
           aria-labelledby={workspaceTabId('knowledge')}
           aria-describedby={workspaceTabDescId('knowledge')}
-          className="app-main"
+          className="app-main app-main-surface"
         >
           <Suspense fallback={<AppLazyPanelFallback />}>
             <LazyKnowledgeDialog
@@ -219,6 +219,98 @@ export function AppWorkspaceMain({
               }}
             />
           </Suspense>
+        </main>
+      ) : workspaceTab === 'tools' ? (
+        <main
+          id={workspacePanelId('tools')}
+          role="tabpanel"
+          aria-labelledby={workspaceTabId('tools')}
+          aria-describedby={workspaceTabDescId('tools')}
+          className="app-main"
+        >
+          <Suspense fallback={<AppLazyPanelFallback />}>
+            <LazyToolsWorkspacePanel
+              appSettingsRoute={appSettingsRoute}
+              exportPresetRoute={exportPresetRoute}
+              editorFfmpeg={editorFfmpeg}
+            />
+          </Suspense>
+        </main>
+      ) : workspaceTab === 'planner' ? (
+        <main
+          id={workspacePanelId('planner')}
+          role="tabpanel"
+          aria-labelledby={workspaceTabId('planner')}
+          aria-describedby={workspaceTabDescId('planner')}
+          className="app-main app-main-surface"
+        >
+          <Suspense fallback={<AppLazyPanelFallback />}>
+            <LazyWorkflowPlannerDialog
+              {...workflowPlannerRoute}
+              open
+              presentation="embedded"
+              onClose={() => {
+                workflowPlannerRoute.onClose()
+                setWorkspaceTab('processing')
+              }}
+            />
+          </Suspense>
+        </main>
+      ) : workspaceTab === 'scenarios' ? (
+        <main
+          id={workspacePanelId('scenarios')}
+          role="tabpanel"
+          aria-labelledby={workspaceTabId('scenarios')}
+          aria-describedby={workspaceTabDescId('scenarios')}
+          className="app-main app-main-surface"
+        >
+          <Suspense fallback={<AppLazyPanelFallback />}>
+            <LazyWorkflowScenarioBuilderDialog
+              {...workflowScenarioBuilderRoute}
+              open
+              presentation="embedded"
+              onClose={() => {
+                workflowScenarioBuilderRoute.onClose()
+                setWorkspaceTab('processing')
+              }}
+            />
+          </Suspense>
+        </main>
+      ) : workspaceTab === 'history' ? (
+        <main
+          id={workspacePanelId('history')}
+          role="tabpanel"
+          aria-labelledby={workspaceTabId('history')}
+          aria-describedby={workspaceTabDescId('history')}
+          className="app-main"
+        >
+          <ProcessingHistoryPanelConnected
+            open
+            onOpenKnowledgeArticle={(slug) => {
+              setKnowledgeInitialSlug(slug)
+              setKnowledgeOpen(false)
+              setWorkspaceTab('knowledge')
+            }}
+            onToggle={() => {
+              void 0
+            }}
+          />
+        </main>
+      ) : workspaceTab === 'inspector' ? (
+        <main
+          id={workspacePanelId('inspector')}
+          role="tabpanel"
+          aria-labelledby={workspaceTabId('inspector')}
+          aria-describedby={workspaceTabDescId('inspector')}
+          className="app-main"
+        >
+          <InspectorWorkspaceConnected
+            onOpenKnowledgeArticle={(slug) => {
+              setKnowledgeInitialSlug(slug)
+              setKnowledgeOpen(false)
+              setWorkspaceTab('knowledge')
+            }}
+          />
         </main>
       ) : workspaceTab === 'terminal' ? (
         <Suspense fallback={<AppLazyPanelFallback />}>

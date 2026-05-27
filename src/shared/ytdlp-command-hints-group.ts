@@ -6,7 +6,7 @@ import {
 } from './ytdlp-hint-category-order'
 
 /**
- * §6.3 — группировка подсказок argv для UI (вкладка «Загрузки» и pop-out):
+ * §6.3 — группировка подсказок argv для UI (shell-вкладка «Загрузки»):
  * категории по фиксированному порядку §6.3 (`compareYtdlpHintCategoryKeys`), внутри группы — порядок в `hints`.
  */
 export function groupYtdlpCommandHintsByCategory(

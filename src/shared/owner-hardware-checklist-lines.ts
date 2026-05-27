@@ -10,7 +10,7 @@ function t(shard: Record<string, string>, key: string, label: string): string {
   return v
 }
 
-export function formatOwnerManualSmokeChecklistSectionLines(opts: {
+export function formatOwnerHardwareChecklistSectionLines(opts: {
   shard: Record<string, string>
   label: string
   headerKey: string

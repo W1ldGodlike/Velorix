@@ -2,7 +2,7 @@ import type { DownloadsHistoryListMode } from '../../../../shared/settings-contr
 
 export type { DownloadsHistoryListMode }
 
-/** Карточек в режиме `compact` (как в legacy pop-out HTML). */
+/** Карточек в режиме `compact` на маршруте «Загрузки». */
 export const DOWNLOADS_HISTORY_COMPACT_VISIBLE_COUNT = 8
 
 export function resolveDownloadsHistoryVisibleEntries<T>(

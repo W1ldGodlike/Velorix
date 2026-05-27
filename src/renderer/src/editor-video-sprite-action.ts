@@ -5,6 +5,7 @@ import type {
 import { FFMPEG_VIDEO_SPRITE_MAX_CELLS } from '../../shared/ffmpeg-video-sprite-contract'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
+import { useAppShellStore } from './stores/app-shell-store'
 
 export function buildEditorVideoSpritePayload(params: {
   inputPath: string
@@ -49,6 +50,8 @@ export async function runEditorVideoSprite(params: {
   payload: FfmpegVideoSpriteRequestPayload
   setStatusHint: (hint: string | null) => void
 }): Promise<{ ok: true } | { ok: false; cancelled?: boolean }> {
+  const setLastFfmpegError = useAppShellStore.getState().setLastFfmpegError
+  setLastFfmpegError(null)
   const res: FfmpegVideoSpriteResult = await window.velorix.export.generateVideoSprite(
     params.payload
   )
@@ -65,6 +68,7 @@ export async function runEditorVideoSprite(params: {
     return { ok: false, cancelled: true }
   }
   if ('error' in res) {
+    setLastFfmpegError({ source: 'videoSprite', detail: res.error })
     params.setStatusHint(res.error)
   }
   return { ok: false }

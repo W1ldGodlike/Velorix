@@ -12,7 +12,7 @@ import {
   type EnginePathOverrides,
   type EnginePathOverridesPatch
 } from '../engines/engine-service'
-import type { AppSettings, AppSettingsView, AppTheme } from './settings-store'
+import type { AppSettings } from './settings-store'
 import {
   commit,
   snapshot,
@@ -27,7 +27,6 @@ export function createSettingsShellPersist(
   import('./settings-ipc-persist-core').SettingsIpcPersistApi,
   | 'persistUiLocale'
   | 'persistConfirmCloseOnQuit'
-  | 'persistThemePreference'
   | 'persistEnginePathOverridesPatch'
   | 'persistMainWindowUiPanelsMerge'
 > {
@@ -127,21 +126,6 @@ export function createSettingsShellPersist(
     }
     return snapshot(access)
   }
-  function persistThemePreference(pref: AppTheme): AppSettingsView {
-    const next = { ...access.get(), theme: pref }
-    access.set(next)
-    access.save()
-    const resolved = hooks.resolveEffectiveTheme(pref)
-    // Renderer подписан на событие, поэтому смена темы из меню сразу отражается во всех окнах.
-    BrowserWindow.getAllWindows().forEach((w) => {
-      if (!w.isDestroyed()) {
-        w.webContents.send(mw.themeChanged, resolved)
-      }
-    })
-    hooks.buildApplicationMenu()
-    return { ...access.get(), effectiveTheme: resolved }
-  }
-
   function persistUiLocale(raw: unknown): AppSettings {
     const v = parseAppUiLocale(raw)
     if (v === undefined) {
@@ -151,7 +135,7 @@ export function createSettingsShellPersist(
     access.set(next)
     access.save()
     hooks.buildApplicationMenu()
-    hooks.syncDownloadsPopoutHtmlToLocale(v)
+    hooks.syncDownloadsWindowLocale(v)
     for (const w of BrowserWindow.getAllWindows()) {
       if (!w.isDestroyed()) {
         w.webContents.send(mw.uiLocaleChanged, v)
@@ -174,7 +158,6 @@ export function createSettingsShellPersist(
   return {
     persistUiLocale,
     persistConfirmCloseOnQuit,
-    persistThemePreference,
     persistEnginePathOverridesPatch,
     persistMainWindowUiPanelsMerge
   }

@@ -1,6 +1,6 @@
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
-VELORIX_TZ.md
 IMPLEMENTATION_JOURNAL.md
-IMPLEMENTATION_CHECKLIST.md
+docs/archive/
+docs/IMPLEMENTATION_NEON_CHECKLIST.md

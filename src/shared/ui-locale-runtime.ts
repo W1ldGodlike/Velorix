@@ -18,7 +18,7 @@ export function formatUiLocaleIpcDiagnosticLines(): string[] {
     `event: ${mainWindowIpc.uiLocaleChanged} → all BrowserWindow webContents`,
     'renderer: onUiLocaleChanged → setUiLocaleForSession + syncDocumentUiLocale + presets refresh (без reload)',
     'main: syncBrowserWindowTitlesToLocale + renderer document.title / lang',
-    'downloads / inspector pop-out: uiLocaleChanged + setTitle (React hash routes)',
+    'downloads / inspector shell routes: uiLocaleChanged + BrowserWindow setTitle',
     'dev: Vite HMR on locales/**/*.json → reloadUiTextTablesFromModules + uiLocaleRenderTick bump',
     'allowed locales: ru | en'
   ]

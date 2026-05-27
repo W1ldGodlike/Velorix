@@ -1,4 +1,4 @@
-import { useState, type JSX } from 'react'
+import { useId, useState, type JSX } from 'react'
 
 import type { AppAboutInfo } from '../../../shared/about-contract'
 import { KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS } from '../../../shared/knowledge-contract'
@@ -48,23 +48,31 @@ function formatMaintenanceSnapshot(snapshot: DiagnosticsMaintenanceSnapshot): st
   return formatMaintenanceSummary(formatUiBytes(snapshot.cleanableBytes), details)
 }
 
-/** Модальное окно §4.5 — переиспользуется главным окном и инспектором §9 (единые стили/`app-modal-*`). */
-export function AboutDialog({
-  open,
-  aboutInfo,
-  onClose,
-  onDiagnosticStatus,
-  onOpenKnowledgeArticle
-}: {
+export type AboutDialogProps = {
   open: boolean
   aboutInfo: AppAboutInfo | null
   onClose: () => void
   onDiagnosticStatus?: (message: string) => void
   /** Если задано — кнопка открывает статью базы знаний (главное окно). */
   onOpenKnowledgeArticle?: (slug: string) => void
-}): JSX.Element | null {
+  presentation?: 'dialog' | 'embedded'
+  onExitEmbedded?: () => void
+}
+
+/** Модальное окно §4.5 — переиспользуется главным окном и инспектором §9 (единые стили/`app-modal-*`). */
+export function AboutDialog(props: AboutDialogProps): JSX.Element | null {
+  const {
+    open,
+    aboutInfo,
+    onClose,
+    onDiagnosticStatus,
+    onOpenKnowledgeArticle,
+    presentation = 'dialog',
+    onExitEmbedded
+  } = props
   const [maintenanceConfirm, setMaintenanceConfirm] = useState<MaintenanceCleanChoice | null>(null)
   const [maintenanceBusy, setMaintenanceBusy] = useState(false)
+  const dialogId = useId()
 
   if (!open) {
     return null
@@ -115,6 +123,337 @@ export function AboutDialog({
   }
 
   const aboutShellBusy = aboutInfo === null || maintenanceBusy
+  const exit = presentation === 'embedded' ? (onExitEmbedded ?? onClose) : onClose
+
+  const renderAboutChrome = (embedded: boolean): JSX.Element => (
+    <div
+      className={`app-modal app-modal-narrow about-dialog${embedded ? ' about-dialog-embedded' : ''}`}
+      role={embedded ? 'region' : 'dialog'}
+      aria-modal={embedded ? undefined : 'true'}
+      aria-busy={aboutShellBusy}
+      aria-labelledby={`${dialogId}-title`}
+      aria-describedby={`${dialogId}-desc`}
+      onMouseDown={
+        embedded
+          ? undefined
+          : (e) => {
+              e.stopPropagation()
+            }
+      }
+    >
+      <h2 id={`${dialogId}-title`} className="app-modal-title">
+        {uiText('aboutTitle')}
+      </h2>
+      <p id={`${dialogId}-desc`} className="app-visually-hidden">
+        {uiText('aboutDialogDescAria')}
+      </p>
+      <p id={`${dialogId}-support-zip-hint`} className="app-visually-hidden">
+        {uiText('aboutSupportZipDiagnosticsSectionsHint')}
+      </p>
+      {aboutInfo ? (
+        <dl
+          className="app-about-dl"
+          aria-label={uiText('aboutRuntimeDetailsAria')}
+          aria-describedby={`${dialogId}-desc`}
+          aria-busy={aboutShellBusy}
+        >
+          <div className="app-about-row">
+            <dt>{uiText('appLabel')}</dt>
+            <dd>{aboutInfo.appName}</dd>
+          </div>
+          <div className="app-about-row">
+            <dt>{uiText('versionLabel')}</dt>
+            <dd className="app-about-mono">{aboutInfo.appVersion}</dd>
+          </div>
+          <div className="app-about-row">
+            <dt>{uiText('aboutBuildIdLabel')}</dt>
+            <dd className="app-about-mono">{formatAboutBuildIdDisplay(aboutInfo.buildId)}</dd>
+          </div>
+          {formatBuiltAtUtcLine(aboutInfo.builtAtUtc) ? (
+            <div className="app-about-row">
+              <dt>{uiText('aboutBuiltAtLabel')}</dt>
+              <dd className="app-about-mono">{formatBuiltAtUtcLine(aboutInfo.builtAtUtc)}</dd>
+            </div>
+          ) : null}
+          <div className="app-about-row">
+            <dt>{uiText('aboutRuntimeElectronLabel')}</dt>
+            <dd className="app-about-mono">{aboutInfo.electronVersion}</dd>
+          </div>
+          <div className="app-about-row">
+            <dt>{uiText('aboutRuntimeChromiumLabel')}</dt>
+            <dd className="app-about-mono">{aboutInfo.chromeVersion}</dd>
+          </div>
+          <div className="app-about-row">
+            <dt>{uiText('aboutRuntimeNodeLabel')}</dt>
+            <dd className="app-about-mono">{aboutInfo.nodeVersion}</dd>
+          </div>
+        </dl>
+      ) : (
+        <p
+          className="app-modal-hint"
+          role="status"
+          aria-live="polite"
+          aria-describedby={`${dialogId}-desc`}
+        >
+          {uiText('loading')}
+        </p>
+      )}
+      <DiagnosticsFoldersPanel
+        busy={aboutShellBusy}
+        describedById={`${dialogId}-desc`}
+        onStatus={pushStatus}
+      />
+      <div
+        className="app-modal-footer app-modal-footer-split"
+        role="region"
+        aria-label={uiText('aboutModalFooterSplitAria')}
+        aria-describedby={`${dialogId}-desc`}
+        aria-busy={aboutShellBusy}
+      >
+        <div
+          className="app-about-footer-left"
+          role="group"
+          aria-label={uiText('aboutFooterLeftGroupAria')}
+          aria-describedby={`${dialogId}-desc`}
+          aria-busy={aboutShellBusy}
+        >
+          <div
+            className="app-about-diagnostics"
+            role="toolbar"
+            aria-orientation="horizontal"
+            aria-label={uiText('aboutDiagnosticsToolbarAria')}
+            aria-describedby={`${dialogId}-desc`}
+            aria-busy={aboutShellBusy}
+          >
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              aria-describedby={`${dialogId}-desc`}
+              disabled={aboutShellBusy}
+              title={uiText('aboutTooltipLogsFolder')}
+              onClick={() => {
+                void window.velorix.diagnostics.openFolder('logs').then((r) => {
+                  if (!r.ok) {
+                    pushStatus(
+                      uiTextVars('aboutMaintenanceCleanErrorTemplate', {
+                        label: uiText('logsFolderButton'),
+                        error: r.error
+                      })
+                    )
+                  }
+                })
+              }}
+            >
+              {uiText('logsFolderButton')}
+            </button>
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              aria-describedby={`${dialogId}-desc`}
+              disabled={aboutShellBusy}
+              title={uiText('aboutTooltipMainLog')}
+              onClick={() => {
+                void window.velorix.diagnostics.openMainLog().then((r) => {
+                  if (!r.ok) {
+                    pushStatus(uiTextVars('aboutMainLogOpenErrorTemplate', { error: r.error }))
+                  }
+                })
+              }}
+            >
+              {uiText('aboutMainLogButton')}
+            </button>
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              aria-describedby={`${dialogId}-support-zip-hint`}
+              disabled={aboutShellBusy}
+              title={uiText('aboutTooltipSupportZip')}
+              onClick={() => {
+                void window.velorix.diagnostics.createSupportZip().then((r) => {
+                  if (r.ok) {
+                    pushStatus(uiText('supportZipSaved'))
+                  } else if ('error' in r) {
+                    pushStatus(
+                      uiTextVars('aboutMaintenanceCleanErrorTemplate', {
+                        label: uiText('supportZipButton'),
+                        error: r.error
+                      })
+                    )
+                  }
+                })
+              }}
+            >
+              {uiText('supportZipButton')}
+            </button>
+            {onOpenKnowledgeArticle ? (
+              <KnowledgeDeepLinkButton
+                label={uiText('knowledgeDeepLinkMaintenanceLabel')}
+                tooltip={uiText('knowledgeDeepLinkMaintenanceTooltip')}
+                ariaDescribedBy={`${dialogId}-desc`}
+                disabled={aboutShellBusy}
+                onOpen={() => {
+                  onOpenKnowledgeArticle(KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS)
+                }}
+              />
+            ) : null}
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              aria-describedby={`${dialogId}-desc`}
+              disabled={aboutShellBusy}
+              title={uiText('aboutTooltipMaintenanceSummary')}
+              onClick={() => {
+                setMaintenanceConfirm(null)
+                void window.velorix.diagnostics.maintenanceSnapshot().then((snapshot) => {
+                  pushStatus(formatMaintenanceSnapshot(snapshot))
+                })
+              }}
+            >
+              {uiText('maintenanceSummaryButton')}
+            </button>
+            <button
+              type="button"
+              className={`app-btn app-btn-compact${maintenanceConfirm === 'all' ? ' app-btn-danger' : ''}`}
+              aria-describedby={`${dialogId}-desc`}
+              disabled={aboutShellBusy}
+              title={uiText('aboutTooltipMaintenanceCleanAll')}
+              onClick={() => {
+                handleCleanMaintenance('all')
+              }}
+            >
+              {uiText(
+                maintenanceConfirm === 'all' ? 'maintenanceConfirmButton' : 'maintenanceCleanButton'
+              )}
+            </button>
+            <button
+              type="button"
+              className={`app-btn app-btn-compact${maintenanceConfirm === 'previewCache' ? ' app-btn-danger' : ''}`}
+              aria-describedby={`${dialogId}-desc`}
+              disabled={aboutShellBusy}
+              title={uiText('aboutTooltipMaintenanceCleanPreview')}
+              onClick={() => {
+                handleCleanMaintenance('previewCache')
+              }}
+            >
+              {uiText(
+                maintenanceConfirm === 'previewCache'
+                  ? 'maintenanceConfirmButton'
+                  : 'maintenanceCleanPreviewButton'
+              )}
+            </button>
+            <button
+              type="button"
+              className={`app-btn app-btn-compact${maintenanceConfirm === 'ytdlpPartials' ? ' app-btn-danger' : ''}`}
+              aria-describedby={`${dialogId}-desc`}
+              disabled={aboutShellBusy}
+              title={uiText('aboutTooltipMaintenanceCleanPartials')}
+              onClick={() => {
+                handleCleanMaintenance('ytdlpPartials')
+              }}
+            >
+              {uiText(
+                maintenanceConfirm === 'ytdlpPartials'
+                  ? 'maintenanceConfirmButton'
+                  : 'maintenanceCleanPartialsButton'
+              )}
+            </button>
+            <button
+              type="button"
+              className={`app-btn app-btn-compact${maintenanceConfirm === 'ffmpegTemp' ? ' app-btn-danger' : ''}`}
+              aria-describedby={`${dialogId}-desc`}
+              disabled={aboutShellBusy}
+              title={uiText('aboutTooltipMaintenanceCleanFfmpegTemp')}
+              onClick={() => {
+                handleCleanMaintenance('ffmpegTemp')
+              }}
+            >
+              {uiText(
+                maintenanceConfirm === 'ffmpegTemp'
+                  ? 'maintenanceConfirmButton'
+                  : 'maintenanceCleanFfmpegTempButton'
+              )}
+            </button>
+          </div>
+          <nav
+            className="app-doc-inline-links app-about-doc-links"
+            aria-label={uiText('aboutExternalDocsNavAria')}
+            aria-describedby={`${dialogId}-desc`}
+            aria-busy={aboutShellBusy}
+          >
+            <a
+              href={YTDLP_DOC_README}
+              target="_blank"
+              rel="noreferrer"
+              aria-describedby={`${dialogId}-desc`}
+            >
+              {uiText('docLinkYtDlpReadme')}
+            </a>
+            {' · '}
+            <a
+              href={YTDLP_DOC_FORMAT_SELECTION}
+              target="_blank"
+              rel="noreferrer"
+              aria-describedby={`${dialogId}-desc`}
+            >
+              {uiText('formatSelectionDoc')}
+            </a>
+            {' · '}
+            <a
+              href={FFPROBE_DOC_ALL}
+              target="_blank"
+              rel="noreferrer"
+              aria-describedby={`${dialogId}-desc`}
+            >
+              {uiText('docLinkFfprobeShort')}
+            </a>
+          </nav>
+          {onOpenKnowledgeArticle ? (
+            <div
+              className="app-about-knowledge-link"
+              role="region"
+              aria-label={uiText('aboutKnowledgeArticleRegionAria')}
+              aria-describedby={`${dialogId}-desc`}
+              aria-busy={aboutShellBusy}
+            >
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                aria-describedby={`${dialogId}-desc`}
+                disabled={aboutShellBusy}
+                title={uiText('aboutKnowledgeSupportArticleTooltip')}
+                onClick={() => {
+                  onOpenKnowledgeArticle(KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS)
+                }}
+              >
+                {uiText('aboutKnowledgeSupportArticle')}
+              </button>
+            </div>
+          ) : null}
+        </div>
+        <div
+          role="toolbar"
+          aria-orientation="horizontal"
+          aria-label={uiText('aboutDialogCloseToolbarAria')}
+          aria-describedby={`${dialogId}-desc`}
+          aria-busy={aboutShellBusy}
+        >
+          <button
+            type="button"
+            className="app-btn app-btn-primary"
+            aria-describedby={`${dialogId}-desc`}
+            title={uiText('aboutTooltipCloseAbout')}
+            onClick={exit}
+          >
+            {uiText('closeButton')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+
+  if (presentation === 'embedded') {
+    return renderAboutChrome(true)
+  }
 
   return (
     <div
@@ -126,327 +465,7 @@ export function AboutDialog({
         }
       }}
     >
-      <div
-        className="app-modal app-modal-narrow"
-        role="dialog"
-        aria-modal="true"
-        aria-busy={aboutShellBusy}
-        aria-labelledby="about-title"
-        aria-describedby="about-dialog-desc"
-        onMouseDown={(e) => {
-          e.stopPropagation()
-        }}
-      >
-        <h2 id="about-title" className="app-modal-title">
-          {uiText('aboutTitle')}
-        </h2>
-        <p id="about-dialog-desc" className="app-visually-hidden">
-          {uiText('aboutDialogDescAria')}
-        </p>
-        <p id="about-support-zip-hint" className="app-visually-hidden">
-          {uiText('aboutSupportZipDiagnosticsSectionsHint')}
-        </p>
-        {aboutInfo ? (
-          <dl
-            className="app-about-dl"
-            aria-label={uiText('aboutRuntimeDetailsAria')}
-            aria-describedby="about-dialog-desc"
-            aria-busy={aboutShellBusy}
-          >
-            <div className="app-about-row">
-              <dt>{uiText('appLabel')}</dt>
-              <dd>{aboutInfo.appName}</dd>
-            </div>
-            <div className="app-about-row">
-              <dt>{uiText('versionLabel')}</dt>
-              <dd className="app-about-mono">{aboutInfo.appVersion}</dd>
-            </div>
-            <div className="app-about-row">
-              <dt>{uiText('aboutBuildIdLabel')}</dt>
-              <dd className="app-about-mono">{formatAboutBuildIdDisplay(aboutInfo.buildId)}</dd>
-            </div>
-            {formatBuiltAtUtcLine(aboutInfo.builtAtUtc) ? (
-              <div className="app-about-row">
-                <dt>{uiText('aboutBuiltAtLabel')}</dt>
-                <dd className="app-about-mono">{formatBuiltAtUtcLine(aboutInfo.builtAtUtc)}</dd>
-              </div>
-            ) : null}
-            <div className="app-about-row">
-              <dt>{uiText('aboutRuntimeElectronLabel')}</dt>
-              <dd className="app-about-mono">{aboutInfo.electronVersion}</dd>
-            </div>
-            <div className="app-about-row">
-              <dt>{uiText('aboutRuntimeChromiumLabel')}</dt>
-              <dd className="app-about-mono">{aboutInfo.chromeVersion}</dd>
-            </div>
-            <div className="app-about-row">
-              <dt>{uiText('aboutRuntimeNodeLabel')}</dt>
-              <dd className="app-about-mono">{aboutInfo.nodeVersion}</dd>
-            </div>
-          </dl>
-        ) : (
-          <p
-            className="app-modal-hint"
-            role="status"
-            aria-live="polite"
-            aria-describedby="about-dialog-desc"
-          >
-            {uiText('loading')}
-          </p>
-        )}
-        <DiagnosticsFoldersPanel
-          busy={aboutShellBusy}
-          describedById="about-dialog-desc"
-          onStatus={pushStatus}
-        />
-        <div
-          className="app-modal-footer app-modal-footer-split"
-          role="region"
-          aria-label={uiText('aboutModalFooterSplitAria')}
-          aria-describedby="about-dialog-desc"
-          aria-busy={aboutShellBusy}
-        >
-          <div
-            className="app-about-footer-left"
-            role="group"
-            aria-label={uiText('aboutFooterLeftGroupAria')}
-            aria-describedby="about-dialog-desc"
-            aria-busy={aboutShellBusy}
-          >
-            <div
-              className="app-about-diagnostics"
-              role="toolbar"
-              aria-orientation="horizontal"
-              aria-label={uiText('aboutDiagnosticsToolbarAria')}
-              aria-describedby="about-dialog-desc"
-              aria-busy={aboutShellBusy}
-            >
-              <button
-                type="button"
-                className="app-btn app-btn-compact"
-                aria-describedby="about-dialog-desc"
-                disabled={aboutShellBusy}
-                title={uiText('aboutTooltipLogsFolder')}
-                onClick={() => {
-                  void window.velorix.diagnostics.openFolder('logs').then((r) => {
-                    if (!r.ok) {
-                      pushStatus(
-                        uiTextVars('aboutMaintenanceCleanErrorTemplate', {
-                          label: uiText('logsFolderButton'),
-                          error: r.error
-                        })
-                      )
-                    }
-                  })
-                }}
-              >
-                {uiText('logsFolderButton')}
-              </button>
-              <button
-                type="button"
-                className="app-btn app-btn-compact"
-                aria-describedby="about-dialog-desc"
-                disabled={aboutShellBusy}
-                title={uiText('aboutTooltipMainLog')}
-                onClick={() => {
-                  void window.velorix.diagnostics.openMainLog().then((r) => {
-                    if (!r.ok) {
-                      pushStatus(uiTextVars('aboutMainLogOpenErrorTemplate', { error: r.error }))
-                    }
-                  })
-                }}
-              >
-                {uiText('aboutMainLogButton')}
-              </button>
-              <button
-                type="button"
-                className="app-btn app-btn-compact"
-                aria-describedby="about-support-zip-hint"
-                disabled={aboutShellBusy}
-                title={uiText('aboutTooltipSupportZip')}
-                onClick={() => {
-                  void window.velorix.diagnostics.createSupportZip().then((r) => {
-                    if (r.ok) {
-                      pushStatus(uiText('supportZipSaved'))
-                    } else if ('error' in r) {
-                      pushStatus(
-                        uiTextVars('aboutMaintenanceCleanErrorTemplate', {
-                          label: uiText('supportZipButton'),
-                          error: r.error
-                        })
-                      )
-                    }
-                  })
-                }}
-              >
-                {uiText('supportZipButton')}
-              </button>
-              {onOpenKnowledgeArticle ? (
-                <KnowledgeDeepLinkButton
-                  label={uiText('knowledgeDeepLinkMaintenanceLabel')}
-                  tooltip={uiText('knowledgeDeepLinkMaintenanceTooltip')}
-                  ariaDescribedBy="about-dialog-desc"
-                  disabled={aboutShellBusy}
-                  onOpen={() => {
-                    onOpenKnowledgeArticle(KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS)
-                  }}
-                />
-              ) : null}
-              <button
-                type="button"
-                className="app-btn app-btn-compact"
-                aria-describedby="about-dialog-desc"
-                disabled={aboutShellBusy}
-                title={uiText('aboutTooltipMaintenanceSummary')}
-                onClick={() => {
-                  setMaintenanceConfirm(null)
-                  void window.velorix.diagnostics.maintenanceSnapshot().then((snapshot) => {
-                    pushStatus(formatMaintenanceSnapshot(snapshot))
-                  })
-                }}
-              >
-                {uiText('maintenanceSummaryButton')}
-              </button>
-              <button
-                type="button"
-                className={`app-btn app-btn-compact${maintenanceConfirm === 'all' ? ' app-btn-danger' : ''}`}
-                aria-describedby="about-dialog-desc"
-                disabled={aboutShellBusy}
-                title={uiText('aboutTooltipMaintenanceCleanAll')}
-                onClick={() => {
-                  handleCleanMaintenance('all')
-                }}
-              >
-                {uiText(
-                  maintenanceConfirm === 'all'
-                    ? 'maintenanceConfirmButton'
-                    : 'maintenanceCleanButton'
-                )}
-              </button>
-              <button
-                type="button"
-                className={`app-btn app-btn-compact${maintenanceConfirm === 'previewCache' ? ' app-btn-danger' : ''}`}
-                aria-describedby="about-dialog-desc"
-                disabled={aboutShellBusy}
-                title={uiText('aboutTooltipMaintenanceCleanPreview')}
-                onClick={() => {
-                  handleCleanMaintenance('previewCache')
-                }}
-              >
-                {uiText(
-                  maintenanceConfirm === 'previewCache'
-                    ? 'maintenanceConfirmButton'
-                    : 'maintenanceCleanPreviewButton'
-                )}
-              </button>
-              <button
-                type="button"
-                className={`app-btn app-btn-compact${maintenanceConfirm === 'ytdlpPartials' ? ' app-btn-danger' : ''}`}
-                aria-describedby="about-dialog-desc"
-                disabled={aboutShellBusy}
-                title={uiText('aboutTooltipMaintenanceCleanPartials')}
-                onClick={() => {
-                  handleCleanMaintenance('ytdlpPartials')
-                }}
-              >
-                {uiText(
-                  maintenanceConfirm === 'ytdlpPartials'
-                    ? 'maintenanceConfirmButton'
-                    : 'maintenanceCleanPartialsButton'
-                )}
-              </button>
-              <button
-                type="button"
-                className={`app-btn app-btn-compact${maintenanceConfirm === 'ffmpegTemp' ? ' app-btn-danger' : ''}`}
-                aria-describedby="about-dialog-desc"
-                disabled={aboutShellBusy}
-                title={uiText('aboutTooltipMaintenanceCleanFfmpegTemp')}
-                onClick={() => {
-                  handleCleanMaintenance('ffmpegTemp')
-                }}
-              >
-                {uiText(
-                  maintenanceConfirm === 'ffmpegTemp'
-                    ? 'maintenanceConfirmButton'
-                    : 'maintenanceCleanFfmpegTempButton'
-                )}
-              </button>
-            </div>
-            <nav
-              className="app-doc-inline-links app-about-doc-links"
-              aria-label={uiText('aboutExternalDocsNavAria')}
-              aria-describedby="about-dialog-desc"
-              aria-busy={aboutShellBusy}
-            >
-              <a
-                href={YTDLP_DOC_README}
-                target="_blank"
-                rel="noreferrer"
-                aria-describedby="about-dialog-desc"
-              >
-                {uiText('docLinkYtDlpReadme')}
-              </a>
-              {' · '}
-              <a
-                href={YTDLP_DOC_FORMAT_SELECTION}
-                target="_blank"
-                rel="noreferrer"
-                aria-describedby="about-dialog-desc"
-              >
-                {uiText('formatSelectionDoc')}
-              </a>
-              {' · '}
-              <a
-                href={FFPROBE_DOC_ALL}
-                target="_blank"
-                rel="noreferrer"
-                aria-describedby="about-dialog-desc"
-              >
-                {uiText('docLinkFfprobeShort')}
-              </a>
-            </nav>
-            {onOpenKnowledgeArticle ? (
-              <div
-                className="app-about-knowledge-link"
-                role="region"
-                aria-label={uiText('aboutKnowledgeArticleRegionAria')}
-                aria-describedby="about-dialog-desc"
-                aria-busy={aboutShellBusy}
-              >
-                <button
-                  type="button"
-                  className="app-btn app-btn-compact"
-                  aria-describedby="about-dialog-desc"
-                  disabled={aboutShellBusy}
-                  title={uiText('aboutKnowledgeSupportArticleTooltip')}
-                  onClick={() => {
-                    onOpenKnowledgeArticle(KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS)
-                  }}
-                >
-                  {uiText('aboutKnowledgeSupportArticle')}
-                </button>
-              </div>
-            ) : null}
-          </div>
-          <div
-            role="toolbar"
-            aria-orientation="horizontal"
-            aria-label={uiText('aboutDialogCloseToolbarAria')}
-            aria-describedby="about-dialog-desc"
-            aria-busy={aboutShellBusy}
-          >
-            <button
-              type="button"
-              className="app-btn app-btn-primary"
-              aria-describedby="about-dialog-desc"
-              title={uiText('aboutTooltipCloseAbout')}
-              onClick={onClose}
-            >
-              {uiText('closeButton')}
-            </button>
-          </div>
-        </div>
-      </div>
+      {renderAboutChrome(false)}
     </div>
   )
 }

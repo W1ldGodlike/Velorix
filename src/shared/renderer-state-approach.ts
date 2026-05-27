@@ -44,7 +44,7 @@ export function formatRendererStateDiagnosticLines(): string[] {
     `stores: ${RENDERER_ZUSTAND_STORES.join(', ')}`,
     `orchestration: ${RENDERER_ORCHESTRATION_HOOKS.join(', ')}`,
     `cross-cutting: ${RENDERER_CROSS_CUTTING_TICKS.join(', ')}; module-level ui-text session for i18n`,
-    'standalone surfaces: DownloadsStandaloneApp / InspectorStandaloneApp (shared stores where applicable)',
+    'surfaces: single AppRoot shell with shared domain stores across workspace tabs',
     'persist: settings IPC (uiLocale, theme, panels, export fields) — not duplicated across stores',
     'devtools: zustand/middleware devtools in DEV via create-renderer-store (Redux DevTools extension in Chromium)',
     `derived: ${RENDERER_DERIVED_STATE_HOOKS.join(', ')} (useMemo; ban useStore(unstableSelector))`,

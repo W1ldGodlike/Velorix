@@ -1,4 +1,4 @@
-/** §6.2 — снимок каталога вывода yt-dlp для embedded ↔ pop-out. */
+/** §6.2 — снимок каталога вывода yt-dlp для shell-вкладки «Загрузки». */
 export type DownloadsOutputDirectorySnapshot = {
   path: string
   isDefault: boolean

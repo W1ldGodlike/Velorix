@@ -10,7 +10,7 @@
 
 ## Инспектор
 
-Пункт меню **«Инструменты»** открывает отдельное окно с таблицами дорожек и сырым отчётом анализатора. Оттуда же удобно **копировать JSON** в буфер обмена.
+Пункт меню **«Инструменты» → «Инспектор»** (или маршрут **«Инспектор»** в sidebar) открывает поверхность shell с таблицами дорожек и сырым отчётом анализатора. Оттуда же удобно **копировать JSON** в буфер обмена.
 
 См. также [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
 
@@ -18,4 +18,4 @@
 
 ## См. также
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).
+[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (после `pack:dir`).

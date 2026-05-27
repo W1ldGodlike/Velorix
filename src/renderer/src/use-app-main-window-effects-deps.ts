@@ -8,6 +8,8 @@ import type { FfmpegExportUserPreset } from '../../shared/ffmpeg-export-contract
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
+import type { ProcessErrorDialogPayload } from '../../shared/process-error-dialog-contract'
+import type { QuitConfirmRequestPayload } from '../../shared/quit-confirm-contract'
 import type {
   DownloadsWindowUiPanelState,
   MainWindowUiPanelState,
@@ -37,6 +39,7 @@ export type UseAppMainWindowEffectsDeps = {
   previewMediaUrl: string | undefined
   setPreviewBlobUrl: Dispatch<SetStateAction<string | null>>
   setProbeInfo: Dispatch<SetStateAction<MediaProbeSuccess | null>>
+  setProbeError: Dispatch<SetStateAction<string | null>>
   setProbePending: Dispatch<SetStateAction<boolean>>
   setStatusHint: Dispatch<SetStateAction<string | null>>
   setEngineSummary: Dispatch<SetStateAction<EngineSummary>>
@@ -52,6 +55,8 @@ export type UseAppMainWindowEffectsDeps = {
   setMediaFileUtilitiesOpen: Dispatch<SetStateAction<boolean>>
   setWorkflowPlannerOpen: Dispatch<SetStateAction<boolean>>
   setWorkflowScenarioBuilderOpen: Dispatch<SetStateAction<boolean>>
+  setProcessErrorDialog: Dispatch<SetStateAction<ProcessErrorDialogPayload | null>>
+  setQuitConfirmRequest: Dispatch<SetStateAction<QuitConfirmRequestPayload | null>>
   setAboutInfo: Dispatch<
     SetStateAction<Awaited<ReturnType<typeof window.velorix.about.getInfo>> | null>
   >

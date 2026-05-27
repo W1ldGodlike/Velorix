@@ -8,7 +8,6 @@ import { join } from 'node:path'
 import {
   formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevParagraph,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingDevParagraph,
-  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiParagraph,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCopyPlannedGuiTail,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxCopyDevClause,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyDevClause
@@ -17,7 +16,6 @@ import {
   formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightLoggingPlannedGuiScopeClause,
-  formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause,
   formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix
 } from '../../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { REPO_ROOT } from '../lib/repo-root.mjs'
@@ -48,19 +46,6 @@ function replaceLinePrefix(text, prefix, replacement) {
     throw new Error(`line prefix not found: ${prefix}`)
   }
   return text.replace(re, replacement.trimEnd())
-}
-
-function syncOwner(rel, locale) {
-  const path = join(REPO_ROOT, rel)
-  const paragraph = formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokePlannedGuiParagraph(
-    locale,
-    formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause(locale)
-  )
-  writeFileSync(
-    path,
-    replaceFromMarker(readFileSync(path, 'utf8'), '**Planned GUI e2e**', paragraph)
-  )
-  console.log(`[${LOG_PREFIX}] ${rel} owner-planned`)
 }
 
 function syncPackagedWin(rel, locale) {
@@ -117,8 +102,6 @@ function syncLogging(rel, locale) {
   console.log(`[${LOG_PREFIX}] ${rel} logging-dev`)
 }
 
-syncOwner('Help/ru/owner-manual-smoke.md', 'ru')
-syncOwner('Help/en/owner-manual-smoke.md', 'en')
 syncAbout('Help/ru/about-support-logs.md', 'ru')
 syncAbout('Help/en/about-support-logs.md', 'en')
 syncLogging('Help/ru/logging-and-diagnostics.md', 'ru')

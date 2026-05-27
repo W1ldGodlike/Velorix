@@ -1,6 +1,5 @@
 import type { Dispatch, JSX, SetStateAction } from 'react'
 
-import type { ResolvedAppTheme } from '../../../../shared/settings-contract'
 import {
   IconBan,
   IconBook,
@@ -10,9 +9,7 @@ import {
   IconFolder,
   IconFolderOpen,
   IconImage,
-  IconMoon,
-  IconSettings,
-  IconSun
+  IconSettings
 } from '../LucideMiniIcons'
 import { type WorkspaceTab, workspaceTabDescId } from '../../app-terminal-hint-ui'
 import type { EngineSummary } from '../../app-engines-ui'
@@ -29,7 +26,6 @@ export type AppWorkspaceTopbarProps = {
   exportBusy: boolean
   exportCancelBusy: boolean
   enginesOfferDownload: boolean
-  theme: ResolvedAppTheme
   onOpenVideoFolder: () => void
   onOpenFile: () => void
   onCancelExport: () => void
@@ -39,20 +35,19 @@ export type AppWorkspaceTopbarProps = {
   onOpenKnowledge: () => void
   onOpenAbout: () => void
   onUiLocaleToggle: () => void
-  onToggleTheme: () => void
 }
 
 export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element {
   const {
     appChromeBusy,
     workspaceTab,
+    setWorkspaceTab,
     engineDownloadBusy,
     engineSummary,
     previewPath,
     exportBusy,
     exportCancelBusy,
     enginesOfferDownload,
-    theme,
     onOpenVideoFolder,
     onOpenFile,
     onCancelExport,
@@ -61,8 +56,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
     onOpenAppSettings,
     onOpenKnowledge,
     onOpenAbout,
-    onUiLocaleToggle,
-    onToggleTheme
+    onUiLocaleToggle
   } = props
 
   const currentWorkspaceTabDescId = workspaceTabDescId(workspaceTab)
@@ -142,7 +136,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
             className="app-icon-btn"
             aria-describedby={currentWorkspaceTabDescId}
             onClick={() => {
-              void window.velorix.inspector.openWindow(previewPath ?? null)
+              setWorkspaceTab('inspector')
             }}
             title={uiText('topbarInspectorTitle')}
           >
@@ -251,18 +245,6 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
               {getUiLocale() === 'ru'
                 ? uiText('topbarUiLocaleVisuallyHiddenRu')
                 : uiText('topbarUiLocaleVisuallyHiddenEn')}
-            </span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            aria-describedby={currentWorkspaceTabDescId}
-            onClick={onToggleTheme}
-            title={uiText('topbarThemeToggleTitle')}
-          >
-            {theme === 'dark' ? <IconSun /> : <IconMoon />}
-            <span className="app-visually-hidden">
-              {theme === 'dark' ? uiText('topbarThemeUseLight') : uiText('topbarThemeUseDark')}
             </span>
           </button>
         </div>

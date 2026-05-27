@@ -3,6 +3,7 @@ export const APP_SETTINGS_DIALOG_SECTIONS = [
   'general',
   'defaults',
   'dependencies',
+  'system',
   'hotkeys',
   'logs',
   'reset'

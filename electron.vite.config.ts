@@ -83,7 +83,7 @@ function findLastRealImportEnd(code: string): number {
 }
 
 export default defineConfig({
-  // Main — дефолт; preload: главное окно + pop-out `#downloads` / `#inspector` (тот же entry).
+  // Main — дефолт; preload — один entry для единого shell renderer.
   main: { plugins: [fixedEsmShimPlugin()] },
   preload: {
     // Vite 8 SSR: preset electron-vite ставит ssr.noExternal=true → в бандл попадает electron/index.js

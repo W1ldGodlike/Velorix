@@ -21,11 +21,6 @@ const MAIN_WINDOW_TITLE: Record<AppUiLocale, string> = {
   en: 'VELORIX'
 }
 
-const DOWNLOADS_POPOUT_WINDOW_TITLE: Record<AppUiLocale, string> = {
-  ru: 'Velorix — загрузки',
-  en: 'Velorix — Downloads'
-}
-
 const INSPECTOR_WINDOW_TITLE: Record<AppUiLocale, string> = {
   ru: 'Velorix — инспектор',
   en: 'Velorix — Inspector'
@@ -34,11 +29,6 @@ const INSPECTOR_WINDOW_TITLE: Record<AppUiLocale, string> = {
 /** Заголовок главного окна (Electron `BrowserWindow`) — синхрон с `mainWindowDocumentTitle` в renderer. */
 export function getMainWindowTitle(locale: AppUiLocale): string {
   return MAIN_WINDOW_TITLE[locale]
-}
-
-/** Заголовок отдельного окна загрузок (`#downloads`) — main-safe, без renderer `ui-text`. */
-export function getDownloadsPopoutWindowTitle(locale: AppUiLocale): string {
-  return DOWNLOADS_POPOUT_WINDOW_TITLE[locale]
 }
 
 /** Заголовок окна инспектора — синхрон с `inspectorWindowDocumentTitle` в renderer JSON. */

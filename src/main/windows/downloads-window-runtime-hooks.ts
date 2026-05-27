@@ -1,14 +1,13 @@
 import { BrowserWindow, type WebContents } from 'electron'
 
-import type { DownloadsWindowUiPanelState, ResolvedAppTheme } from '../../shared/settings-contract'
-import type { StoredWindowRect } from '../services/settings/settings-store'
+import type { DownloadsWindowUiPanelState } from '../../shared/settings-contract'
 import { downloadsIpc as d } from '../../shared/ipc-channels'
 import type {
   YtdlpDownloadOptionsPayload,
   YtdlpDownloadOptionsPatch
 } from '../services/ytdlp/ytdlp-download-options'
-import { isInspectorWindow } from './inspector-window'
 import type { AppUiLocale } from '../../shared/app-ui-locale'
+import { mainWindowRef } from './main-window-runtime-state'
 import {
   getDownloadsWindowIpcStrings,
   type DownloadsWindowIpcStrings
@@ -18,10 +17,8 @@ import {
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = d.queueSnapshot
 
 export interface DownloadsWindowBoundsHooks {
-  /** §4.A — главное окно тоже может управлять embedded вкладкой `Загрузки`. */
+  /** §4.A — главное окно управляет shell-вкладкой `Загрузки`. */
   isMainWindowSender?: (sender: WebContents) => boolean
-  getSavedDownloadsBounds?: () => StoredWindowRect | undefined
-  persistDownloadsBounds?: (rect: StoredWindowRect) => void
   /** §6.2 — диалог выбора каталога и сохранение в settings.json (реализуется в index.ts). */
   pickYtdlpOutputDirectory?: (
     win: BrowserWindow
@@ -49,12 +46,10 @@ export interface DownloadsWindowBoundsHooks {
   openDownloadedFileInHandler?: (
     absoluteFile: string
   ) => Promise<{ ok: true } | { ok: false; error: string }>
-  /** §4.1 — снимок раскрытых секций для React pop-out / вкладки «Загрузки». */
+  /** §4.1 — снимок раскрытых секций shell-вкладки `Загрузки`. */
   getDownloadsWindowUiPanelsSnapshot?: () => DownloadsWindowUiPanelState | undefined
   /** §4.1 — сохранить частичное состояние раскрытых секций в `settings.json`. */
   mergeDownloadsWindowUiPanelsPatch?: (patch: Partial<DownloadsWindowUiPanelState>) => void
-  /** Текущая тема приложения — начальное `data-theme` и синхрон с меню главного окна. */
-  getAppTheme?: () => ResolvedAppTheme
   /** UI locale when renderer does not pass `uiLocale` in `openDownloadsWindow`. */
   getDownloadsUiLocale?: () => AppUiLocale
 }
@@ -70,15 +65,8 @@ export function configureDownloadsWindowBoundsHooks(hooks: DownloadsWindowBounds
   downloadsBoundsHooks = hooks
 }
 
-let downloadsWindow: BrowserWindow | null = null
-
-/** Locale last used when opening the pop-out; drives IPC copy for downloads-window sender. */
-let lastDownloadsPopoutResolvedUiLocale: AppUiLocale = 'ru'
-
 export function ipcUiLocale(sender: WebContents): AppUiLocale {
-  if (isDownloadsSender(sender)) {
-    return lastDownloadsPopoutResolvedUiLocale
-  }
+  void sender
   return downloadsBoundsHooks.getDownloadsUiLocale?.() ?? 'ru'
 }
 
@@ -86,64 +74,20 @@ export function ipcStr(sender: WebContents): DownloadsWindowIpcStrings {
   return getDownloadsWindowIpcStrings(ipcUiLocale(sender))
 }
 
-export function isDownloadsSender(sender: WebContents): boolean {
-  return (
-    downloadsWindow !== null &&
-    !downloadsWindow.isDestroyed() &&
-    sender.id === downloadsWindow.webContents.id
-  )
-}
-
 export function isDownloadsOrMainSender(sender: WebContents): boolean {
-  return isDownloadsSender(sender) || downloadsBoundsHooks.isMainWindowSender?.(sender) === true
+  return downloadsBoundsHooks.isMainWindowSender?.(sender) === true
 }
 
-export function isDownloadsWindow(win: BrowserWindow | null | undefined): boolean {
-  return (
-    win !== null &&
-    win !== undefined &&
-    downloadsWindow !== null &&
-    !downloadsWindow.isDestroyed() &&
-    !win.isDestroyed() &&
-    win.id === downloadsWindow.id
-  )
-}
-
-/** Главное окно редактора — любое живое окно кроме менеджера загрузок и инспектора §9. */
+/** Главное shell-окно для broadcast/downloads IPC (Variant A — одно окно). */
 export function resolveMainEditorWindow(): BrowserWindow | null {
-  const wins = BrowserWindow.getAllWindows()
-  for (let i = 0; i < wins.length; i++) {
-    const win = wins[i]
-    if (win === undefined || win.isDestroyed()) {
-      continue
+  const ref = mainWindowRef
+  if (ref && !ref.isDestroyed()) {
+    return ref
+  }
+  for (const win of BrowserWindow.getAllWindows()) {
+    if (!win.isDestroyed()) {
+      return win
     }
-    if (isDownloadsWindow(win) || isInspectorWindow(win)) {
-      continue
-    }
-    return win
   }
   return null
-}
-
-export function getDownloadsPopoutWindow(): BrowserWindow | null {
-  return downloadsWindow
-}
-
-export function setDownloadsPopoutWindow(win: BrowserWindow | null): void {
-  downloadsWindow = win
-}
-
-export function getDownloadsPopoutWebContents(): WebContents | null {
-  if (downloadsWindow === null || downloadsWindow.isDestroyed()) {
-    return null
-  }
-  return downloadsWindow.webContents
-}
-
-export function getLastDownloadsPopoutResolvedUiLocale(): AppUiLocale {
-  return lastDownloadsPopoutResolvedUiLocale
-}
-
-export function setLastDownloadsPopoutResolvedUiLocale(loc: AppUiLocale): void {
-  lastDownloadsPopoutResolvedUiLocale = loc
 }

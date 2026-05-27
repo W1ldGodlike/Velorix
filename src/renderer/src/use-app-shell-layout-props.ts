@@ -20,7 +20,6 @@ import type { AppUiLocale } from '../../shared/app-ui-locale'
 import type { EditorUrlPasteBehaviorId } from '../../shared/editor-url-paste-behavior'
 import type { ExportPresetNameDialogProps } from './components/shell/ExportPresetNameDialog'
 import type { WorkspaceTab } from './app-terminal-hint-ui'
-import type { ResolvedAppTheme } from '../../shared/settings-contract'
 import type { EnginePathsDraft } from './app-engines-ui'
 import type { EngineId } from '../../shared/engine-contract'
 import type { ExportPresetNameDialogState } from './use-editor-export-settings'
@@ -41,7 +40,6 @@ export type UseAppShellLayoutPropsInput = {
     handleExtractFrames: () => Promise<void>
     handleEnginesDownload: () => Promise<void>
     handleUiLocaleToggle: () => void
-    toggleTheme: () => Promise<void>
   }
   statusbar: Pick<
     AppStatusbarProps,
@@ -59,8 +57,6 @@ export type UseAppShellLayoutPropsInput = {
     section: AppSettingsDialogSection
     setSection: Dispatch<SetStateAction<AppSettingsDialogSection>>
     setOpen: Dispatch<SetStateAction<boolean>>
-    theme: ResolvedAppTheme
-    setTheme: Dispatch<SetStateAction<ResolvedAppTheme>>
     editorUrlPasteBehavior: EditorUrlPasteBehaviorId
     setEditorUrlPasteBehavior: Dispatch<SetStateAction<EditorUrlPasteBehaviorId>>
     setUiLocaleRenderTick: Dispatch<SetStateAction<number>>
@@ -161,8 +157,7 @@ export function useAppShellLayoutProps(
     handleCancelExport,
     handleExtractFrames,
     handleEnginesDownload,
-    handleUiLocaleToggle,
-    toggleTheme
+    handleUiLocaleToggle
   } = topbarInput
   const appChromeBusy = useAppChromeBusy()
   const workspaceTab = useAppShellStore((s) => s.workspaceTab)
@@ -170,10 +165,11 @@ export function useAppShellLayoutProps(
   const engineDownloadBusy = useAppShellStore((s) => s.engineDownloadBusy)
   const engineSummary = useAppShellStore((s) => s.engineSummary)
   const enginesOfferDownload = useAppShellStore((s) => s.enginesOfferDownload)
-  const theme = useAppShellStore((s) => s.theme)
   const previewPath = useAppShellStore((s) => s.preview?.path)
   const exportBusy = useAppShellStore((s) => s.exportBusy)
   const exportCancelBusy = useAppShellStore((s) => s.exportCancelBusy)
+  const lastFfmpegError = useAppShellStore((s) => s.lastFfmpegError)
+  const setLastFfmpegError = useAppShellStore((s) => s.setLastFfmpegError)
   const probePending = useAppShellStore((s) => s.probePending)
   const statusHint = useAppShellStore((s) => s.statusHint)
   const engineVersionsLine = useAppShellStore((s) => s.engineVersionsLine)
@@ -222,10 +218,6 @@ export function useAppShellLayoutProps(
     })
   }, [setAboutInfo, setAboutOpen])
 
-  const onToggleTheme = useCallback((): void => {
-    void toggleTheme()
-  }, [toggleTheme])
-
   const topbarProps = useMemo(
     (): AppWorkspaceTopbarProps => ({
       appChromeBusy,
@@ -237,7 +229,6 @@ export function useAppShellLayoutProps(
       exportBusy,
       exportCancelBusy,
       enginesOfferDownload,
-      theme,
       onOpenVideoFolder,
       onOpenFile,
       onCancelExport,
@@ -246,8 +237,7 @@ export function useAppShellLayoutProps(
       onOpenAppSettings,
       onOpenKnowledge,
       onOpenAbout,
-      onUiLocaleToggle: handleUiLocaleToggle,
-      onToggleTheme
+      onUiLocaleToggle: handleUiLocaleToggle
     }),
     [
       appChromeBusy,
@@ -265,10 +255,8 @@ export function useAppShellLayoutProps(
       onOpenFile,
       onOpenKnowledge,
       onOpenVideoFolder,
-      onToggleTheme,
       previewPath,
       setWorkspaceTab,
-      theme,
       workspaceTab
     ]
   )
@@ -346,7 +334,6 @@ export function useAppShellLayoutProps(
         appSettings.setOpen(false)
       },
       onStatus: appSettings.onStatus,
-      setTheme: appSettings.setTheme,
       onUiLocalePersisted,
       editorUrlPasteBehavior: appSettings.editorUrlPasteBehavior,
       setEditorUrlPasteBehavior: appSettings.setEditorUrlPasteBehavior,
@@ -379,6 +366,8 @@ export function useAppShellLayoutProps(
       onSaveEnginePaths: () => {
         void appSettings.handleSaveEnginePaths()
       },
+      lastFfmpegError,
+      setLastFfmpegError,
       resetBusy: appSettings.settingsResetBusy,
       setResetBusy: appSettings.setSettingsResetBusy,
       onOpenKnowledgeArticle: (slug) => {
@@ -386,7 +375,7 @@ export function useAppShellLayoutProps(
         appSettings.setKnowledgeOpen(true)
       }
     }
-  }, [appSettings, workflowPlanner, workflowScenarioBuilder])
+  }, [appSettings, lastFfmpegError, setLastFfmpegError, workflowPlanner, workflowScenarioBuilder])
 
   const externalFilterScriptProps = useMemo(
     () => ({

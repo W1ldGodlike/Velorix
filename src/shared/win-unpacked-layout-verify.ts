@@ -34,9 +34,9 @@ export function listWinUnpackedLayoutChecks(unpackedRoot: string): WinUnpackedLa
   }
   checks.push(
     {
-      path: join(unpackedRoot, 'resources', 'VELORIX_TZ.md'),
+      path: join(unpackedRoot, 'resources', 'VELORIX_NEON_THEME.md'),
       kind: 'file',
-      label: 'resources/VELORIX_TZ.md'
+      label: 'resources/VELORIX_NEON_THEME.md'
     },
     {
       path: join(unpackedRoot, 'resources', 'Data', 'trusted_hashes.json'),
@@ -91,7 +91,7 @@ export function formatWinUnpackedLayoutVerifyDiagnosticLines(
   const unpackedRoot = winUnpackedLayoutRoot(repoRoot)
   return [
     'command: npm run verify:win-unpacked (part of check:release / smoke:packaged-release)',
-    'checks: Velorix.exe, resources/bin engines, VELORIX_TZ.md, Data/trusted_hashes.json, Help/',
+    'checks: Velorix.exe, resources/bin engines, VELORIX_NEON_THEME.md, Data/trusted_hashes.json, Help/',
     'env: VELORIX_SKIP_PACK_VERIFY',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',
     ...listWinUnpackedLayoutChecks(unpackedRoot).map((check) => {

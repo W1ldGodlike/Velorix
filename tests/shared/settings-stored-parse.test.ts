@@ -18,7 +18,7 @@ describe('settings-stored-parse', () => {
   })
 
   it('parseStoredTheme', () => {
-    expect(parseStoredTheme('light')).toBe('light')
+    expect(parseStoredTheme('light')).toBe('dark')
     expect(parseStoredTheme('nope')).toBe('dark')
   })
 })

@@ -1,11 +1,15 @@
 /**
- * §16 / §1.1 / §3 / §10 / §11 / §14 — единый пакет ручной проверки владельца (железо, не CI).
+ * §16 / §1.1 / §3 / §10 / §11 / §14 — единый чеклист владельца на железе (Support ZIP, не CI).
  */
 
+/** Заголовок секции в `diagnostics.txt` (канон для main + guards). */
+export const OWNER_HARDWARE_CHECKLIST_SUPPORT_ZIP_SECTION_HEADING =
+  'ownerHardwareChecklist:' as const
+
 import { formatFfmpegHwManualSmokeChecklistLines } from './ffmpeg-hw-manual-smoke-checklist'
-import { formatOwnerManualSmokeHidpiChecklistLines } from './owner-manual-smoke-hidpi-lines'
-import { formatOwnerManualSmokeThemeChecklistLines } from './owner-manual-smoke-theme-lines'
-import { getOwnerManualSmokePackagedSection } from './owner-manual-smoke-packaged-section'
+import { formatOwnerHardwareChecklistHidpiChecklistLines } from './owner-hardware-checklist-hidpi-lines'
+import { formatOwnerHardwareChecklistThemeChecklistLines } from './owner-hardware-checklist-theme-lines'
+import { getOwnerHardwareChecklistPackagedSection } from './owner-hardware-checklist-packaged-section'
 import { isNativeMainWindows } from './native-main-platform'
 import { formatWindowsShellManualSmokeChecklistLines } from './windows-shell-manual-smoke-checklist'
 import { formatWorkflowOsSchedulerManualSmokeChecklistLines } from './workflow-os-scheduler-manual-smoke-checklist'
@@ -13,7 +17,7 @@ import { formatEditorVideoSpriteManualSmokeChecklistLines } from './editor-video
 import { formatWorkflowScenarioManualSmokeChecklistLines } from './workflow-scenario-manual-smoke-checklist'
 import { appendPackagedManualSmokeE2ePlanLines } from './packaged-manual-smoke-plain-text'
 
-export function formatOwnerManualSmokeBundlePlainText(parts: {
+export function formatOwnerHardwareChecklistBundlePlainText(parts: {
   themeLines: readonly string[]
   hidpiLines: readonly string[]
   hwPlainText: string
@@ -53,8 +57,8 @@ export function formatOwnerManualSmokeBundlePlainText(parts: {
   return blocks.join('\n')
 }
 
-/** Строки для Support ZIP (`ownerManualSmoke:`) — канон ru + снимок uiDpi с машины. */
-export function buildOwnerManualSmokeBundleLines(opts?: {
+/** Строки для Support ZIP (`ownerHardwareChecklist:`) — канон ru + снимок uiDpi с машины. */
+export function buildOwnerHardwareChecklistBundleLines(opts?: {
   uiDpiLines?: readonly string[]
   platform?: NodeJS.Platform
 }): string[] {
@@ -62,16 +66,16 @@ export function buildOwnerManualSmokeBundleLines(opts?: {
   const shellBlock = isNativeMainWindows(opts?.platform)
     ? formatWindowsShellManualSmokeChecklistLines()
     : []
-  const packaged = getOwnerManualSmokePackagedSection(opts?.platform)
+  const packaged = getOwnerHardwareChecklistPackagedSection(opts?.platform)
   const lines: string[] = [
-    'ownerManualSmoke: Theme + HiDPI + HW + scenario + video sprite + packaged + OS scheduler + Win shell (owner, not CI)',
-    'UI: IMPLEMENTATION_MANUAL_VERIFICATION.md (not in app); Support ZIP ownerManualSmoke:',
+    'ownerHardwareChecklist: Theme + HiDPI + HW + scenario + video sprite + packaged + OS scheduler + Win shell (owner, not CI)',
+    'UI: docs/VELORIX_NEON_THEME.md (agent); Support ZIP ownerHardwareChecklist: (hardware)',
     '',
     '=== Theme ===',
-    ...formatOwnerManualSmokeThemeChecklistLines(),
+    ...formatOwnerHardwareChecklistThemeChecklistLines(),
     '',
     '=== HiDPI ===',
-    ...formatOwnerManualSmokeHidpiChecklistLines(),
+    ...formatOwnerHardwareChecklistHidpiChecklistLines(),
     '',
     '=== HW encode ===',
     ...formatFfmpegHwManualSmokeChecklistLines(),

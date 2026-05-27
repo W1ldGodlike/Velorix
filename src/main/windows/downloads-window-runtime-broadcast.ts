@@ -12,14 +12,21 @@ import {
 } from '../services/ytdlp/ytdlp-download-output'
 import {
   DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL,
-  getDownloadsPopoutWindow,
   resolveMainEditorWindow
 } from './downloads-window-runtime-hooks'
 import { getDownloadsQueueSnapshotForRenderer } from './downloads-window-runtime-actions'
 
 let broadcastThrottleTimer: ReturnType<typeof setTimeout> | null = null
 
-/** Отправить очередь во все UI-представления загрузок без полной перезагрузки документа. */
+function collectDownloadsShellBroadcastTargets(): BrowserWindow[] {
+  const main = resolveMainEditorWindow()
+  if (!main || main.isDestroyed()) {
+    return []
+  }
+  return [main]
+}
+
+/** Отправить очередь в shell-вкладку «Загрузки» без полной перезагрузки документа. */
 export function broadcastDownloadsSnapshot(): void {
   schedulePersistDownloadsQueueDebounced()
   if (broadcastThrottleTimer !== null) {
@@ -29,13 +36,8 @@ export function broadcastDownloadsSnapshot(): void {
     broadcastThrottleTimer = null
     try {
       const rows = getDownloadsQueueSnapshotForRenderer()
-      const popout = getDownloadsPopoutWindow()
-      if (popout && !popout.isDestroyed()) {
-        popout.webContents.send(DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL, rows)
-      }
-      const mainWindow = resolveMainEditorWindow()
-      if (mainWindow && !mainWindow.isDestroyed()) {
-        mainWindow.webContents.send(DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL, rows)
+      for (const win of collectDownloadsShellBroadcastTargets()) {
+        win.webContents.send(DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL, rows)
       }
     } catch {
       /* окно закрывается */
@@ -44,11 +46,7 @@ export function broadcastDownloadsSnapshot(): void {
 }
 
 export function broadcastDownloadsLogPayload(payload: DownloadsLogPayload): void {
-  const targets = [getDownloadsPopoutWindow(), resolveMainEditorWindow()]
-  for (const win of targets) {
-    if (!win || win.isDestroyed()) {
-      continue
-    }
+  for (const win of collectDownloadsShellBroadcastTargets()) {
     try {
       win.webContents.send(DOWNLOADS_LOG_CHANNEL, payload)
     } catch {
@@ -57,20 +55,11 @@ export function broadcastDownloadsLogPayload(payload: DownloadsLogPayload): void
   }
 }
 
-/** §6.1 — раскрытие секций rail / история / лог: pop-out ↔ вкладка «Загрузки» в главном окне. */
+/** §6.1 — раскрытие секций rail / история / лог в shell-вкладке «Загрузки». */
 export function broadcastDownloadsWindowUiPanelsSnapshot(
   snap: DownloadsWindowUiPanelState = {}
 ): void {
-  const targets: BrowserWindow[] = []
-  const popout = getDownloadsPopoutWindow()
-  if (popout && !popout.isDestroyed()) {
-    targets.push(popout)
-  }
-  const mainEditor = resolveMainEditorWindow()
-  if (mainEditor && !mainEditor.isDestroyed()) {
-    targets.push(mainEditor)
-  }
-  for (const w of targets) {
+  for (const w of collectDownloadsShellBroadcastTargets()) {
     try {
       w.webContents.send(mw.downloadsWindowUiPanelsChanged, snap)
     } catch {
@@ -79,18 +68,9 @@ export function broadcastDownloadsWindowUiPanelsSnapshot(
   }
 }
 
-/** §6.2 — yt-dlp CLI/options: вкладка «Загрузки» ↔ pop-out после persist patch/cookies. */
+/** §6.2 — yt-dlp CLI/options: shell-вкладка «Загрузки» после persist patch/cookies. */
 export function broadcastDownloadsCliOptionsChanged(): void {
-  const targets: BrowserWindow[] = []
-  const popout = getDownloadsPopoutWindow()
-  if (popout && !popout.isDestroyed()) {
-    targets.push(popout)
-  }
-  const mainEditor = resolveMainEditorWindow()
-  if (mainEditor && !mainEditor.isDestroyed()) {
-    targets.push(mainEditor)
-  }
-  for (const w of targets) {
+  for (const w of collectDownloadsShellBroadcastTargets()) {
     try {
       w.webContents.send(mw.downloadsCliOptionsChanged)
     } catch {
@@ -99,7 +79,7 @@ export function broadcastDownloadsCliOptionsChanged(): void {
   }
 }
 
-/** §6.2 — каталог вывода yt-dlp: вкладка «Загрузки» ↔ pop-out после pick/clear. */
+/** §6.2 — каталог вывода yt-dlp: shell-вкладка «Загрузки» после pick/clear. */
 export function broadcastDownloadsOutputDirectorySnapshot(
   snap?: DownloadsOutputDirectorySnapshot
 ): void {
@@ -110,16 +90,7 @@ export function broadcastDownloadsOutputDirectorySnapshot(
       path: resolveYtdlpOutputDirectory(paths.userData),
       isDefault: isYtdlpDownloadDirectoryDefault()
     } as const)
-  const targets: BrowserWindow[] = []
-  const popout = getDownloadsPopoutWindow()
-  if (popout && !popout.isDestroyed()) {
-    targets.push(popout)
-  }
-  const mainEditor = resolveMainEditorWindow()
-  if (mainEditor && !mainEditor.isDestroyed()) {
-    targets.push(mainEditor)
-  }
-  for (const w of targets) {
+  for (const w of collectDownloadsShellBroadcastTargets()) {
     try {
       w.webContents.send(mw.downloadsOutputDirectoryChanged, payload)
     } catch {

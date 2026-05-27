@@ -37,7 +37,8 @@ For watch-folder with **Run scenario**, a local file runs the **Process** block 
 - Run results appear in the status bar and in **Processing history** (kind `workflowScenario`).
 - macOS LaunchAgent logs: `~/Library/Logs/Velorix/watch-<taskId>.log`.
 - Linux timer: `journalctl --user -u Velorix-watch-<taskId>.service`.
+- Help: 44 articles (see also in each workflow page).
 
 ## See also
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).
+[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir`).

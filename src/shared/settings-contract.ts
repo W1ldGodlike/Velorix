@@ -26,11 +26,11 @@ import type {
   FfmpegExportVideoTransformId
 } from './ffmpeg-export-contract'
 
-/** Эффективная light/dark-палитра для CSS (`data-theme`) и вторичных окон. */
-export type ResolvedAppTheme = 'dark' | 'light'
+/** Variant A: единственная продуктовая палитра для CSS (`data-theme`). */
+export type ResolvedAppTheme = 'dark'
 
-/** Сохраняемое предпочтение: явная палитра или следование Electron `nativeTheme`. */
-export type AppTheme = ResolvedAppTheme | 'system'
+/** Сохраняемое предпочтение темы фиксировано на single-NEON runtime. */
+export type AppTheme = ResolvedAppTheme
 
 /** §4.1 — прямоугольник окна в экранных координатах (DIP). */
 export interface StoredWindowRect {
@@ -77,9 +77,9 @@ export interface MainWindowUiPanelState {
 /** Сколько карточек показывать в панели истории загрузок (вкладка и отдельное окно). */
 export type DownloadsHistoryListMode = 'compact' | 'full'
 
-/** §4.1 — раскрытие секций окна загрузок (React `#downloads`). */
+/** §4.1 — раскрытие секций shell-вкладки `Загрузки`. */
 export interface DownloadsWindowUiPanelState {
-  /** Узкая вкладка «Загрузки»: свёрнутая панель «Настройки yt-dlp» под очередью (как история/журнал). */
+  /** Узкая shell-вкладка «Загрузки»: свёрнутая панель «Настройки yt-dlp» под очередью. */
   settings?: boolean
   history?: boolean
   log?: boolean
@@ -93,7 +93,7 @@ export interface DownloadsWindowUiPanelState {
 }
 
 export interface AppSettings {
-  /** Тема хранится в main; `system` синхронизируется с `nativeTheme.shouldUseDarkColors`. */
+  /** Тема хранится в main; Variant A фиксирует её на single-NEON `dark`. */
   theme: AppTheme
   /** Язык интерфейса (main-меню, строки IPC, окно загрузок по умолчанию); при отсутствии — эвристика как в renderer. */
   uiLocale?: AppUiLocale
@@ -247,5 +247,5 @@ export interface AppSettings {
   downloadsWindowUiPanels?: DownloadsWindowUiPanelState
 }
 
-/** Ответ IPC `settingsGet` / `settingsSetTheme`: `effectiveTheme` не пишется в `settings.json`. */
+/** Ответ IPC `settingsGet`: `effectiveTheme` не пишется в `settings.json`. */
 export type AppSettingsView = AppSettings & { effectiveTheme: ResolvedAppTheme }

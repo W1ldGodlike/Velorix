@@ -1,7 +1,7 @@
 import { existsSync, statSync } from 'fs'
 import { join, normalize } from 'path'
 
-import { app, nativeTheme } from 'electron'
+import { app } from 'electron'
 import type { BrowserWindow } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
@@ -28,11 +28,11 @@ export function settingsPath(): string {
 }
 
 export function technicalSpecPath(): string {
-  const packaged = join(process.resourcesPath, 'VELORIX_TZ.md')
+  const packaged = join(process.resourcesPath, 'VELORIX_NEON_THEME.md')
   if (!is.dev && existsSync(packaged)) {
     return packaged
   }
-  return join(app.getAppPath(), 'VELORIX_TZ.md')
+  return join(app.getAppPath(), 'docs', 'VELORIX_NEON_THEME.md')
 }
 
 export function getCachedSettings(): AppSettings {
@@ -72,10 +72,8 @@ export function patchCachedSettings(
 }
 
 export function resolveEffectiveTheme(pref: AppTheme): ResolvedAppTheme {
-  if (pref === 'system') {
-    return nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
-  }
-  return pref
+  void pref
+  return 'dark'
 }
 
 export function refreshEnginePathOverridesSnapshot(): void {

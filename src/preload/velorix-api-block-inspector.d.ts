@@ -16,8 +16,6 @@ import type {
 export type VelorixApiInspectorBlock = {
   inspector: {
     openWindow: (absoluteMediaPath?: string | null) => Promise<void>
-    bootstrap: () => Promise<{ initialMediaPath: string | null }>
-    onTargetMediaPath: (listener: (absolutePath: string) => void) => () => void
   }
   clipboard: {
     readText: () => Promise<string>

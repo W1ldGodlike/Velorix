@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
- * Locales guard: theme/HiDPI lines for Support ZIP ownerManualSmoke: (не UI).
+ * Locales guard: theme/HiDPI lines for Support ZIP ownerHardwareChecklist: (не UI).
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -12,10 +12,10 @@ import { LOCALE_JSON_LOCALES } from '../../src/shared/locale-json-catalog.ts'
 const REPO_ROOT = path.resolve(import.meta.dirname, '../..')
 
 const META_KEYS = [
-  'ownerManualSmokeThemeHeader',
-  'ownerManualSmokeThemeUiLine',
-  'ownerManualSmokeHidpiHeader',
-  'ownerManualSmokeHidpiUiLine',
+  'ownerHardwareChecklistThemeHeader',
+  'ownerHardwareChecklistThemeUiLine',
+  'ownerHardwareChecklistHidpiHeader',
+  'ownerHardwareChecklistHidpiUiLine',
   'appSettingsThemeManualHint',
   'appSettingsThemeChecklistIntro',
   'appSettingsHidpiManualHint',
@@ -40,7 +40,7 @@ for (const locale of LOCALE_JSON_LOCALES) {
   if (missing.length > 0) {
     failed = true
     console.error(
-      `[check:owner-visual-smoke-locale] locales/${locale}/settings.json missing: ${missing.join(', ')}`
+      `[check:owner-hardware-checklist-locale] locales/${locale}/settings.json missing: ${missing.join(', ')}`
     )
   }
 }
@@ -49,5 +49,5 @@ if (failed) {
   process.exit(1)
 }
 console.log(
-  `[check:owner-visual-smoke-locale] OK (${REQUIRED_KEYS.length} Support ZIP keys × ${LOCALE_JSON_LOCALES.length} locales)`
+  `[check:owner-hardware-checklist-locale] OK (${REQUIRED_KEYS.length} Support ZIP keys × ${LOCALE_JSON_LOCALES.length} locales)`
 )

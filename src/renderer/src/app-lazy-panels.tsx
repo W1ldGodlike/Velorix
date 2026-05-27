@@ -54,6 +54,12 @@ export const LazyMediaFileUtilitiesDialog = lazy(() =>
   }))
 )
 
+export const LazyToolsWorkspacePanel = lazy(() =>
+  import('./components/shell/ToolsWorkspacePanel').then((m) => ({
+    default: m.ToolsWorkspacePanel
+  }))
+)
+
 /** §4.4.1 — нейтральный placeholder пока грузится чанк вкладки/панели. */
 export function AppLazyPanelFallback(): JSX.Element {
   return <div className="app-workspace-lazy-fallback" aria-hidden />

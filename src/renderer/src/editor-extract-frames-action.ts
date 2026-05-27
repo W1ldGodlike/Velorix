@@ -7,6 +7,7 @@ import type {
 import { parseFfmpegManualTimesText } from '../../shared/ffmpeg-frames-extract-manual-parse'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
+import { useAppShellStore } from './stores/app-shell-store'
 
 export type EditorExtractFramesUiState = {
   mode: FfmpegFramesExtractModeId
@@ -58,6 +59,8 @@ export async function runEditorExtractFrames(params: {
   onProgress: (p: FfmpegFramesExtractProgressPayload) => void
   setStatusHint: (hint: string | null) => void
 }): Promise<{ ok: true } | { ok: false; cancelled?: boolean }> {
+  const setLastFfmpegError = useAppShellStore.getState().setLastFfmpegError
+  setLastFfmpegError(null)
   const off = window.velorix.export.onExtractFramesProgress(params.onProgress)
   try {
     const res: FfmpegFramesExtractResult = await window.velorix.export.extractFrames(params.payload)
@@ -76,6 +79,7 @@ export async function runEditorExtractFrames(params: {
       return { ok: false, cancelled: true }
     }
     if ('error' in res) {
+      setLastFfmpegError({ source: 'extractFrames', detail: res.error })
       params.setStatusHint(res.error)
     }
     return { ok: false }

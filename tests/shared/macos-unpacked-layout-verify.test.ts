@@ -40,7 +40,7 @@ describe('macos-unpacked-layout-verify §2.1', () => {
     const checks = [
       join(bundle, 'Contents', 'MacOS', 'Velorix'),
       join(bundle, 'Contents', 'Resources', 'bin'),
-      join(bundle, 'Contents', 'Resources', 'VELORIX_TZ.md'),
+      join(bundle, 'Contents', 'Resources', 'VELORIX_NEON_THEME.md'),
       join(bundle, 'Contents', 'Resources', 'Data', 'trusted_hashes.json'),
       join(bundle, 'Contents', 'Resources', 'Help')
     ]

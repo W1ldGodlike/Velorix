@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 
-const checklistPath = 'IMPLEMENTATION_CHECKLIST.md'
+const checklistPath = 'docs/IMPLEMENTATION_NEON_CHECKLIST.md'
 const text = readFileSync(checklistPath, 'utf8')
 
 const headingRe = /^## Ближайший TODO спринта\s*$/m
@@ -47,7 +47,9 @@ const archiveMarkers = [
   'сценарные подсказки',
   'в т.ч.',
   'уже есть;',
-  'в сводке дорожки —'
+  'в сводке дорожки —',
+  'IMPLEMENTATION_CHECKLIST.OLD',
+  'VELORIX_TZ.OLD'
 ]
 const archived = todoLines.find((line) => archiveMarkers.some((marker) => line.includes(marker)))
 if (archived) {

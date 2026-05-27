@@ -2,7 +2,7 @@
 
 ## Theme
 
-Variant A product canon is a **single VELORIX NEON theme**. When the migration is complete, the app should no longer expose `dark` / `light` / `system` as user-facing choices; if a transitional build still shows them, treat that UI as legacy compatibility.
+Variant A product canon is a **single VELORIX NEON theme**. The app no longer exposes `dark` / `light` / `system` as user-facing choices; the interface always runs in one NEON runtime.
 
 ### Visual theme checklist
 
@@ -22,10 +22,10 @@ Language changes button labels, built-in FFmpeg export presets, status messages,
 - which CSS `@120/144/168/192dpi` block is active;
 - a checklist of areas to verify manually (editor, downloads, modals, status bar).
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).
+[about-support-logs.md](about-support-logs.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).
 
 See [getting-started.md](getting-started.md).
 
 ## See also
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).
+[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir`).

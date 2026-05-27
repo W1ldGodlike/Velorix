@@ -1,14 +1,9 @@
 import type { JSX } from 'react'
 
 import { KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS } from '../../../../shared/knowledge-contract'
-import { ProcessingHistoryPanel } from '../ProcessingHistoryPanel'
+import { ProcessingHistoryPanelConnected } from '../ProcessingHistoryPanelConnected'
 import { IconChevronRight } from '../LucideMiniIcons'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
-import {
-  workflowRunScenarioOnFileErrorText,
-  workflowRunScenarioOnUrlErrorText
-} from '../../editor-workflow-run-error-text'
-import type { WorkflowRunScenarioOnUrlError } from '../../../../shared/workflow-watch-folder-contract'
 import { uiText } from '../../locales/ui-text'
 import { EditorFfmpegSettingsRailAudioSection } from './EditorFfmpegSettingsRailAudioSection'
 import { EditorFfmpegSettingsRailFormatSection } from './EditorFfmpegSettingsRailFormatSection'
@@ -24,22 +19,11 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps): 
     panelOpen,
     persistMainWindowUiPanelToggle,
     onCollapseRail,
-    setStatusHint,
     editorFfmpegDetailBusy,
     exportBusy,
     exportCancelBusy,
     snapshotBusy,
     probePending,
-    processingHistory,
-    setProcessingHistory,
-    processingHistoryBusy,
-    processingHistoryFilter,
-    processingHistoryWeeklySummary,
-    setProcessingHistoryWeeklySummary,
-    applyProcessingHistoryFilter,
-    refreshProcessingHistory,
-    exportVisibleProcessingHistory,
-    reportBatchPathsAdded,
     onOpenKnowledgeArticle
   } = props
   return (
@@ -113,79 +97,11 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps): 
         <EditorWorkflowScenarioSection {...props} />
         <EditorFfmpegSettingsRailOutputSection {...props} />
       </div>
-      <ProcessingHistoryPanel
+      <ProcessingHistoryPanelConnected
         open={panelOpen('processingHistory')}
-        busy={processingHistoryBusy}
-        entries={processingHistory}
-        filter={processingHistoryFilter}
-        weeklySummary={processingHistoryWeeklySummary}
         {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
         onToggle={(nextOpen) => {
           persistMainWindowUiPanelToggle('processingHistory', nextOpen)
-        }}
-        onFilterChange={applyProcessingHistoryFilter}
-        onRefresh={() => {
-          void refreshProcessingHistory()
-        }}
-        onClear={() => {
-          void window.velorix.processingHistory.clear().then((res) => {
-            if (!res.ok) {
-              setStatusHint(res.error)
-              return
-            }
-            setProcessingHistory([])
-            void window.velorix.processingHistory
-              .weeklySummary()
-              .then(setProcessingHistoryWeeklySummary)
-          })
-        }}
-        onExportVisible={() => {
-          void exportVisibleProcessingHistory()
-        }}
-        onOpenOutput={(id, mode) => {
-          void window.velorix.processingHistory.openOutput(id, mode).then((res) => {
-            if (!res.ok) {
-              setStatusHint(res.error)
-            } else if (mode === 'preview') {
-              setStatusHint(uiText('processingHistoryOpenOutputPreviewDone'))
-            }
-          })
-        }}
-        onOpenInputInHandler={(id) => {
-          const entry = processingHistory.find((row) => row.id === id)
-          if (entry?.kind === 'workflowScenario' && entry.workflowScenarioId) {
-            setStatusHint(uiText('processingHistoryRepeatWorkflowBusy'))
-            void window.velorix.processingHistory.repeatWorkflowScenario(id).then((res) => {
-              if (res.ok) {
-                setStatusHint(uiText('processingHistoryRepeatWorkflowDone'))
-                return
-              }
-              if ('errorCode' in res) {
-                const code = res.errorCode
-                setStatusHint(
-                  code === 'no-source-url' || code === 'download-start-failed'
-                    ? workflowRunScenarioOnUrlErrorText(code as WorkflowRunScenarioOnUrlError)
-                    : workflowRunScenarioOnFileErrorText(code)
-                )
-                return
-              }
-              setStatusHint(res.error)
-            })
-            return
-          }
-          setStatusHint(uiText('processingHistoryOpenInputBusy'))
-          void window.velorix.processingHistory.openInputInHandler(id).then((res) => {
-            setStatusHint(res.ok ? uiText('processingHistoryOpenInputDone') : res.error)
-          })
-        }}
-        onAddInputToBatch={(id) => {
-          void window.velorix.batchExport.addFromHistoryInputs([id]).then((res) => {
-            if (!res.ok) {
-              setStatusHint(res.error)
-              return
-            }
-            reportBatchPathsAdded(res)
-          })
         }}
       />
     </aside>

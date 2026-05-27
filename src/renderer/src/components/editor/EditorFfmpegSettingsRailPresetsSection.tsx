@@ -1,6 +1,6 @@
 import type { JSX } from 'react'
 
-import { isBuiltinExportUserPresetId } from '../../../../shared/builtin-ffmpeg-export-user-presets'
+import { ExportPresetManagerPanel } from '../ExportPresetManagerPanel'
 import { uiText } from '../../locales/ui-text'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 
@@ -49,122 +49,21 @@ export function EditorFfmpegSettingsRailPresetsSection(
         className="app-settings-stack"
         aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
       >
-        <label
-          className="app-field"
-          title={
-            selectedExportUserPreset?.hint?.trim() ||
-            uiText('editorTooltipUserPresetSelectFallback')
-          }
-        >
-          <span>{uiText('editorFieldUserPreset')}</span>
-          <select
-            className="app-control"
-            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
-            title={
-              selectedExportUserPreset?.hint?.trim() ||
-              uiText('editorTooltipUserPresetSelectFallback')
-            }
-            value={selectedUserPresetId ?? ''}
-            disabled={exportBusy || snapshotBusy}
-            onChange={(e) => {
-              const v = e.target.value
-              if (v === '') {
-                setSelectedUserPresetId(null)
-                return
-              }
-              const preset = exportUserPresets.find((p) => p.id === v)
-              if (!preset) {
-                return
-              }
-              void window.velorix.settings
-                .applyFfmpegExportSnapshot(preset.snapshot)
-                .then((s) => {
-                  hydrateExportFieldsFromSettings(s)
-                  setSelectedUserPresetId(v)
-                })
-                .catch(console.error)
-            }}
-          >
-            <option value="">{uiText('editorUserPresetPlaceholder')}</option>
-            {exportUserPresets.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div
-          className="app-settings-actions"
-          role="toolbar"
-          aria-orientation="horizontal"
-          aria-label={uiText('editorExportPresetsActionsToolbarAria')}
-          aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
-          aria-busy={exportBusy || snapshotBusy || probePending}
-        >
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            disabled={exportBusy || snapshotBusy}
-            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
-            title={uiText('editorTooltipPresetAdd')}
-            onClick={() => {
-              handleSaveExportUserPreset()
-            }}
-          >
-            {uiText('editorPresetAdd')}
-          </button>
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            disabled={
-              exportBusy ||
-              snapshotBusy ||
-              !selectedUserPresetId ||
-              (selectedUserPresetId != null && isBuiltinExportUserPresetId(selectedUserPresetId))
-            }
-            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
-            title={uiText('editorTooltipPresetRename')}
-            onClick={() => {
-              handleRenameExportUserPreset()
-            }}
-          >
-            {uiText('editorPresetRename')}
-          </button>
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            disabled={
-              exportBusy ||
-              snapshotBusy ||
-              !selectedUserPresetId ||
-              (selectedUserPresetId != null && isBuiltinExportUserPresetId(selectedUserPresetId))
-            }
-            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
-            title={uiText('editorTooltipPresetOverwrite')}
-            onClick={() => {
-              handleOverwriteExportUserPreset()
-            }}
-          >
-            {uiText('editorPresetOverwrite')}
-          </button>
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            disabled={
-              exportBusy ||
-              snapshotBusy ||
-              !selectedUserPresetId ||
-              (selectedUserPresetId != null && isBuiltinExportUserPresetId(selectedUserPresetId))
-            }
-            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
-            title={uiText('editorTooltipPresetDelete')}
-            onClick={() => {
-              handleDeleteExportUserPreset()
-            }}
-          >
-            {uiText('editorPresetDelete')}
-          </button>
-        </div>
+        <ExportPresetManagerPanel
+          describedById="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
+          exportBusy={exportBusy}
+          snapshotBusy={snapshotBusy}
+          probePending={probePending}
+          exportUserPresets={exportUserPresets}
+          selectedUserPresetId={selectedUserPresetId}
+          setSelectedUserPresetId={setSelectedUserPresetId}
+          selectedExportUserPreset={selectedExportUserPreset}
+          hydrateExportFieldsFromSettings={hydrateExportFieldsFromSettings}
+          handleSaveExportUserPreset={handleSaveExportUserPreset}
+          handleDeleteExportUserPreset={handleDeleteExportUserPreset}
+          handleRenameExportUserPreset={handleRenameExportUserPreset}
+          handleOverwriteExportUserPreset={handleOverwriteExportUserPreset}
+        />
       </div>
     </details>
   )

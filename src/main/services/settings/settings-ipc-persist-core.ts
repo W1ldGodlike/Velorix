@@ -1,4 +1,4 @@
-import type { AppSettings, AppSettingsView, AppTheme, ResolvedAppTheme } from './settings-store'
+import type { AppSettings } from './settings-store'
 import type { FfmpegExportSettingsPersisters } from '../../ipc/register-settings-ipc'
 import type { AppUiLocale } from '../../../shared/app-ui-locale'
 import type { EnginePathOverridesPatch } from '../engines/engine-service'
@@ -10,9 +10,8 @@ export type MainSettingsAccess = {
 }
 
 export type SettingsIpcPersistHooks = {
-  resolveEffectiveTheme: (pref: AppTheme) => ResolvedAppTheme
   buildApplicationMenu: () => void
-  syncDownloadsPopoutHtmlToLocale: (locale: AppUiLocale) => void
+  syncDownloadsWindowLocale: (locale: AppUiLocale) => void
   refreshEnginePathOverridesSnapshot: () => void
 }
 
@@ -30,7 +29,6 @@ export type SettingsIpcPersistApi = {
   ffmpegExport: FfmpegExportSettingsPersisters
   persistUiLocale: (raw: unknown) => AppSettings
   persistConfirmCloseOnQuit: (raw: unknown) => AppSettings
-  persistThemePreference: (pref: AppTheme) => AppSettingsView
   persistEnginePathOverridesPatch: (patch: EnginePathOverridesPatch) => AppSettings
   persistMainWindowUiPanelsMerge: (raw: unknown) => AppSettings
 }

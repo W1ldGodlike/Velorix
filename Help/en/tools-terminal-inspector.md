@@ -10,7 +10,7 @@ Scenario copy lives in `src/shared/terminal-contract-hints-*.ts` (canonical **`t
 
 ## Inspector
 
-The **Tools** menu opens a separate window with track tables and the raw analyzer report. **Copy JSON** is available for support tickets.
+**Tools → Inspector** (or the **Inspector** sidebar route) opens the shell surface with track tables and the raw analyzer report. **Copy JSON** is available for support tickets.
 
 See also [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
 
@@ -18,4 +18,4 @@ Logs and support archive — [logging-and-diagnostics.md](logging-and-diagnostic
 
 ## See also
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (manual verification on hardware) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir` verification).
+[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir`).

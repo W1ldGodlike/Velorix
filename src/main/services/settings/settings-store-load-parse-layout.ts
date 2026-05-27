@@ -29,6 +29,7 @@ export function parseWindowBoundsConfig(raw: unknown): WindowBoundsConfig | unde
   }
   const o = raw as Record<string, unknown>
   const main = parseStoredWindowRect(o['main'])
+  /** Legacy pop-out shapes — parsed for backup/restore compatibility; runtime ignores (Variant A shell-only). */
   const downloads = parseStoredWindowRect(o['downloads'])
   const inspector = parseStoredWindowRect(o['inspector'])
   if (!main && !downloads && !inspector) {

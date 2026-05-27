@@ -35,10 +35,10 @@
 - Обновите сводку ffprobe; см. [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
 - Сырой JSON — для опытных; для обычной работы достаточно блоков «дорожки» и «главы».
 
-## Текст обрезается, тема «грязная» или не та в pop-out
+## Текст обрезается или NEON-поверхность выглядит «грязно»
 
-- Масштаб Windows 100–200 %: чеклист в [appearance-language-theme.md](appearance-language-theme.md) и **Настройки → Общие → HiDPI**; полный пакет — [owner-manual-smoke.md](owner-manual-smoke.md).
-- Тёмная/светлая тема и «как в системе»: [appearance-language-theme.md](appearance-language-theme.md), **Настройки → Общие → Тема** или меню **Вид → Тема**.
+- Масштаб Windows 100–200 %: чеклист в [appearance-language-theme.md](appearance-language-theme.md) и **Настройки → Общие → HiDPI**; полный пакет — [about-support-logs.md](about-support-logs.md).
+- Канон единой темы и визуальный чеклист: [appearance-language-theme.md](appearance-language-theme.md). Варианты `dark` / `light` / `system` и legacy pop-out больше не относятся к целевому UX.
 
 ## Язык справки не совпадает с интерфейсом
 
@@ -50,4 +50,4 @@
 
 ## См. также
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).
+[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (после `pack:dir`).

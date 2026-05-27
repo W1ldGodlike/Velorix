@@ -10,6 +10,7 @@ import {
 } from './editor-extract-frames-action'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
+import { useAppShellStore } from './stores/app-shell-store'
 
 export type EditorExportPipelineHandlers = {
   handleSnapshot: () => Promise<void>
@@ -75,10 +76,13 @@ export function useEditorExportPipelineHandlers({
   exportPreview: ReturnType<typeof buildFfmpegExportPreviewCommand>
   exportPreviewCommand: string
 }): EditorExportPipelineHandlers {
+  const setLastFfmpegError = useAppShellStore.getState().setLastFfmpegError
+
   async function handleSnapshot(): Promise<void> {
     if (!preview || exportBusy || snapshotBusy) {
       return
     }
+    setLastFfmpegError(null)
     const el = videoRef.current
     const timeSec = el && Number.isFinite(el.currentTime) ? Math.max(0, el.currentTime) : 0
     setLastSnapshotPath(null)
@@ -98,11 +102,17 @@ export function useEditorExportPipelineHandlers({
       } else if ('cancelled' in res && res.cancelled) {
         setStatusHint(null)
       } else if ('error' in res) {
+        setLastFfmpegError({ source: 'snapshot', detail: res.error })
         setStatusHint(uiTextVars('statusSnapshotFailedWithDetail', { detail: res.error }))
       } else {
+        setLastFfmpegError({ source: 'snapshot', detail: uiText('statusSnapshotFailedGeneric') })
         setStatusHint(uiText('statusSnapshotFailedGeneric'))
       }
     } catch (e) {
+      setLastFfmpegError({
+        source: 'snapshot',
+        detail: e instanceof Error ? e.message : uiText('statusSnapshotExceptionGeneric')
+      })
       setStatusHint(e instanceof Error ? e.message : uiText('statusSnapshotExceptionGeneric'))
     } finally {
       setSnapshotBusy(false)
@@ -137,6 +147,7 @@ export function useEditorExportPipelineHandlers({
     if (!preview || exportBusy || batchExportBusy || snapshotBusy) {
       return
     }
+    setLastFfmpegError(null)
     setExportBusy(true)
     setLastExportPath(null)
     setStatusHint(uiText('statusExportPreparing'))
@@ -158,11 +169,17 @@ export function useEditorExportPipelineHandlers({
       } else if ('cancelled' in res && res.cancelled) {
         setStatusHint(uiText('statusExportCancelled'))
       } else if ('error' in res) {
+        setLastFfmpegError({ source: 'export', detail: res.error })
         setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
       } else {
+        setLastFfmpegError({ source: 'export', detail: uiText('statusExportFailedGeneric') })
         setStatusHint(uiText('statusExportFailedGeneric'))
       }
     } catch (e) {
+      setLastFfmpegError({
+        source: 'export',
+        detail: e instanceof Error ? e.message : uiText('statusExportExceptionGeneric')
+      })
       setStatusHint(e instanceof Error ? e.message : uiText('statusExportExceptionGeneric'))
     } finally {
       setExportBusy(false)

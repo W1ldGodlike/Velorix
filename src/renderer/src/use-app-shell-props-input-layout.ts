@@ -14,6 +14,8 @@ export function buildAppShellPropsInputLayout(
     mediaFileUtilitiesOpen,
     workflowPlannerOpen,
     workflowScenarioBuilderOpen,
+    processErrorDialog,
+    quitConfirmRequest,
     setWorkspaceTab,
     setKnowledgeInitialSlug,
     setKnowledgeOpen,
@@ -22,7 +24,6 @@ export function buildAppShellPropsInputLayout(
     setAppSettingsOpen,
     setAppSettingsSection,
     setSettingsResetBusy,
-    setTheme,
     setEditorUrlPasteBehavior,
     editorUrlPasteBehavior,
     setUiLocaleRenderTick,
@@ -30,13 +31,14 @@ export function buildAppShellPropsInputLayout(
     setMediaFileUtilitiesOpen,
     setWorkflowPlannerOpen,
     setWorkflowScenarioBuilderOpen,
+    setProcessErrorDialog,
+    setQuitConfirmRequest,
     handleOpenVideoFolderToolbar,
     handleOpenToolbar,
     handleCancelExport,
     handleExtractFrames,
     handleEnginesDownload,
     handleUiLocaleToggle,
-    toggleTheme,
     exportCodecStatusbarLabel,
     exportCodecStatusbarTitle,
     exportCodecStatusbarAria,
@@ -56,7 +58,6 @@ export function buildAppShellPropsInputLayout(
     handleClearDownloadedEngines,
     handleSaveEnginePaths,
     hydrateExportFieldsFromSettings,
-    theme,
     engineDownloadBusy
   } = ctx
 
@@ -73,8 +74,7 @@ export function buildAppShellPropsInputLayout(
       handleCancelExport,
       handleExtractFrames,
       handleEnginesDownload,
-      handleUiLocaleToggle,
-      toggleTheme
+      handleUiLocaleToggle
     },
     statusbar: {
       exportCodecStatusbarLabel,
@@ -89,6 +89,10 @@ export function buildAppShellPropsInputLayout(
       knowledgeInitialSlug,
       setKnowledgeOpen,
       setKnowledgeInitialSlug,
+      processErrorDialog,
+      setProcessErrorDialog,
+      quitConfirmRequest,
+      setQuitConfirmRequest,
       uiLocaleRenderTick,
       onStatusHint: setStatusHint
     },
@@ -105,8 +109,6 @@ export function buildAppShellPropsInputLayout(
       setOpen: setAppSettingsOpen,
       setKnowledgeOpen,
       setKnowledgeInitialSlug,
-      theme,
-      setTheme,
       editorUrlPasteBehavior,
       setEditorUrlPasteBehavior,
       setUiLocaleRenderTick,

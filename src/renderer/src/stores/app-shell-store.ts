@@ -6,6 +6,8 @@ import {
   DEFAULT_APP_SETTINGS_DIALOG_SECTION,
   type AppSettingsDialogSection
 } from '../../../shared/app-settings-dialog-section'
+import type { ProcessErrorDialogPayload } from '../../../shared/process-error-dialog-contract'
+import type { QuitConfirmRequestPayload } from '../../../shared/quit-confirm-contract'
 import type { ResolvedAppTheme } from '../../../shared/settings-contract'
 import type { RestoredSourceInfo } from '../../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
@@ -27,6 +29,8 @@ export type AppShellState = {
   mediaFileUtilitiesOpen: boolean
   workflowPlannerOpen: boolean
   workflowScenarioBuilderOpen: boolean
+  processErrorDialog: ProcessErrorDialogPayload | null
+  quitConfirmRequest: QuitConfirmRequestPayload | null
   uiLocaleRenderTick: number
   knowledgeOpen: boolean
   knowledgeInitialSlug: string | null
@@ -38,6 +42,7 @@ export type AppShellState = {
   preview: RestoredSourceInfo | null
   previewBlobUrl: string | null
   probeInfo: MediaProbeSuccess | null
+  probeError: string | null
   probePending: boolean
   downloadsUrl: string
   downloadsRows: DownloadsQueueRowView[]
@@ -47,11 +52,17 @@ export type AppShellState = {
   engineVersionsLine: string
   exportBusy: boolean
   exportCancelBusy: boolean
+  lastFfmpegError: LastFfmpegError | null
   lastRendererError: string | null
   /** Инкремент при смене previewPath — отмена устаревших probe (§6.3). */
   previewProbeGeneration: number
   previewTrimPath: string | null
   previewTrimRange: { inSec: number; outSec: number } | null
+}
+
+export type LastFfmpegError = {
+  source: 'export' | 'snapshot' | 'extractFrames' | 'videoSprite' | 'batch' | 'benchmark'
+  detail: string
 }
 
 type AppShellSetterKeys = {
@@ -81,6 +92,8 @@ export const initialAppShellState: AppShellState = {
   mediaFileUtilitiesOpen: false,
   workflowPlannerOpen: false,
   workflowScenarioBuilderOpen: false,
+  processErrorDialog: null,
+  quitConfirmRequest: null,
   uiLocaleRenderTick: 0,
   knowledgeOpen: false,
   knowledgeInitialSlug: null,
@@ -92,6 +105,7 @@ export const initialAppShellState: AppShellState = {
   preview: null,
   previewBlobUrl: null,
   probeInfo: null,
+  probeError: null,
   probePending: false,
   downloadsUrl: '',
   downloadsRows: [],
@@ -101,6 +115,7 @@ export const initialAppShellState: AppShellState = {
   engineVersionsLine: '',
   exportBusy: false,
   exportCancelBusy: false,
+  lastFfmpegError: null,
   lastRendererError: null,
   previewProbeGeneration: 0,
   previewTrimPath: null,
@@ -131,6 +146,8 @@ export const useAppShellStore = createRendererStore<AppShellStore>('AppShell', (
   setMediaFileUtilitiesOpen: setter('mediaFileUtilitiesOpen', set, get),
   setWorkflowPlannerOpen: setter('workflowPlannerOpen', set, get),
   setWorkflowScenarioBuilderOpen: setter('workflowScenarioBuilderOpen', set, get),
+  setProcessErrorDialog: setter('processErrorDialog', set, get),
+  setQuitConfirmRequest: setter('quitConfirmRequest', set, get),
   setUiLocaleRenderTick: setter('uiLocaleRenderTick', set, get),
   setKnowledgeOpen: setter('knowledgeOpen', set, get),
   setKnowledgeInitialSlug: setter('knowledgeInitialSlug', set, get),
@@ -142,6 +159,7 @@ export const useAppShellStore = createRendererStore<AppShellStore>('AppShell', (
   setPreview: setter('preview', set, get),
   setPreviewBlobUrl: setter('previewBlobUrl', set, get),
   setProbeInfo: setter('probeInfo', set, get),
+  setProbeError: setter('probeError', set, get),
   setProbePending: setter('probePending', set, get),
   setDownloadsUrl: setter('downloadsUrl', set, get),
   setDownloadsRows: setter('downloadsRows', set, get),
@@ -151,6 +169,7 @@ export const useAppShellStore = createRendererStore<AppShellStore>('AppShell', (
   setEngineVersionsLine: setter('engineVersionsLine', set, get),
   setExportBusy: setter('exportBusy', set, get),
   setExportCancelBusy: setter('exportCancelBusy', set, get),
+  setLastFfmpegError: setter('lastFfmpegError', set, get),
   setLastRendererError: setter('lastRendererError', set, get),
   setPreviewTrimPath: setter('previewTrimPath', set, get),
   setPreviewTrimRange: setter('previewTrimRange', set, get),

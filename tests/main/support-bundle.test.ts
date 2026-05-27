@@ -139,8 +139,8 @@ describe('createSupportBundleZip', () => {
         'doc: docs/RELEASE.md §4.3',
         '  step [planner-task]: Planner watch-folder task'
       ],
-      ownerManualSmokeBundleLines: [
-        'ownerManualSmoke: NVENC/VAAPI + HiDPI + OS scheduler',
+      ownerHardwareChecklistBundleLines: [
+        'ownerHardwareChecklist: NVENC/VAAPI + HiDPI + OS scheduler',
         '=== HiDPI ===',
         'check: editor'
       ]
@@ -181,7 +181,7 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('uiDpi:'))).toBe(true)
     expect(zip.includes(Buffer.from('build:linux'))).toBe(true)
     expect(zip.includes(Buffer.from('hwManualSmoke:'))).toBe(true)
-    expect(zip.includes(Buffer.from('ownerManualSmoke:'))).toBe(true)
+    expect(zip.includes(Buffer.from('ownerHardwareChecklist:'))).toBe(true)
     expect(zip.includes(Buffer.from('winPackagedSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('linuxPackagedSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('macosPackagedSmoke:'))).toBe(true)

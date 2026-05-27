@@ -10,4 +10,4 @@ export {
   APP_SETTINGS_THEME_CHECKLIST_KEYS,
   type AppSettingsThemeChecklistKey
 } from './app-settings-theme-checklist-keys'
-export { formatOwnerManualSmokeChecklistSectionLines } from './owner-manual-smoke-checklist-lines'
+export { formatOwnerHardwareChecklistSectionLines } from './owner-hardware-checklist-lines'

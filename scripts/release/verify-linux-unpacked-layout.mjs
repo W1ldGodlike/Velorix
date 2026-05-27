@@ -80,7 +80,7 @@ async function main() {
     log(w)
   }
 
-  log('OK: app executable, resources/bin, VELORIX_TZ.md, Data/trusted_hashes.json, Help/')
+  log('OK: app executable, resources/bin, VELORIX_NEON_THEME.md, Data/trusted_hashes.json, Help/')
 }
 
 main().catch((err) => {

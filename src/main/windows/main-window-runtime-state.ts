@@ -5,7 +5,6 @@ import {
   cancelDownloadsRunner,
   isDownloadsRunnerBusy
 } from '../services/downloads/downloads-queue-runner'
-import { closeSecondaryAppWindows } from './app-secondary-windows-close'
 import { getMainWindowTitle } from '../../shared/app-ui-locale'
 import {
   clearRendererLogBucket,
@@ -71,9 +70,7 @@ export function createMainApplicationWindow(): void {
     isExportBusy: () => activeExportAbort !== null,
     isDownloadsBusy: () => isDownloadsRunnerBusy(),
     countDownloadsQueueWaiting: () => countDownloadsQueueWaitingRows(),
-    onPrepareMainWindowQuit: () => {
-      closeSecondaryAppWindows()
-    },
+    onPrepareMainWindowQuit: () => {},
     onQuitAbortConfirmed: () => {
       activeExportAbort?.abort()
       cancelDownloadsRunner()

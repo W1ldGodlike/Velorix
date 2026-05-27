@@ -1,27 +1,21 @@
 ---
 name: Velorix-checklist-audit
-description: Full audit and update of IMPLEMENTATION_CHECKLIST.md for Velorix. Use when revising checklist, sprint TODO, section status marks, or reconciling with VELORIX_TZ and journal from J-500 onward.
+description: Audit and update docs/IMPLEMENTATION_NEON_CHECKLIST.md for Velorix. Use when revising sprint TODO, snap.*, or reconciling with NEON tracker and journal.
 ---
 
-# Полный ревиз чеклиста (VELORIX)
+# Аудит NEON-чеклиста
 
-## Когда применять
+## Когда
 
-Владелец просит обновить чеклист, фаза GOV C, или sprint TODO устарел.
+Правки `docs/IMPLEMENTATION_NEON_CHECKLIST.md`: sprint TODO, snap.*, сводка VA/Phase D.
 
-## Метод
+## Порядок
 
-1. Оглавление `VELORIX_TZ.md` — сверять § чеклиста §0–§17 по одному.
-2. Каждый пункт: код `src/`, `tests/`, guards; журнал **с J-500** до последней строки.
-3. `[x]` / `[~]` / `[ ]` — короткий точный текст; убрать устаревшее (hooks composition, удалённые gate, неверные счётчики тестов).
-4. «Готовность» и «Текущий снимок» — из `npm run test` и `npm run audit:inventory`.
-5. `## Ближайший TODO спринта`: **3–7** открытых пунктов, ≤220 символов — не архив `[x]`.
-6. Мета «обновляй чеклист каждый раз» из §0 убрать — процесс в skills/rules.
+1. [`docs/VELORIX_NEON_THEME.md`](../../../docs/VELORIX_NEON_THEME.md) — Phase D, VA, refs 1–27 (источник срезов).
+2. `docs/IMPLEMENTATION_NEON_CHECKLIST.md` — только sprint TODO (3–7, ≤220 символов) и snap.*.
+3. **Запрещено:** раздувать матрицей § ТЗ — она в [`docs/archive/IMPLEMENTATION_CHECKLIST.OLD.md`](../../../docs/archive/IMPLEMENTATION_CHECKLIST.OLD.md).
+4. `npm run check:checklist`, `npm run check:quiet`.
 
-## Проверки
+## Синхронизация
 
-`npm run check:checklist`, `npm run check:quiet`.
-
-## Запрещено
-
-Копировать ТЗ в чеклист; дублировать хронику журнала в теле чеклиста.
+[`docs/SOURCES_OF_TRUTH.md`](../../../docs/SOURCES_OF_TRUTH.md) — строка «Sprint TODO (NEON)».

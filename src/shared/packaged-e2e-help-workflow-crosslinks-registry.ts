@@ -10,7 +10,7 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT =
 /** Help §15/§21 guards in `check:quiet` (workflow + owner + packaged). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS = [
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
-  'check:help-owner-smoke-docs',
+  'check:help-owner-hardware-checklist-docs',
   'check:help-packaged-smoke-docs'
 ] as const
 
@@ -22,7 +22,7 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIP
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_QUIET_STEP_LABELS = [
   'help-smoke-guards-package-json',
   'help-workflow-smoke-crosslinks',
-  'help-owner-smoke-docs',
+  'help-owner-hardware-checklist-docs',
   'help-packaged-smoke-docs'
 ] as const
 
@@ -41,11 +41,11 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_AGENTS_MD_PATH = 'AGENTS.md' 
 
 /** Required user crosslinks in each workflow Help article (`check:help-workflow-smoke-crosslinks`). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET =
-  'owner-manual-smoke.md' as const
+  'about-support-logs.md' as const
 
 /** Required user crosslinks in each workflow Help article (`check:help-workflow-smoke-crosslinks`). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS = [
-  'owner-manual-smoke.md',
+  'about-support-logs.md',
   'packaged-windows-smoke.md'
 ] as const
 
@@ -120,7 +120,7 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET = `${PACKAGE
 export type PackagedE2eHelpWorkflowCrosslinksLocale = 'en' | 'ru'
 
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET =
-  'user footer (owner-manual-smoke + packaged-windows-smoke)' as const
+  'user footer (about-support-logs + packaged-windows-smoke)' as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT =
   'test:e2e:gui' as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD =
@@ -143,15 +143,9 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS 
   'packaged-gui-e2e-playwright-meta'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS = [
-  'Help/ru/owner-manual-smoke.md',
-  'Help/ru/about-support-logs.md',
-  'Help/ru/logging-and-diagnostics.md',
   'Help/ru/workflows-planner-scenarios.md'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS = [
-  'Help/en/owner-manual-smoke.md',
-  'Help/en/about-support-logs.md',
-  'Help/en/logging-and-diagnostics.md',
   'Help/en/workflows-planner-scenarios.md'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS = [
@@ -172,28 +166,23 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS = [
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS,
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS
 ] as const
-export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS = [
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[0],
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[0]
-] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS = [
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[1],
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[1]
+  'Help/ru/about-support-logs.md',
+  'Help/en/about-support-logs.md'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_PATHS = [
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[2],
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[2]
+  'Help/ru/logging-and-diagnostics.md',
+  'Help/en/logging-and-diagnostics.md'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS = [
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[3],
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[3]
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS,
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS = [
   'Help/ru/knowledge-base-howto.md',
   'Help/en/knowledge-base-howto.md'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS = [
-  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS,
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS,
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_PATHS,
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS
@@ -205,7 +194,7 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PAT
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS = [
   'packaged-e2e-scenarios-registry',
   'releaseSmoke:',
-  'ownerManualSmoke:',
+  'ownerHardwareChecklist:',
   'terminalHints:',
   'check:help-terminal-hints-docs',
   'logging-and-diagnostics.md',
@@ -222,49 +211,29 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS 
   'check:help-packaged-smoke-docs'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS = [
-  'packaged-e2e-scenarios-registry',
+  'ownerHardwareChecklist:',
   'releaseSmoke:',
-  'ownerManualSmoke:',
   'terminalHints:',
-  'check:support-bundle-terminal-hints',
-  '§21 e2e',
-  'e2e <id>:',
-  'win-unpacked',
-  'linux-unpacked',
-  'Velorix.app',
-  'present/missing',
-  '§21 packaged e2e (CI vs owner)',
-  'appendPackagedManualSmokeE2ePlanLines',
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
-  'release-code-signing-roadmap.ts',
-  'check:help-packaged-smoke-docs'
+  'winPackagedSmoke:',
+  'packaged-windows-smoke.md',
+  'logging-and-diagnostics.md',
+  'ffmpeg-terminal-hints.md'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_REQUIRED_SNIPPETS = [
-  'check:packaged-e2e-scenarios-registry',
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+  'ownerHardwareChecklist:',
+  'releaseSmoke:',
   'terminalHints:',
-  'check:support-bundle-terminal-hints',
-  'check:help-terminal-hints-docs',
-  '§21 packaged e2e (CI vs owner)',
-  'planned GUI e2e scope',
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_SNIPPET,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LINUX_BUILD_ESM_SHIM_META_PATH,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD,
-  'release-code-signing-roadmap.ts',
-  'check:help-packaged-smoke-docs'
+  'about-support-logs.md',
+  'ffmpeg-terminal-hints.md',
+  'packaged-windows-smoke.md'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS = [
-  'owner-manual-smoke.md',
+  'about-support-logs.md',
   'packaged-windows-smoke.md',
   'pack:dir'
 ] as const
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPETS = [
-  'owner-manual-smoke.md',
+  'about-support-logs.md',
   'packaged-manual-smoke-parity',
   'packaged-e2e-scenarios-registry',
   'e2e launch:',

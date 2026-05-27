@@ -14,6 +14,27 @@ import {
 } from '../../../../shared/ffmpeg-export-benchmark-metrics'
 import { getUiLocale, uiText, uiTextVars } from '../../locales/ui-text'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
+import { useAppShellStore } from '../../stores/app-shell-store'
+
+export type EditorFfmpegBenchmarkPanelProps = Pick<
+  EditorFfmpegSettingsRailProps,
+  | 'previewMediaPath'
+  | 'previewProbeDurationSec'
+  | 'buildCurrentFfmpegExportOverrides'
+  | 'exportBusy'
+  | 'exportCancelBusy'
+  | 'batchExportBusy'
+  | 'snapshotBusy'
+  | 'ffmpegExportSelectOptions'
+  | 'exportVideoCodec'
+  | 'setExportVideoCodec'
+  | 'bumpManualExportEdit'
+  | 'setStatusHint'
+  | 'exportBenchmarkLoadThreshold'
+  | 'setExportBenchmarkLoadThreshold'
+> & {
+  describedById?: string
+}
 
 function codecLabel(
   codec: FfmpegExportVideoCodecId,
@@ -22,7 +43,7 @@ function codecLabel(
   return options.videoCodecs.find((p) => p.id === codec)?.label ?? codec
 }
 
-export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps): JSX.Element {
+export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegBenchmarkPanelProps): JSX.Element {
   const {
     previewMediaPath,
     previewProbeDurationSec,
@@ -37,12 +58,14 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
     bumpManualExportEdit,
     setStatusHint,
     exportBenchmarkLoadThreshold,
-    setExportBenchmarkLoadThreshold
+    setExportBenchmarkLoadThreshold,
+    describedById = 'ffmpegVideoSectionHint editor-ffmpeg-settings-hint'
   } = props
 
   const [benchmarkBusy, setBenchmarkBusy] = useState(false)
   const [progressLabel, setProgressLabel] = useState<string | null>(null)
   const [result, setResult] = useState<FfmpegExportBenchmarkResult | null>(null)
+  const setLastFfmpegError = useAppShellStore((s) => s.setLastFfmpegError)
 
   const chromeBusy =
     exportBusy || exportCancelBusy || batchExportBusy || snapshotBusy || benchmarkBusy
@@ -65,6 +88,7 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
     if (!previewMediaPath || benchmarkBusy) {
       return
     }
+    setLastFfmpegError(null)
     setBenchmarkBusy(true)
     setResult(null)
     setProgressLabel(uiText('editorExportBenchmarkStarting'))
@@ -82,11 +106,13 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
         } else if ('cancelled' in res && res.cancelled) {
           setStatusHint(uiText('editorExportBenchmarkCancelled'))
         } else if ('error' in res) {
+          setLastFfmpegError({ source: 'benchmark', detail: res.error })
           setStatusHint(uiTextVars('editorExportBenchmarkFailed', { detail: res.error }))
         }
       })
       .catch((e) => {
         const detail = e instanceof Error ? e.message : String(e)
+        setLastFfmpegError({ source: 'benchmark', detail })
         setStatusHint(uiTextVars('editorExportBenchmarkFailed', { detail }))
       })
       .finally(() => {
@@ -98,6 +124,7 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
     buildCurrentFfmpegExportOverrides,
     previewMediaPath,
     previewProbeDurationSec,
+    setLastFfmpegError,
     setStatusHint
   ])
 
@@ -115,7 +142,7 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
       className="app-field app-field-benchmark"
       role="group"
       aria-label={uiText('editorExportBenchmarkGroupAria')}
-      aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
+      aria-describedby={describedById}
       aria-busy={benchmarkBusy}
     >
       <div

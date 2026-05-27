@@ -1,4 +1,4 @@
-import { BrowserWindow, app, nativeTheme } from 'electron'
+import { app } from 'electron'
 import { electronApp } from '@electron-toolkit/utils'
 
 import { resolveAppPaths } from '../core/app-paths'
@@ -8,7 +8,7 @@ import {
   broadcastDownloadsCliOptionsChanged,
   broadcastDownloadsOutputDirectorySnapshot,
   broadcastDownloadsWindowUiPanelsSnapshot,
-  syncDownloadsPopoutHtmlToLocale
+  syncDownloadsWindowLocale
 } from '../windows/downloads-window'
 import { configureMainDownloadsWindowBoundsBootstrap } from '../windows/main-downloads-window-bounds-bootstrap'
 import {
@@ -22,11 +22,9 @@ import {
   loadCachedSettingsFromDisk,
   mainSettingsAccess,
   patchCachedSettings,
-  patchWindowBounds,
   persistLastOpenedSource,
   previewOpenDialogOptsFromSettings,
   refreshEnginePathOverridesSnapshot,
-  resolveEffectiveTheme,
   revealMainWindowBatchExportPanel,
   saveCachedSettingsToDisk,
   setCachedSettings,
@@ -80,7 +78,6 @@ import {
   exportSettingsBackupWithDialog,
   importSettingsBackupWithDialog
 } from '../services/settings/settings-backup-service'
-import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import {
   activeExportAbort,
   broadcastFfmpegExportBatchSnapshot,
@@ -90,7 +87,6 @@ import {
 } from '../windows/main-window-runtime-state'
 import {
   getMainApplicationSettingsIpcPersist,
-  persistMainApplicationThemePreference,
   setMainApplicationSettingsIpcPersist
 } from './main-application-bootstrap-state'
 
@@ -142,7 +138,6 @@ export function bootstrapMainApplicationHosts(): void {
     getSettings: getCachedSettings,
     replaceSettings: setCachedSettings,
     saveSettings: saveCachedSettingsToDisk,
-    resolveEffectiveTheme,
     buildApplicationMenu,
     refreshEnginePathOverridesSnapshot,
     refreshYtdlpFromSettings: () => {
@@ -152,19 +147,15 @@ export function bootstrapMainApplicationHosts(): void {
       syncYtdlpDownloadDirectoryFromSettings(settings.ytdlpDownloadDirectory)
       broadcastDownloadsOutputDirectorySnapshot()
     },
-    syncDownloadsPopoutHtmlToLocale,
+    syncDownloadsWindowLocale,
     mainAppStr
   })
   configureMainApplicationMenu({
-    getThemePref: () => getCachedSettings().theme,
     getMainWindowRef: () => mainWindowRef,
     mainDownloadsUiLocale,
     mainAppStr,
     previewOpenDialogOptsFromSettings,
     persistLastOpenedSource,
-    setTheme: (pref) => {
-      void persistMainApplicationThemePreference(pref)
-    },
     persistUiLocale: (locale) => {
       void getMainApplicationSettingsIpcPersist().persistUiLocale(locale)
     },
@@ -189,9 +180,8 @@ export function bootstrapMainApplicationHosts(): void {
   })
   setMainApplicationSettingsIpcPersist(
     createSettingsIpcPersist(mainSettingsAccess, {
-      resolveEffectiveTheme,
       buildApplicationMenu,
-      syncDownloadsPopoutHtmlToLocale,
+      syncDownloadsWindowLocale,
       refreshEnginePathOverridesSnapshot
     })
   )
@@ -254,24 +244,8 @@ export function bootstrapMainApplicationHosts(): void {
   refreshYtdlpRunOptionsSnapshot(getCachedSettings(), mainDownloadsUiLocale())
   attachFfmpegExportBatchQueuePersist(app)
   hydrateFfmpegExportBatchQueueFromDisk(resolveAppPaths().userData)
-  nativeTheme.on('updated', () => {
-    if (getCachedSettings().theme !== 'system') {
-      return
-    }
-    const eff = resolveEffectiveTheme('system')
-    for (const w of BrowserWindow.getAllWindows()) {
-      if (!w.isDestroyed()) {
-        w.webContents.send(mw.themeChanged, eff)
-      }
-    }
-    buildApplicationMenu()
-  })
   configureMainDownloadsWindowBoundsBootstrap({
     getMainWindowWebContentsId: () => mainWindowWebContentsId,
-    getSavedDownloadsBounds: () => getCachedSettings().windowBounds?.downloads,
-    persistDownloadsBounds: (r) => {
-      patchWindowBounds({ downloads: r })
-    },
     mainDownloadsUiLocale,
     getSettings: getCachedSettings,
     mergeDownloadsWindowUiPanelsPatch: (patch) => {
@@ -284,7 +258,6 @@ export function bootstrapMainApplicationHosts(): void {
       })
       broadcastDownloadsWindowUiPanelsSnapshot(getCachedSettings().downloadsWindowUiPanels ?? {})
     },
-    resolveEffectiveTheme,
     openDownloadedFileInMainHandler
   })
   configureDownloadsQueueRunnerHooks({

@@ -77,7 +77,9 @@ async function main() {
     throw new Error(failures.join('\n'))
   }
 
-  log('OK: Velorix.exe, resources/bin engines, VELORIX_TZ.md, Data/trusted_hashes.json, Help/')
+  log(
+    'OK: Velorix.exe, resources/bin engines, VELORIX_NEON_THEME.md, Data/trusted_hashes.json, Help/'
+  )
 }
 
 main().catch((error) => {

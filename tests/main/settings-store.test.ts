@@ -58,7 +58,7 @@ describe('settings-store yt-dlp fields', () => {
     )
 
     expect(loadSettings(file)).toMatchObject({
-      theme: 'light',
+      theme: 'dark',
       ytdlpRateLimit: '500K',
       ytdlpRetries: 3,
       ytdlpFragmentRetries: 7,
@@ -175,11 +175,11 @@ describe('settings-store yt-dlp fields', () => {
     })
   })
 
-  it('принимает theme: system', () => {
+  it('legacy theme: system схлопывается в dark', () => {
     const root = makeTempRoot()
     const file = join(root, 'settings.json')
     writeFileSync(file, JSON.stringify({ theme: 'system' }), 'utf-8')
-    expect(loadSettings(file).theme).toBe('system')
+    expect(loadSettings(file).theme).toBe('dark')
   })
 
   it('невалидная theme откатывается к dark', () => {

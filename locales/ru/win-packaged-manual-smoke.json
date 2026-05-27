@@ -10,7 +10,7 @@
   "winPackagedSmokeStep_editor_from_dl": "Из очереди/истории: «В редактор» для готового файла.",
   "winPackagedSmokeStep_snapshot": "Снимок кадра PNG/JPEG сохраняется.",
   "winPackagedSmokeStep_export": "Экспорт MP4 сегмента (libx264) завершается без ошибки.",
-  "winPackagedSmokeStep_video_sprite": "§7.5: FFmpeg rail → спрайт превью (PNG/JPEG), файл сетки сохраняется; см. ownerManualSmoke Video sprite.",
+  "winPackagedSmokeStep_video_sprite": "§7.5: FFmpeg rail → спрайт превью (PNG/JPEG), файл сетки сохраняется; см. ownerHardwareChecklist Video sprite.",
   "winPackagedSmokeStep_knowledge": "База знаний: открыть статью, внутренняя ссылка .md работает.",
   "winPackagedSmokeStep_support_zip": "О программе → Support ZIP: архив создаётся, без секретов в тексте.",
   "winPackagedSmokeStep_settings": "Настройки → Зависимости: пути движков указывают на resources/bin.",

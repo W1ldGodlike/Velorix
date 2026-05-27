@@ -71,14 +71,14 @@ for (const rel of SYNC_HELP_PATHS) {
             '## Тема и масштаб экрана',
             '',
             '- [appearance-language-theme.md](appearance-language-theme.md)',
-            '- [owner-manual-smoke.md](owner-manual-smoke.md)'
+            '- [about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`)'
           ]
         : [
             '',
             '## Theme and display scale',
             '',
             '- [appearance-language-theme.md](appearance-language-theme.md)',
-            '- [owner-manual-smoke.md](owner-manual-smoke.md)'
+            '- [about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`)'
           ]
     if (!kept.some((l) => l.includes('appearance-language-theme.md'))) {
       const seeAlsoIdx = kept.findIndex((l) => SEE_ALSO_HEADING_RE.test(l.trim()))

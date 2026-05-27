@@ -27,9 +27,9 @@ export function listLinuxUnpackedLayoutChecks(unpackedRoot: string): LinuxUnpack
   return [
     { path: bundledBin, kind: 'dir', label: 'resources/bin' },
     {
-      path: join(unpackedRoot, 'resources', 'VELORIX_TZ.md'),
+      path: join(unpackedRoot, 'resources', 'VELORIX_NEON_THEME.md'),
       kind: 'file',
-      label: 'resources/VELORIX_TZ.md'
+      label: 'resources/VELORIX_NEON_THEME.md'
     },
     {
       path: join(unpackedRoot, 'resources', 'Data', 'trusted_hashes.json'),
@@ -111,7 +111,7 @@ export function formatLinuxUnpackedLayoutVerifyDiagnosticLines(
   const exePresent = linuxUnpackedExecutableCandidates(unpackedRoot).some((p) => existsSync(p))
   return [
     'command: npm run verify:linux-unpacked (после pack:linux:dir на Linux)',
-    'checks: app executable, resources/bin (dir), VELORIX_TZ.md, Data/trusted_hashes.json, Help/',
+    'checks: app executable, resources/bin (dir), VELORIX_NEON_THEME.md, Data/trusted_hashes.json, Help/',
     'optional engines: ffmpeg, ffprobe, yt-dlp in resources/bin (ручной bin/ перед release)',
     'env: VELORIX_SKIP_PACK_VERIFY',
     `layout: app executable (${exePresent ? 'present' : 'missing'})`,

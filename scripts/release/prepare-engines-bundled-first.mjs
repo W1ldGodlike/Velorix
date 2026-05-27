@@ -34,7 +34,7 @@ function printHelp(platformKey) {
 1. npm run engines:prepare:${platformKey}  (yt-dlp + BtbN ffmpeg tar.xz)
 2. npm run engines:doctor  (verify + --version)
 3. npm run build && npm run ${p.packScript} && npm run ${p.verifyScript}
-4. UI packaged smoke + owner-manual-smoke (§21 e2e в Support ZIP)
+4. UI packaged smoke + owner-hardware-checklist (§21 e2e в Support ZIP)
 
 См. bin/README.md, ${p.helpArticle}, docs/BUNDLED_ENGINES_LICENSES.md.
 

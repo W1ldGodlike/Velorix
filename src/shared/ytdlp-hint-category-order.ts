@@ -1,7 +1,7 @@
 import type { AppUiLocale } from './app-ui-locale'
 
 /**
- * §6.3 — порядок групп справочника argv (вкладка «Загрузки», pop-out, выпадающий список).
+ * §6.3 — порядок групп справочника argv (shell-вкладка «Загрузки», выпадающий список).
  * Синхрон с сортировкой подсказок в main (`sortYtdlpCommandHintsForUi`).
  */
 export const YTDLP_HINT_CATEGORY_ORDER: readonly string[] = [

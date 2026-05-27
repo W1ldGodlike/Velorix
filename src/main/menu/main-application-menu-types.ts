@@ -1,10 +1,8 @@
 import type { BrowserWindow } from 'electron'
 
 import type { AppUiLocale } from '../../shared/app-ui-locale'
-import type { AppTheme } from '../services/settings/settings-store'
 
 export type MainApplicationMenuDeps = {
-  getThemePref: () => AppTheme
   getMainWindowRef: () => BrowserWindow | null
   mainDownloadsUiLocale: () => AppUiLocale
   mainAppStr: () => {
@@ -34,10 +32,6 @@ export type MainApplicationMenuDeps = {
     menuOpenSessionLog: string
     menuSupportZip: string
     menuView: string
-    menuTheme: string
-    menuThemeSystem: string
-    menuThemeDark: string
-    menuThemeLight: string
     menuInterfaceLanguage: string
     menuUiLangRussian: string
     menuUiLangEnglish: string
@@ -47,7 +41,6 @@ export type MainApplicationMenuDeps = {
   }
   previewOpenDialogOptsFromSettings: () => { defaultPath: string } | undefined
   persistLastOpenedSource: (absolutePath: string | null) => void
-  setTheme: (pref: AppTheme) => void
   persistUiLocale: (locale: AppUiLocale) => void
   technicalSpecPath: () => string
   openMainLogFile: () => Promise<void>

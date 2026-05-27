@@ -1,8 +1,7 @@
 /**
  * Ключи locales (settings.json) для визуального theme-smoke (§5).
- * NB: имя `appSettingsThemeCheckDownloadsPopout` оставлено legacy-совместимым,
- * но в copy уже означает shell-surface, а не целевой pop-out UX.
- * Канон для AppSettingsThemePanel, owner bundle и проверок локалей.
+ * Ключ `appSettingsThemeCheckDownloadsShell` — поверхность «Загрузки» в shell (§5 smoke).
+ * Канон для owner bundle, help и проверок локалей single-NEON UI.
  */
 
 export const APP_SETTINGS_THEME_CHECKLIST_KEYS = [
@@ -11,7 +10,7 @@ export const APP_SETTINGS_THEME_CHECKLIST_KEYS = [
   'appSettingsThemeCheckDisabled',
   'appSettingsThemeCheckModals',
   'appSettingsThemeCheckWorkflow',
-  'appSettingsThemeCheckDownloadsPopout',
+  'appSettingsThemeCheckDownloadsShell',
   'appSettingsThemeCheckInspector'
 ] as const
 

@@ -33,13 +33,13 @@ describe('external-url guard', () => {
   it('разрешает только внутреннюю навигацию текущего Electron-окна', () => {
     expect(
       shouldAllowElectronWindowNavigation(
-        'http://localhost:5173/#inspector',
+        'http://localhost:5173/#shell-route',
         'http://localhost:5173/'
       )
     ).toBe(true)
     expect(
       shouldAllowElectronWindowNavigation(
-        'file:///C:/app/renderer/index.html#inspector',
+        'file:///C:/app/renderer/index.html#fragment',
         'file:///C:/app/renderer/index.html'
       )
     ).toBe(true)

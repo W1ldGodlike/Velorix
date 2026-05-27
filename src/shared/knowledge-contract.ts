@@ -37,7 +37,7 @@ export const KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS = 'ffmpeg-rail-presets'
 /** Пакетный экспорт и очереди — `Help/ru/session-and-queues.md`. */
 export const KNOWLEDGE_SLUG_SESSION_AND_QUEUES = 'session-and-queues'
 
-/** §6.4 — история загрузок yt-dlp (вкладка и pop-out). */
+/** §6.4 — история загрузок yt-dlp (shell-вкладка «Загрузки»). */
 export const KNOWLEDGE_SLUG_DOWNLOADS_WORKFLOW = 'downloads-workflow'
 
 /** Инспектор ffprobe — `Help/ru/probe-and-inspector-basics.md`. */
@@ -67,12 +67,8 @@ export const KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS = 'workflows-planner-sce
 /** §13 — история обработки в правой FFmpeg-панели. */
 export const KNOWLEDGE_SLUG_PROCESSING_HISTORY = 'processing-history'
 
-/** §16/§1.1/§10 — ручная проверка владельца; в UI справки не показывается (см. IMPLEMENTATION_MANUAL_VERIFICATION.md). */
-export const KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE = 'owner-manual-smoke'
-
-/** Не в оглавлении и не в listArticles — только dev/Help guards и Support ZIP. */
+/** Не в оглавлении listArticles — packaged smoke; ручные чеклисты железа — Support ZIP `ownerHardwareChecklist:`. */
 export const KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS = [
-  KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE,
   'packaged-windows-smoke',
   'packaged-linux-smoke',
   'packaged-macos-smoke'

@@ -14,6 +14,7 @@ export function useAppMainWindowEffectsRuntime(
     previewMediaUrl,
     setPreviewBlobUrl,
     setProbeInfo,
+    setProbeError,
     setProbePending,
     setStatusHint,
     engineSummary,
@@ -26,6 +27,8 @@ export function useAppMainWindowEffectsRuntime(
     setMediaFileUtilitiesOpen,
     setWorkflowPlannerOpen,
     setWorkflowScenarioBuilderOpen,
+    setProcessErrorDialog,
+    setQuitConfirmRequest,
     setAboutInfo,
     setAboutOpen,
     editorUrlPasteBehavior,
@@ -51,6 +54,7 @@ export function useAppMainWindowEffectsRuntime(
 
   useEffect(() => {
     if (!previewPath) {
+      queueMicrotask(() => setProbeError(null))
       queueMicrotask(() => setProbePending(false))
       return
     }
@@ -67,15 +71,17 @@ export function useAppMainWindowEffectsRuntime(
       setProbePending(false)
       if (r.ok) {
         setProbeInfo(r)
+        setProbeError(null)
       } else {
         setProbeInfo(null)
+        setProbeError(r.error)
         setStatusHint(uiTextVars('statusPreviewProbeFailedTemplate', { error: r.error }))
       }
     })
     return (): void => {
       ac.abort()
     }
-  }, [previewPath, setProbeInfo, setProbePending, setStatusHint])
+  }, [previewPath, setProbeError, setProbeInfo, setProbePending, setStatusHint])
 
   useEffect(() => {
     let cancelled = false
@@ -121,7 +127,17 @@ export function useAppMainWindowEffectsRuntime(
         setAboutOpen(true)
       })
     })
+    const offDownloadsRoute = window.velorix.onOpenDownloadsRoute(() => {
+      setWorkspaceTab('downloads')
+    })
+    const offInspectorRoute = window.velorix.onOpenInspectorRoute(() => {
+      setWorkspaceTab('inspector')
+    })
     const offExternalFilter = window.velorix.onOpenExternalFilterScript(() => {
+      setAppSettingsSection('system')
+      if (useAppShellStore.getState().workspaceTab === 'settings') {
+        return
+      }
       setExternalFilterScriptOpen(true)
     })
     const offMediaUtilities = window.velorix.onOpenMediaFileUtilities(() => {
@@ -133,26 +149,39 @@ export function useAppMainWindowEffectsRuntime(
     const offWorkflowScenarioBuilder = window.velorix.onOpenWorkflowScenarioBuilder(() => {
       setWorkflowScenarioBuilderOpen(true)
     })
+    const offProcessError = window.velorix.onProcessErrorReported((payload) => {
+      setProcessErrorDialog(payload)
+    })
+    const offQuitConfirm = window.velorix.onQuitConfirmRequested((payload) => {
+      setQuitConfirmRequest(payload)
+    })
     return (): void => {
       offEnginePaths()
       offSettings()
       offSynced()
       offAbout()
+      offDownloadsRoute()
+      offInspectorRoute()
       offExternalFilter()
       offMediaUtilities()
       offWorkflowPlanner()
       offWorkflowScenarioBuilder()
+      offProcessError()
+      offQuitConfirm()
     }
   }, [
     refreshEngineUi,
     setAboutInfo,
     setAboutOpen,
+    setWorkspaceTab,
     setAppSettingsOpen,
     setAppSettingsSection,
     setExternalFilterScriptOpen,
     setMediaFileUtilitiesOpen,
     setWorkflowPlannerOpen,
-    setWorkflowScenarioBuilderOpen
+    setWorkflowScenarioBuilderOpen,
+    setProcessErrorDialog,
+    setQuitConfirmRequest
   ])
 
   useEffect(() => {

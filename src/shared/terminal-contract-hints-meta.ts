@@ -84,12 +84,12 @@ export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS = [
 
 /** Required substrings in about-support-logs (diagnostics ZIP / dev guards). */
 export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS = [
+  'ownerHardwareChecklist:',
+  'releaseSmoke:',
   'terminalHints:',
-  TERMINAL_CONTRACT_HINTS_META_MODULE,
-  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT,
-  'logging-and-diagnostics.md'
+  'logging-and-diagnostics.md',
+  'ffmpeg-terminal-hints.md',
+  'packaged-windows-smoke.md'
 ] as const
 
 /** Help §18 logging hub — diagnostics.txt blocks (owner/release/terminal). */
@@ -178,12 +178,6 @@ export const TERMINAL_CONTRACT_HINTS_WORKFLOW_MISC_TAIL_HELP_PATHS = [
   'Help/en/engines-update-paths.md'
 ] as const
 
-/** Help §16/§19 owner manual smoke — Support ZIP crosslinks (RU+EN). */
-export const TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS = [
-  'Help/ru/owner-manual-smoke.md',
-  'Help/en/owner-manual-smoke.md'
-] as const
-
 /** Help FAQ — Support ZIP / terminal crosslinks (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS = [
   'Help/ru/faq-troubleshooting.md',
@@ -215,17 +209,15 @@ export const TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS = [
 /** Required substrings in logging-and-diagnostics (Support ZIP sections). */
 export const TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS = [
   'terminalHints:',
-  TERMINAL_CONTRACT_HINTS_META_MODULE,
-  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
-  'ownerManualSmoke:',
-  'releaseSmoke:'
+  'ownerHardwareChecklist:',
+  'releaseSmoke:',
+  'about-support-logs.md',
+  'ffmpeg-terminal-hints.md'
 ] as const
 
 /** Required substrings in getting-started / probe / downloads / FAQ (user «См. также» footer). */
 export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS = [
-  'owner-manual-smoke.md',
+  'about-support-logs.md',
   'packaged-windows-smoke.md'
 ] as const
 
@@ -281,7 +273,7 @@ export const TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS = [
   'ffmpeg-terminal-hints.md',
   'locales:terminal-summaries-ru',
   'logging-and-diagnostics.md',
-  'owner-manual-smoke.md',
+  'about-support-logs.md',
   'packaged-windows-smoke.md'
 ] as const
 
@@ -311,7 +303,7 @@ export function formatTerminalContractHintsToolsHelpPackagedSmokeLine(
       ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей`
       : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} articles`
   const crosslinks =
-    '[owner-manual-smoke.md](owner-manual-smoke.md), [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md)'
+    '[about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md), [packaged-windows-smoke.md](packaged-windows-smoke.md)'
   if (locale === 'ru') {
     return `Полный owner bundle, per-step \`e2e <id>:\` в Support ZIP \`releaseSmoke:\` и dev-блок \`terminalHints:\` (§8 guards) — ${crosslinks}; \`npm run check:support-bundle-terminal-hints\`, \`check:help-terminal-hints-docs\` (${helpCountLabel}).`
   }
@@ -327,8 +319,7 @@ export const TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT =
   TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS.length +
   TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS.length +
   TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS.length +
-  TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS.length +
-  TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS.length
+  TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS.length
 
 export function formatTerminalContractHintsDownloadsShardBasename(partIndex: number): string {
   return `terminal-contract-hints-downloads-${String(partIndex).padStart(2, '0')}.ts`
@@ -362,30 +353,21 @@ export function formatTerminalContractHintsAboutSupportZipSectionsHint(
       ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей Help`
       : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} Help articles`
   return locale === 'ru'
-    ? `В diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8, ${helpCountLabel}).`
-    : `diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8, ${helpCountLabel}).`
+    ? `В diagnostics.txt: ownerHardwareChecklist, releaseSmoke, terminalHints (§8, ${helpCountLabel}).`
+    : `diagnostics.txt: ownerHardwareChecklist, releaseSmoke, terminalHints (§8, ${helpCountLabel}).`
 }
 
 /** §18 about-support-logs Help — `terminalHints:` bullet (synced Help count). */
 export function formatTerminalContractHintsAboutSupportZipTerminalHintsBullet(
   locale: TerminalContractHintsLocale
 ): string {
-  const helpCountLabel =
-    locale === 'ru'
-      ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей`
-      : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} articles`
-  const guardsTail =
-    locale === 'ru' ? 'и прочие guards в `check:quiet`' : 'and other `check:quiet` guards'
   const seeAlso =
     locale === 'ru'
       ? 'см. [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md) и [logging-and-diagnostics.md](logging-and-diagnostics.md)'
       : 'see [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md) and [logging-and-diagnostics.md](logging-and-diagnostics.md)'
-  const shardSnippet =
-    locale === 'ru'
-      ? formatTerminalContractHintsShardCountRuSnippet()
-      : formatTerminalContractHintsShardCountEnSnippet()
-  const hintCounts = `${TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT}+${TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT}`
-  return `- **\`terminalHints:\`** — dev §8 (\`${TERMINAL_CONTRACT_HINTS_META_MODULE}\`, ${shardSnippet}, ${hintCounts} hints, \`check:terminal-contract-hints-shards\`, \`check:help-terminal-hints-docs\` (${helpCountLabel}), \`check:support-bundle-terminal-hints\` ${guardsTail}); ${seeAlso}.`
+  return locale === 'ru'
+    ? `- **\`terminalHints:\`** — снимок подсказок терминала для поддержки; ${seeAlso}.`
+    : `- **\`terminalHints:\`** — terminal hints snapshot for support; ${seeAlso}.`
 }
 
 /** §18 logging-and-diagnostics Help — §8 terminal guards line (synced count). */

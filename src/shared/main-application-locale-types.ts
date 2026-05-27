@@ -79,10 +79,6 @@ export type MainApplicationStrings = {
   menuOpenSessionLog: string
   menuSupportZip: string
   menuView: string
-  menuTheme: string
-  menuThemeSystem: string
-  menuThemeDark: string
-  menuThemeLight: string
   menuInterfaceLanguage: string
   menuUiLangRussian: string
   menuUiLangEnglish: string

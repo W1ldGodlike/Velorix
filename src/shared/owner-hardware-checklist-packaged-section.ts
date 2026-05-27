@@ -1,5 +1,5 @@
 /**
- * §3 — packaged smoke в едином ownerManualSmoke (по платформе main).
+ * §3 — packaged smoke в едином ownerHardwareChecklist (по платформе main).
  */
 
 import type { AppUiLocale } from './app-ui-locale'
@@ -22,16 +22,16 @@ import type { PackagedManualSmokeLocaleShard } from './packaged-manual-smoke-che
 import type { PackagedManualSmokeLocaleKeyPrefix } from './packaged-manual-smoke-step-ids'
 import { formatWinPackagedManualSmokeChecklistLinesFromShard } from './win-packaged-manual-smoke-checklist'
 
-export type OwnerManualSmokePackagedPlatform = 'win' | 'linux' | 'macos'
+export type OwnerHardwareChecklistPackagedPlatform = 'win' | 'linux' | 'macos'
 
-export type OwnerManualSmokePackagedSection = {
-  platform: OwnerManualSmokePackagedPlatform
+export type OwnerHardwareChecklistPackagedSection = {
+  platform: OwnerHardwareChecklistPackagedPlatform
   heading: string
   lines: readonly string[]
 }
 
 type PackagedPlatformConfig = {
-  platform: OwnerManualSmokePackagedPlatform
+  platform: OwnerHardwareChecklistPackagedPlatform
   prefix: PackagedManualSmokeLocaleKeyPrefix
   formatLines: (shard: PackagedManualSmokeLocaleShard) => string[]
   ruShard: PackagedManualSmokeLocaleShard
@@ -79,7 +79,7 @@ function familyFromPlatform(platform: NodeJS.Platform): NativeMainPlatformFamily
 function sectionFromConfig(
   config: PackagedPlatformConfig,
   shard: PackagedManualSmokeLocaleShard
-): OwnerManualSmokePackagedSection {
+): OwnerHardwareChecklistPackagedSection {
   return {
     platform: config.platform,
     heading: readPackagedManualSmokeBundleHeadingFromShard(shard, config.prefix),
@@ -96,10 +96,10 @@ function resolvePackagedConfig(platform: NodeJS.Platform): PackagedPlatformConfi
 }
 
 /** Чеклист packaged smoke для UI locale (renderer: `platform` из `AppAboutInfo.osPlatform`). */
-export function getOwnerManualSmokePackagedSectionForUiLocale(
+export function getOwnerHardwareChecklistPackagedSectionForUiLocale(
   locale: AppUiLocale,
   platform: NodeJS.Platform
-): OwnerManualSmokePackagedSection | null {
+): OwnerHardwareChecklistPackagedSection | null {
   const config = resolvePackagedConfig(platform)
   if (!config) {
     return null
@@ -108,10 +108,10 @@ export function getOwnerManualSmokePackagedSectionForUiLocale(
   return sectionFromConfig(config, shard)
 }
 
-/** Чеклист packaged smoke для текущей ОС (main / Support ZIP ownerManualSmoke, канон ru). */
-export function getOwnerManualSmokePackagedSection(
+/** Чеклист packaged smoke для текущей ОС (main / Support ZIP ownerHardwareChecklist, канон ru). */
+export function getOwnerHardwareChecklistPackagedSection(
   platform: NodeJS.Platform = process.platform
-): OwnerManualSmokePackagedSection | null {
+): OwnerHardwareChecklistPackagedSection | null {
   const config = resolvePackagedConfig(platform)
   if (!config) {
     return null

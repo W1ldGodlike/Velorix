@@ -93,7 +93,7 @@ html[data-theme='dark']
     .app-terminal-workspace,
     .app-overlay,
     .app-batch-export-bar,
-    .inspector-standalone-main
+    .inspector-workspace-main
   )
   .app-btn,
 html:not([data-theme])
@@ -106,7 +106,7 @@ html:not([data-theme])
     .app-terminal-workspace,
     .app-overlay,
     .app-batch-export-bar,
-    .inspector-standalone-main
+    .inspector-workspace-main
   )
   .app-btn {
   transition: var(--vn-transition-surface);
@@ -121,7 +121,7 @@ html[data-theme='dark']
     .app-terminal-workspace,
     .app-overlay,
     .app-batch-export-bar,
-    .inspector-standalone-main
+    .inspector-workspace-main
   )
   .app-btn:hover:not(:disabled),
 html:not([data-theme])
@@ -133,7 +133,7 @@ html:not([data-theme])
     .app-terminal-workspace,
     .app-overlay,
     .app-batch-export-bar,
-    .inspector-standalone-main
+    .inspector-workspace-main
   )
   .app-btn:hover:not(:disabled) {
   border-color: color-mix(in srgb, var(--fa-accent) 38%, var(--fa-border));
@@ -149,7 +149,7 @@ html[data-theme='dark']
     .app-terminal-workspace,
     .app-overlay,
     .app-batch-export-bar,
-    .inspector-standalone-main
+    .inspector-workspace-main
   )
   .app-btn-primary,
 html:not([data-theme])
@@ -161,7 +161,7 @@ html:not([data-theme])
     .app-terminal-workspace,
     .app-overlay,
     .app-batch-export-bar,
-    .inspector-standalone-main
+    .inspector-workspace-main
   )
   .app-btn-primary {
   border-color: color-mix(in srgb, var(--fa-accent) 50%, transparent);
@@ -179,7 +179,7 @@ html[data-theme='dark']
     .app-terminal-workspace,
     .app-overlay,
     .app-batch-export-bar,
-    .inspector-standalone-main
+    .inspector-workspace-main
   )
   .app-btn-primary:hover:not(:disabled),
 html:not([data-theme])
@@ -191,7 +191,7 @@ html:not([data-theme])
     .app-terminal-workspace,
     .app-overlay,
     .app-batch-export-bar,
-    .inspector-standalone-main
+    .inspector-workspace-main
   )
   .app-btn-primary:hover:not(:disabled) {
   filter: brightness(1.06);
@@ -478,9 +478,9 @@ html:not([data-theme]) .app-shell progress::-webkit-progress-value {
   box-shadow: var(--vn-glow-cyan-soft);
 }
 
-/* —— Standalone windows —— */
-html[data-theme='dark'] .inspector-standalone-main,
-html:not([data-theme]) .inspector-standalone-main {
+/* —— Shell workspace surfaces —— */
+html[data-theme='dark'] .inspector-workspace-main,
+html:not([data-theme]) .inspector-workspace-main {
   border-radius: var(--fa-radius-panel);
   border: var(--vn-border-subtle);
   background: linear-gradient(
@@ -491,15 +491,15 @@ html:not([data-theme]) .inspector-standalone-main {
   box-shadow: var(--vn-shadow-elevation-3), inset 0 0 48px var(--vn-alpha-violet-12);
 }
 
-html[data-theme='dark'] .inspector-standalone-probe,
-html:not([data-theme]) .inspector-standalone-probe {
+html[data-theme='dark'] .inspector-workspace-probe,
+html:not([data-theme]) .inspector-workspace-probe {
   border-top-color: color-mix(in srgb, var(--fa-accent) 22%, var(--fa-border-subtle));
   background: color-mix(in srgb, var(--fa-surface-elevated) 72%, transparent);
   box-shadow: inset 0 0 24px var(--vn-alpha-violet-12);
 }
 
-html[data-theme='dark'] .downloads-standalone-shell .app-downloads-workspace,
-html:not([data-theme]) .downloads-standalone-shell .app-downloads-workspace {
+html[data-theme='dark'] .app-shell .app-downloads-workspace,
+html:not([data-theme]) .app-shell .app-downloads-workspace {
   padding: var(--fa-space-2);
   gap: var(--fa-space-2);
 }

@@ -1,26 +1,26 @@
 ---
-description: IMPLEMENTATION_CHECKLIST — спринт и прогресс
+description: IMPLEMENTATION_NEON_CHECKLIST — sprint TODO и snap.* (не навигатор «продолжай»)
 globs:
-  - IMPLEMENTATION_CHECKLIST.md
+  - docs/IMPLEMENTATION_NEON_CHECKLIST.md
 alwaysApply: false
 ---
 
-# Чеклист (канон = шапка файла)
+# NEON-чеклист (канон = шапка файла)
 
 Глоссарий: [`velorix-rules-explicit.mdc`](velorix-rules-explicit.mdc).  
 Синхронизация: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).
 
 **Если** меняете **Git по J-NNN** **то** в **одном** `git commit`: `velorix-agent.mdc`, `velorix-rules-explicit.mdc`, [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velorix-continue/SKILL.md), `agent-contract.txt`, `continue.txt`, `initial.txt`, `docs/SOURCES_OF_TRUTH.md`.
 
-**Если** правите `IMPLEMENTATION_CHECKLIST.md` **то** сначала прочитать шапку и блок `## Ближайший TODO спринта` в этом файле.
+**Если** правите `docs/IMPLEMENTATION_NEON_CHECKLIST.md` **то** сначала прочитать шапку и `## Ближайший TODO спринта`.
 
 ## Обязательно
 
-- **Запрещено:** правки [`VELORIX_TZ.md`](../../VELORIX_TZ.md) без **явной просьбы владельца**.
-- Блок **`## Ближайший TODO спринта`:** ровно **3–7** пунктов; каждый пункт ≤ **220** символов; только навигатор спринта (не архив, не changelog).
-- `[x]` — **только если** поведение работает end-to-end; есть тест **или** ручная проверка в J; **если** пункт требует IPC — цепочка `ipc-channels` + preload + main (глоссарий **вертикальный срез**). `[~]` — часть критериев; остаток в том же пункте.
-- **Если** итерация закрыла пункт sprint TODO **то** обновить этот блок в том же `git commit` **или** в ближайшем commit по **Git по J-NNN** (`NNN % 5 === 0`).
-- **Запрещено:** длинные описания в `## Ближайший TODO спринта` — детали только в тематических § файла, [`IMPLEMENTATION_MANUAL_VERIFICATION.md`](../../IMPLEMENTATION_MANUAL_VERIFICATION.md) (ручная проверка владельца) или в `IMPLEMENTATION_JOURNAL.md`.
+- **Навигатор «продолжай» / `+`:** [`docs/VELORIX_NEON_THEME.md`](../../docs/VELORIX_NEON_THEME.md) — Phase D, refs 1–27, открытые пробелы VA.
+- **Запрещено:** [`docs/archive/IMPLEMENTATION_CHECKLIST.OLD.md`](../../docs/archive/IMPLEMENTATION_CHECKLIST.OLD.md), [`docs/archive/VELORIX_TZ.OLD.md`](../../docs/archive/VELORIX_TZ.OLD.md) как рабочий план; корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`.
+- **`## Ближайший TODO спринта`:** **3–7** пунктов, каждый ≤ **220** символов; матрица refs **1–27** и Phase D — в том же файле ниже `---`.
+- `[x]` — end-to-end; тест или J; IPC — вертикальный срез.
+- **Если** закрыли пункт sprint **то** обновить блок в том же commit или по **Git по J-NNN**.
 
 ## Проверка
 

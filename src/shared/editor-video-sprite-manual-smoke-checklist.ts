@@ -21,7 +21,7 @@ export function formatEditorVideoSpriteManualSmokeChecklistLines(): string[] {
     {
       ownerLine: 'ручная проверка спрайта §7.5 (owner, не CI UI)',
       automatedLine: 'Vitest ffmpeg-video-sprite-* / packaged-video-sprite-smoke',
-      docLine: 'Help/ru/owner-manual-smoke.md',
+      docLine: 'Help/ru/about-support-logs.md',
       uiLine: 'Редактор → FFmpeg rail → EditorVideoSpritePanel'
     }
   )

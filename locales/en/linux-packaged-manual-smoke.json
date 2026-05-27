@@ -10,7 +10,7 @@
   "linuxPackagedSmokeStep_editor_from_dl": "From queue/history: Open in editor for a finished file.",
   "linuxPackagedSmokeStep_snapshot": "Frame snapshot saves as PNG/JPEG.",
   "linuxPackagedSmokeStep_export": "MP4 segment export (libx264) completes without error.",
-  "linuxPackagedSmokeStep_video_sprite": "§7.5: FFmpeg rail → preview sprite sheet (PNG/JPEG); grid file saves; see ownerManualSmoke Video sprite.",
+  "linuxPackagedSmokeStep_video_sprite": "§7.5: FFmpeg rail → preview sprite sheet (PNG/JPEG); grid file saves; see ownerHardwareChecklist Video sprite.",
   "linuxPackagedSmokeStep_knowledge": "Knowledge base: open an article; internal .md link works.",
   "linuxPackagedSmokeStep_support_zip": "About → Support ZIP: archive is created; no secrets in the text.",
   "linuxPackagedSmokeStep_settings": "Settings → Dependencies: engine paths point at resources/bin.",

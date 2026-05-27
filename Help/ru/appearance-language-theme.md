@@ -2,7 +2,7 @@
 
 ## Тема
 
-Канон продукта для Variant A — **одна тема VELORIX NEON**. По завершении миграции в приложении не должно остаться пользовательского выбора `dark` / `light` / `system`; если в промежуточной сборке такие контролы ещё встречаются, считайте их legacy-переходником.
+Канон продукта для Variant A — **одна тема VELORIX NEON**. Пользовательского выбора `dark` / `light` / `system` в продукте больше нет: интерфейс всегда работает в едином NEON runtime.
 
 ### Визуальная проверка темы
 
@@ -22,10 +22,10 @@
 - какой блок CSS `@120/144/168/192dpi` сейчас активен;
 - чеклист зон для ручной проверки (редактор, загрузки, модалки, статусбар).
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).
+[about-support-logs.md](about-support-logs.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).
 
 См. [getting-started.md](getting-started.md).
 
 ## См. также
 
-[owner-manual-smoke.md](owner-manual-smoke.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).
+[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (после `pack:dir`).
