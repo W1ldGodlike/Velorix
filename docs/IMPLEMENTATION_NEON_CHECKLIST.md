@@ -19,7 +19,7 @@
 | Слой | Факт |
 | ---- | ---- |
 | **Окно** | Одно `BrowserWindow`; тёмный фон; **нет** продуктового React UI. |
-| **Renderer** | Только `src/renderer/src/main.tsx` (пустой `#root`); CSS/токенов в renderer **нет**. |
+| **Renderer** | `AppRefBootstrap`: `#ref27`/`#` kit, `#ref26` states, `#ref1` → `NeonShell` (D.2 bootstrap). |
 | **Main/preload** | IPC, ffmpeg, yt-dlp, workflow — **сохранены**. |
 | **Refs 1–27** | PNG в `docs/reference/`; **ни один** экран не сверен 1:1 с кодом. |
 
@@ -45,8 +45,8 @@
 
 | Область | ~% | Комментарий |
 | ------- | -- | ----------- |
-| Токены / тема в renderer | **0** | `velorix-neon-*.css` сняты с диска (UI ZERO). |
-| Shell layout (Phase D.2) | **0** | Нет sidebar/center/rail в коде. |
+| Токены / тема в renderer | **~25** | `velorix-neon/*` + `ref27-showcase*.css`; kit ~28 карточек; sign-off PNG — нет. |
+| Shell layout (Phase D.2) | **~20** | `NeonShell` + `#ref1`; sign-off ref.1 PNG — нет. |
 | Визуал экранов refs **1–9** | **0** | Только PNG. |
 | Модалки / утилиты refs **10–25** | **0** | Только PNG. |
 | Showcase refs **26–27** | **0** | Только PNG. |

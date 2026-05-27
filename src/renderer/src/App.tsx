@@ -1,7 +1,7 @@
 import type { JSX } from 'react'
 
-import { Ref27ComponentsPage } from './pages/Ref27ComponentsPage'
+import { AppRefBootstrap } from './app-ref-bootstrap'
 
 export function App(): JSX.Element {
-  return <Ref27ComponentsPage />
+  return <AppRefBootstrap />
 }

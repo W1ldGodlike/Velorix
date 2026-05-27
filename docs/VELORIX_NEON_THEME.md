@@ -45,7 +45,7 @@
 
 | Факт | Деталь |
 | ---- | ------ |
-| **Renderer** | Только [`main.tsx`](../src/renderer/src/main.tsx) (пустой `#root`); `RENDERER_STATE_APPROACH = 'none'` — диагностика. |
+| **Renderer** | [`main.tsx`](../src/renderer/src/main.tsx) → `AppRefBootstrap` (`#ref27` / `#ref26` / `#ref1` `NeonShell`); `RENDERER_STATE_APPROACH = 'ref27-bootstrap'`. |
 | **Старый React/CSS** | **Снят с диска** (не «режим none» ради зелёного CI). |
 | **Main/preload** | IPC и сервисы **сохранены**; подстраиваются под refs, не наоборот. |
 | **UI guards** | `check:ui-surfaces-guard`, `check:ui-copy-quality`, `check:renderer-state-approach`, `check:export-preview-hints-locale`, Playwright `test:e2e:gui` — **удалены**; **не** подгонять `check:quiet`. |

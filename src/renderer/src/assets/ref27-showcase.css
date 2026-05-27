@@ -1,8 +1,12 @@
 /* ref.27 — UI ZERO rebuild; subset of legacy main.css */
 
+@import './ref27-showcase-extra.css';
+
 .app-tools-workspace-shell {
   box-sizing: border-box;
   min-height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
   padding: var(--fa-space-4);
   background: var(--fa-neon-bg-atmosphere, var(--fa-bg));
   color: var(--fa-text-primary);
@@ -37,8 +41,14 @@
 }
 .app-btn-primary {
   border-color: transparent;
-  background: var(--fa-accent);
+  background: var(--fa-neon-accent-gradient, var(--fa-accent));
   color: var(--fa-accent-contrast);
+  box-shadow: var(--fa-neon-glow-accent, none);
+}
+.app-btn-secondary {
+  border-color: color-mix(in srgb, var(--fa-accent) 48%, var(--fa-border));
+  background: color-mix(in srgb, var(--fa-accent) 24%, var(--fa-surface-elevated));
+  color: var(--fa-text-primary);
 }
 .app-btn-warn {
   border-color: color-mix(in srgb, var(--fa-accent) 55%, var(--fa-border));
@@ -95,6 +105,14 @@
   border-color: transparent;
   background: color-mix(in srgb, var(--fa-accent) 55%, var(--fa-surface-elevated));
   color: var(--fa-accent-contrast);
+}
+.app-pill-switch-on .app-pill-switch-knob {
+  background: var(--fa-accent-contrast);
+  transform: translateX(0.35rem);
+}
+.app-pill-switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .app-pill-switch-knob {
   width: 1.16rem;
@@ -208,6 +226,12 @@
 .app-ui-showcase-toast--ready,
 .app-ui-showcase-status-pill--ready {
   border-color: color-mix(in srgb, var(--fa-success) 35%, var(--fa-border));
+  color: color-mix(in srgb, var(--fa-success) 88%, var(--fa-text-primary));
+}
+
+.app-ui-showcase-status-pill--processing {
+  border-color: color-mix(in srgb, var(--fa-accent) 42%, var(--fa-border));
+  color: color-mix(in srgb, var(--fa-accent) 90%, var(--fa-text-primary));
 }
 
 .app-ui-showcase-toast--attention,
@@ -419,5 +443,55 @@
 .app-ui-showcase-skeleton--bar {
   width: 88%;
   min-height: 0.55rem;
+}
+
+.app-ui-showcase-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fa-space-snug);
+  align-items: center;
+}
+
+.app-ui-showcase-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.45rem;
+  padding: 0 var(--fa-space-2);
+  border-radius: var(--fa-radius-pill);
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface-elevated) 80%, transparent);
+  font-size: var(--fa-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.app-ui-showcase-badge--accent {
+  border-color: color-mix(in srgb, var(--fa-accent) 40%, var(--fa-border));
+  background: color-mix(in srgb, var(--fa-accent) 22%, var(--fa-surface));
+  color: var(--fa-text-primary);
+}
+
+.app-ui-showcase-badge--count {
+  min-width: 1.6rem;
+  justify-content: center;
+  border-color: transparent;
+  background: var(--fa-accent);
+  color: var(--fa-accent-contrast);
+}
+
+.app-ui-showcase-checkbox-row input {
+  accent-color: var(--fa-accent);
+}
+
+.app-ui-showcase-checkbox-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fa-space-2);
+  cursor: pointer;
+}
+
+.app-ui-showcase-checkbox-row label:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
