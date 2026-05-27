@@ -273,6 +273,30 @@ export default function TimelineWaveform({
           g.fillRect(x + 0.15, yCenter - barH / 2, Math.max(barPx, 1.1), Math.max(barH, 1.2))
         }
       }
+
+      // Лейблы дорожек (viz: V1-V3 + A1-A2 для ref.1).
+      const laneLabels = lanes === 5 ? ['V1', 'V2', 'V3', 'A1', 'A2'] : null
+      if (laneLabels) {
+        g.globalAlpha = 0.65
+        g.fillStyle = muted
+        const labelBgW = Math.max(36, Math.floor(40 * dpr))
+        g.font = `700 ${Math.max(10, Math.floor((cv.height / lanes) * 0.48))}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`
+        g.textBaseline = 'middle'
+        g.textAlign = 'left'
+
+        for (let lane = 0; lane < lanes; lane++) {
+          const y0 = (cv.height / lanes) * lane
+          const yCenter = y0 + cv.height / lanes / 2
+          const isVideo = lane < 3
+
+          g.globalAlpha = 0.6
+          g.fillRect(0, y0, labelBgW, cv.height / lanes)
+
+          g.globalAlpha = isVideo ? 0.95 : 0.85
+          g.fillStyle = isVideo ? accent : muted
+          g.fillText(laneLabels[lane] ?? `T${lane + 1}`, 10 * dpr, yCenter)
+        }
+      }
     }
 
     const ro = new ResizeObserver(() => {
