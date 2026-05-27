@@ -154,7 +154,7 @@ export function AppWorkspaceMain({
           aria-labelledby={workspaceTabId('processing')}
           aria-describedby={workspaceTabDescId('processing')}
           aria-busy={editorMainAriaBusy}
-          className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
+          className={`app-main app-main-surface app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
         >
           <EditorPreviewSection
             {...editorPreview}

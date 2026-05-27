@@ -41,7 +41,7 @@ export function AppShellLayout({
       aria-label={uiText('appMainShellAria')}
       aria-busy={appChromeBusy}
     >
-      <AppWorkspaceTopbar {...topbar} />
+      {topbar.workspaceTab !== 'processing' ? <AppWorkspaceTopbar {...topbar} /> : null}
       <div className="app-shell-row">
         <AppWorkspaceSidebar
           appChromeBusy={topbar.appChromeBusy}

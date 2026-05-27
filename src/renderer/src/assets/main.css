@@ -2786,7 +2786,7 @@ button.app-downloads-hint-token:disabled {
   flex-direction: column;
   align-self: stretch;
   width: 100%;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
@@ -2881,7 +2881,9 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   flex-direction: column;
   gap: var(--fa-space-gap-tight);
-  flex-shrink: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
   border-top: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface) 94%, transparent);
 }
