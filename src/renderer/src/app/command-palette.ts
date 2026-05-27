@@ -7,6 +7,8 @@ export type CommandPaletteAction =
   | { type: 'open-media' }
   | { type: 'toggle-rail' }
   | { type: 'modal'; id: SystemModalId }
+  | { type: 'clear-export-trim' }
+  | { type: 'batch-export-pick' }
 
 export type CommandPaletteItem = {
   id: string
@@ -25,10 +27,34 @@ const NAV_COMMANDS: CommandPaletteItem[] = WORKSPACE_TABS.map((tab) => ({
 export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
   { id: 'open-media', label: 'Открыть медиа…', hint: 'Обработка', action: { type: 'open-media' } },
   {
+    id: 'clear-export-trim',
+    label: 'Сбросить диапазон экспорта',
+    hint: 'Обработка',
+    action: { type: 'clear-export-trim' }
+  },
+  {
+    id: 'batch-export-pick',
+    label: 'Пакетный экспорт — выбрать файлы…',
+    hint: 'Обработка',
+    action: { type: 'batch-export-pick' }
+  },
+  {
     id: 'engine-paths',
     label: 'Пути к движкам',
     hint: 'Настройки',
     action: { type: 'modal', id: 'engine-paths' }
+  },
+  {
+    id: 'first-run-engines',
+    label: 'Первый запуск / движки',
+    hint: 'Настройки',
+    action: { type: 'modal', id: 'first-run-engines' }
+  },
+  {
+    id: 'encoder-benchmark',
+    label: 'Бенчмарк кодеров',
+    hint: 'Обработка',
+    action: { type: 'modal', id: 'encoder-benchmark' }
   },
   { id: 'about', label: 'О программе', action: { type: 'modal', id: 'about' } },
   { id: 'toggle-rail', label: 'Показать/скрыть правый rail', action: { type: 'toggle-rail' } },

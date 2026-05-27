@@ -1,5 +1,4 @@
 import type {
-  FfmpegExportEncodePresetId,
   MediaExportStartResult,
   MediaExportTrimPayload
 } from '../../../shared/ffmpeg-export-contract'
@@ -7,13 +6,7 @@ import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import type { AppSettingsView } from '../../../shared/settings-contract'
 
 import type { SystemModalId } from '../app/system-modal'
-
-function readEncodePreset(raw: string | undefined): FfmpegExportEncodePresetId | undefined {
-  if (raw === 'smaller' || raw === 'quality' || raw === 'balance') {
-    return raw
-  }
-  return undefined
-}
+import { readEncodePresetForExport } from './read-encode-preset-for-export'
 
 /** §7.2 — одиночный экспорт открытого в превью файла (настройки из `settings.get` или store). */
 export async function startPreviewMediaExport(args: {
@@ -31,7 +24,7 @@ export async function startPreviewMediaExport(args: {
   const duration = args.mediaProbe?.durationSec
   const probeDurationSec =
     duration != null && Number.isFinite(duration) && duration > 0 ? duration : null
-  const encodePreset = readEncodePreset(settings?.ffmpegExportEncodePreset)
+  const encodePreset = readEncodePresetForExport(settings?.ffmpegExportEncodePreset)
 
   const trim = args.exportTrim ?? undefined
 

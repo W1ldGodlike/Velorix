@@ -24,7 +24,7 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 
 ## Git по номеру J
 
-- **Следующий commit по J:** **J-1715** (`NNN % 5 === 0`). **Следующий push по J:** **J-1720** (`NNN % 10 === 0`).
+- **Следующий commit по J:** **J-1720** (`NNN % 5 === 0`). **Следующий push по J:** **J-1720** (`NNN % 10 === 0`).
 - **Если** в итерации записана новая `J-NNN` и **check:quiet зелёный** **то:** `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push` (без force `main`/`master`). Cursor, SDK, обычный чат — без исключений.
 - **Запрещено:** пропускать `git commit` / `git push` при выполнении условий выше.
 

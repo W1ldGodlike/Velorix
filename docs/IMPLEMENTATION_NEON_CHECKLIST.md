@@ -75,7 +75,7 @@
 - [~] **neon.2** **ref.26** — матрица кнопок/nav/статусов + forced states + reduced-motion; sign-off PNG — нет.
 - [~] **neon.3** **ref.1** — export trim In/Out, openOutput, transport; sign-off PNG — нет.
 - [~] **neon.4** **refs 2–3,8** — downloads/history openOutput; inspector→trim; sign-off PNG — нет.
-- [~] **neon.5** Motion-pass v1 — glass/knowledge/timeline hover в `neon-motion-v1.css`; sign-off PNG — нет.
+- [~] **neon.5** Motion v1 — trim/tabs/seek + palette; sign-off PNG — нет.
 
 ---
 
@@ -91,10 +91,10 @@
 
 - [ ] **X.1** Brand: horizontal/stacked logo по зонам (sidebar, about, splash).
 - [ ] **X.2** Иконка app ↔ `resources/icon.png` ↔ ref app-icon.
-- [~] **X.3** Единый modal chrome — `SystemModals` refs 11, 18–23 bootstrap; refs 12–17, 24–25 full-screen в tools; sign-off PNG — нет.
+- [~] **X.3** Modals — ref.11 about+engines; Help→knowledge slug; sign-off PNG — нет.
 - [ ] **X.4** **Motion system:** duration/easing tokens; hover glow; route transition; reduced-motion.
-- [ ] **X.5** GPU/CPU/RAM виджеты в sidebar как на PNG (если в scope).
-- [~] **X.6** Ctrl+K `CommandPalette` — навигация, open media, modals; polish vs PNG — нет.
+- [~] **X.5** Sidebar GPU — `engines.probeHwEncoders` (nvidia-smi); rings mock; sign-off PNG — нет.
+- [~] **X.6** Ctrl+K — nav, open media, clear trim, batch pick; polish vs PNG — нет.
 - [ ] **X.7** Типографика / плотность / spacing scale 1:1 с ref.27.
 
 ## Workstreams VA — переклассификация

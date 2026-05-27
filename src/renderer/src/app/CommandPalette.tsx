@@ -103,6 +103,19 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
     store.openModal(action.id)
     return
   }
+  if (action.type === 'clear-export-trim') {
+    store.setExportTrim(null)
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'batch-export-pick') {
+    const pick = window.velorix?.batchExport?.pickFiles
+    if (pick != null) {
+      await pick()
+    }
+    store.setWorkspaceTab('processing')
+    return
+  }
   const picked = await applyOpenMediaPick({
     setMediaSource: store.setMediaSource,
     setMediaProbe: store.setMediaProbe,

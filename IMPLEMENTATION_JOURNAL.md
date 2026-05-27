@@ -1734,3 +1734,8 @@
 - [J-1708] 2026-05-28 02:04:37 [Assistant]: ref.8 inspector — глава→`exportTrim`+«Обработка»; ref.1 «Открыть кадр»; ref.2 `downloads.openQueueOutput` на готовых строках; `inspector-chapter-trim.ts`. `npm run check:quiet`.
 - [J-1709] 2026-05-28 02:07:49 [Assistant]: ref.1 — playhead к `exportTrim.inSec` при смене trim; ref.3 — `downloads.openHistoryOutput` на успешных записях. `npm run check:quiet`.
 - [J-1710] 2026-05-28 02:09:54 [Assistant]: пакет J-1706..1709 — export trim/openOutput, snapshot, inspector→trim, downloads/history openOutput, processing split; `npm run check:quiet`, `git commit`, `git push`.
+- [J-1711] 2026-05-28 02:13:12 [Assistant]: neon.5 — motion trim/tabs/seek; X.6 Ctrl+K — сброс export trim, пакетный pick (`clear-export-trim`, `batch-export-pick`). `npm run check:quiet`.
+- [J-1712] 2026-05-28 02:17:01 [Assistant]: X.5 — `NeonShellSidebarGpu` (`engines.probeHwEncoders`); statusbar — медиа/ffprobe/trim из store. `npm run check:quiet`.
+- [J-1713] 2026-05-28 02:20:31 [Assistant]: ref.11 `AboutModalBody` (buildId + `engines.getStatus`); Help→Knowledge deep-link (`pendingKnowledgeSlug`). `npm run check:quiet`.
+- [J-1714] 2026-05-28 02:24:07 [Assistant]: ref.21 quit confirm — `onQuitConfirmRequested`→store+`quit-confirm` modal; `QuitConfirmModalBody` (export/download busy); `respondQuitConfirm`; `.app-modal__hint-list`. `npm run check:quiet`.
+- [J-1715] 2026-05-28 02:31:10 [Assistant]: ref.20 `FirstRunEnginesModalBody` (`getStatus`+HW probe); ref.4 planner cell→`plannerSelectedTaskId`/rail; ref.24 `EncoderBenchmarkModalBody` (`runBenchmark`); Ctrl+K modals; пакет J-1711..1714. `npm run check:quiet`, `git commit`.

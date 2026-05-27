@@ -34,7 +34,15 @@ export function KnowledgeScreen(): JSX.Element {
       const visible = result.articles.filter((article) => !HIDDEN_SLUGS.has(article.slug))
       setArticles(visible)
       if (visible.length > 0) {
-        setSelectedSlug(visible[0]!.slug)
+        const pending = useAppShellStore.getState().pendingKnowledgeSlug
+        const pick =
+          pending != null && visible.some((article) => article.slug === pending)
+            ? pending
+            : visible[0]!.slug
+        setSelectedSlug(pick)
+        if (pending != null) {
+          useAppShellStore.getState().setPendingKnowledgeSlug(null)
+        }
       }
     })()
   }, [])

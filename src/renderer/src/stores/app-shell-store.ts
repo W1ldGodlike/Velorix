@@ -6,6 +6,7 @@ import type { UtilityToolId } from '../features/tools/utility-tool-id'
 import type { EngineId, EnginePathOverrides } from '../../../shared/engine-contract'
 import type { MediaExportTrimPayload } from '../../../shared/ffmpeg-export-contract'
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
+import type { QuitConfirmRequestPayload } from '../../../shared/quit-confirm-contract'
 import type { ShellMediaSource } from './shell-media-source'
 
 export type SettingsSectionId = 'app' | 'processing' | 'cache'
@@ -21,6 +22,9 @@ type AppShellState = {
   mediaSource: ShellMediaSource | null
   mediaProbe: MediaProbeSuccess | null
   exportTrim: MediaExportTrimPayload | null
+  pendingKnowledgeSlug: string | null
+  quitConfirmRequest: QuitConfirmRequestPayload | null
+  plannerSelectedTaskId: string | null
   enginePathDraft: EnginePathOverrides
   setWorkspaceTab: (tab: WorkspaceTab) => void
   setToolsView: (view: UtilityToolId) => void
@@ -31,6 +35,9 @@ type AppShellState = {
   setMediaSource: (source: ShellMediaSource | null) => void
   setMediaProbe: (probe: MediaProbeSuccess | null) => void
   setExportTrim: (trim: MediaExportTrimPayload | null) => void
+  setPendingKnowledgeSlug: (slug: string | null) => void
+  setQuitConfirmRequest: (payload: QuitConfirmRequestPayload | null) => void
+  setPlannerSelectedTaskId: (taskId: string | null) => void
   setEnginePathDraftField: (engineId: EngineId, path: string) => void
   hydrateEnginePathDraft: () => Promise<void>
   persistEnginePathDraft: () => Promise<void>
@@ -49,6 +56,9 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   mediaSource: null,
   mediaProbe: null,
   exportTrim: null,
+  pendingKnowledgeSlug: null,
+  quitConfirmRequest: null,
+  plannerSelectedTaskId: null,
   enginePathDraft: {},
   setWorkspaceTab: (workspaceTab) =>
     set((state) => ({
@@ -67,6 +77,9 @@ export const useAppShellStore = create<AppShellState>((set) => ({
     })),
   setMediaProbe: (mediaProbe) => set({ mediaProbe }),
   setExportTrim: (exportTrim) => set({ exportTrim }),
+  setPendingKnowledgeSlug: (pendingKnowledgeSlug) => set({ pendingKnowledgeSlug }),
+  setQuitConfirmRequest: (quitConfirmRequest) => set({ quitConfirmRequest }),
+  setPlannerSelectedTaskId: (plannerSelectedTaskId) => set({ plannerSelectedTaskId }),
   setEnginePathDraftField: (engineId, path) =>
     set((state) => ({
       enginePathDraft: { ...state.enginePathDraft, [engineId]: path }

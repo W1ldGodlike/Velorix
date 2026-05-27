@@ -15,8 +15,28 @@
   .vn-surface-glass,
   .knowledge-screen__item,
   .processing-screen__file,
-  .processing-screen__clip {
+  .processing-screen__clip,
+  .processing-screen__tab,
+  .processing-screen__trim-btn,
+  .terminal-screen__input-row,
+  .scenarios-screen__grid .portal-card {
     transition: var(--vn-transition-surface);
+  }
+
+  .processing-screen__trim-span {
+    transition:
+      left var(--vn-duration-normal) var(--vn-ease-out-cinematic),
+      width var(--vn-duration-normal) var(--vn-ease-out-cinematic),
+      background-color var(--vn-duration-normal) var(--vn-ease-out-cinematic);
+  }
+
+  .processing-screen__seek {
+    transition: var(--vn-transition-colors);
+  }
+
+  .processing-screen__tab:hover:not(.processing-screen__tab--active) {
+    color: var(--fa-text-primary);
+    border-color: color-mix(in srgb, var(--fa-accent) 22%, transparent);
   }
 
   .vn-surface-glass:hover {

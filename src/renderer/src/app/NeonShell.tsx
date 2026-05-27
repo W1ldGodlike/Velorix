@@ -3,6 +3,8 @@ import { useEffect, type JSX } from 'react'
 import { useAppShellStore } from '../stores/app-shell-store'
 import { WORKSPACE_TAB_LABELS, WORKSPACE_TABS, type WorkspaceTab } from './workspace-tab'
 import { CommandPalette } from './CommandPalette'
+import { NeonShellSidebarGpu } from './NeonShellSidebarGpu'
+import { NeonShellStatusbar } from './NeonShellStatusbar'
 import { SystemModals } from './SystemModals'
 import { WorkspaceOutlet, WorkspaceRailOutlet } from './WorkspaceOutlet'
 
@@ -11,12 +13,14 @@ export function NeonShell(): JSX.Element {
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const railOpen = useAppShellStore((s) => s.railOpen)
   const setRailOpen = useAppShellStore((s) => s.setRailOpen)
-  const openModal = useAppShellStore((s) => s.openModal)
   const setToolsView = useAppShellStore((s) => s.setToolsView)
 
   useEffect(() => {
     const onPlanner = window.velorix?.onOpenWorkflowPlanner
     const onBuilder = window.velorix?.onOpenWorkflowScenarioBuilder
+    const onQuit = window.velorix?.onQuitConfirmRequested
+    const setQuitConfirmRequest = useAppShellStore.getState().setQuitConfirmRequest
+    const openModal = useAppShellStore.getState().openModal
     const unsubs: Array<() => void> = []
     if (onPlanner != null) {
       unsubs.push(onPlanner(() => setWorkspaceTab('planner')))
@@ -26,6 +30,14 @@ export function NeonShell(): JSX.Element {
         onBuilder(() => {
           setToolsView('scenario')
           setWorkspaceTab('tools')
+        })
+      )
+    }
+    if (onQuit != null) {
+      unsubs.push(
+        onQuit((payload) => {
+          setQuitConfirmRequest(payload)
+          openModal('quit-confirm')
         })
       )
     }
@@ -53,23 +65,7 @@ export function NeonShell(): JSX.Element {
               />
             ))}
           </nav>
-          <div className="neon-shell__sidebar-panel vn-surface-glass">
-            <p className="neon-shell__panel-title">GPU</p>
-            <p className="neon-shell__panel-line">NVIDIA RTX 4090 · 48%</p>
-            <p className="neon-shell__panel-sub">18.7 / 24.0 GB · 56°C</p>
-            <div className="neon-shell__sparkline" aria-hidden>
-              <span style={{ height: '45%' }} />
-              <span style={{ height: '70%' }} />
-              <span style={{ height: '55%' }} />
-              <span style={{ height: '90%' }} />
-            </div>
-            <div className="neon-shell__rings" aria-hidden>
-              <span className="neon-shell__ring" data-label="CPU 68%" />
-              <span className="neon-shell__ring" data-label="RAM 75%" />
-              <span className="neon-shell__ring" data-label="Disk 42%" />
-            </div>
-            <p className="neon-shell__panel-sub">↓ 12.6 MB/s · ↑ 2.4 MB/s</p>
-          </div>
+          <NeonShellSidebarGpu />
         </aside>
         <main className="neon-shell__center" key={workspaceTab}>
           <WorkspaceOutlet />
@@ -85,21 +81,7 @@ export function NeonShell(): JSX.Element {
           </button>
           <WorkspaceRailOutlet />
         </div>
-        <footer className="neon-shell__status">
-          <span>НОВЫЙ СЕЗОН.vlrix</span>
-          <span>01:36:53:08</span>
-          <span>3840×2160 · 4K</span>
-          <span className="app-ui-showcase-status-pill app-ui-showcase-status-pill--ready">
-            Готово
-          </span>
-          <button
-            type="button"
-            className="app-btn app-btn-secondary neon-shell__about-btn"
-            onClick={() => openModal('about')}
-          >
-            О программе
-          </button>
-        </footer>
+        <NeonShellStatusbar />
       </div>
       <SystemModals />
       <CommandPalette />

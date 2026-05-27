@@ -12,6 +12,7 @@ import {
   plannerCellKey,
   plannerCellKeyForTaskIndex
 } from '../../lib/planner-grid-layout'
+import { useAppShellStore } from '../../stores/app-shell-store'
 
 async function loadScheduledTasks(): Promise<ScheduledTaskListItem[]> {
   const list = window.velorix?.workflows?.listScheduledTasks
@@ -26,6 +27,8 @@ export function PlannerScreen(): JSX.Element {
   const [tasks, setTasks] = useState<ScheduledTaskListItem[]>([])
   const [statusLine, setStatusLine] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const plannerSelectedTaskId = useAppShellStore((s) => s.plannerSelectedTaskId)
+  const setPlannerSelectedTaskId = useAppShellStore((s) => s.setPlannerSelectedTaskId)
 
   const refresh = useCallback(async () => {
     setTasks(await loadScheduledTasks())
@@ -108,18 +111,27 @@ export function PlannerScreen(): JSX.Element {
             const key = plannerCellKey(day, hour)
             const cellTasks = tasksByCell.get(key) ?? []
             const active = cellTasks.some((task) => task.enabled)
+            const selected = cellTasks.some((task) => task.id === plannerSelectedTaskId)
             return (
-              <div
+              <button
+                type="button"
                 key={key}
-                className={`planner-grid__cell${active ? ' planner-grid__cell--active' : ''}`}
+                className={`planner-grid__cell${active ? ' planner-grid__cell--active' : ''}${selected ? ' planner-grid__cell--selected' : ''}`}
                 title={cellTasks.map((task) => task.title).join('\n')}
+                disabled={cellTasks.length === 0}
+                onClick={() => {
+                  const first = cellTasks[0]
+                  if (first != null) {
+                    setPlannerSelectedTaskId(first.id)
+                  }
+                }}
               >
                 {cellTasks.map((task) => (
                   <span key={task.id} className="planner-grid__cell-label">
                     {task.title}
                   </span>
                 ))}
-              </div>
+              </button>
             )
           })
         ])}
@@ -132,7 +144,8 @@ export function PlannerRail(): JSX.Element {
   const [scenarios, setScenarios] = useState<{ id: string; title: string }[]>([])
   const [tasks, setTasks] = useState<ScheduledTaskListItem[]>([])
   const [scenarioId, setScenarioId] = useState('')
-  const [taskId, setTaskId] = useState('')
+  const plannerSelectedTaskId = useAppShellStore((s) => s.plannerSelectedTaskId)
+  const setPlannerSelectedTaskId = useAppShellStore((s) => s.setPlannerSelectedTaskId)
   const [osHint, setOsHint] = useState<string | null>(null)
   const [railStatus, setRailStatus] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -156,9 +169,6 @@ export function PlannerRail(): JSX.Element {
         const result = await listTasks()
         if (result.ok) {
           setTasks(result.items)
-          if (result.items.length > 0) {
-            setTaskId(result.items[0]!.id)
-          }
         }
       }
       if (caps != null) {
@@ -191,6 +201,11 @@ export function PlannerRail(): JSX.Element {
     setRailStatus(result.ok ? `Запуск «${title}» (очередь #${String(result.rowId)})` : result.error)
     setBusy(false)
   }
+
+  const taskId =
+    plannerSelectedTaskId != null && tasks.some((row) => row.id === plannerSelectedTaskId)
+      ? plannerSelectedTaskId
+      : (tasks[0]?.id ?? '')
 
   async function handleToggleTask(): Promise<void> {
     const toggle = window.velorix?.workflows?.setScheduledTaskEnabled
@@ -250,7 +265,9 @@ export function PlannerRail(): JSX.Element {
         <select
           className="app-settings-select"
           value={taskId}
-          onChange={(e) => setTaskId(e.target.value)}
+          onChange={(e) =>
+            setPlannerSelectedTaskId(e.target.value.length > 0 ? e.target.value : null)
+          }
         >
           {tasks.length === 0 ? (
             <option value="">Нет задач</option>

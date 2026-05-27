@@ -11,6 +11,7 @@ const HIDDEN_SLUGS = new Set<string>(KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS)
 
 export function HelpScreen(): JSX.Element {
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
+  const setPendingKnowledgeSlug = useAppShellStore((s) => s.setPendingKnowledgeSlug)
   const [articles, setArticles] = useState<KnowledgeArticleListItem[]>([])
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -47,7 +48,10 @@ export function HelpScreen(): JSX.Element {
               <button
                 type="button"
                 className="help-screen__link"
-                onClick={() => setWorkspaceTab('knowledge')}
+                onClick={() => {
+                  setPendingKnowledgeSlug(article.slug)
+                  setWorkspaceTab('knowledge')
+                }}
               >
                 {article.title}
               </button>

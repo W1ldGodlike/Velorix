@@ -1,14 +1,16 @@
 import type { JSX } from 'react'
 
 import {
-  VELORIX_NEON_REFERENCE_ABOUT_REL,
   VELORIX_NEON_REFERENCE_CRITICAL_CRASH_REL,
-  VELORIX_NEON_REFERENCE_ENGINE_PATHS_REL,
-  VELORIX_NEON_REFERENCE_FIRST_RUN_ENGINES_REL
+  VELORIX_NEON_REFERENCE_ENGINE_PATHS_REL
 } from '../../../shared/velorix-neon-theme-tokens'
 
 import { ENGINE_IDS, type EngineId } from '../../../shared/engine-contract'
 
+import { AboutModalBody } from './AboutModalBody'
+import { EncoderBenchmarkModalBody } from './EncoderBenchmarkModalBody'
+import { FirstRunEnginesModalBody } from './FirstRunEnginesModalBody'
+import { QuitConfirmModalBody } from './QuitConfirmModalBody'
 import { SYSTEM_MODAL_TITLES, SYSTEM_MODAL_WIDE, type SystemModalId } from './system-modal'
 import { useAppShellStore } from '../stores/app-shell-store'
 
@@ -61,15 +63,38 @@ export function SystemModals(): JSX.Element | null {
   )
 }
 
+function respondQuitConfirm(confirmed: boolean): void {
+  const payload = useAppShellStore.getState().quitConfirmRequest
+  const respond = window.velorix?.respondQuitConfirm
+  if (payload != null && respond != null) {
+    respond(payload.requestId, confirmed)
+  }
+  useAppShellStore.getState().setQuitConfirmRequest(null)
+}
+
 function ModalActions(props: { id: SystemModalId; onClose: () => void }): JSX.Element {
   const { id, onClose } = props
   if (id === 'quit-confirm') {
     return (
       <div className="app-modal__actions">
-        <button type="button" className="app-btn" onClick={onClose}>
+        <button
+          type="button"
+          className="app-btn"
+          onClick={() => {
+            respondQuitConfirm(false)
+            onClose()
+          }}
+        >
           Отмена
         </button>
-        <button type="button" className="app-btn app-btn-danger">
+        <button
+          type="button"
+          className="app-btn app-btn-danger"
+          onClick={() => {
+            respondQuitConfirm(true)
+            onClose()
+          }}
+        >
           Закрыть
         </button>
       </div>
@@ -155,15 +180,10 @@ function ModalActions(props: { id: SystemModalId; onClose: () => void }): JSX.El
 function ModalBody(props: { id: SystemModalId }): JSX.Element {
   const { id } = props
   if (id === 'about') {
-    return (
-      <div className="app-modal__body">
-        <p className="app-modal__subtitle">VELORIX · UI ZERO rebuild</p>
-        <p className="app-modal__hint">Эталон: {VELORIX_NEON_REFERENCE_ABOUT_REL}</p>
-      </div>
-    )
+    return <AboutModalBody />
   }
   if (id === 'quit-confirm') {
-    return <p className="app-modal__body">Завершить работу приложения?</p>
+    return <QuitConfirmModalBody />
   }
   if (id === 'ffmpeg-error') {
     return (
@@ -176,7 +196,7 @@ function ModalBody(props: { id: SystemModalId }): JSX.Element {
     return <EnginePathsBody />
   }
   if (id === 'first-run-engines') {
-    return <FirstRunEnginesBody />
+    return <FirstRunEnginesModalBody />
   }
   if (id === 'critical-crash') {
     return (
@@ -190,11 +210,7 @@ function ModalBody(props: { id: SystemModalId }): JSX.Element {
     )
   }
   if (id === 'encoder-benchmark') {
-    return (
-      <p className="app-modal__body">
-        Сравнение кодеров (ref.24) — UI bootstrap; логика бенчмарка в main process.
-      </p>
-    )
+    return <EncoderBenchmarkModalBody />
   }
   if (id === 'plugins') {
     return <p className="app-modal__body">Управление плагинами (ref.25) — отдельный срез.</p>
@@ -265,26 +281,4 @@ async function pickEnginePath(
   if (path != null && path.length > 0) {
     setField(engineId, path)
   }
-}
-
-function FirstRunEnginesBody(): JSX.Element {
-  const steps = [
-    { title: 'FFmpeg + FFprobe', done: true },
-    { title: 'yt-dlp', done: true },
-    { title: 'Проверка GPU (NVENC)', done: false }
-  ] as const
-  return (
-    <div className="app-modal__body app-modal__body--stack">
-      <p>Мастер первого запуска — укажите пути к внешним движкам.</p>
-      <p className="app-modal__hint">Эталон: {VELORIX_NEON_REFERENCE_FIRST_RUN_ENGINES_REL}</p>
-      <ol className="app-modal__steps">
-        {steps.map((step) => (
-          <li key={step.title} className={step.done ? 'app-modal__step--done' : ''}>
-            {step.title}
-            {step.done ? ' ✓' : ''}
-          </li>
-        ))}
-      </ol>
-    </div>
-  )
 }

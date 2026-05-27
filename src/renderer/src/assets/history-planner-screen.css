@@ -155,7 +155,16 @@
   min-height: 2.75rem;
   padding: var(--fa-space-1);
   overflow: hidden;
+  border: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
   background: color-mix(in srgb, var(--fa-surface) 90%, transparent);
+}
+
+.planner-grid__cell:disabled {
+  cursor: default;
+  opacity: 0.65;
 }
 
 .planner-grid__cell-label {
@@ -170,4 +179,8 @@
 .planner-grid__cell--active {
   background: color-mix(in srgb, var(--fa-accent) 22%, var(--fa-surface));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fa-accent) 40%, transparent);
+}
+
+.planner-grid__cell--selected {
+  box-shadow: inset 0 0 0 2px var(--fa-accent);
 }
