@@ -7,12 +7,16 @@ import type { EngineId, EnginePathOverrides } from '../../../shared/engine-contr
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import type { ShellMediaSource } from './shell-media-source'
 
+export type SettingsSectionId = 'app' | 'processing' | 'cache'
+
 type AppShellState = {
   workspaceTab: WorkspaceTab
   toolsView: UtilityToolId
   railOpen: boolean
   activeModal: SystemModalId | null
   commandPaletteOpen: boolean
+  terminalCommandLine: string
+  settingsSection: SettingsSectionId
   mediaSource: ShellMediaSource | null
   mediaProbe: MediaProbeSuccess | null
   enginePathDraft: EnginePathOverrides
@@ -20,6 +24,8 @@ type AppShellState = {
   setToolsView: (view: UtilityToolId) => void
   setRailOpen: (open: boolean) => void
   setCommandPaletteOpen: (open: boolean) => void
+  setTerminalCommandLine: (line: string) => void
+  setSettingsSection: (section: SettingsSectionId) => void
   setMediaSource: (source: ShellMediaSource | null) => void
   setMediaProbe: (probe: MediaProbeSuccess | null) => void
   setEnginePathDraftField: (engineId: EngineId, path: string) => void
@@ -35,6 +41,8 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   railOpen: true,
   activeModal: null,
   commandPaletteOpen: false,
+  terminalCommandLine: 'ffmpeg -version',
+  settingsSection: 'app',
   mediaSource: null,
   mediaProbe: null,
   enginePathDraft: {},
@@ -46,6 +54,8 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   setToolsView: (toolsView) => set({ toolsView, workspaceTab: 'tools' }),
   setRailOpen: (railOpen) => set({ railOpen }),
   setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
+  setTerminalCommandLine: (terminalCommandLine) => set({ terminalCommandLine }),
+  setSettingsSection: (settingsSection) => set({ settingsSection }),
   setMediaSource: (mediaSource) => set({ mediaSource }),
   setMediaProbe: (mediaProbe) => set({ mediaProbe }),
   setEnginePathDraftField: (engineId, path) =>

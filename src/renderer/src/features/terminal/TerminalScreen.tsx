@@ -1,15 +1,54 @@
-import type { JSX } from 'react'
+import { useEffect, useState, type FormEvent, type JSX } from 'react'
 
+import type { TerminalCommandHintEntry } from '../../../../shared/terminal-contract'
 import { VELORIX_NEON_REFERENCE_TERMINAL_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
-const LOG_LINES = [
-  '[ffmpeg] Input #0, mov,mp4, from clip_001.mp4',
-  '[ffmpeg] Stream mapping: v:0 -> h264, a:0 -> aac',
-  'frame=  842 fps=118 q=28.0 size=  2048kB time=00:00:35.12',
-  'frame= 1204 fps=121 q=28.0 size=  3072kB time=00:00:50.24'
-] as const
+import { useAppShellStore } from '../../stores/app-shell-store'
 
 export function TerminalScreen(): JSX.Element {
+  const mediaSource = useAppShellStore((s) => s.mediaSource)
+  const commandLine = useAppShellStore((s) => s.terminalCommandLine)
+  const setCommandLine = useAppShellStore((s) => s.setTerminalCommandLine)
+  const [logLines, setLogLines] = useState<string[]>([
+    'Velorix terminal — введите команду и нажмите «Выполнить».'
+  ])
+  const [busy, setBusy] = useState(false)
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault()
+    const run = window.velorix?.terminal?.run
+    const line = commandLine.trim()
+    if (run == null || line.length === 0) {
+      return
+    }
+    setBusy(true)
+    setLogLines((prev) => [...prev, `› ${line}`])
+    const result = await run({
+      line,
+      currentFilePath: mediaSource?.path ?? null,
+      uiLocale: 'ru'
+    })
+    if (result.ok) {
+      appendChunks(result.stdout)
+      appendChunks(result.stderr)
+      setLogLines((prev) => [
+        ...prev,
+        `[${result.tool}] exit ${String(result.code)} · ${result.elapsedMs} ms`
+      ])
+    } else {
+      setLogLines((prev) => [...prev, `Ошибка: ${result.error}`])
+    }
+    setBusy(false)
+  }
+
+  function appendChunks(text: string): void {
+    if (text.trim().length === 0) {
+      return
+    }
+    const lines = text.split(/\r?\n/).filter((chunk) => chunk.length > 0)
+    setLogLines((prev) => [...prev, ...lines])
+  }
+
   return (
     <div className="portal-screen terminal-screen">
       <header className="portal-screen__head">
@@ -17,13 +56,13 @@ export function TerminalScreen(): JSX.Element {
         <p className="portal-screen__subtitle">Эталон: {VELORIX_NEON_REFERENCE_TERMINAL_REL}</p>
       </header>
       <div className="terminal-screen__log vn-surface-glass" role="log" aria-live="polite">
-        {LOG_LINES.map((line) => (
-          <code key={line}>{line}</code>
+        {logLines.map((line, index) => (
+          <code key={`${index}-${line.slice(0, 24)}`}>{line}</code>
         ))}
       </div>
       <form
         className="terminal-screen__input-row vn-surface-glass"
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={(e) => void handleSubmit(e)}
       >
         <span className="terminal-screen__prompt" aria-hidden>
           ›
@@ -33,9 +72,12 @@ export function TerminalScreen(): JSX.Element {
           className="app-input terminal-screen__input"
           placeholder="ffmpeg -i …"
           spellCheck={false}
+          value={commandLine}
+          onChange={(e) => setCommandLine(e.target.value)}
+          disabled={busy}
         />
-        <button type="submit" className="app-btn app-btn-primary">
-          Выполнить
+        <button type="submit" className="app-btn app-btn-primary" disabled={busy}>
+          {busy ? '…' : 'Выполнить'}
         </button>
       </form>
     </div>
@@ -43,26 +85,43 @@ export function TerminalScreen(): JSX.Element {
 }
 
 export function TerminalRail(): JSX.Element {
+  const setCommandLine = useAppShellStore((s) => s.setTerminalCommandLine)
+  const [hints, setHints] = useState<TerminalCommandHintEntry[]>([])
+
+  useEffect(() => {
+    void (async () => {
+      const getHints = window.velorix?.terminal?.getHints
+      if (getHints == null) {
+        return
+      }
+      const rows = await getHints()
+      setHints(rows.slice(0, 6))
+    })()
+  }, [])
+
   return (
     <aside className="portal-rail vn-surface-glass terminal-rail">
       <h2 className="portal-rail__title">Подсказки</h2>
       <div className="terminal-rail__hints">
-        <button type="button" className="app-btn app-btn-secondary">
-          -hide_banner
-        </button>
-        <button type="button" className="app-btn app-btn-secondary">
-          -map 0:v:0
-        </button>
-        <button type="button" className="app-btn app-btn-secondary">
-          -crf 23
-        </button>
+        {hints.map((hint) => (
+          <button
+            key={hint.token}
+            type="button"
+            className="app-btn app-btn-secondary"
+            title={hint.summary}
+            onClick={() => setCommandLine(hint.fullLine ?? hint.token)}
+          >
+            {hint.token}
+          </button>
+        ))}
       </div>
       <h2 className="portal-rail__title">Настройки</h2>
       <label className="app-ui-showcase-field">
-        <span className="app-ui-showcase-field-label">Лог</span>
+        <span className="app-ui-showcase-field-label">Инструмент</span>
         <select className="app-settings-select" defaultValue="ffmpeg">
           <option value="ffmpeg">FFmpeg</option>
-          <option value="ytdlp">yt-dlp</option>
+          <option value="ffprobe">FFprobe</option>
+          <option value="yt-dlp">yt-dlp</option>
         </select>
       </label>
     </aside>

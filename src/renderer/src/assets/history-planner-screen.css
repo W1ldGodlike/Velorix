@@ -31,6 +31,32 @@
   font-size: var(--fa-font-size-caption);
 }
 
+.planner-screen__status,
+.planner-rail__status,
+.planner-rail__hint {
+  margin: 0;
+  flex: 1 1 100%;
+  font-size: var(--fa-font-size-body-sm);
+  color: var(--fa-text-muted);
+}
+
+.planner-rail__hint {
+  flex: unset;
+}
+
+.history-screen__error,
+.history-screen__empty {
+  margin: 0;
+  padding: var(--fa-space-3);
+  border-radius: var(--fa-radius-preview);
+  color: var(--fa-text-muted);
+  font-size: var(--fa-font-size-body-sm);
+}
+
+.history-screen__error {
+  color: var(--fa-status-error);
+}
+
 .history-screen__feed {
   display: flex;
   flex-direction: column;
@@ -116,8 +142,22 @@
 }
 
 .planner-grid__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   min-height: 2.75rem;
+  padding: var(--fa-space-1);
+  overflow: hidden;
   background: color-mix(in srgb, var(--fa-surface) 90%, transparent);
+}
+
+.planner-grid__cell-label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fa-font-size-xs);
+  color: var(--fa-text-secondary);
 }
 
 .planner-grid__cell--active {

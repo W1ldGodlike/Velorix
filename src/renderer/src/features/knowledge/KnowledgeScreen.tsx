@@ -8,6 +8,8 @@ import { VELORIX_NEON_REFERENCE_KNOWLEDGE_REL } from '../../../../shared/velorix
 
 import { useAppShellStore } from '../../stores/app-shell-store'
 
+import { KnowledgeMarkdownBody } from './KnowledgeMarkdownBody'
+
 const HIDDEN_SLUGS = new Set<string>(KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS)
 
 export function KnowledgeScreen(): JSX.Element {
@@ -101,7 +103,15 @@ export function KnowledgeScreen(): JSX.Element {
         </aside>
         <article className="knowledge-screen__preview vn-surface-glass">
           <h2>{selected?.title ?? 'Статья'}</h2>
-          <pre className="knowledge-screen__markdown">{markdown || 'Загрузка…'}</pre>
+          {markdown.length > 0 ? (
+            <KnowledgeMarkdownBody
+              markdown={markdown}
+              {...(selected?.title != null ? { articleTitle: selected.title } : {})}
+              onSelectSlug={(slug) => setSelectedSlug(slug)}
+            />
+          ) : (
+            <p className="knowledge-screen__loading">Загрузка…</p>
+          )}
         </article>
       </div>
     </div>

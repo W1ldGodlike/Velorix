@@ -1,4 +1,4 @@
-import type { JSX } from 'react'
+import { useEffect, type JSX } from 'react'
 
 import { useAppShellStore } from '../stores/app-shell-store'
 import { WORKSPACE_TAB_LABELS, WORKSPACE_TABS, type WorkspaceTab } from './workspace-tab'
@@ -12,6 +12,29 @@ export function NeonShell(): JSX.Element {
   const railOpen = useAppShellStore((s) => s.railOpen)
   const setRailOpen = useAppShellStore((s) => s.setRailOpen)
   const openModal = useAppShellStore((s) => s.openModal)
+  const setToolsView = useAppShellStore((s) => s.setToolsView)
+
+  useEffect(() => {
+    const onPlanner = window.velorix?.onOpenWorkflowPlanner
+    const onBuilder = window.velorix?.onOpenWorkflowScenarioBuilder
+    const unsubs: Array<() => void> = []
+    if (onPlanner != null) {
+      unsubs.push(onPlanner(() => setWorkspaceTab('planner')))
+    }
+    if (onBuilder != null) {
+      unsubs.push(
+        onBuilder(() => {
+          setToolsView('scenario')
+          setWorkspaceTab('tools')
+        })
+      )
+    }
+    return () => {
+      for (const unsub of unsubs) {
+        unsub()
+      }
+    }
+  }, [setToolsView, setWorkspaceTab])
 
   const shellClass = railOpen ? 'neon-shell' : 'neon-shell neon-shell--no-rail'
 
