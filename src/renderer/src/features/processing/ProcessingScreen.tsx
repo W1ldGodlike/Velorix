@@ -1,20 +1,13 @@
 import { useEffect, useState, type JSX } from 'react'
 
-import type {
-  FfmpegExportEncodePresetId,
-  FfmpegExportProgressPayload
-} from '../../../../shared/ffmpeg-export-contract'
 import { VELORIX_NEON_CANONICAL_REFERENCE_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
 import { applyOpenMediaPick } from '../../lib/apply-open-media-pick'
-import { parseDownloadsProgressPercent } from '../../lib/parse-downloads-queue-row'
 import { restoreLastMediaSession } from '../../lib/restore-last-media-session'
-import { startPreviewMediaExport } from '../../lib/start-preview-media-export'
 import { useAppShellStore } from '../../stores/app-shell-store'
-import { useDownloadsQueue } from '../downloads/use-downloads-queue'
 import { ProcessingPreviewPanel } from './ProcessingPreviewPanel'
-import { useExportProgressNote } from './use-export-progress-note'
-import { useFfmpegExportSettings } from './use-ffmpeg-export-settings'
+import { ProcessingDownloadsPeek, ProcessingTerminalPeek } from './ProcessingScreenPeeks'
+import { buildTrimSpanStyle, PROCESSING_TIMELINE_LANES } from './processing-timeline-model'
 
 type ProcessingCenterTab = 'editor' | 'downloads' | 'terminal'
 
@@ -38,16 +31,9 @@ const MEDIA_FILES = [
   'ambience_city.wav'
 ] as const
 
-const LANES: Array<{ id: string; clip?: string }> = [
-  { id: 'V1', clip: 'city_night_4k.mp4' },
-  { id: 'V2', clip: 'drive_sequence.mov' },
-  { id: 'V3', clip: 'neon_building.mp4' },
-  { id: 'A1', clip: 'music_background.mp3' },
-  { id: 'A2', clip: 'ambience_city.wav' }
-]
-
 export function ProcessingScreen(): JSX.Element {
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
+  const exportTrim = useAppShellStore((s) => s.exportTrim)
   const setMediaSource = useAppShellStore((s) => s.setMediaSource)
   const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
   const mediaSource = useAppShellStore((s) => s.mediaSource)
@@ -138,6 +124,14 @@ export function ProcessingScreen(): JSX.Element {
           >
             Открыть медиа
           </button>
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            disabled={mediaSource == null}
+            onClick={() => setWorkspaceTab('inspector')}
+          >
+            Инспектор
+          </button>
         </div>
       </header>
 
@@ -193,20 +187,32 @@ export function ProcessingScreen(): JSX.Element {
               key={mediaSource?.mediaUrl ?? 'preview-empty'}
               mediaSource={mediaSource}
               durationSec={mediaProbe?.durationSec ?? null}
+              onActionNote={setHeadStatus}
             />
             <div className="processing-screen__timeline vn-surface-glass" aria-label="Таймлайн">
-              {LANES.map((lane) => (
-                <div key={lane.id} className="processing-screen__lane">
-                  <span className="processing-screen__lane-label">{lane.id}</span>
-                  <div
-                    className={`processing-screen__lane-track${lane.clip != null ? ' processing-screen__lane-track--clip' : ''}`}
-                  >
-                    {lane.clip != null ? (
-                      <span className="processing-screen__clip">{lane.clip}</span>
-                    ) : null}
+              {PROCESSING_TIMELINE_LANES.map((lane) => {
+                const trimStyle =
+                  lane.id === 'V1' ? buildTrimSpanStyle(exportTrim, mediaProbe?.durationSec) : null
+                return (
+                  <div key={lane.id} className="processing-screen__lane">
+                    <span className="processing-screen__lane-label">{lane.id}</span>
+                    <div
+                      className={`processing-screen__lane-track${lane.clip != null ? ' processing-screen__lane-track--clip' : ''}`}
+                    >
+                      {trimStyle != null ? (
+                        <span
+                          className="processing-screen__trim-span"
+                          style={trimStyle}
+                          aria-hidden
+                        />
+                      ) : null}
+                      {lane.clip != null ? (
+                        <span className="processing-screen__clip">{lane.clip}</span>
+                      ) : null}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </div>
@@ -215,224 +221,4 @@ export function ProcessingScreen(): JSX.Element {
   )
 }
 
-function ProcessingDownloadsPeek(props: { onOpenFull: () => void }): JSX.Element {
-  const rows = useDownloadsQueue().slice(0, 5)
-  return (
-    <section className="processing-screen__peek vn-surface-glass">
-      <h2 className="processing-screen__peek-title">Очередь загрузок</h2>
-      <ul className="processing-screen__peek-list">
-        {rows.length === 0 ? (
-          <li>Очередь пуста</li>
-        ) : (
-          rows.map((row) => {
-            const pct = parseDownloadsProgressPercent(row.progress)
-            const suffix = pct > 0 ? ` · ${String(pct)}%` : ''
-            return (
-              <li key={row.id}>
-                {row.shortLabel}
-                {suffix} · {row.status}
-              </li>
-            )
-          })
-        )}
-      </ul>
-      <button type="button" className="app-btn app-btn-primary" onClick={props.onOpenFull}>
-        Открыть загрузки
-      </button>
-    </section>
-  )
-}
-
-function ProcessingTerminalPeek(props: { onOpenFull: () => void }): JSX.Element {
-  const [lines, setLines] = useState<string[]>(['Ожидание FFmpeg…'])
-
-  useEffect(() => {
-    const subscribe = window.velorix?.export?.onProgress
-    if (subscribe == null) {
-      return
-    }
-    return subscribe((payload: FfmpegExportProgressPayload) => {
-      const line =
-        payload.percent >= 0 ? `${String(payload.percent)}% · ${payload.message}` : payload.message
-      setLines((prev) => [...prev, line].slice(-6))
-    })
-  }, [])
-
-  return (
-    <section className="processing-screen__peek vn-surface-glass processing-screen__peek--terminal">
-      <h2 className="processing-screen__peek-title">FFmpeg log</h2>
-      <pre className="processing-screen__peek-log">
-        {lines.map((line, index) => (
-          <code key={`${index}-${line.slice(0, 16)}`}>{line}</code>
-        ))}
-      </pre>
-      <button type="button" className="app-btn app-btn-primary" onClick={props.onOpenFull}>
-        Открыть терминал
-      </button>
-    </section>
-  )
-}
-
-export function ProcessingRail(): JSX.Element {
-  const openModal = useAppShellStore((s) => s.openModal)
-  const mediaSource = useAppShellStore((s) => s.mediaSource)
-  const mediaProbe = useAppShellStore((s) => s.mediaProbe)
-  const [exportBusy, setExportBusy] = useState(false)
-  const [exportNote, setExportNote] = useState<string | null>(null)
-  const exportProgressNote = useExportProgressNote(exportBusy)
-  const { view, setCrf, setVideoCodec, setContainer, setEncodePreset, setAudioMode } =
-    useFfmpegExportSettings()
-
-  const displayExportNote = exportBusy ? (exportProgressNote ?? 'Экспорт…') : exportNote
-
-  const codec = view?.ffmpegExportVideoCodec ?? 'libx264'
-  const container = view?.ffmpegExportContainer ?? 'mp4'
-  const crf = view?.ffmpegExportCrf ?? 18
-  const encodePreset: FfmpegExportEncodePresetId =
-    view?.ffmpegExportEncodePreset === 'smaller' || view?.ffmpegExportEncodePreset === 'quality'
-      ? view.ffmpegExportEncodePreset
-      : 'balance'
-  const audioMode = view?.ffmpegExportAudioMode ?? 'aac'
-
-  return (
-    <aside className="processing-rail vn-surface-glass">
-      <h2 className="processing-rail__title">Настройки FFmpeg</h2>
-      <details className="processing-rail__section" open>
-        <summary>Видео</summary>
-        <div className="processing-rail__section-body">
-          <label className="app-ui-showcase-field">
-            <span className="app-ui-showcase-field-label">Кодек</span>
-            <select
-              className="app-settings-select"
-              value={codec}
-              onChange={(e) => void setVideoCodec(e.target.value as typeof codec)}
-            >
-              <option value="libx264">H.264 (libx264)</option>
-              <option value="libx265">H.265 (libx265)</option>
-              <option value="hw_auto">HW auto</option>
-              <option value="hw_auto_hevc">HW HEVC</option>
-            </select>
-          </label>
-          <label className="app-ui-showcase-field">
-            <span className="app-ui-showcase-field-label">CRF</span>
-            <input
-              type="number"
-              className="app-input"
-              value={crf}
-              min={0}
-              max={51}
-              onChange={(e) => {
-                const next = Number(e.target.value)
-                if (!Number.isNaN(next)) {
-                  void setCrf(next)
-                }
-              }}
-            />
-          </label>
-        </div>
-      </details>
-      <details className="processing-rail__section">
-        <summary>Аудио</summary>
-        <div className="processing-rail__section-body">
-          <select
-            className="app-settings-select"
-            value={audioMode}
-            onChange={(e) => void setAudioMode(e.target.value as typeof audioMode)}
-          >
-            <option value="aac">AAC</option>
-            <option value="libopus">Opus</option>
-            <option value="copy">Copy</option>
-            <option value="none">Без аудио</option>
-          </select>
-        </div>
-      </details>
-      <details className="processing-rail__section">
-        <summary>Формат</summary>
-        <div className="processing-rail__section-body">
-          <select
-            className="app-settings-select"
-            value={container}
-            onChange={(e) => void setContainer(e.target.value as typeof container)}
-          >
-            <option value="mp4">MP4</option>
-            <option value="mkv">MKV</option>
-            <option value="mov">MOV</option>
-          </select>
-        </div>
-      </details>
-      <details className="processing-rail__section">
-        <summary>Пресеты</summary>
-        <div className="processing-rail__section-body">
-          <select
-            className="app-settings-select"
-            value={encodePreset}
-            onChange={(e) => {
-              const next = e.target.value
-              if (next === 'balance' || next === 'smaller' || next === 'quality') {
-                void setEncodePreset(next)
-              }
-            }}
-          >
-            <option value="balance">Баланс</option>
-            <option value="smaller">Меньший размер</option>
-            <option value="quality">Качество</option>
-          </select>
-        </div>
-      </details>
-      <button
-        type="button"
-        className="app-btn app-btn-primary processing-rail__export"
-        disabled={exportBusy || mediaSource == null}
-        onClick={() => {
-          if (mediaSource == null) {
-            setExportNote('Сначала откройте медиа в превью')
-            return
-          }
-          setExportBusy(true)
-          setExportNote(null)
-          void startPreviewMediaExport({
-            inputPath: mediaSource.path,
-            mediaProbe,
-            settings: view,
-            openModal
-          }).then((result) => {
-            if (result?.ok) {
-              setExportNote(`Готово: ${result.path}`)
-            } else if (result != null && !result.ok && 'error' in result) {
-              setExportNote(result.error)
-            }
-            setExportBusy(false)
-          })
-        }}
-      >
-        {exportBusy ? 'Экспорт…' : 'Начать экспорт'}
-      </button>
-      <button
-        type="button"
-        className="app-btn app-btn-secondary"
-        disabled={!exportBusy}
-        onClick={() => {
-          void window.velorix?.export?.cancel?.().then(() => {
-            setExportBusy(false)
-            setExportNote('Экспорт отменён')
-          })
-        }}
-      >
-        Отменить экспорт
-      </button>
-      <button
-        type="button"
-        className="app-btn app-btn-secondary"
-        onClick={() => openModal('export-preset-name')}
-      >
-        Имя пресета
-      </button>
-      {displayExportNote != null ? (
-        <p className="processing-rail__export-note">{displayExportNote}</p>
-      ) : null}
-      <p className="processing-rail__footer">
-        {view == null ? 'Загрузка настроек…' : `Кодек: ${codec} · ${container.toUpperCase()}`}
-      </p>
-    </aside>
-  )
-}
+export { ProcessingRail } from './ProcessingRail'

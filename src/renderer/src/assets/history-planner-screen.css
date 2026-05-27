@@ -81,6 +81,13 @@
   font-size: var(--fa-font-size-xs);
 }
 
+.history-event__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fa-space-snug);
+  width: 100%;
+}
+
 .history-rail,
 .planner-rail {
   display: flex;

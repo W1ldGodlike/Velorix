@@ -66,6 +66,28 @@ export function HistoryScreen(): JSX.Element {
               </span>
               <strong>{event.shortLabel}</strong>
               <span className="history-event__when">{formatWhen(event.finishedAt)}</span>
+              {event.outcome === 'success' ? (
+                <div className="history-event__actions">
+                  <button
+                    type="button"
+                    className="app-btn app-btn-secondary"
+                    onClick={() => {
+                      void window.velorix?.downloads?.openHistoryOutput(event.id, 'file')
+                    }}
+                  >
+                    Открыть
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn"
+                    onClick={() => {
+                      void window.velorix?.downloads?.openHistoryOutput(event.id, 'folder')
+                    }}
+                  >
+                    Папка
+                  </button>
+                </div>
+              ) : null}
             </article>
           ))
         )}

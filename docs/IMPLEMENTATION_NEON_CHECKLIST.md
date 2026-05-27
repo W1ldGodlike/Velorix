@@ -73,8 +73,8 @@
 
 - [~] **neon.1** **ref.27** — `--vn-*`→`--fa-*` bridge, `02-surfaces` в index, палитра на `#ref27`; sign-off PNG — нет.
 - [~] **neon.2** **ref.26** — матрица кнопок/nav/статусов + forced states + reduced-motion; sign-off PNG — нет.
-- [~] **neon.3** **ref.1** — export start/cancel/progress, session persist, preview transport; sign-off PNG — нет.
-- [~] **neon.4** **refs 2–7,9** — portal IPC (downloads…scenarios); ref.6 settings; sign-off PNG — нет.
+- [~] **neon.3** **ref.1** — export trim In/Out, openOutput, transport; sign-off PNG — нет.
+- [~] **neon.4** **refs 2–3,8** — downloads/history openOutput; inspector→trim; sign-off PNG — нет.
 - [~] **neon.5** Motion-pass v1 — glass/knowledge/timeline hover в `neon-motion-v1.css`; sign-off PNG — нет.
 
 ---

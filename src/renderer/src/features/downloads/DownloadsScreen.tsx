@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState, type JSX } from 'react'
 
 import { VELORIX_NEON_REFERENCE_DOWNLOADS_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
-import { parseDownloadsProgressPercent } from '../../lib/parse-downloads-queue-row'
+import {
+  isDownloadsRowComplete,
+  parseDownloadsProgressPercent
+} from '../../lib/parse-downloads-queue-row'
 import { useDownloadsQueue } from './use-downloads-queue'
 
 const FILTER_TABS = [
@@ -136,6 +139,7 @@ export function DownloadsScreen(): JSX.Element {
         ) : (
           filtered.map((row, index) => {
             const pct = parseDownloadsProgressPercent(row.progress)
+            const rowComplete = isDownloadsRowComplete(row.status)
             return (
               <article
                 key={row.id}
@@ -169,6 +173,34 @@ export function DownloadsScreen(): JSX.Element {
                   </div>
                 </div>
                 <div className="downloads-card__actions">
+                  {rowComplete ? (
+                    <>
+                      <button
+                        type="button"
+                        className="app-ui-showcase-icon-btn"
+                        aria-label="Открыть файл"
+                        title="Открыть файл"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          void window.velorix?.downloads?.openQueueOutput(row.id, 'file')
+                        }}
+                      >
+                        ⧉
+                      </button>
+                      <button
+                        type="button"
+                        className="app-ui-showcase-icon-btn"
+                        aria-label="Показать в папке"
+                        title="Показать в папке"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          void window.velorix?.downloads?.openQueueOutput(row.id, 'folder')
+                        }}
+                      >
+                        📁
+                      </button>
+                    </>
+                  ) : null}
                   <button
                     type="button"
                     className="app-ui-showcase-icon-btn"

@@ -28,6 +28,13 @@
   font-size: var(--fa-font-size-caption);
 }
 
+.portal-screen__head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--fa-space-snug);
+}
+
 .portal-rail {
   display: flex;
   flex-direction: column;

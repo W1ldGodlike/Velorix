@@ -1,9 +1,10 @@
-import type { JSX } from 'react'
+import { useState, type JSX } from 'react'
 
 import { VELORIX_NEON_REFERENCE_INSPECTOR_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
 import { applyOpenMediaPick } from '../../lib/apply-open-media-pick'
 import { formatMediaProbeSummary } from '../../lib/format-media-probe-summary'
+import { trimFromProbeChapter } from '../../lib/inspector-chapter-trim'
 import { useAppShellStore } from '../../stores/app-shell-store'
 
 export function InspectorScreen(): JSX.Element {
@@ -11,6 +12,7 @@ export function InspectorScreen(): JSX.Element {
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
   const setMediaSource = useAppShellStore((s) => s.setMediaSource)
   const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const openModal = useAppShellStore((s) => s.openModal)
 
   const title = mediaSource?.name ?? 'Файл не выбран'
@@ -26,15 +28,25 @@ export function InspectorScreen(): JSX.Element {
           <h1 className="portal-screen__title">Инспектор медиа</h1>
           <p className="portal-screen__subtitle">Эталон: {VELORIX_NEON_REFERENCE_INSPECTOR_REL}</p>
         </div>
-        <button
-          type="button"
-          className="app-btn app-btn-primary"
-          onClick={() => {
-            void applyOpenMediaPick({ setMediaSource, setMediaProbe, openModal })
-          }}
-        >
-          Открыть файл
-        </button>
+        <div className="portal-screen__head-actions">
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            disabled={mediaSource == null}
+            onClick={() => setWorkspaceTab('processing')}
+          >
+            Обработка
+          </button>
+          <button
+            type="button"
+            className="app-btn app-btn-primary"
+            onClick={() => {
+              void applyOpenMediaPick({ setMediaSource, setMediaProbe, openModal })
+            }}
+          >
+            Открыть файл
+          </button>
+        </div>
       </header>
       <div className="inspector-screen__layout">
         <section className="inspector-screen__overview vn-surface-glass">
@@ -110,7 +122,11 @@ function formatSize(bytes: number | null | undefined): string {
 
 export function InspectorRail(): JSX.Element {
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
+  const setExportTrim = useAppShellStore((s) => s.setExportTrim)
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const chapters = mediaProbe?.chapters ?? []
+  const [activeChapterIndex, setActiveChapterIndex] = useState<number | null>(null)
+
   return (
     <aside className="portal-rail vn-surface-glass inspector-rail">
       <h2 className="portal-rail__title">Главы</h2>
@@ -118,16 +134,30 @@ export function InspectorRail(): JSX.Element {
         {chapters.length === 0 ? (
           <li className="portal-rail__hint">Главы не найдены</li>
         ) : (
-          chapters.map((chapter, index) => (
-            <li key={`${chapter.index}-${chapter.startSec}`}>
-              <button
-                type="button"
-                className={`inspector-rail__chapter${index === 0 ? ' inspector-rail__chapter--active' : ''}`}
-              >
-                {chapter.title ?? `Глава ${chapter.index}`}
-              </button>
-            </li>
-          ))
+          chapters.map((chapter) => {
+            const isActive =
+              activeChapterIndex === chapter.index &&
+              chapters.some((row) => row.index === activeChapterIndex)
+            return (
+              <li key={`${chapter.index}-${chapter.startSec}`}>
+                <button
+                  type="button"
+                  className={`inspector-rail__chapter${isActive ? ' inspector-rail__chapter--active' : ''}`}
+                  onClick={() => {
+                    const trim = trimFromProbeChapter(chapter, chapters, mediaProbe?.durationSec)
+                    if (trim == null) {
+                      return
+                    }
+                    setActiveChapterIndex(chapter.index)
+                    setExportTrim(trim)
+                    setWorkspaceTab('processing')
+                  }}
+                >
+                  {chapter.title ?? `Глава ${chapter.index}`}
+                </button>
+              </li>
+            )
+          })
         )}
       </ul>
     </aside>

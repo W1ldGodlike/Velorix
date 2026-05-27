@@ -1729,3 +1729,8 @@
 - [J-1703] 2026-05-28 01:42:26 [Assistant]: neon.2 ref.26 — матрица secondary/danger, sidebar nav forced states, все тона StatusPill; `prefers-reduced-motion` для loaders. `npm run check:quiet`.
 - [J-1704] 2026-05-28 01:46:13 [Assistant]: neon.3 ref.1 — `export.start` из FFmpeg rail (`startPreviewMediaExport`); `session.persistLastSource` при open media; neon.5 hover glass/knowledge/clips. `npm run check:quiet`.
 - [J-1705] 2026-05-28 01:49:45 [Assistant]: neon.3 ref.1 — кастомный preview transport (play/seek/±5s, `formatMediaClock`); `export.onProgress` в rail + «Отменить экспорт» (`export.cancel`); remount по `mediaUrl` вместо sync setState в effect. `npm run check:quiet`.
+- [J-1706] 2026-05-28 01:54:45 [Assistant]: neon.3 ref.1 — маркеры In/Out (`exportTrim` в store → `export.start` trim); `export.openOutput` file/folder после экспорта; `export-trim-markers.ts`. `npm run check:quiet`.
+- [J-1707] 2026-05-28 02:00:07 [Assistant]: neon.3 ref.1 — `preview.snapshotFrame` (кнопка «Кадр»), переход «Инспектор», подсветка trim на V1; split `ProcessingRail` / peeks / timeline-model (<500 строк). `npm run check:quiet`.
+- [J-1708] 2026-05-28 02:04:37 [Assistant]: ref.8 inspector — глава→`exportTrim`+«Обработка»; ref.1 «Открыть кадр»; ref.2 `downloads.openQueueOutput` на готовых строках; `inspector-chapter-trim.ts`. `npm run check:quiet`.
+- [J-1709] 2026-05-28 02:07:49 [Assistant]: ref.1 — playhead к `exportTrim.inSec` при смене trim; ref.3 — `downloads.openHistoryOutput` на успешных записях. `npm run check:quiet`.
+- [J-1710] 2026-05-28 02:09:54 [Assistant]: пакет J-1706..1709 — export trim/openOutput, snapshot, inspector→trim, downloads/history openOutput, processing split; `npm run check:quiet`, `git commit`, `git push`.

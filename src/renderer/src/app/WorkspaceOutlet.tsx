@@ -10,7 +10,8 @@ import { SettingsRail, SettingsScreen } from '../features/settings/SettingsScree
 import { TerminalRail, TerminalScreen } from '../features/terminal/TerminalScreen'
 import { HelpRail, HelpScreen } from '../features/help/HelpScreen'
 import { ToolsRailOutlet, ToolsWorkspace } from '../features/tools/ToolsWorkspace'
-import { ProcessingRail, ProcessingScreen } from '../features/processing/ProcessingScreen'
+import { ProcessingScreen } from '../features/processing/ProcessingScreen'
+import { ProcessingRail } from '../features/processing/ProcessingRail'
 import { useAppShellStore } from '../stores/app-shell-store'
 
 export function WorkspaceOutlet(): JSX.Element {

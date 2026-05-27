@@ -56,6 +56,16 @@ export function parseDownloadsQueueSnapshot(raw: unknown): DownloadsQueueRowView
   return rows
 }
 
+export function isDownloadsRowComplete(status: string): boolean {
+  const lower = status.toLowerCase()
+  return (
+    lower.includes('готов') ||
+    lower.includes('done') ||
+    lower.includes('complete') ||
+    lower.includes('finished')
+  )
+}
+
 export function parseDownloadsProgressPercent(progress: string): number {
   const match = /(\d+)\s*%/.exec(progress)
   if (match == null) {

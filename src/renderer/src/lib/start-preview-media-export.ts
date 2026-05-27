@@ -1,6 +1,7 @@
 import type {
   FfmpegExportEncodePresetId,
-  MediaExportStartResult
+  MediaExportStartResult,
+  MediaExportTrimPayload
 } from '../../../shared/ffmpeg-export-contract'
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import type { AppSettingsView } from '../../../shared/settings-contract'
@@ -18,6 +19,7 @@ function readEncodePreset(raw: string | undefined): FfmpegExportEncodePresetId |
 export async function startPreviewMediaExport(args: {
   inputPath: string
   mediaProbe?: MediaProbeSuccess | null
+  exportTrim?: MediaExportTrimPayload | null
   settings?: AppSettingsView | null
   openModal: (id: SystemModalId) => void
 }): Promise<MediaExportStartResult | null> {
@@ -31,10 +33,13 @@ export async function startPreviewMediaExport(args: {
     duration != null && Number.isFinite(duration) && duration > 0 ? duration : null
   const encodePreset = readEncodePreset(settings?.ffmpegExportEncodePreset)
 
+  const trim = args.exportTrim ?? undefined
+
   const result = await start({
     inputPath: args.inputPath,
     uiLocale: 'ru',
     probeDurationSec,
+    ...(trim != null ? { trim } : {}),
     ...(encodePreset != null ? { encodePreset } : {}),
     ...(settings?.ffmpegExportVideoCodec != null
       ? { videoCodec: settings.ffmpegExportVideoCodec }
