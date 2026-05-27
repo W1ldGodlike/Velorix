@@ -47,7 +47,7 @@
 | ------- | -- | ----------- |
 | Токены / тема в renderer | **~25** | `velorix-neon/*` + `ref27-showcase*.css`; kit ~28 карточек; sign-off PNG — нет. |
 | Shell layout (Phase D.2) | **~24** | `NeonShell` + ref.1 center tabs (Редактор/Загрузки/Консоль); sign-off PNG — нет. |
-| Визуал экранов refs **1–9** | **~36** | ref.1 preview IPC (`velorixmedia`); 2–10 bootstrap; sign-off PNG — нет. |
+| Визуал экранов refs **1–9** | **~40** | ref.1/8 IPC probe; ref.5 Help IPC; 2–10 bootstrap; sign-off PNG — нет. |
 | Модалки / утилиты refs **10–25** | **~35** | modals 11, 18–23 + tools full-screen 12–17, 24–25; sign-off PNG — нет. |
 | Showcase refs **26–27** | **0** | Только PNG. |
 | Функционал «вишек» с PNG | **0** | Backend отдельно; UI не сверен. |
@@ -74,7 +74,7 @@
 - [ ] **neon.1** **ref.27** — примитивы 1:1 `velorix-neon-reference-ui-components.png`; tokens CSS в renderer.
 - [ ] **neon.2** **ref.26** — состояния 1:1 showcase PNG.
 - [~] **neon.3** **ref.1** — bootstrap shell+processing в `#ref1`; sign-off canonical PNG — нет.
-- [~] **neon.4** **refs 2–4** — bootstrap layouts в shell; sign-off PNG — нет.
+- [~] **neon.4** **refs 2–4** — ref.2 queue IPC в shell; history/planner bootstrap; sign-off PNG — нет.
 - [~] **neon.5** Motion-pass v1 — `neon-motion-v1.css`; polish hover/glow — нет.
 
 ---

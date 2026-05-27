@@ -19,7 +19,7 @@
 
 .inspector-screen__overview h2,
 .inspector-screen__tracks h2 {
-  margin: 0 0 var(--fa-space-3);
+  margin: 0 0 var(--fa-space-2);
   font-size: var(--fa-font-size-md);
 }
 

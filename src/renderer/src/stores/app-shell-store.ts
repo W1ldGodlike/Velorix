@@ -4,6 +4,7 @@ import type { WorkspaceTab } from '../app/workspace-tab'
 import type { SystemModalId } from '../app/system-modal'
 import type { UtilityToolId } from '../features/tools/utility-tool-id'
 import type { EngineId, EnginePathOverrides } from '../../../shared/engine-contract'
+import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import type { ShellMediaSource } from './shell-media-source'
 
 type AppShellState = {
@@ -13,12 +14,14 @@ type AppShellState = {
   activeModal: SystemModalId | null
   commandPaletteOpen: boolean
   mediaSource: ShellMediaSource | null
+  mediaProbe: MediaProbeSuccess | null
   enginePathDraft: EnginePathOverrides
   setWorkspaceTab: (tab: WorkspaceTab) => void
   setToolsView: (view: UtilityToolId) => void
   setRailOpen: (open: boolean) => void
   setCommandPaletteOpen: (open: boolean) => void
   setMediaSource: (source: ShellMediaSource | null) => void
+  setMediaProbe: (probe: MediaProbeSuccess | null) => void
   setEnginePathDraftField: (engineId: EngineId, path: string) => void
   hydrateEnginePathDraft: () => Promise<void>
   persistEnginePathDraft: () => Promise<void>
@@ -33,6 +36,7 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   activeModal: null,
   commandPaletteOpen: false,
   mediaSource: null,
+  mediaProbe: null,
   enginePathDraft: {},
   setWorkspaceTab: (workspaceTab) =>
     set((state) => ({
@@ -43,6 +47,7 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   setRailOpen: (railOpen) => set({ railOpen }),
   setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
   setMediaSource: (mediaSource) => set({ mediaSource }),
+  setMediaProbe: (mediaProbe) => set({ mediaProbe }),
   setEnginePathDraftField: (engineId, path) =>
     set((state) => ({
       enginePathDraft: { ...state.enginePathDraft, [engineId]: path }

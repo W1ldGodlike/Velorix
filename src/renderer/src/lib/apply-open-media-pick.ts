@@ -1,3 +1,4 @@
+import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import { formatMediaProbeSummary } from './format-media-probe-summary'
 import { openPreviewMediaDialog } from './open-preview-media'
 import type { SystemModalId } from '../app/system-modal'
@@ -5,6 +6,7 @@ import type { ShellMediaSource } from '../stores/shell-media-source'
 
 type ApplyOpenMediaPickDeps = {
   setMediaSource: (source: ShellMediaSource | null) => void
+  setMediaProbe?: (probe: MediaProbeSuccess | null) => void
   openModal: (id: SystemModalId) => void
 }
 
@@ -23,6 +25,9 @@ export async function applyOpenMediaPick(deps: ApplyOpenMediaPickDeps): Promise<
     const probeResult = await probe(result.path)
     if (probeResult.ok) {
       probeSummary = formatMediaProbeSummary(probeResult)
+      deps.setMediaProbe?.(probeResult)
+    } else {
+      deps.setMediaProbe?.(null)
     }
   }
   deps.setMediaSource({

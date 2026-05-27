@@ -38,12 +38,13 @@ const LANES: Array<{ id: string; clip?: string }> = [
 export function ProcessingScreen(): JSX.Element {
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const setMediaSource = useAppShellStore((s) => s.setMediaSource)
+  const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
   const mediaSource = useAppShellStore((s) => s.mediaSource)
   const openModal = useAppShellStore((s) => s.openModal)
   const [centerTab, setCenterTab] = useState<ProcessingCenterTab>('editor')
 
   async function handleOpenMedia(): Promise<void> {
-    await applyOpenMediaPick({ setMediaSource, openModal })
+    await applyOpenMediaPick({ setMediaSource, setMediaProbe, openModal })
   }
 
   async function handleBatchPick(): Promise<void> {

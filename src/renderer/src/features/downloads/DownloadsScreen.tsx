@@ -1,66 +1,65 @@
-import type { JSX } from 'react'
+import { useEffect, useMemo, useState, type JSX } from 'react'
 
 import { VELORIX_NEON_REFERENCE_DOWNLOADS_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
-type DownloadRow = {
-  id: string
-  title: string
-  source: string
-  quality: string
-  progress: number
-  downloaded: string
-  total: string
-  speed: string
-  eta: string
-}
-
-const ACTIVE_DOWNLOADS: DownloadRow[] = [
-  {
-    id: 'd1',
-    title: 'Cyberpunk 2077 — Official Trailer',
-    source: 'youtube.com',
-    quality: '4K · HEVC',
-    progress: 45,
-    downloaded: '2.1 GB',
-    total: '4.97 GB',
-    speed: '12.6 MB/s',
-    eta: '03:42'
-  },
-  {
-    id: 'd2',
-    title: 'Nature 4K — Forest Ambience',
-    source: 'youtube.com',
-    quality: '4K · HDR',
-    progress: 72,
-    downloaded: '1.8 GB',
-    total: '2.5 GB',
-    speed: '18.2 MB/s',
-    eta: '01:15'
-  },
-  {
-    id: 'd3',
-    title: 'Black Myth: Wukong — Gameplay',
-    source: 'vimeo.com',
-    quality: '1080p',
-    progress: 18,
-    downloaded: '420 MB',
-    total: '2.3 GB',
-    speed: '8.4 MB/s',
-    eta: '08:20'
-  }
-]
-
-const QUEUE_ROWS = ['Documentary — Arctic (1080p)', 'Lo-Fi Mix — 3 hours'] as const
+import { parseDownloadsProgressPercent } from '../../lib/parse-downloads-queue-row'
+import { useDownloadsQueue } from './use-downloads-queue'
 
 const FILTER_TABS = [
-  { id: 'all', label: 'Все', count: null },
-  { id: 'active', label: 'Активные', count: 5 },
-  { id: 'done', label: 'Завершённые', count: 142 },
-  { id: 'error', label: 'Ошибки', count: 3 },
-  { id: 'pause', label: 'Пауза', count: null }
+  { id: 'all', label: 'Все' },
+  { id: 'active', label: 'Активные' },
+  { id: 'done', label: 'Завершённые' },
+  { id: 'error', label: 'Ошибки' }
 ] as const
 
 export function DownloadsScreen(): JSX.Element {
+  const queueRows = useDownloadsQueue()
+  const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [filterId, setFilterId] = useState<(typeof FILTER_TABS)[number]['id']>('all')
+  const [search, setSearch] = useState('')
+  const [addUrl, setAddUrl] = useState('')
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return queueRows.filter((row) => {
+      if (q.length > 0) {
+        const hay = `${row.shortLabel} ${row.url} ${row.status}`.toLowerCase()
+        if (!hay.includes(q)) {
+          return false
+        }
+      }
+      if (filterId === 'all') {
+        return true
+      }
+      const status = row.status.toLowerCase()
+      if (filterId === 'active') {
+        return (
+          status.includes('загруз') || status.includes('download') || status.includes('running')
+        )
+      }
+      if (filterId === 'done') {
+        return status.includes('готов') || status.includes('done') || status.includes('complete')
+      }
+      if (filterId === 'error') {
+        return status.includes('ошиб') || status.includes('error') || status.includes('fail')
+      }
+      return true
+    })
+  }, [filterId, queueRows, search])
+
+  const selected =
+    filtered.find((row) => row.id === selectedId) ?? filtered[0] ?? queueRows[0] ?? null
+
+  async function handleAddUrls(): Promise<void> {
+    const add = window.velorix?.downloads?.addLines
+    const text = addUrl.trim()
+    if (add == null || text.length === 0) {
+      return
+    }
+    await add(text)
+    setAddUrl('')
+  }
+
   return (
     <div className="downloads-screen">
       <header className="downloads-screen__head">
@@ -71,13 +70,25 @@ export function DownloadsScreen(): JSX.Element {
           </p>
         </div>
         <div className="downloads-screen__head-actions">
-          <button type="button" className="app-btn app-btn-primary">
+          <button
+            type="button"
+            className="app-btn app-btn-primary"
+            onClick={() => void handleAddUrls()}
+          >
             Добавить
           </button>
-          <button type="button" className="app-btn app-btn-secondary">
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            onClick={() => void window.velorix?.downloads?.startQueue()}
+          >
             Запустить все
           </button>
-          <button type="button" className="app-btn">
+          <button
+            type="button"
+            className="app-btn"
+            onClick={() => void window.velorix?.downloads?.pauseYtdlp()}
+          >
             Пауза все
           </button>
         </div>
@@ -88,143 +99,181 @@ export function DownloadsScreen(): JSX.Element {
           type="search"
           className="app-input downloads-screen__search"
           placeholder="Поиск загрузок…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
+        <label className="downloads-screen__add-url app-ui-showcase-field">
+          <span className="app-ui-showcase-field-label">URL</span>
+          <input
+            type="text"
+            className="app-input"
+            placeholder="https://…"
+            value={addUrl}
+            onChange={(e) => setAddUrl(e.target.value)}
+          />
+        </label>
         <div className="downloads-screen__filters" role="tablist">
-          {FILTER_TABS.map((tab, index) => (
+          {FILTER_TABS.map((tab) => (
             <button
               key={tab.id}
               type="button"
               role="tab"
-              className={`downloads-screen__filter${index === 1 ? ' downloads-screen__filter--active' : ''}`}
+              aria-selected={filterId === tab.id}
+              className={`downloads-screen__filter${filterId === tab.id ? ' downloads-screen__filter--active' : ''}`}
+              onClick={() => setFilterId(tab.id)}
             >
               {tab.label}
-              {tab.count != null ? ` (${tab.count})` : ''}
             </button>
           ))}
         </div>
       </div>
 
       <div className="downloads-screen__list">
-        {ACTIVE_DOWNLOADS.map((row, index) => (
-          <article
-            key={row.id}
-            className={`downloads-card vn-surface-glass${index === 0 ? ' downloads-card--selected' : ''}`}
-          >
-            <div className="downloads-card__thumb" aria-hidden />
-            <div className="downloads-card__body">
-              <div className="downloads-card__title-row">
-                <strong>{row.title}</strong>
-                <span className="app-ui-showcase-badge app-ui-showcase-badge--accent">
-                  {row.quality}
-                </span>
-              </div>
-              <span className="downloads-card__source">{row.source}</span>
-              <div className="downloads-card__progress-row">
-                <div className="app-ui-showcase-progress-track">
-                  <span
-                    className="app-ui-showcase-progress-fill"
-                    style={{ width: `${row.progress}%` }}
-                  />
+        {filtered.length === 0 ? (
+          <p className="downloads-screen__empty vn-surface-glass">
+            Очередь пуста — введите URL выше.
+          </p>
+        ) : (
+          filtered.map((row, index) => {
+            const pct = parseDownloadsProgressPercent(row.progress)
+            return (
+              <article
+                key={row.id}
+                className={`downloads-card vn-surface-glass${selected?.id === row.id || (selected == null && index === 0) ? ' downloads-card--selected' : ''}`}
+                onClick={() => setSelectedId(row.id)}
+              >
+                <div className="downloads-card__thumb" aria-hidden />
+                <div className="downloads-card__body">
+                  <div className="downloads-card__title-row">
+                    <strong>{row.shortLabel}</strong>
+                    {row.queueFmt != null ? (
+                      <span className="app-ui-showcase-badge app-ui-showcase-badge--accent">
+                        {row.queueFmt}
+                      </span>
+                    ) : null}
+                  </div>
+                  <span className="downloads-card__source">{row.status}</span>
+                  <div className="downloads-card__progress-row">
+                    <div className="app-ui-showcase-progress-track">
+                      <span
+                        className="app-ui-showcase-progress-fill"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span>{row.progress}</span>
+                  </div>
+                  <div className="downloads-card__meta">
+                    {row.queueSize != null ? <span>{row.queueSize}</span> : null}
+                    {row.queueSpeed != null ? <span>{row.queueSpeed}</span> : null}
+                    {row.queueEta != null ? <span>~{row.queueEta}</span> : null}
+                  </div>
                 </div>
-                <span>{row.progress}%</span>
-              </div>
-              <div className="downloads-card__meta">
-                <span>
-                  {row.downloaded} / {row.total}
-                </span>
-                <span>{row.speed}</span>
-                <span>~{row.eta}</span>
-              </div>
-            </div>
-            <div className="downloads-card__actions">
-              <button type="button" className="app-ui-showcase-icon-btn" aria-label="Пауза">
-                ❚❚
-              </button>
-              <button type="button" className="app-ui-showcase-icon-btn" aria-label="Отмена">
-                ×
-              </button>
-            </div>
-          </article>
-        ))}
+                <div className="downloads-card__actions">
+                  <button
+                    type="button"
+                    className="app-ui-showcase-icon-btn"
+                    aria-label="Повтор"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      void window.velorix?.downloads?.retryRow(row.id)
+                    }}
+                  >
+                    ↻
+                  </button>
+                  <button
+                    type="button"
+                    className="app-ui-showcase-icon-btn"
+                    aria-label="Удалить"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      void window.velorix?.downloads?.removeRow(row.id)
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              </article>
+            )
+          })
+        )}
       </div>
 
       <section className="downloads-screen__queue vn-surface-glass">
-        <h2 className="downloads-screen__queue-title">Очередь (2)</h2>
+        <h2 className="downloads-screen__queue-title">Очередь ({queueRows.length})</h2>
         <ul className="downloads-screen__queue-list">
-          {QUEUE_ROWS.map((title) => (
-            <li key={title}>{title}</li>
+          {queueRows.slice(0, 8).map((row) => (
+            <li key={row.id}>{row.shortLabel}</li>
           ))}
         </ul>
-        <footer className="downloads-screen__queue-foot">
-          <span>Параллельно: 5</span>
-          <span>Лимит: без ограничения</span>
-          <span>D:\Velorix\Downloads</span>
-        </footer>
       </section>
     </div>
   )
 }
 
 export function DownloadsRail(): JSX.Element {
+  const [outputPath, setOutputPath] = useState('—')
+
+  async function refreshOutputPath(): Promise<void> {
+    const getDir = window.velorix?.downloads?.getOutputDirectory
+    if (getDir == null) {
+      return
+    }
+    const dir = await getDir()
+    setOutputPath(dir.path)
+  }
+
+  useEffect(() => {
+    void (async () => {
+      await refreshOutputPath()
+    })()
+  }, [])
+
   return (
     <aside className="downloads-rail">
       <section className="downloads-rail__section vn-surface-glass">
-        <h2 className="downloads-rail__title">Детали загрузки</h2>
-        <div className="downloads-rail__preview" aria-hidden />
-        <dl className="downloads-rail__meta">
-          <div>
-            <dt>Качество</dt>
-            <dd>2160p 4K</dd>
-          </div>
-          <div>
-            <dt>Формат</dt>
-            <dd>MP4 · H.265/HEVC</dd>
-          </div>
-          <div>
-            <dt>Размер</dt>
-            <dd>4.97 GB</dd>
-          </div>
-          <div>
-            <dt>Путь</dt>
-            <dd>D:\Velorix\Downloads\cyberpunk_trailer.mp4</dd>
-          </div>
-        </dl>
-      </section>
-      <section className="downloads-rail__section vn-surface-glass">
-        <h2 className="downloads-rail__title">Статистика</h2>
-        <ul className="downloads-rail__stats">
-          <li>
-            <span>Скачано</span>
-            <strong>42.7 GB</strong>
-          </li>
-          <li>
-            <span>Средняя скорость</span>
-            <strong>18.6 MB/s</strong>
-          </li>
-          <li>
-            <span>Время</span>
-            <strong>01:42:37</strong>
-          </li>
-        </ul>
-        <div className="downloads-rail__sparkline" aria-hidden>
-          <span style={{ height: '40%' }} />
-          <span style={{ height: '70%' }} />
-          <span style={{ height: '55%' }} />
-          <span style={{ height: '100%' }} />
-          <span style={{ height: '60%' }} />
+        <h2 className="downloads-rail__title">Папка вывода</h2>
+        <p className="downloads-rail__path">{outputPath}</p>
+        <div className="downloads-rail__actions">
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            onClick={() => {
+              void window.velorix?.downloads?.pickOutputDirectory().then(() => refreshOutputPath())
+            }}
+          >
+            Обзор…
+          </button>
+          <button
+            type="button"
+            className="app-btn"
+            onClick={() => void window.velorix?.downloads?.openOutputDirectory()}
+          >
+            Открыть папку
+          </button>
         </div>
       </section>
       <section className="downloads-rail__section vn-surface-glass">
         <h2 className="downloads-rail__title">Быстрые действия</h2>
         <div className="downloads-rail__actions">
-          <button type="button" className="app-btn app-btn-primary">
-            Добавить загрузку
-          </button>
-          <button type="button" className="app-btn app-btn-secondary">
-            Из буфера
-          </button>
-          <button type="button" className="app-btn">
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            onClick={() => void window.velorix?.downloads?.clearFinished()}
+          >
             Очистить завершённые
+          </button>
+          <button
+            type="button"
+            className="app-btn"
+            onClick={() => {
+              void navigator.clipboard.readText().then((text) => {
+                if (text.trim().length > 0) {
+                  void window.velorix?.downloads?.addLines(text)
+                }
+              })
+            }}
+          >
+            Из буфера
           </button>
         </div>
       </section>

@@ -121,6 +121,27 @@
   margin: 0;
 }
 
+.knowledge-screen__markdown {
+  flex: 1;
+  margin: 0;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: var(--fa-font-mono);
+  font-size: var(--fa-font-size-body-sm);
+  line-height: var(--fa-line-height-ui);
+  color: var(--fa-text-secondary);
+}
+
+.knowledge-screen__error {
+  color: var(--fa-danger);
+}
+
+.inspector-screen__summary {
+  margin: 0 0 var(--fa-space-3);
+  color: var(--fa-text-secondary);
+  font-size: var(--fa-font-size-body-sm);
+}
+
 .settings-screen__grid,
 .scenarios-screen__grid {
   display: grid;

@@ -105,6 +105,7 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
   }
   const picked = await applyOpenMediaPick({
     setMediaSource: store.setMediaSource,
+    setMediaProbe: store.setMediaProbe,
     openModal: store.openModal
   })
   if (picked) {

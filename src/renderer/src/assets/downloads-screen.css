@@ -46,6 +46,18 @@
   max-width: 24rem;
 }
 
+.downloads-screen__add-url {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.downloads-screen__empty {
+  padding: var(--fa-space-4);
+  margin: 0;
+  color: var(--fa-text-muted);
+  border-radius: var(--fa-radius-preview);
+}
+
 .downloads-screen__filters {
   display: flex;
   flex-wrap: wrap;
@@ -84,6 +96,7 @@
   gap: var(--fa-space-3);
   padding: var(--fa-space-3);
   border-radius: var(--fa-radius-preview);
+  cursor: pointer;
 }
 
 .downloads-card--selected {
@@ -244,6 +257,13 @@
     color-mix(in srgb, var(--fa-accent) 85%, white),
     var(--fa-accent)
   );
+}
+
+.downloads-rail__path {
+  margin: 0 0 var(--fa-space-3);
+  font-size: var(--fa-font-size-body-sm);
+  color: var(--fa-text-secondary);
+  word-break: break-all;
 }
 
 .downloads-rail__actions {

@@ -1,6 +1,9 @@
 import type { JSX } from 'react'
 
+import { useAppShellStore } from '../../stores/app-shell-store'
+
 export function HelpScreen(): JSX.Element {
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   return (
     <div className="portal-screen help-screen">
       <header className="portal-screen__head">
@@ -10,9 +13,13 @@ export function HelpScreen(): JSX.Element {
         </p>
       </header>
       <div className="portal-card vn-surface-glass help-screen__card">
-        <p>Откройте «База знаний» для макета каталога статей по PNG ref.5.</p>
-        <button type="button" className="app-btn app-btn-primary">
-          Диагностика Support ZIP
+        <p>Каталог статей Help — вкладка «База знаний» (ref.5).</p>
+        <button
+          type="button"
+          className="app-btn app-btn-primary"
+          onClick={() => setWorkspaceTab('knowledge')}
+        >
+          Открыть базу знаний
         </button>
       </div>
     </div>
