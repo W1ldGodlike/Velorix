@@ -144,9 +144,11 @@ export function useAppMainWindowEffectsRuntime(
       setMediaFileUtilitiesOpen(true)
     })
     const offWorkflowPlanner = window.velorix.onOpenWorkflowPlanner(() => {
+      setWorkspaceTab('planner')
       setWorkflowPlannerOpen(true)
     })
     const offWorkflowScenarioBuilder = window.velorix.onOpenWorkflowScenarioBuilder(() => {
+      setWorkspaceTab('scenarios')
       setWorkflowScenarioBuilderOpen(true)
     })
     const offProcessError = window.velorix.onProcessErrorReported((payload) => {

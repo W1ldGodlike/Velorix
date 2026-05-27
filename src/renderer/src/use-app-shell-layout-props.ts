@@ -345,9 +345,15 @@ export function useAppShellLayoutProps(
         })
       },
       onOpenWorkflowPlanner: () => {
+        setAppSettingsOpen(false)
+        setAppSettingsSection('general')
+        setWorkspaceTab('planner')
         workflowPlanner.setOpen(true)
       },
       onOpenWorkflowScenarioBuilder: () => {
+        setAppSettingsOpen(false)
+        setAppSettingsSection('general')
+        setWorkspaceTab('scenarios')
         workflowScenarioBuilder.setOpen(true)
       },
       enginePathsSaving: appSettings.enginePathsSaving,
@@ -375,7 +381,16 @@ export function useAppShellLayoutProps(
         appSettings.setKnowledgeOpen(true)
       }
     }
-  }, [appSettings, lastFfmpegError, setLastFfmpegError, workflowPlanner, workflowScenarioBuilder])
+  }, [
+    appSettings,
+    lastFfmpegError,
+    setLastFfmpegError,
+    workflowPlanner,
+    workflowScenarioBuilder,
+    setAppSettingsOpen,
+    setAppSettingsSection,
+    setWorkspaceTab
+  ])
 
   const externalFilterScriptProps = useMemo(
     () => ({
