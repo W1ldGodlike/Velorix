@@ -1,17 +1,19 @@
 import type { JSX } from 'react'
 
-import {
-  VELORIX_NEON_REFERENCE_CRITICAL_CRASH_REL,
-  VELORIX_NEON_REFERENCE_ENGINE_PATHS_REL
-} from '../../../shared/velorix-neon-theme-tokens'
+import { VELORIX_NEON_REFERENCE_ENGINE_PATHS_REL } from '../../../shared/velorix-neon-theme-tokens'
 
 import { ENGINE_IDS, type EngineId } from '../../../shared/engine-contract'
 
 import { AboutModalBody } from './AboutModalBody'
+import { CriticalCrashModalBody } from './CriticalCrashModalBody'
 import { EncoderBenchmarkModalBody } from './EncoderBenchmarkModalBody'
+import { ExportPresetNameModalBody } from './ExportPresetNameModalBody'
+import { FfmpegErrorModalBody } from './FfmpegErrorModalBody'
 import { FirstRunEnginesModalBody } from './FirstRunEnginesModalBody'
+import { PluginsModalBody } from './PluginsModalBody'
 import { QuitConfirmModalBody } from './QuitConfirmModalBody'
 import { SYSTEM_MODAL_TITLES, SYSTEM_MODAL_WIDE, type SystemModalId } from './system-modal'
+import { saveUserExportPreset } from '../lib/save-user-export-preset'
 import { useAppShellStore } from '../stores/app-shell-store'
 
 const ENGINE_LABELS: Record<EngineId, string> = {
@@ -23,6 +25,7 @@ const ENGINE_LABELS: Record<EngineId, string> = {
 export function SystemModals(): JSX.Element | null {
   const activeModal = useAppShellStore((s) => s.activeModal)
   const closeModal = useAppShellStore((s) => s.closeModal)
+  const processErrorDialog = useAppShellStore((s) => s.processErrorDialog)
 
   if (activeModal == null) {
     return null
@@ -54,7 +57,9 @@ export function SystemModals(): JSX.Element | null {
         aria-labelledby="system-modal-title"
       >
         <h2 id="system-modal-title" className="app-modal__title">
-          {SYSTEM_MODAL_TITLES[activeModal]}
+          {activeModal === 'critical-crash' && processErrorDialog != null
+            ? processErrorDialog.title
+            : SYSTEM_MODAL_TITLES[activeModal]}
         </h2>
         <ModalBody id={activeModal} />
         <ModalActions id={activeModal} onClose={closeModal} />
@@ -104,9 +109,23 @@ function ModalActions(props: { id: SystemModalId; onClose: () => void }): JSX.El
     return (
       <div className="app-modal__actions">
         <button type="button" className="app-btn" onClick={onClose}>
-          Закрыть
+          Отмена
         </button>
-        <button type="button" className="app-btn app-btn-primary" onClick={onClose}>
+        <button
+          type="button"
+          className="app-btn app-btn-primary"
+          onClick={() => {
+            void saveUserExportPreset(useAppShellStore.getState().exportPresetDraftLabel).then(
+              (result) => {
+                if (result.ok) {
+                  onClose()
+                  return
+                }
+                useAppShellStore.getState().setExportPresetSaveNote(result.error)
+              }
+            )
+          }}
+        >
           Сохранить
         </button>
       </div>
@@ -157,13 +176,44 @@ function ModalActions(props: { id: SystemModalId; onClose: () => void }): JSX.El
     )
   }
   if (id === 'critical-crash') {
+    const payload = useAppShellStore.getState().processErrorDialog
     return (
-      <div className="app-modal__actions">
-        <button type="button" className="app-btn app-btn-secondary">
-          Копировать лог
-        </button>
+      <div className="app-modal__actions app-modal__actions--split">
+        <div className="app-modal__actions-end">
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            disabled={payload == null}
+            onClick={() => {
+              if (payload == null) {
+                return
+              }
+              void window.velorix?.clipboard?.writeText(payload.detail)
+            }}
+          >
+            {payload?.copyLabel ?? 'Копировать'}
+          </button>
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            onClick={() => {
+              void window.velorix?.diagnostics?.openMainLog()
+            }}
+          >
+            {payload?.openLogLabel ?? 'Журнал'}
+          </button>
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            onClick={() => {
+              void window.velorix?.diagnostics?.createSupportZip()
+            }}
+          >
+            {payload?.supportZipLabel ?? 'Support ZIP'}
+          </button>
+        </div>
         <button type="button" className="app-btn app-btn-danger" onClick={onClose}>
-          Закрыть
+          {payload?.closeLabel ?? 'Закрыть'}
         </button>
       </div>
     )
@@ -186,11 +236,7 @@ function ModalBody(props: { id: SystemModalId }): JSX.Element {
     return <QuitConfirmModalBody />
   }
   if (id === 'ffmpeg-error') {
-    return (
-      <p className="app-modal__body app-modal__body--error">
-        Кодек не поддерживается для выбранного контейнера.
-      </p>
-    )
+    return <FfmpegErrorModalBody />
   }
   if (id === 'engine-paths') {
     return <EnginePathsBody />
@@ -199,27 +245,26 @@ function ModalBody(props: { id: SystemModalId }): JSX.Element {
     return <FirstRunEnginesModalBody />
   }
   if (id === 'critical-crash') {
-    return (
-      <div className="app-modal__body">
-        <p className="app-modal__body--error">Приложение не может продолжить работу.</p>
-        <pre className="app-modal__stack" aria-label="Стек сбоя">
-          {`Error: renderer unhandled rejection\n  at NeonShell (NeonShell.tsx)\n  at renderRoot (main.tsx)`}
-        </pre>
-        <p className="app-modal__hint">Эталон: {VELORIX_NEON_REFERENCE_CRITICAL_CRASH_REL}</p>
-      </div>
-    )
+    return <CriticalCrashModalBody />
   }
   if (id === 'encoder-benchmark') {
     return <EncoderBenchmarkModalBody />
   }
   if (id === 'plugins') {
-    return <p className="app-modal__body">Управление плагинами (ref.25) — отдельный срез.</p>
+    return <PluginsModalBody />
   }
+  if (id === 'export-preset-name') {
+    return <ExportPresetNameModalBodyConnected />
+  }
+  return <p className="app-modal__body">Неизвестное окно.</p>
+}
+
+function ExportPresetNameModalBodyConnected(): JSX.Element {
+  const label = useAppShellStore((s) => s.exportPresetDraftLabel)
+  const setLabel = useAppShellStore((s) => s.setExportPresetDraftLabel)
+  const statusLine = useAppShellStore((s) => s.exportPresetSaveNote)
   return (
-    <label className="app-ui-showcase-field app-modal__body">
-      <span className="app-ui-showcase-field-label">Имя пресета</span>
-      <input type="text" className="app-input" defaultValue="Мой пресет" />
-    </label>
+    <ExportPresetNameModalBody label={label} onLabelChange={setLabel} statusLine={statusLine} />
   )
 }
 

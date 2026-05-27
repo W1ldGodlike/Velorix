@@ -99,6 +99,16 @@
   font-size: var(--fa-font-size-body-sm);
 }
 
+.processing-screen__peek-history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fa-space-2);
+  margin-left: calc(-1 * var(--fa-space-4));
+  padding-left: 0;
+  list-style: none;
+}
+
 .processing-screen__peek-log {
   flex: 1;
   margin: 0;

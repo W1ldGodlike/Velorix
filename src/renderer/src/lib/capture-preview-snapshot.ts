@@ -1,4 +1,4 @@
-import type { SystemModalId } from '../app/system-modal'
+import { reportFfmpegErrorFromResult } from './report-ffmpeg-error'
 
 export type CapturePreviewSnapshotResult =
   | { ok: true; path: string }
@@ -10,7 +10,6 @@ export type CapturePreviewSnapshotResult =
 export async function capturePreviewSnapshot(args: {
   inputPath: string
   timeSec: number
-  openModal: (id: SystemModalId) => void
 }): Promise<CapturePreviewSnapshotResult> {
   const snap = window.velorix?.preview?.snapshotFrame
   if (snap == null) {
@@ -22,7 +21,7 @@ export async function capturePreviewSnapshot(args: {
     uiLocale: 'ru'
   })
   if (!result.ok && !('cancelled' in result && result.cancelled)) {
-    args.openModal('ffmpeg-error')
+    reportFfmpegErrorFromResult(result)
   }
   return result
 }

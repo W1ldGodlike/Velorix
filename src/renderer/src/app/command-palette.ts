@@ -9,6 +9,7 @@ export type CommandPaletteAction =
   | { type: 'modal'; id: SystemModalId }
   | { type: 'clear-export-trim' }
   | { type: 'batch-export-pick' }
+  | { type: 'export-preset-name' }
 
 export type CommandPaletteItem = {
   id: string
@@ -55,6 +56,18 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     label: 'Бенчмарк кодеров',
     hint: 'Обработка',
     action: { type: 'modal', id: 'encoder-benchmark' }
+  },
+  {
+    id: 'export-preset-name',
+    label: 'Сохранить пресет экспорта…',
+    hint: 'Обработка',
+    action: { type: 'export-preset-name' }
+  },
+  {
+    id: 'plugins',
+    label: 'Плагины',
+    hint: 'Инструменты',
+    action: { type: 'modal', id: 'plugins' }
   },
   { id: 'about', label: 'О программе', action: { type: 'modal', id: 'about' } },
   { id: 'toggle-rail', label: 'Показать/скрыть правый rail', action: { type: 'toggle-rail' } },

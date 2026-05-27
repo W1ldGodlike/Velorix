@@ -1,5 +1,7 @@
 import { useEffect, type JSX } from 'react'
 
+import { applyPreviewOpenedPayload } from '../lib/apply-preview-opened-payload'
+import { mapMenuSettingsSection } from '../lib/map-menu-settings-section'
 import { useAppShellStore } from '../stores/app-shell-store'
 import { WORKSPACE_TAB_LABELS, WORKSPACE_TABS, type WorkspaceTab } from './workspace-tab'
 import { CommandPalette } from './CommandPalette'
@@ -14,12 +16,26 @@ export function NeonShell(): JSX.Element {
   const railOpen = useAppShellStore((s) => s.railOpen)
   const setRailOpen = useAppShellStore((s) => s.setRailOpen)
   const setToolsView = useAppShellStore((s) => s.setToolsView)
+  const setSettingsSection = useAppShellStore((s) => s.setSettingsSection)
+  const hydrateEnginePathDraft = useAppShellStore((s) => s.hydrateEnginePathDraft)
+  const setMediaSource = useAppShellStore((s) => s.setMediaSource)
+  const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
 
   useEffect(() => {
     const onPlanner = window.velorix?.onOpenWorkflowPlanner
     const onBuilder = window.velorix?.onOpenWorkflowScenarioBuilder
     const onQuit = window.velorix?.onQuitConfirmRequested
+    const onProcessError = window.velorix?.onProcessErrorReported
+    const onAbout = window.velorix?.onOpenAbout
+    const onDownloads = window.velorix?.onOpenDownloadsRoute
+    const onInspector = window.velorix?.onOpenInspectorRoute
+    const onSettings = window.velorix?.onOpenSettings
+    const onEnginePaths = window.velorix?.onOpenEnginePaths
+    const onMaint = window.velorix?.onOpenMediaFileUtilities
+    const onScript = window.velorix?.onOpenExternalFilterScript
+    const onPreviewOpened = window.velorix?.onPreviewOpened
     const setQuitConfirmRequest = useAppShellStore.getState().setQuitConfirmRequest
+    const setProcessErrorDialog = useAppShellStore.getState().setProcessErrorDialog
     const openModal = useAppShellStore.getState().openModal
     const unsubs: Array<() => void> = []
     if (onPlanner != null) {
@@ -41,12 +57,76 @@ export function NeonShell(): JSX.Element {
         })
       )
     }
+    if (onProcessError != null) {
+      unsubs.push(
+        onProcessError((payload) => {
+          setProcessErrorDialog(payload)
+          openModal('critical-crash')
+        })
+      )
+    }
+    if (onAbout != null) {
+      unsubs.push(onAbout(() => openModal('about')))
+    }
+    if (onDownloads != null) {
+      unsubs.push(onDownloads(() => setWorkspaceTab('downloads')))
+    }
+    if (onInspector != null) {
+      unsubs.push(onInspector(() => setWorkspaceTab('inspector')))
+    }
+    if (onSettings != null) {
+      unsubs.push(
+        onSettings((section) => {
+          setSettingsSection(mapMenuSettingsSection(section))
+          setWorkspaceTab('settings')
+        })
+      )
+    }
+    if (onEnginePaths != null) {
+      unsubs.push(
+        onEnginePaths(() => {
+          void hydrateEnginePathDraft().then(() => openModal('engine-paths'))
+        })
+      )
+    }
+    if (onMaint != null) {
+      unsubs.push(
+        onMaint(() => {
+          setToolsView('maint')
+          setWorkspaceTab('tools')
+        })
+      )
+    }
+    if (onScript != null) {
+      unsubs.push(
+        onScript(() => {
+          setToolsView('script')
+          setWorkspaceTab('tools')
+        })
+      )
+    }
+    if (onPreviewOpened != null) {
+      unsubs.push(
+        onPreviewOpened((payload) => {
+          void applyPreviewOpenedPayload(payload, { setMediaSource, setMediaProbe }).then(() => {
+            setWorkspaceTab('processing')
+          })
+        })
+      )
+    }
     return () => {
       for (const unsub of unsubs) {
         unsub()
       }
     }
-  }, [setToolsView, setWorkspaceTab])
+  }, [
+    hydrateEnginePathDraft,
+    setMediaProbe,
+    setMediaSource,
+    setSettingsSection,
+    setToolsView,
+    setWorkspaceTab
+  ])
 
   const shellClass = railOpen ? 'neon-shell' : 'neon-shell neon-shell--no-rail'
 

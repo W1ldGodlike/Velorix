@@ -60,10 +60,34 @@
 .history-screen__feed {
   display: flex;
   flex-direction: column;
-  gap: var(--fa-space-3);
+  gap: var(--fa-space-4);
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+}
+
+.history-screen__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-3);
+}
+
+.history-screen__section-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-3);
+}
+
+.history-screen__section-title {
+  margin: 0;
+  font-size: var(--fa-font-size-body);
+  color: var(--fa-text-secondary);
+}
+
+.history-rail__group-label {
+  margin: var(--fa-space-2) 0 0;
+  font-size: var(--fa-font-size-caption);
+  color: var(--fa-text-muted);
 }
 
 .history-event {

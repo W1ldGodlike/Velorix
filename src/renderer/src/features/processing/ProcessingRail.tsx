@@ -16,8 +16,10 @@ export function ProcessingRail(): JSX.Element {
   const [exportNote, setExportNote] = useState<string | null>(null)
   const [lastExportPath, setLastExportPath] = useState<string | null>(null)
   const exportProgressNote = useExportProgressNote(exportBusy)
-  const { view, setCrf, setVideoCodec, setContainer, setEncodePreset, setAudioMode } =
+  const { view, reload, setCrf, setVideoCodec, setContainer, setEncodePreset, setAudioMode } =
     useFfmpegExportSettings()
+  const setExportPresetDraftLabel = useAppShellStore((s) => s.setExportPresetDraftLabel)
+  const userPresets = view?.ffmpegExportUserPresets ?? []
 
   const displayExportNote = exportBusy ? (exportProgressNote ?? 'Экспорт…') : exportNote
 
@@ -99,20 +101,52 @@ export function ProcessingRail(): JSX.Element {
       <details className="processing-rail__section">
         <summary>Пресеты</summary>
         <div className="processing-rail__section-body">
-          <select
-            className="app-settings-select"
-            value={encodePreset}
-            onChange={(e) => {
-              const next = e.target.value
-              if (next === 'balance' || next === 'smaller' || next === 'quality') {
-                void setEncodePreset(next)
-              }
-            }}
-          >
-            <option value="balance">Баланс</option>
-            <option value="smaller">Меньший размер</option>
-            <option value="quality">Качество</option>
-          </select>
+          {userPresets.length > 0 ? (
+            <label className="app-ui-showcase-field">
+              <span className="app-ui-showcase-field-label">Платформы / свои</span>
+              <select
+                className="app-settings-select"
+                defaultValue=""
+                onChange={(e) => {
+                  const id = e.target.value
+                  if (id.length === 0) {
+                    return
+                  }
+                  const preset = userPresets.find((row) => row.id === id)
+                  const apply = window.velorix?.settings?.applyFfmpegExportSnapshot
+                  if (preset == null || apply == null) {
+                    return
+                  }
+                  void apply(preset.snapshot).then(() => reload())
+                  e.target.value = ''
+                }}
+              >
+                <option value="">Применить пресет…</option>
+                {userPresets.map((preset) => (
+                  <option key={preset.id} value={preset.id}>
+                    {preset.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
+          <label className="app-ui-showcase-field">
+            <span className="app-ui-showcase-field-label">Качество кодирования</span>
+            <select
+              className="app-settings-select"
+              value={encodePreset}
+              onChange={(e) => {
+                const next = e.target.value
+                if (next === 'balance' || next === 'smaller' || next === 'quality') {
+                  void setEncodePreset(next)
+                }
+              }}
+            >
+              <option value="balance">Баланс</option>
+              <option value="smaller">Меньший размер</option>
+              <option value="quality">Качество</option>
+            </select>
+          </label>
         </div>
       </details>
       <button
@@ -130,8 +164,7 @@ export function ProcessingRail(): JSX.Element {
             inputPath: mediaSource.path,
             mediaProbe,
             exportTrim,
-            settings: view,
-            openModal
+            settings: view
           }).then((result) => {
             if (result?.ok) {
               setLastExportPath(result.path)
@@ -201,7 +234,10 @@ export function ProcessingRail(): JSX.Element {
       <button
         type="button"
         className="app-btn app-btn-secondary"
-        onClick={() => openModal('export-preset-name')}
+        onClick={() => {
+          setExportPresetDraftLabel('Мой пресет')
+          openModal('export-preset-name')
+        }}
       >
         Имя пресета
       </button>

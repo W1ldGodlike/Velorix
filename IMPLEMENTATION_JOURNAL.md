@@ -1739,3 +1739,8 @@
 - [J-1713] 2026-05-28 02:20:31 [Assistant]: ref.11 `AboutModalBody` (buildId + `engines.getStatus`); Help→Knowledge deep-link (`pendingKnowledgeSlug`). `npm run check:quiet`.
 - [J-1714] 2026-05-28 02:24:07 [Assistant]: ref.21 quit confirm — `onQuitConfirmRequested`→store+`quit-confirm` modal; `QuitConfirmModalBody` (export/download busy); `respondQuitConfirm`; `.app-modal__hint-list`. `npm run check:quiet`.
 - [J-1715] 2026-05-28 02:31:10 [Assistant]: ref.20 `FirstRunEnginesModalBody` (`getStatus`+HW probe); ref.4 planner cell→`plannerSelectedTaskId`/rail; ref.24 `EncoderBenchmarkModalBody` (`runBenchmark`); Ctrl+K modals; пакет J-1711..1714. `npm run check:quiet`, `git commit`.
+- [J-1716] 2026-05-28 02:38:18 [Assistant]: ref.22 `FfmpegErrorModalBody`+`reportFfmpegError` (текст IPC); ref.18 сохранение пресета (`saveUserExportPreset`, `applyFfmpegExportSnapshot` в rail). `npm run check:quiet`.
+- [J-1717] 2026-05-28 02:43:20 [Assistant]: ref.23 `onProcessErrorReported`→`critical-crash` (`CriticalCrashModalBody`, copy/log/Support ZIP); ref.1 `ProcessingHistoryPeek` (`processingHistory.get`+openOutput). `npm run check:quiet`.
+- [J-1718] 2026-05-28 02:47:39 [Assistant]: меню main→NeonShell (about/settings/downloads/inspector/engine-paths/tools); ref.3 история — `ProcessingHistoryFeed`+weeklySummary в rail. `npm run check:quiet`.
+- [J-1719] 2026-05-28 02:52:02 [Assistant]: ref.25 `PluginsModalBody`; `onPreviewOpened`→превью; tools hub bench/plugins→modals; Ctrl+K пресет+плагины. `npm run check:quiet`.
+- [J-1720] 2026-05-28 02:54:20 [Assistant]: пакет J-1716..1719 — ffmpeg error/presets, critical-crash, history+menu IPC, plugins/preview; `npm run check:quiet`, `git commit`, `git push`.

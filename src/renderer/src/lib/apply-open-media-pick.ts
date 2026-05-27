@@ -1,13 +1,12 @@
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import { formatMediaProbeSummary } from './format-media-probe-summary'
 import { openPreviewMediaDialog } from './open-preview-media'
-import type { SystemModalId } from '../app/system-modal'
+import { reportFfmpegError, reportFfmpegErrorFromResult } from './report-ffmpeg-error'
 import type { ShellMediaSource } from '../stores/shell-media-source'
 
 type ApplyOpenMediaPickDeps = {
   setMediaSource: (source: ShellMediaSource | null) => void
   setMediaProbe?: (probe: MediaProbeSuccess | null) => void
-  openModal: (id: SystemModalId) => void
 }
 
 /** Диалог видео + ffprobe summary для ref.1 превью. */
@@ -15,7 +14,11 @@ export async function applyOpenMediaPick(deps: ApplyOpenMediaPickDeps): Promise<
   const result = await openPreviewMediaDialog()
   if (!result.ok) {
     if (!('canceled' in result && result.canceled)) {
-      deps.openModal('ffmpeg-error')
+      if ('error' in result) {
+        reportFfmpegErrorFromResult(result)
+      } else {
+        reportFfmpegError('Не удалось открыть медиафайл')
+      }
     }
     return false
   }

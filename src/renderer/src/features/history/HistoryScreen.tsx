@@ -1,20 +1,14 @@
 import { useEffect, useState, type JSX } from 'react'
 
+import type { ProcessingHistoryWeeklySummary } from '../../../../shared/processing-history-contract'
 import type {
   YtdlpDownloadHistoryEntry,
   YtdlpDownloadHistoryWeeklySummary
 } from '../../../../shared/ytdlp-history-contract'
 import { VELORIX_NEON_REFERENCE_HISTORY_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
-function formatWhen(ts: number): string {
-  return new Date(ts).toLocaleString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
+import { formatHistoryTimestamp } from '../../lib/format-history-timestamp'
+import { ProcessingHistoryFeed } from './ProcessingHistoryFeed'
 
 function outcomeTone(outcome: YtdlpDownloadHistoryEntry['outcome']): 'ready' | 'info' | 'error' {
   if (outcome === 'success') {
@@ -54,77 +48,127 @@ export function HistoryScreen(): JSX.Element {
       </header>
       {loadError != null ? <p className="history-screen__error">{loadError}</p> : null}
       <div className="history-screen__feed">
-        {entries.length === 0 ? (
-          <p className="history-screen__empty vn-surface-glass">Записей загрузок пока нет.</p>
-        ) : (
-          entries.map((event) => (
-            <article key={event.id} className="history-event vn-surface-glass">
-              <span
-                className={`app-ui-showcase-status-pill app-ui-showcase-status-pill--${outcomeTone(event.outcome)}`}
-              >
-                {event.status}
-              </span>
-              <strong>{event.shortLabel}</strong>
-              <span className="history-event__when">{formatWhen(event.finishedAt)}</span>
-              {event.outcome === 'success' ? (
-                <div className="history-event__actions">
-                  <button
-                    type="button"
-                    className="app-btn app-btn-secondary"
-                    onClick={() => {
-                      void window.velorix?.downloads?.openHistoryOutput(event.id, 'file')
-                    }}
+        <section className="history-screen__section">
+          <h2 className="history-screen__section-title">Журнал обработки (FFmpeg)</h2>
+          <ProcessingHistoryFeed />
+        </section>
+        <section className="history-screen__section">
+          <h2 className="history-screen__section-title">История загрузок (yt-dlp)</h2>
+          {entries.length === 0 ? (
+            <p className="history-screen__empty vn-surface-glass">Записей загрузок пока нет.</p>
+          ) : (
+            <div className="history-screen__section-list">
+              {entries.map((event) => (
+                <article key={event.id} className="history-event vn-surface-glass">
+                  <span
+                    className={`app-ui-showcase-status-pill app-ui-showcase-status-pill--${outcomeTone(event.outcome)}`}
                   >
-                    Открыть
-                  </button>
-                  <button
-                    type="button"
-                    className="app-btn"
-                    onClick={() => {
-                      void window.velorix?.downloads?.openHistoryOutput(event.id, 'folder')
-                    }}
-                  >
-                    Папка
-                  </button>
-                </div>
-              ) : null}
-            </article>
-          ))
-        )}
+                    {event.status}
+                  </span>
+                  <strong>{event.shortLabel}</strong>
+                  <span className="history-event__when">
+                    {formatHistoryTimestamp(event.finishedAt)}
+                  </span>
+                  {event.outcome === 'success' ? (
+                    <div className="history-event__actions">
+                      <button
+                        type="button"
+                        className="app-btn app-btn-secondary"
+                        onClick={() => {
+                          void window.velorix?.downloads?.openHistoryOutput(event.id, 'file')
+                        }}
+                      >
+                        Открыть
+                      </button>
+                      <button
+                        type="button"
+                        className="app-btn"
+                        onClick={() => {
+                          void window.velorix?.downloads?.openHistoryOutput(event.id, 'folder')
+                        }}
+                      >
+                        Папка
+                      </button>
+                    </div>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   )
 }
 
 export function HistoryRail(): JSX.Element {
-  const [summary, setSummary] = useState<YtdlpDownloadHistoryWeeklySummary | null>(null)
+  const [downloadSummary, setDownloadSummary] = useState<YtdlpDownloadHistoryWeeklySummary | null>(
+    null
+  )
+  const [processingSummary, setProcessingSummary] = useState<ProcessingHistoryWeeklySummary | null>(
+    null
+  )
 
   useEffect(() => {
-    void (async () => {
-      const getSummary = window.velorix?.downloads?.getHistoryWeeklySummary
-      if (getSummary == null) {
-        return
+    let cancelled = false
+    async function load(): Promise<void> {
+      const getDownloads = window.velorix?.downloads?.getHistoryWeeklySummary
+      const getProcessing = window.velorix?.processingHistory?.weeklySummary
+      if (getDownloads != null) {
+        const data = await getDownloads()
+        if (!cancelled) {
+          setDownloadSummary(data)
+        }
       }
-      const data = await getSummary()
-      setSummary(data)
-    })()
+      if (getProcessing != null) {
+        const data = await getProcessing()
+        if (!cancelled) {
+          setProcessingSummary(data)
+        }
+      }
+    }
+    void load()
+    const onChanged = window.velorix?.onProcessingHistoryChanged
+    const unsub = onChanged?.(() => {
+      void load()
+    })
+    return () => {
+      cancelled = true
+      unsub?.()
+    }
   }, [])
 
   return (
     <aside className="history-rail vn-surface-glass">
       <h2 className="history-rail__title">Аналитика</h2>
+      <p className="history-rail__group-label">Обработка (неделя)</p>
       <ul className="history-rail__stats">
         <li>
-          <span>Всего за неделю</span>
-          <strong>{summary?.total ?? '—'}</strong>
+          <span>Экспортов</span>
+          <strong>{processingSummary?.total ?? '—'}</strong>
         </li>
         <li>
           <span>Успешно</span>
-          <strong>{summary?.success ?? '—'}</strong>
+          <strong>{processingSummary?.success ?? '—'}</strong>
         </li>
         <li>
           <span>Ошибок</span>
-          <strong>{summary?.error ?? '—'}</strong>
+          <strong>{processingSummary?.error ?? '—'}</strong>
+        </li>
+      </ul>
+      <p className="history-rail__group-label">Загрузки (неделя)</p>
+      <ul className="history-rail__stats">
+        <li>
+          <span>Всего</span>
+          <strong>{downloadSummary?.total ?? '—'}</strong>
+        </li>
+        <li>
+          <span>Успешно</span>
+          <strong>{downloadSummary?.success ?? '—'}</strong>
+        </li>
+        <li>
+          <span>Ошибок</span>
+          <strong>{downloadSummary?.error ?? '—'}</strong>
         </li>
       </ul>
       <div className="app-ui-showcase-sparkline" aria-hidden>

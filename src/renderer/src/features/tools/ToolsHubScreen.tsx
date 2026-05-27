@@ -18,6 +18,19 @@ const TOOLS: Array<{ id: Exclude<UtilityToolId, 'hub'>; title: string; ref: stri
 
 export function ToolsHubScreen(): JSX.Element {
   const setToolsView = useAppShellStore((s) => s.setToolsView)
+  const openModal = useAppShellStore((s) => s.openModal)
+  function openTool(id: (typeof TOOLS)[number]['id']): void {
+    if (id === 'bench') {
+      openModal('encoder-benchmark')
+      return
+    }
+    if (id === 'plugins') {
+      openModal('plugins')
+      return
+    }
+    setToolsView(id)
+  }
+
   return (
     <div className="portal-screen tools-screen">
       <header className="portal-screen__head">
@@ -35,7 +48,7 @@ export function ToolsHubScreen(): JSX.Element {
             <button
               type="button"
               className="app-btn app-btn-secondary"
-              onClick={() => setToolsView(tool.id)}
+              onClick={() => openTool(tool.id)}
             >
               Открыть
             </button>

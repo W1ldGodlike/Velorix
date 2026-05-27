@@ -13,7 +13,6 @@ export function InspectorScreen(): JSX.Element {
   const setMediaSource = useAppShellStore((s) => s.setMediaSource)
   const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
-  const openModal = useAppShellStore((s) => s.openModal)
 
   const title = mediaSource?.name ?? 'Файл не выбран'
   const summary =
@@ -41,7 +40,7 @@ export function InspectorScreen(): JSX.Element {
             type="button"
             className="app-btn app-btn-primary"
             onClick={() => {
-              void applyOpenMediaPick({ setMediaSource, setMediaProbe, openModal })
+              void applyOpenMediaPick({ setMediaSource, setMediaProbe })
             }}
           >
             Открыть файл

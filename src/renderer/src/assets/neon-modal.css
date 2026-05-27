@@ -124,6 +124,24 @@
   align-self: flex-start;
 }
 
+.app-modal__plugins {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-2);
+}
+
+.app-modal__plugin-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--fa-space-2);
+  padding: var(--fa-space-3);
+  border-radius: var(--fa-radius-preview);
+}
+
 .app-modal__engines {
   margin: 0;
   padding: 0;

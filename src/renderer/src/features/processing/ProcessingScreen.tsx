@@ -4,9 +4,14 @@ import { VELORIX_NEON_CANONICAL_REFERENCE_REL } from '../../../../shared/velorix
 
 import { applyOpenMediaPick } from '../../lib/apply-open-media-pick'
 import { restoreLastMediaSession } from '../../lib/restore-last-media-session'
+import { reportFfmpegError } from '../../lib/report-ffmpeg-error'
 import { useAppShellStore } from '../../stores/app-shell-store'
 import { ProcessingPreviewPanel } from './ProcessingPreviewPanel'
-import { ProcessingDownloadsPeek, ProcessingTerminalPeek } from './ProcessingScreenPeeks'
+import {
+  ProcessingDownloadsPeek,
+  ProcessingHistoryPeek,
+  ProcessingTerminalPeek
+} from './ProcessingScreenPeeks'
 import { buildTrimSpanStyle, PROCESSING_TIMELINE_LANES } from './processing-timeline-model'
 
 type ProcessingCenterTab = 'editor' | 'downloads' | 'terminal'
@@ -38,7 +43,6 @@ export function ProcessingScreen(): JSX.Element {
   const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
   const mediaSource = useAppShellStore((s) => s.mediaSource)
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
-  const openModal = useAppShellStore((s) => s.openModal)
   const [centerTab, setCenterTab] = useState<ProcessingCenterTab>('editor')
   const [ytdlpUrl, setYtdlpUrl] = useState('')
   const [headStatus, setHeadStatus] = useState<string | null>(null)
@@ -54,13 +58,13 @@ export function ProcessingScreen(): JSX.Element {
   }, [setMediaSource, setMediaProbe])
 
   async function handleOpenMedia(): Promise<void> {
-    await applyOpenMediaPick({ setMediaSource, setMediaProbe, openModal })
+    await applyOpenMediaPick({ setMediaSource, setMediaProbe })
   }
 
   async function handleBatchPick(): Promise<void> {
     const pick = window.velorix?.batchExport?.pickFiles
     if (pick == null) {
-      openModal('ffmpeg-error')
+      reportFfmpegError('batchExport.pickFiles недоступен')
       return
     }
     const result = await pick()
@@ -68,8 +72,8 @@ export function ProcessingScreen(): JSX.Element {
       setHeadStatus(
         `В пакетную очередь: ${String(result.added)} (пропущено ${String(result.skipped)})`
       )
-    } else if (!('cancelled' in result && result.cancelled)) {
-      openModal('ffmpeg-error')
+    } else if (!('cancelled' in result && result.cancelled) && 'error' in result) {
+      reportFfmpegError(result.error)
     }
   }
 
@@ -214,6 +218,7 @@ export function ProcessingScreen(): JSX.Element {
                 )
               })}
             </div>
+            <ProcessingHistoryPeek />
           </div>
         </div>
       ) : null}

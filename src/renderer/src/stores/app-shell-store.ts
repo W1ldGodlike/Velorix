@@ -6,6 +6,7 @@ import type { UtilityToolId } from '../features/tools/utility-tool-id'
 import type { EngineId, EnginePathOverrides } from '../../../shared/engine-contract'
 import type { MediaExportTrimPayload } from '../../../shared/ffmpeg-export-contract'
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
+import type { ProcessErrorDialogPayload } from '../../../shared/process-error-dialog-contract'
 import type { QuitConfirmRequestPayload } from '../../../shared/quit-confirm-contract'
 import type { ShellMediaSource } from './shell-media-source'
 
@@ -24,6 +25,10 @@ type AppShellState = {
   exportTrim: MediaExportTrimPayload | null
   pendingKnowledgeSlug: string | null
   quitConfirmRequest: QuitConfirmRequestPayload | null
+  ffmpegErrorMessage: string | null
+  processErrorDialog: ProcessErrorDialogPayload | null
+  exportPresetDraftLabel: string
+  exportPresetSaveNote: string | null
   plannerSelectedTaskId: string | null
   enginePathDraft: EnginePathOverrides
   setWorkspaceTab: (tab: WorkspaceTab) => void
@@ -37,6 +42,10 @@ type AppShellState = {
   setExportTrim: (trim: MediaExportTrimPayload | null) => void
   setPendingKnowledgeSlug: (slug: string | null) => void
   setQuitConfirmRequest: (payload: QuitConfirmRequestPayload | null) => void
+  setFfmpegErrorMessage: (message: string | null) => void
+  setProcessErrorDialog: (payload: ProcessErrorDialogPayload | null) => void
+  setExportPresetDraftLabel: (label: string) => void
+  setExportPresetSaveNote: (note: string | null) => void
   setPlannerSelectedTaskId: (taskId: string | null) => void
   setEnginePathDraftField: (engineId: EngineId, path: string) => void
   hydrateEnginePathDraft: () => Promise<void>
@@ -58,6 +67,10 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   exportTrim: null,
   pendingKnowledgeSlug: null,
   quitConfirmRequest: null,
+  ffmpegErrorMessage: null,
+  processErrorDialog: null,
+  exportPresetDraftLabel: 'Мой пресет',
+  exportPresetSaveNote: null,
   plannerSelectedTaskId: null,
   enginePathDraft: {},
   setWorkspaceTab: (workspaceTab) =>
@@ -79,6 +92,10 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   setExportTrim: (exportTrim) => set({ exportTrim }),
   setPendingKnowledgeSlug: (pendingKnowledgeSlug) => set({ pendingKnowledgeSlug }),
   setQuitConfirmRequest: (quitConfirmRequest) => set({ quitConfirmRequest }),
+  setFfmpegErrorMessage: (ffmpegErrorMessage) => set({ ffmpegErrorMessage }),
+  setProcessErrorDialog: (processErrorDialog) => set({ processErrorDialog }),
+  setExportPresetDraftLabel: (exportPresetDraftLabel) => set({ exportPresetDraftLabel }),
+  setExportPresetSaveNote: (exportPresetSaveNote) => set({ exportPresetSaveNote }),
   setPlannerSelectedTaskId: (plannerSelectedTaskId) => set({ plannerSelectedTaskId }),
   setEnginePathDraftField: (engineId, path) =>
     set((state) => ({
@@ -100,6 +117,10 @@ export const useAppShellStore = create<AppShellState>((set) => ({
     const draft = useAppShellStore.getState().enginePathDraft
     await setPaths(draft)
   },
-  openModal: (activeModal) => set({ activeModal }),
-  closeModal: () => set({ activeModal: null })
+  openModal: (activeModal) =>
+    set({
+      activeModal,
+      ...(activeModal === 'export-preset-name' ? { exportPresetSaveNote: null } : {})
+    }),
+  closeModal: () => set({ activeModal: null, processErrorDialog: null })
 }))

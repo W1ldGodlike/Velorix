@@ -26,5 +26,7 @@ export const SYSTEM_MODAL_TITLES: Record<SystemModalId, string> = {
 export const SYSTEM_MODAL_WIDE: ReadonlySet<SystemModalId> = new Set([
   'engine-paths',
   'first-run-engines',
-  'encoder-benchmark'
+  'encoder-benchmark',
+  'critical-crash',
+  'plugins'
 ])

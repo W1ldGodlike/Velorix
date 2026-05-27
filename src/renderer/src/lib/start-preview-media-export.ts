@@ -5,8 +5,8 @@ import type {
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import type { AppSettingsView } from '../../../shared/settings-contract'
 
-import type { SystemModalId } from '../app/system-modal'
 import { readEncodePresetForExport } from './read-encode-preset-for-export'
+import { reportFfmpegErrorFromResult } from './report-ffmpeg-error'
 
 /** §7.2 — одиночный экспорт открытого в превью файла (настройки из `settings.get` или store). */
 export async function startPreviewMediaExport(args: {
@@ -14,7 +14,6 @@ export async function startPreviewMediaExport(args: {
   mediaProbe?: MediaProbeSuccess | null
   exportTrim?: MediaExportTrimPayload | null
   settings?: AppSettingsView | null
-  openModal: (id: SystemModalId) => void
 }): Promise<MediaExportStartResult | null> {
   const start = window.velorix?.export?.start
   if (start == null) {
@@ -47,7 +46,7 @@ export async function startPreviewMediaExport(args: {
   })
 
   if (!result.ok && !('cancelled' in result && result.cancelled)) {
-    args.openModal('ffmpeg-error')
+    reportFfmpegErrorFromResult(result)
   }
   return result
 }

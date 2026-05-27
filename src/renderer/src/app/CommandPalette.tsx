@@ -116,10 +116,15 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
     store.setWorkspaceTab('processing')
     return
   }
+  if (action.type === 'export-preset-name') {
+    store.setExportPresetDraftLabel('Мой пресет')
+    store.openModal('export-preset-name')
+    store.setWorkspaceTab('processing')
+    return
+  }
   const picked = await applyOpenMediaPick({
     setMediaSource: store.setMediaSource,
-    setMediaProbe: store.setMediaProbe,
-    openModal: store.openModal
+    setMediaProbe: store.setMediaProbe
   })
   if (picked) {
     store.setWorkspaceTab('processing')

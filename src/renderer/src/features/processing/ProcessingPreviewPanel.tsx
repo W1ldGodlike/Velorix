@@ -16,7 +16,6 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
   const { mediaSource, durationSec, onActionNote } = props
   const exportTrim = useAppShellStore((s) => s.exportTrim)
   const setExportTrim = useAppShellStore((s) => s.setExportTrim)
-  const openModal = useAppShellStore((s) => s.openModal)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [currentSec, setCurrentSec] = useState(0)
   const [duration, setDuration] = useState(durationSec ?? 0)
@@ -206,8 +205,7 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
             onClick={() => {
               void capturePreviewSnapshot({
                 inputPath: mediaSource.path,
-                timeSec: currentSec,
-                openModal
+                timeSec: currentSec
               }).then((result) => {
                 if (result?.ok) {
                   setLastSnapshotPath(result.path)
