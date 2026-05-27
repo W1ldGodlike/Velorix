@@ -17,6 +17,11 @@ interface TimelineWaveformProps {
   /** Видимый отрезок таймлайна (глобальные секунды). */
   windowStartSec: number
   windowLenSec: number
+  /**
+   * Визуальный режим дорожек.
+   * Для NEON ref.1 рисуем несколько «полос» внутри одного canvas (без новой модели timeline/IPC).
+   */
+  laneCount?: number
 }
 
 /** Микширование каналов до моно средним — стабильная огибающая без псевдослучайных высот. */
@@ -84,12 +89,15 @@ export default function TimelineWaveform({
   mediaKey,
   durationSec,
   windowStartSec,
-  windowLenSec
+  windowLenSec,
+  laneCount = 1
 }: TimelineWaveformProps): React.JSX.Element {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [peaks, setPeaks] = useState<readonly number[] | null>(null)
   const [hint, setHint] = useState<string | null>(null)
+
+  const laneCountSafe = Math.max(1, Math.min(8, Math.floor(laneCount)))
 
   useEffect(() => {
     let cancelled = false
@@ -192,7 +200,9 @@ export default function TimelineWaveform({
         return
       }
       const w = wrap.clientWidth
-      const cssH = 36
+      const cssH = laneCountSafe <= 1 ? 36 : laneCountSafe * 18
+      const laneH = cssH / laneCountSafe
+      const lanePad = laneH * 0.06
       if (w <= 0 || !Number.isFinite(windowLenSec) || windowLenSec <= 0) {
         return
       }
@@ -212,12 +222,27 @@ export default function TimelineWaveform({
       const muted = styles.getPropertyValue('--fa-border-subtle').trim() || '#374151'
 
       g.clearRect(0, 0, cv.width, cv.height)
-
-      const padY = cv.height * 0.06
+      const lanes = laneCountSafe
       g.fillStyle = muted
-      g.globalAlpha = 0.42
-      g.fillRect(0, padY, cv.width, cv.height - padY * 2)
+      for (let lane = 0; lane < lanes; lane++) {
+        const y0 = (cv.height / lanes) * lane
+        const y1 = y0 + cv.height / lanes
+        const innerY0 = y0 + lanePad * dpr
+        const innerY1 = y1 - lanePad * dpr
+        g.globalAlpha = 0.28 - lane * 0.03
+        g.fillRect(0, innerY0, cv.width, Math.max(1, innerY1 - innerY0))
+
+        // Тонкие разделители дорожек (визуально как V1/V2/V3/A1/A2).
+        g.globalAlpha = 0.18 - lane * 0.01
+        g.strokeStyle = muted
+        g.lineWidth = Math.max(1, 1 * dpr)
+        g.beginPath()
+        g.moveTo(0, y1)
+        g.lineTo(cv.width, y1)
+        g.stroke()
+      }
       g.globalAlpha = 1
+      g.fillStyle = accent
 
       const buckets = pks.length
       const absStartSec = durationSec <= 0 ? 0 : (windowStartSec / durationSec) * buckets
@@ -234,9 +259,19 @@ export default function TimelineWaveform({
         const t = bi0 + (x / Math.max(cv.width - 1, 1)) * span
         const idx = Math.min(buckets - 1, Math.max(0, Math.floor(t)))
         const h = pks[idx] ?? 0
-        const barH = h * (cv.height - padY * 4)
-        g.fillStyle = accent
-        g.fillRect(x + 0.15, cv.height / 2 - barH / 2, Math.max(barPx, 1.1), Math.max(barH, 1.2))
+
+        for (let lane = 0; lane < lanes; lane++) {
+          const y0 = (cv.height / lanes) * lane
+          const y1 = y0 + cv.height / lanes
+          const laneInnerH = Math.max(1, y1 - y0 - lanePad * 2 * dpr)
+          const laneAmpScale = Math.max(0.26, 1 - lane * 0.12)
+          const barH = h * laneAmpScale * laneInnerH
+          const yCenter = y0 + (y1 - y0) / 2
+
+          g.globalAlpha = 0.62 - lane * 0.07
+          g.fillStyle = accent
+          g.fillRect(x + 0.15, yCenter - barH / 2, Math.max(barPx, 1.1), Math.max(barH, 1.2))
+        }
       }
     }
 
@@ -256,7 +291,7 @@ export default function TimelineWaveform({
       ro.disconnect()
       window.removeEventListener('resize', paint)
     }
-  }, [peaks, durationSec, windowLenSec, windowStartSec])
+  }, [peaks, durationSec, windowLenSec, windowStartSec, laneCountSafe])
 
   if (durationSec > WAVEFORM_MAX_DURATION_SEC) {
     return (
@@ -278,7 +313,7 @@ export default function TimelineWaveform({
 
   return (
     <div
-      className="app-timeline-waveform"
+      className={`app-timeline-waveform app-timeline-waveform--lanes-${laneCountSafe}`}
       ref={wrapRef}
       aria-label={uiText('timelineWaveformAriaEnvelope')}
       aria-busy={waveformDecodeBusy}

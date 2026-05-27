@@ -3202,6 +3202,10 @@ button.app-downloads-hint-token:disabled {
   min-width: 0;
 }
 
+.app-timeline-waveform--lanes-5 {
+  min-height: 90px;
+}
+
 .app-timeline-waveform-canvas {
   display: block;
   width: 100%;

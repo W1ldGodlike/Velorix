@@ -102,6 +102,7 @@ export function VideoTimelineUnifiedPane({
                 durationSec={duration}
                 windowStartSec={winStartEff}
                 windowLenSec={windowLenSec}
+                laneCount={5}
               />
             </div>
           </div>
