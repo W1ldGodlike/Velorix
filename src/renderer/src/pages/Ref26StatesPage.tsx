@@ -49,7 +49,49 @@ export function Ref26StatesPage(): JSX.Element {
                 </button>
               )}
             </StateMatrix>
+            <StateMatrix>
+              {(force, disabled) => (
+                <button
+                  type="button"
+                  className={btnClass(force, 'app-btn app-btn-secondary')}
+                  disabled={disabled}
+                >
+                  Secondary
+                </button>
+              )}
+            </StateMatrix>
+            <StateMatrix>
+              {(force, disabled) => (
+                <button
+                  type="button"
+                  className={btnClass(force, 'app-btn app-btn-danger')}
+                  disabled={disabled}
+                >
+                  Danger
+                </button>
+              )}
+            </StateMatrix>
           </div>
+        </StatesSection>
+
+        <StatesSection title="Sidebar nav (ref.1)">
+          <StateMatrix>
+            {(force, disabled) => (
+              <button
+                type="button"
+                className={[
+                  'neon-shell__nav-btn',
+                  force === 'app-ui-state--active' ? 'is-active' : force
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                disabled={disabled}
+              >
+                <span className="neon-shell__nav-glyph" aria-hidden />
+                Обработка
+              </button>
+            )}
+          </StateMatrix>
         </StatesSection>
 
         <StatesSection title="Поля ввода">
@@ -124,6 +166,13 @@ export function Ref26StatesPage(): JSX.Element {
         </StatesSection>
 
         <StatesSection title="Индикаторы">
+          <div className="app-ui-states-status-row">
+            <StatusPill label="Готово" tone="ready" />
+            <StatusPill label="Обработка" tone="processing" />
+            <StatusPill label="Внимание" tone="attention" />
+            <StatusPill label="Ошибка" tone="error" />
+            <StatusPill label="Инфо" tone="info" />
+          </div>
           <StateMatrix>
             {(force, disabled) => (
               <span className={force} aria-disabled={disabled}>

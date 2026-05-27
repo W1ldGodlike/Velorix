@@ -11,8 +11,24 @@
   .planner-grid__cell,
   .portal-card,
   .inspector-rail__chapter,
-  .tools-card {
+  .tools-card,
+  .vn-surface-glass,
+  .knowledge-screen__item,
+  .processing-screen__file,
+  .processing-screen__clip {
     transition: var(--vn-transition-surface);
+  }
+
+  .vn-surface-glass:hover {
+    box-shadow: var(--vn-shadow-elevation-2), var(--vn-glow-accent-soft);
+  }
+
+  .processing-screen__clip:hover {
+    filter: brightness(1.06);
+  }
+
+  .knowledge-screen__item:hover:not(.knowledge-screen__item--active) {
+    border-color: color-mix(in srgb, var(--fa-accent) 28%, transparent);
   }
 
   .neon-shell__nav-btn:hover:not(.is-active) {

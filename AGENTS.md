@@ -12,11 +12,11 @@
 
 **Индекс:** [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md) · [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) · [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](docs/IMPLEMENTATION_NEON_CHECKLIST.md) · [`docs/archive/`](docs/archive/) (старые ТЗ/чеклист — **не** навигатор) · SDK [`agent-contract.txt`](scripts/cursor-automation/prompts/agent-contract.txt)
 
-**Проверки:** `npm run check:quiet` — **31** шагов (UI guards сняты на UI ZERO); снимок **234** test files / **1794** tests — NEON-чеклист `snap.3` (после `npm run test`). Help §15: 44 workflow — user footer (`formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter`); dev §21 — owner/about/logging; sync `node scripts/maint/sync-help-workflow-user-footers.mjs`. После локального `npm run build` — вернуть `src/shared/app-build-info.json` → `dev` ([`docs/RELEASE.md`](docs/RELEASE.md) §1). `npm run audit:moderate` не в `check:quiet` — [`docs/RELEASE.md`](docs/RELEASE.md) §1.
+**Проверки:** `npm run check:quiet` — **31** шагов (UI guards сняты на UI ZERO); снимок **238** test files / **1802** tests — NEON-чеклист `snap.3` (после `npm run test`). Help §15: 44 workflow — user footer (`formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter`); dev §21 — owner/about/logging; sync `node scripts/maint/sync-help-workflow-user-footers.mjs`. После локального `npm run build` — вернуть `src/shared/app-build-info.json` → `dev` ([`docs/RELEASE.md`](docs/RELEASE.md) §1). `npm run audit:moderate` не в `check:quiet` — [`docs/RELEASE.md`](docs/RELEASE.md) §1.
 
 **Git author (локально, без `--global`):** `user.name` **W1ldGodlike**, `user.email` **W1ld.Godlike@gmail.com**.
 
-**Git по J-NNN:** `NNN % 5` → commit, `NNN % 10` → push (любой чат); **следующий commit по J** **J-1685**, **следующий push по J** **J-1690** — [`velorix-agent.mdc`](.cursor/rules/velorix-agent.mdc).
+**Git по J-NNN:** `NNN % 5` → commit, `NNN % 10` → push (любой чат); **следующий commit по J** **J-1710**, **следующий push по J** **J-1710** — [`velorix-agent.mdc`](.cursor/rules/velorix-agent.mdc).
 
 **§19 signing · §21 Help:** канон — [`docs/RELEASE.md`](docs/RELEASE.md) §1/§4; карта — [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md); lock — `tests/shared/toolchain-baseline-package.test.ts`.
 

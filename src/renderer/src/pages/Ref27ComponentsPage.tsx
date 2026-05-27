@@ -2,6 +2,7 @@ import type { JSX } from 'react'
 
 import { VELORIX_NEON_REFERENCE_UI_COMPONENTS_REL } from '../../../shared/velorix-neon-theme-tokens'
 
+import { Ref27PrimitivesPalette } from './Ref27PrimitivesPalette'
 import { Ref27ShowcaseExtra } from './Ref27ShowcaseExtra'
 import { PillSwitch, ShowcaseCard, StatusPill } from './ref27-showcase-shared'
 import type { StatusTone } from './ref27-showcase-shared'
@@ -62,6 +63,7 @@ export function Ref27ComponentsPage(): JSX.Element {
       </header>
 
       <div className="app-ui-showcase-grid" role="list">
+        <Ref27PrimitivesPalette />
         <ShowcaseCard title="Кнопки">
           <div className="app-ui-showcase-button-row">
             <button type="button" className="app-btn app-btn-primary">

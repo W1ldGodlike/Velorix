@@ -1,9 +1,20 @@
-import { useState, type JSX } from 'react'
+import { useEffect, useState, type JSX } from 'react'
 
+import type {
+  FfmpegExportEncodePresetId,
+  FfmpegExportProgressPayload
+} from '../../../../shared/ffmpeg-export-contract'
 import { VELORIX_NEON_CANONICAL_REFERENCE_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
 import { applyOpenMediaPick } from '../../lib/apply-open-media-pick'
+import { parseDownloadsProgressPercent } from '../../lib/parse-downloads-queue-row'
+import { restoreLastMediaSession } from '../../lib/restore-last-media-session'
+import { startPreviewMediaExport } from '../../lib/start-preview-media-export'
 import { useAppShellStore } from '../../stores/app-shell-store'
+import { useDownloadsQueue } from '../downloads/use-downloads-queue'
+import { ProcessingPreviewPanel } from './ProcessingPreviewPanel'
+import { useExportProgressNote } from './use-export-progress-note'
+import { useFfmpegExportSettings } from './use-ffmpeg-export-settings'
 
 type ProcessingCenterTab = 'editor' | 'downloads' | 'terminal'
 
@@ -40,8 +51,21 @@ export function ProcessingScreen(): JSX.Element {
   const setMediaSource = useAppShellStore((s) => s.setMediaSource)
   const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
   const mediaSource = useAppShellStore((s) => s.mediaSource)
+  const mediaProbe = useAppShellStore((s) => s.mediaProbe)
   const openModal = useAppShellStore((s) => s.openModal)
   const [centerTab, setCenterTab] = useState<ProcessingCenterTab>('editor')
+  const [ytdlpUrl, setYtdlpUrl] = useState('')
+  const [headStatus, setHeadStatus] = useState<string | null>(null)
+
+  useEffect(() => {
+    void (async () => {
+      await restoreLastMediaSession({
+        hasMedia: useAppShellStore.getState().mediaSource != null,
+        setMediaSource,
+        setMediaProbe
+      })
+    })()
+  }, [setMediaSource, setMediaProbe])
 
   async function handleOpenMedia(): Promise<void> {
     await applyOpenMediaPick({ setMediaSource, setMediaProbe, openModal })
@@ -54,8 +78,28 @@ export function ProcessingScreen(): JSX.Element {
       return
     }
     const result = await pick()
-    if (!result.ok && !('cancelled' in result && result.cancelled)) {
+    if (result.ok) {
+      setHeadStatus(
+        `В пакетную очередь: ${String(result.added)} (пропущено ${String(result.skipped)})`
+      )
+    } else if (!('cancelled' in result && result.cancelled)) {
       openModal('ffmpeg-error')
+    }
+  }
+
+  async function handleQuickYtdlp(): Promise<void> {
+    const add = window.velorix?.downloads?.addLines
+    const text = ytdlpUrl.trim()
+    if (add == null || text.length === 0) {
+      return
+    }
+    const result = await add(text)
+    if (result.ok) {
+      setYtdlpUrl('')
+      setHeadStatus(`Добавлено в очередь: ${String(result.added)}`)
+      setCenterTab('downloads')
+    } else {
+      setHeadStatus(result.error)
     }
   }
 
@@ -67,9 +111,21 @@ export function ProcessingScreen(): JSX.Element {
           <p className="processing-screen__subtitle">
             Эталон: {VELORIX_NEON_CANONICAL_REFERENCE_REL}
           </p>
+          {headStatus != null ? <p className="processing-screen__status">{headStatus}</p> : null}
         </div>
         <div className="processing-screen__head-actions">
-          <button type="button" className="app-btn app-btn-secondary">
+          <input
+            type="url"
+            className="app-input processing-screen__ytdlp-input"
+            placeholder="URL для yt-dlp"
+            value={ytdlpUrl}
+            onChange={(e) => setYtdlpUrl(e.target.value)}
+          />
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            onClick={() => void handleQuickYtdlp()}
+          >
             Быстрая загрузка yt-dlp
           </button>
           <button type="button" className="app-btn" onClick={() => void handleBatchPick()}>
@@ -122,7 +178,7 @@ export function ProcessingScreen(): JSX.Element {
                 <li key={file}>
                   <button
                     type="button"
-                    className={`processing-screen__file${index === 0 ? ' processing-screen__file--active' : ''}`}
+                    className={`processing-screen__file${mediaSource?.name === file || (mediaSource == null && index === 0) ? ' processing-screen__file--active' : ''}`}
                   >
                     {file}
                   </button>
@@ -133,55 +189,11 @@ export function ProcessingScreen(): JSX.Element {
           </aside>
 
           <div className="processing-screen__main">
-            <div className="processing-screen__preview vn-surface-glass">
-              {mediaSource != null ? (
-                <>
-                  <video
-                    className="processing-screen__video"
-                    src={mediaSource.mediaUrl}
-                    controls
-                    preload="metadata"
-                  />
-                  {mediaSource.probeSummary != null ? (
-                    <span className="processing-screen__preview-badge">
-                      {mediaSource.probeSummary}
-                    </span>
-                  ) : null}
-                  <span className="processing-screen__preview-hint">{mediaSource.name}</span>
-                </>
-              ) : (
-                <>
-                  <span className="processing-screen__preview-badge">4K · 60fps</span>
-                  <span className="processing-screen__preview-hint">Превью · НОВЫЙ СЕЗОН</span>
-                </>
-              )}
-            </div>
-            <div className="processing-screen__transport">
-              <button type="button" className="app-ui-showcase-icon-btn" aria-label="В начало">
-                ⏮
-              </button>
-              <button
-                type="button"
-                className="app-ui-showcase-icon-btn app-ui-showcase-icon-btn--primary"
-                aria-label="Пауза"
-              >
-                ❚❚
-              </button>
-              <button type="button" className="app-ui-showcase-icon-btn" aria-label="В конец">
-                ⏭
-              </button>
-              <span className="app-ui-showcase-status-pill app-ui-showcase-status-pill--info">
-                01:12:34 / 01:36:53
-              </span>
-              <input
-                type="range"
-                className="app-ui-showcase-range vn-progress-neon processing-screen__seek"
-                defaultValue={42}
-                min={0}
-                max={100}
-                aria-label="Позиция"
-              />
-            </div>
+            <ProcessingPreviewPanel
+              key={mediaSource?.mediaUrl ?? 'preview-empty'}
+              mediaSource={mediaSource}
+              durationSec={mediaProbe?.durationSec ?? null}
+            />
             <div className="processing-screen__timeline vn-surface-glass" aria-label="Таймлайн">
               {LANES.map((lane) => (
                 <div key={lane.id} className="processing-screen__lane">
@@ -204,12 +216,25 @@ export function ProcessingScreen(): JSX.Element {
 }
 
 function ProcessingDownloadsPeek(props: { onOpenFull: () => void }): JSX.Element {
+  const rows = useDownloadsQueue().slice(0, 5)
   return (
     <section className="processing-screen__peek vn-surface-glass">
       <h2 className="processing-screen__peek-title">Очередь загрузок</h2>
       <ul className="processing-screen__peek-list">
-        <li>city_night_4k.mp4 · 68%</li>
-        <li>drive_sequence.mov · в очереди</li>
+        {rows.length === 0 ? (
+          <li>Очередь пуста</li>
+        ) : (
+          rows.map((row) => {
+            const pct = parseDownloadsProgressPercent(row.progress)
+            const suffix = pct > 0 ? ` · ${String(pct)}%` : ''
+            return (
+              <li key={row.id}>
+                {row.shortLabel}
+                {suffix} · {row.status}
+              </li>
+            )
+          })
+        )}
       </ul>
       <button type="button" className="app-btn app-btn-primary" onClick={props.onOpenFull}>
         Открыть загрузки
@@ -219,11 +244,27 @@ function ProcessingDownloadsPeek(props: { onOpenFull: () => void }): JSX.Element
 }
 
 function ProcessingTerminalPeek(props: { onOpenFull: () => void }): JSX.Element {
+  const [lines, setLines] = useState<string[]>(['Ожидание FFmpeg…'])
+
+  useEffect(() => {
+    const subscribe = window.velorix?.export?.onProgress
+    if (subscribe == null) {
+      return
+    }
+    return subscribe((payload: FfmpegExportProgressPayload) => {
+      const line =
+        payload.percent >= 0 ? `${String(payload.percent)}% · ${payload.message}` : payload.message
+      setLines((prev) => [...prev, line].slice(-6))
+    })
+  }, [])
+
   return (
     <section className="processing-screen__peek vn-surface-glass processing-screen__peek--terminal">
       <h2 className="processing-screen__peek-title">FFmpeg log</h2>
       <pre className="processing-screen__peek-log">
-        <code>frame= 1842 fps=118 q=23.0 size= 512MiB time=00:01:12:34</code>
+        {lines.map((line, index) => (
+          <code key={`${index}-${line.slice(0, 16)}`}>{line}</code>
+        ))}
       </pre>
       <button type="button" className="app-btn app-btn-primary" onClick={props.onOpenFull}>
         Открыть терминал
@@ -234,56 +275,164 @@ function ProcessingTerminalPeek(props: { onOpenFull: () => void }): JSX.Element 
 
 export function ProcessingRail(): JSX.Element {
   const openModal = useAppShellStore((s) => s.openModal)
+  const mediaSource = useAppShellStore((s) => s.mediaSource)
+  const mediaProbe = useAppShellStore((s) => s.mediaProbe)
+  const [exportBusy, setExportBusy] = useState(false)
+  const [exportNote, setExportNote] = useState<string | null>(null)
+  const exportProgressNote = useExportProgressNote(exportBusy)
+  const { view, setCrf, setVideoCodec, setContainer, setEncodePreset, setAudioMode } =
+    useFfmpegExportSettings()
+
+  const displayExportNote = exportBusy ? (exportProgressNote ?? 'Экспорт…') : exportNote
+
+  const codec = view?.ffmpegExportVideoCodec ?? 'libx264'
+  const container = view?.ffmpegExportContainer ?? 'mp4'
+  const crf = view?.ffmpegExportCrf ?? 18
+  const encodePreset: FfmpegExportEncodePresetId =
+    view?.ffmpegExportEncodePreset === 'smaller' || view?.ffmpegExportEncodePreset === 'quality'
+      ? view.ffmpegExportEncodePreset
+      : 'balance'
+  const audioMode = view?.ffmpegExportAudioMode ?? 'aac'
+
   return (
     <aside className="processing-rail vn-surface-glass">
       <h2 className="processing-rail__title">Настройки FFmpeg</h2>
       <details className="processing-rail__section" open>
         <summary>Видео</summary>
         <div className="processing-rail__section-body">
-          <p className="processing-rail__kv">Кодек: H.264 (libx264)</p>
-          <p className="processing-rail__kv">Профиль High · Level 4.1 · Preset Slow</p>
+          <label className="app-ui-showcase-field">
+            <span className="app-ui-showcase-field-label">Кодек</span>
+            <select
+              className="app-settings-select"
+              value={codec}
+              onChange={(e) => void setVideoCodec(e.target.value as typeof codec)}
+            >
+              <option value="libx264">H.264 (libx264)</option>
+              <option value="libx265">H.265 (libx265)</option>
+              <option value="hw_auto">HW auto</option>
+              <option value="hw_auto_hevc">HW HEVC</option>
+            </select>
+          </label>
           <label className="app-ui-showcase-field">
             <span className="app-ui-showcase-field-label">CRF</span>
-            <input type="number" className="app-input" defaultValue={18} min={0} max={51} />
+            <input
+              type="number"
+              className="app-input"
+              value={crf}
+              min={0}
+              max={51}
+              onChange={(e) => {
+                const next = Number(e.target.value)
+                if (!Number.isNaN(next)) {
+                  void setCrf(next)
+                }
+              }}
+            />
           </label>
-          <p className="processing-rail__kv">3840×2160 · 60 fps · NVENC</p>
         </div>
       </details>
       <details className="processing-rail__section">
         <summary>Аудио</summary>
         <div className="processing-rail__section-body">
-          <select className="app-settings-select" defaultValue="aac">
-            <option value="aac">AAC 192k</option>
-            <option value="opus">Opus</option>
+          <select
+            className="app-settings-select"
+            value={audioMode}
+            onChange={(e) => void setAudioMode(e.target.value as typeof audioMode)}
+          >
+            <option value="aac">AAC</option>
+            <option value="libopus">Opus</option>
+            <option value="copy">Copy</option>
+            <option value="none">Без аудио</option>
           </select>
         </div>
       </details>
       <details className="processing-rail__section">
         <summary>Формат</summary>
         <div className="processing-rail__section-body">
-          <select className="app-settings-select" defaultValue="mp4">
+          <select
+            className="app-settings-select"
+            value={container}
+            onChange={(e) => void setContainer(e.target.value as typeof container)}
+          >
             <option value="mp4">MP4</option>
             <option value="mkv">MKV</option>
+            <option value="mov">MOV</option>
           </select>
         </div>
       </details>
       <details className="processing-rail__section">
         <summary>Пресеты</summary>
         <div className="processing-rail__section-body">
-          <select className="app-settings-select" defaultValue="quality">
-            <option value="quality">Качество 4K</option>
-            <option value="fast">Быстрый</option>
+          <select
+            className="app-settings-select"
+            value={encodePreset}
+            onChange={(e) => {
+              const next = e.target.value
+              if (next === 'balance' || next === 'smaller' || next === 'quality') {
+                void setEncodePreset(next)
+              }
+            }}
+          >
+            <option value="balance">Баланс</option>
+            <option value="smaller">Меньший размер</option>
+            <option value="quality">Качество</option>
           </select>
         </div>
       </details>
       <button
         type="button"
         className="app-btn app-btn-primary processing-rail__export"
+        disabled={exportBusy || mediaSource == null}
+        onClick={() => {
+          if (mediaSource == null) {
+            setExportNote('Сначала откройте медиа в превью')
+            return
+          }
+          setExportBusy(true)
+          setExportNote(null)
+          void startPreviewMediaExport({
+            inputPath: mediaSource.path,
+            mediaProbe,
+            settings: view,
+            openModal
+          }).then((result) => {
+            if (result?.ok) {
+              setExportNote(`Готово: ${result.path}`)
+            } else if (result != null && !result.ok && 'error' in result) {
+              setExportNote(result.error)
+            }
+            setExportBusy(false)
+          })
+        }}
+      >
+        {exportBusy ? 'Экспорт…' : 'Начать экспорт'}
+      </button>
+      <button
+        type="button"
+        className="app-btn app-btn-secondary"
+        disabled={!exportBusy}
+        onClick={() => {
+          void window.velorix?.export?.cancel?.().then(() => {
+            setExportBusy(false)
+            setExportNote('Экспорт отменён')
+          })
+        }}
+      >
+        Отменить экспорт
+      </button>
+      <button
+        type="button"
+        className="app-btn app-btn-secondary"
         onClick={() => openModal('export-preset-name')}
       >
-        Начать экспорт
+        Имя пресета
       </button>
-      <p className="processing-rail__footer">FFmpeg 6.1.1 · GPU NVENC</p>
+      {displayExportNote != null ? (
+        <p className="processing-rail__export-note">{displayExportNote}</p>
+      ) : null}
+      <p className="processing-rail__footer">
+        {view == null ? 'Загрузка настроек…' : `Кодек: ${codec} · ${container.toUpperCase()}`}
+      </p>
     </aside>
   )
 }

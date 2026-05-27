@@ -36,5 +36,9 @@ export async function applyOpenMediaPick(deps: ApplyOpenMediaPickDeps): Promise<
     mediaUrl: result.mediaUrl,
     ...(probeSummary != null ? { probeSummary } : {})
   })
+  const persist = window.velorix?.session?.persistLastSource
+  if (persist != null) {
+    await persist(result.path)
+  }
   return true
 }

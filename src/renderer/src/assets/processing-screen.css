@@ -27,10 +27,23 @@
   font-size: var(--fa-font-size-caption);
 }
 
+.processing-screen__status {
+  margin: var(--fa-space-1) 0 0;
+  font-size: var(--fa-font-size-body-sm);
+  color: var(--fa-accent);
+}
+
 .processing-screen__head-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--fa-space-snug);
+}
+
+.processing-screen__ytdlp-input {
+  min-width: 12rem;
+  flex: 1 1 12rem;
+  max-width: 20rem;
 }
 
 .processing-screen__tabs {
@@ -218,6 +231,11 @@
   font-size: var(--fa-font-size-body-sm);
 }
 
+.processing-screen__transport--disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 .processing-screen__transport {
   display: flex;
   flex-wrap: wrap;
@@ -330,6 +348,13 @@
 
 .processing-rail__export {
   margin-top: var(--fa-space-2);
+}
+
+.processing-rail__export-note {
+  margin: 0;
+  font-size: var(--fa-font-size-xs);
+  color: var(--fa-text-muted);
+  word-break: break-all;
 }
 
 .processing-rail__footer {

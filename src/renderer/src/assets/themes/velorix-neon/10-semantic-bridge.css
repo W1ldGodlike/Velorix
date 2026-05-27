@@ -5,35 +5,39 @@
 
 html[data-theme='dark'],
 html:not([data-theme]) {
-  /* Surfaces (hex literals — §5 contrast guard + primitives --vn-color-*) */
-  --fa-bg: #05050a;
-  --fa-surface: #0a0a15;
-  --fa-surface-elevated: #12122a;
+  /* Surfaces — wired to 01-primitives (--vn-color-*) */
+  --fa-bg: var(--vn-color-void);
+  --fa-surface: var(--vn-color-midnight);
+  --fa-surface-elevated: color-mix(
+    in srgb,
+    var(--vn-color-navy-mid) 58%,
+    var(--vn-color-navy-deep) 42%
+  );
   --fa-bg-elevated: var(--fa-surface-elevated);
 
   /* Borders */
-  --fa-border: #3d2f6b;
-  --fa-border-subtle: #1e1a35;
+  --fa-border: color-mix(in srgb, var(--vn-color-purple-mist) 72%, var(--vn-color-violet-deep) 28%);
+  --fa-border-subtle: color-mix(in srgb, var(--vn-color-abyss) 55%, var(--vn-color-purple-panel) 45%);
 
   /* Text */
-  --fa-text-primary: #f4f0ff;
-  --fa-text-secondary: #b8b0d4;
-  --fa-text-muted: #7a7298;
+  --fa-text-primary: var(--vn-color-text-bright);
+  --fa-text-secondary: var(--vn-color-text-secondary);
+  --fa-text-muted: var(--vn-color-text-muted);
 
-  /* Accent — rich violet (WCAG AA with white contrast text) */
-  --fa-accent: #8a2be2;
+  /* Accent */
+  --fa-accent: var(--vn-color-violet-rich);
   --fa-accent-contrast: #ffffff;
 
   /* Functional */
-  --fa-danger: #ff4d6d;
-  --fa-success: #34f5a0;
-  --fa-warning: #ffb347;
+  --fa-danger: var(--vn-color-danger-neon);
+  --fa-success: var(--vn-color-success-matrix);
+  --fa-warning: var(--vn-color-warning-amber);
 
   /* Interaction */
   --fa-hover: color-mix(in srgb, var(--fa-accent) 18%, var(--fa-surface-elevated) 82%);
   --fa-focus: rgba(224, 64, 251, 0.52);
   --fa-focus-ring: var(--fa-focus);
-  --fa-disabled: #6b6585;
+  --fa-disabled: var(--vn-color-disabled);
 
   /* Overlay / elevation */
   --fa-scrim: #020208;

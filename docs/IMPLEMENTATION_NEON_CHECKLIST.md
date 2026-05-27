@@ -71,11 +71,11 @@
 
 **Правило:** **3–7** пунктов, ≤ **220** символов. Детали — матрица refs ниже.
 
-- [ ] **neon.1** **ref.27** — примитивы 1:1 `velorix-neon-reference-ui-components.png`; tokens CSS в renderer.
-- [ ] **neon.2** **ref.26** — состояния 1:1 showcase PNG.
-- [~] **neon.3** **ref.1** — bootstrap shell+processing в `#ref1`; sign-off canonical PNG — нет.
+- [~] **neon.1** **ref.27** — `--vn-*`→`--fa-*` bridge, `02-surfaces` в index, палитра на `#ref27`; sign-off PNG — нет.
+- [~] **neon.2** **ref.26** — матрица кнопок/nav/статусов + forced states + reduced-motion; sign-off PNG — нет.
+- [~] **neon.3** **ref.1** — export start/cancel/progress, session persist, preview transport; sign-off PNG — нет.
 - [~] **neon.4** **refs 2–7,9** — portal IPC (downloads…scenarios); ref.6 settings; sign-off PNG — нет.
-- [~] **neon.5** Motion-pass v1 — `neon-motion-v1.css`; polish hover/glow — нет.
+- [~] **neon.5** Motion-pass v1 — glass/knowledge/timeline hover в `neon-motion-v1.css`; sign-off PNG — нет.
 
 ---
 
@@ -180,7 +180,7 @@ PNG: `docs/reference/`. Анализ: NEON § «Анализ референса 
 
 - [x] **snap.1** Electron + TS + single-NEON; pop-out снят.
 - [x] **snap.2** `npm run check:quiet` зелёный.
-- [x] **snap.3** Vitest **234** test files / **1794** tests (2026-05-27, post UI ZERO purge).
+- [x] **snap.3** Vitest **238** test files / **1802** tests (2026-05-28, J-1705).
 - [x] **snap.4** `audit-manifest` **1156** файлов.
 - [x] **snap.5** Help 44 workflow; guards OK.
 - [ ] **snap.6** **NEON UI 0%** — UI ZERO REBUILD; backend отдельно.

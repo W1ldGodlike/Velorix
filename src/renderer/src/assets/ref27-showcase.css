@@ -495,3 +495,96 @@
   cursor: not-allowed;
 }
 
+.app-ui-showcase-card:has(.ref27-primitives) {
+  grid-column: 1 / -1;
+}
+
+.ref27-primitives {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-4);
+}
+
+.ref27-primitives__group-title {
+  margin: 0 0 var(--fa-space-2);
+  font-size: var(--fa-font-size-body-sm);
+  color: var(--fa-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ref27-primitives__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: var(--fa-space-3);
+}
+
+.ref27-primitives__swatch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-1);
+  padding: var(--fa-space-2);
+  border-radius: var(--fa-radius-control);
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface) 88%, transparent);
+}
+
+.ref27-primitives__chip {
+  display: block;
+  height: 2.5rem;
+  border-radius: var(--fa-radius-sm);
+  box-shadow: inset 0 0 0 1px var(--vn-alpha-glass-edge);
+}
+
+.ref27-primitives__token {
+  font-family: var(--fa-font-mono, ui-monospace, monospace);
+  font-size: var(--fa-font-size-xs);
+  color: var(--fa-text-muted);
+  word-break: break-all;
+}
+
+.ref27-primitives__label {
+  font-size: var(--fa-font-size-xs);
+  color: var(--fa-text-secondary);
+}
+
+.ref27-primitives__semantic {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fa-space-2);
+}
+
+.ref27-primitives__semantic-chip {
+  padding: var(--fa-space-2) var(--fa-space-3);
+  border-radius: var(--fa-radius-pill);
+  border: 1px solid var(--fa-border-subtle);
+  font-size: var(--fa-font-size-xs);
+  font-weight: 700;
+}
+
+.ref27-primitives__semantic-chip[data-token='bg'] {
+  background: var(--fa-bg);
+  color: var(--fa-text-primary);
+}
+
+.ref27-primitives__semantic-chip[data-token='surface'] {
+  background: var(--fa-surface-elevated);
+  color: var(--fa-text-primary);
+}
+
+.ref27-primitives__semantic-chip[data-token='accent'] {
+  background: var(--fa-accent);
+  color: var(--fa-accent-contrast);
+}
+
+.ref27-primitives__semantic-chip[data-token='success'] {
+  background: color-mix(in srgb, var(--fa-success) 22%, var(--fa-surface));
+  color: var(--fa-success);
+}
+
+.ref27-primitives__semantic-chip[data-token='danger'] {
+  background: color-mix(in srgb, var(--fa-danger) 22%, var(--fa-surface));
+  color: var(--fa-danger);
+}
+

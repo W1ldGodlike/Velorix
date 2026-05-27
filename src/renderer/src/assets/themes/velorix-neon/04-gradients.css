@@ -48,6 +48,12 @@ html:not([data-theme]) {
     var(--vn-color-magenta-hot) 100%
   );
 
+  --vn-gradient-nav-active: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--vn-color-violet-deep) 55%, transparent) 0%,
+    color-mix(in srgb, var(--vn-color-magenta-soft) 28%, transparent) 100%
+  );
+
   --vn-gradient-accent-vertical: linear-gradient(
     180deg,
     var(--vn-color-violet-rich) 0%,
