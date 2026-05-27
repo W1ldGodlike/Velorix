@@ -135,44 +135,22 @@ describe('settings-store yt-dlp fields', () => {
     expect(loadSettings(file)).toMatchObject(settings)
   })
 
-  it('загружает §4.1 ui-панели: только whitelist boolean, лишнее отбрасывается', () => {
+  it('игнорирует legacy ui-панели в settings.json', () => {
     const root = makeTempRoot()
     const file = join(root, 'settings.json')
     writeFileSync(
       file,
       JSON.stringify({
         theme: 'dark',
-        mainWindowUiPanels: {
-          ffmpegSettingsRailOpen: false,
-          quickYtdlp: true,
-          ffmpegVideo: false,
-          processingHistory: true,
-          probeTracks: true,
-          probeBad: false,
-          unknownKey: true,
-          bad: 'x'
-        },
-        downloadsWindowUiPanels: {
-          log: false,
-          format: true,
-          historyListMode: 'full',
-          extra: false
-        }
+        mainWindowUiPanels: { ffmpegSettingsRailOpen: false },
+        downloadsWindowUiPanels: { log: false }
       }),
       'utf-8'
     )
-
-    expect(loadSettings(file)).toMatchObject({
-      theme: 'dark',
-      mainWindowUiPanels: {
-        ffmpegSettingsRailOpen: false,
-        quickYtdlp: true,
-        ffmpegVideo: false,
-        processingHistory: true,
-        probeTracks: true
-      },
-      downloadsWindowUiPanels: { log: false, format: true, historyListMode: 'full' }
-    })
+    const loaded = loadSettings(file)
+    expect(loaded.theme).toBe('dark')
+    expect(loaded).not.toHaveProperty('mainWindowUiPanels')
+    expect(loaded).not.toHaveProperty('downloadsWindowUiPanels')
   })
 
   it('legacy theme: system схлопывается в dark', () => {

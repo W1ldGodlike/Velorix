@@ -21,4 +21,12 @@
 
 ## См. также
 
+[packaged-windows-smoke.md](packaged-windows-smoke.md) (после `pack:dir`) · [logging-and-diagnostics.md](logging-and-diagnostics.md).dev: `check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks` (44 статьи; partition: tail 42 + ffmpeg + knowledge, FAQ вне 44). §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../docs/RELEASE.md) §4/§4.1/§4.2 — `check:help-packaged-smoke-docs`; §19 build: `fix:esm-shim` / `electron-vite-build-meta.ts` (Linux/CI `npm run build`). §21 Playwright: `npm run UI ZERO (Playwright removed)` (канон — `docs/VELORIX_NEON_THEME.md`).. UiHintSuffix: `aboutSupportZipDiagnosticsSectionsHint` — `formatPackagedGuiE2ePlaywrightUiHintSuffix` (`check:support-bundle-terminal-hints`; settings — `check:owner-hardware-checklist-locale`).
+- **`ownerHardwareChecklist:`** — чеклист владельца на вашем ПК (тема NEON, HiDPI, HW, сценарий, спрайт §7.5, packaged для вашей ОС, планировщик, Windows shell); канон **ru**; при EN UI в буфере копирования — EN-строки из locales.
+- **`winPackagedSmoke:`** / **`linuxPackagedSmoke:`** / **`macosPackagedSmoke:`** — packaged-чеклисты (Windows всегда в ZIP; Linux/macOS — при сборке на соответствующей ОС); см. [packaged-windows-smoke.md](packaged-windows-smoke.md), [packaged-linux-smoke.md](packaged-linux-smoke.md), [packaged-macos-smoke.md](packaged-macos-smoke.md).
+- **`terminalHints:`** — снимок подсказок терминала для поддержки; см. [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md) и [logging-and-diagnostics.md](logging-and-diagnostics.md).
+- **`releaseSmoke:`** — сводка CI packaged-сборки и план §21 e2e (те же строки, что в UI **Скопировать** в packaged-чеклистах); см. [packaged-windows-smoke.md](packaged-windows-smoke.md) и [logging-and-diagnostics.md](logging-and-diagnostics.md).
+
+## См. также
+
 [packaged-windows-smoke.md](packaged-windows-smoke.md) (после `pack:dir`) · [logging-and-diagnostics.md](logging-and-diagnostics.md).

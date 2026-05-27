@@ -35,8 +35,6 @@ const PUSH_KEYS = new Set([
   'openDownloadsRoute',
   'openInspectorRoute',
   'downloadsHistoryChanged',
-  'mainWindowUiPanelsChanged',
-  'downloadsWindowUiPanelsChanged',
   'downloadsOutputDirectoryChanged',
   'downloadsCliOptionsChanged',
   'batchExportSnapshot',

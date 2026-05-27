@@ -8,8 +8,8 @@
 | --------- | --- | ------------ |
 | 1 | [`.cursor/rules/`](../.cursor/rules/) + [`.cursor/skills/`](../.cursor/skills/) | Исполняемые запреты и команды. **Запрещено:** копировать в `.mdc` целиком тела NEON-чеклиста или журнала. |
 | 2 | Шапка [`IMPLEMENTATION_JOURNAL.md`](../IMPLEMENTATION_JOURNAL.md) | Формат `J-NNN`, время, одна сводная за итерацию. |
-| 3 | [`docs/VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md) | **Навигатор агента:** Variant A, Phase D, refs **1–27**, анализ PNG, workstream'ы. |
-| 3b | [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) | **Активный чеклист:** sprint TODO (3–7 пунктов), snap.*, сводка VA/Phase D. **Не** дублирует NEON-трекер. |
+| 3 | [`docs/VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md) | **Навигатор агента:** **UI ZERO REBUILD**, Variant A, Phase D, refs **1–27**. |
+| 3b | [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) | **Активный чеклист:** UI **0%**, sprint TODO, матрица refs, snap.*. |
 | 4 | [`velorix-continue`](../.cursor/skills/velorix-continue/SKILL.md) + [`velorix-agent.mdc`](../.cursor/rules/velorix-agent.mdc) | **«продолжай» / `+`:** текущая задача → NEON → sprint TODO в NEON-чеклисте. Git по J — `velorix-agent.mdc`. |
 | 5 | [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) · [`docs/RELEASE.md`](RELEASE.md) | IPC, npm, packaging, вспомогательный стек (таблица). |
 | 6 | [`scripts/cursor-automation/prompts/agent-contract.txt`](../scripts/cursor-automation/prompts/agent-contract.txt) | SDK-агент; синхрон с 1–4. |

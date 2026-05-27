@@ -18,7 +18,5 @@ export {
   broadcastDownloadsCliOptionsChanged,
   broadcastDownloadsLogPayload,
   broadcastDownloadsOutputDirectorySnapshot,
-  broadcastDownloadsSnapshot,
-  broadcastDownloadsWindowUiPanelsSnapshot,
-  sanitizeDownloadsUiPanelPatch
+  broadcastDownloadsSnapshot
 } from './downloads-window-runtime-broadcast'

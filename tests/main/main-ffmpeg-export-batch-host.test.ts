@@ -101,8 +101,7 @@ describe('scheduleEnqueueBatchAfterDownload §7.4.2', () => {
       mainDownloadsUiLocale: () => 'ru',
       rememberExportOutputPath: vi.fn(),
       rememberFfmpegExportDirectory: vi.fn(),
-      broadcastBatchSnapshot: vi.fn(),
-      revealMainWindowBatchExportPanel: vi.fn()
+      broadcastBatchSnapshot: vi.fn()
     })
   })
 
@@ -160,8 +159,7 @@ describe('launchFfmpegExportBatchRunner §7.3', () => {
       mainDownloadsUiLocale: () => 'ru',
       rememberExportOutputPath: vi.fn(),
       rememberFfmpegExportDirectory: vi.fn(),
-      broadcastBatchSnapshot: vi.fn(),
-      revealMainWindowBatchExportPanel: vi.fn()
+      broadcastBatchSnapshot: vi.fn()
     })
   })
 

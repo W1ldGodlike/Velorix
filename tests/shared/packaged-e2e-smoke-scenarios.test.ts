@@ -24,12 +24,7 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
   })
 
   it('lists unique ciSmokeScript npm names for CI guards', () => {
-    expect(PACKAGED_E2E_CI_SMOKE_SCRIPTS).toEqual([
-      'smoke:packaged-app',
-      'smoke:packaged-engines',
-      'smoke:packaged-ytdlp',
-      'smoke:packaged-ffmpeg'
-    ])
+    expect(PACKAGED_E2E_CI_SMOKE_SCRIPTS).toEqual(['smoke:packaged-app', 'smoke:packaged-engines'])
     expect(expandPackagedE2eCiSmokeScriptsForWorkflow()).toEqual([
       'smoke:packaged-app',
       'smoke:packaged-ffprobe',
@@ -49,6 +44,7 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
     const joined = formatPackagedE2eSmokeDiagnosticLines().join('\n')
     expect(joined).toContain('check:packaged-e2e-scenarios-registry')
     expect(joined).toContain('smoke:packaged-app')
+    expect(joined).toContain('UI ZERO')
   })
 
   it('exports readonly step id arrays by automation kind', () => {
@@ -56,34 +52,24 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
     expect(PACKAGED_E2E_PLANNED_GUI_STEP_IDS).toHaveLength(
       PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT
     )
-    expect(PACKAGED_E2E_MANUAL_OWNER_STEP_IDS).toEqual(['video-sprite'])
-    expect(listPackagedE2eStepIdsByAutomation('planned-gui-e2e')).toEqual([
-      ...PACKAGED_E2E_PLANNED_GUI_STEP_IDS
-    ])
-  })
-
-  it('lists planned-gui-e2e and manual-owner step ids for §21 roadmap', () => {
-    expect(listPackagedE2eStepIdsByAutomation('planned-gui-e2e')).toEqual([
+    expect(PACKAGED_E2E_MANUAL_OWNER_STEP_IDS).toEqual([
       'open-file',
       'ytdlp',
       'editor-dl',
       'snapshot',
       'export',
+      'video-sprite',
       'knowledge',
       'support-zip',
       'settings'
     ])
-    expect(listPackagedE2eStepIdsByAutomation('manual-owner')).toEqual(['video-sprite'])
-    expect(listPackagedE2eStepIdsByAutomation('ci-headless')).toEqual(['launch', 'engines'])
+    expect(listPackagedE2eStepIdsByAutomation('planned-gui-e2e')).toEqual([])
   })
 
-  it('diagnostic lines mention planned GUI scope and Help crosslinks guard', () => {
+  it('diagnostic lines mention Help crosslinks guard', () => {
     const joined = formatPackagedE2eSmokeDiagnosticLines().join('\n')
-    expect(joined).toContain('planned GUI e2e scope:')
-    expect(joined).toContain('open-file')
-    expect(joined).toContain('test:e2e:gui')
-    expect(joined).toContain('check:packaged-gui-e2e-playwright-deferred')
     expect(joined).toContain(formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine('articles'))
+    expect(joined).not.toContain('check:packaged-gui-e2e-playwright-deferred')
   })
 
   it('exports Help workflow crosslinks article count from path registry', () => {
@@ -95,8 +81,6 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
     expect(perStep).toHaveLength(PACKAGED_E2E_SMOKE_SCENARIOS.length)
     expect(perStep[0]).toBe('e2e launch: ci-headless script=smoke:packaged-app')
     expect(perStep.some((l) => l.includes('video-sprite: manual-owner'))).toBe(true)
-    expect(
-      perStep.some((l) => l.includes('ytdlp: planned-gui-e2e script=smoke:packaged-ytdlp'))
-    ).toBe(true)
+    expect(perStep.some((l) => l === 'e2e ytdlp: manual-owner')).toBe(true)
   })
 })

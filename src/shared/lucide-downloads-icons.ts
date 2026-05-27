@@ -1,6 +1,5 @@
 /**
- * Единые lucide-подобные SVG-примитивы для окна загрузок (data HTML) и топбара главного окна.
- * Пути взяты из lucide-icons (MIT); одна копия данных — меньше расхождений между React и inline SVG.
+ * Единые lucide-подобные SVG-примитивы (shared stroke data для renderer React).
  */
 
 export type { StrokePrim } from './lucide-downloads-icons-types'
@@ -18,12 +17,7 @@ export {
   EDITOR_TRANSPORT_ICONS,
   EDITOR_TIMELINE_ICONS,
   EDITOR_TOPBAR_TOOLS_ICONS,
-  EDITOR_TOPBAR_ACTION_ICONS,
-  EDITOR_THEME_ICONS
+  EDITOR_TOPBAR_ACTION_ICONS
 } from './lucide-downloads-icons-editor'
 
-export {
-  emitInlineStrokeSvg,
-  emitDownloadsQueueRowIcoBootstrapJs,
-  emitDownloadsTopbarClusterHtml
-} from './lucide-downloads-icons-emit'
+export { emitInlineStrokeSvg } from './lucide-downloads-icons-emit'

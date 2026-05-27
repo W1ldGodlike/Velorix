@@ -17,7 +17,6 @@ import { configureMainInspectorWindowBootstrap } from '../windows/main-inspector
 import { registerInspectorWindowIpcHandlers } from '../windows/inspector-window'
 import {
   ipcDownloadsUiLocale,
-  isMainWindowUiPanelSender,
   mainAppStr,
   mainDownloadsUiLocale,
   parseDownloadsOpenRequest,
@@ -96,7 +95,6 @@ export function registerMainApplicationBootstrapIpc(): void {
       effectiveTheme: resolveEffectiveTheme(getCachedSettings().theme)
     }),
     copyCachedSettings: () => ({ ...getCachedSettings() }),
-    isMainWindowUiPanelSender,
     ...getMainApplicationSettingsIpcPersist()
   })
   registerWindowsShellContextMenuIpc({

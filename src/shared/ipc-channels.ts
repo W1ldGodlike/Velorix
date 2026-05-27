@@ -50,8 +50,6 @@ export const mainWindowIpc = {
   settingsApplyFfmpegExportSnapshot: 'velorix:settings-apply-ffmpeg-export-snapshot',
   settingsSetFfmpegSnapshotFormat: 'velorix:settings-set-ffmpeg-snapshot-format',
   settingsSetEnginePaths: 'velorix:settings-set-engine-paths',
-  /** §4.1 — частичное обновление раскрытых секций главного окна (persist в settings.json). */
-  settingsMergeMainWindowUiPanels: 'velorix:settings-merge-main-window-ui-panels',
   pickEngineExecutable: 'velorix:pick-engine-executable',
   enginesStatus: 'velorix:engines-status',
   enginesShouldOfferDownload: 'velorix:engines-should-offer-download',
@@ -191,10 +189,6 @@ export const mainWindowIpc = {
   /** Main → renderer: открыть планировщик / конструктор сценариев. */
   openWorkflowPlanner: 'velorix:open-workflow-planner',
   openWorkflowScenarioBuilder: 'velorix:open-workflow-scenario-builder',
-  /** Main → все окна с главным preload: актуальный снимок `mainWindowUiPanels` после merge §4.1. */
-  mainWindowUiPanelsChanged: 'velorix:main-window-ui-panels-changed',
-  /** Main → shell: снимок `downloadsWindowUiPanels` после merge (вкладка «Загрузки»). */
-  downloadsWindowUiPanelsChanged: 'velorix:downloads-window-ui-panels-changed',
   /** Main → shell-вкладка «Загрузки»: каталог вывода yt-dlp после pick/clear/merge settings. */
   downloadsOutputDirectoryChanged: 'velorix:downloads-output-directory-changed',
   /** Main → shell-вкладка «Загрузки»: yt-dlp CLI/options изменились (клиенты делают getCliOptions). */
@@ -238,8 +232,6 @@ export const downloadsIpc = {
   getYtdlpPauseState: 'velorix-downloads-ytdlp-pause-state',
   pauseYtdlp: 'velorix-downloads-pause-ytdlp',
   resumeYtdlp: 'velorix-downloads-resume-ytdlp',
-  /** §4.1 — частичное сохранение раскрытых секций окна загрузок. */
-  mergeUiPanels: 'velorix-downloads-merge-ui-panels',
   /** Мост во главное окно / инспектор без доступа preload загрузок к каналам renderer. */
   bridgeOpenInspector: 'velorix-downloads-bridge-open-inspector',
   bridgeFocusMainEditor: 'velorix-downloads-bridge-focus-main',

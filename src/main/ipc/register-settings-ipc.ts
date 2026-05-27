@@ -1,5 +1,4 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import type { IpcMainInvokeEvent } from 'electron'
 
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import {
@@ -114,8 +113,6 @@ export type SettingsIpcDeps = {
   persistUiLocale: (raw: unknown) => AppSettings
   persistConfirmCloseOnQuit: (raw: unknown) => AppSettings
   persistEnginePathOverridesPatch: (patch: EnginePathOverridesPatch) => AppSettings
-  persistMainWindowUiPanelsMerge: (raw: unknown) => AppSettings
-  isMainWindowUiPanelSender: (event: IpcMainInvokeEvent) => boolean
   ffmpegExport: FfmpegExportSettingsPersisters
 }
 
@@ -146,13 +143,6 @@ export function registerSettingsIpcHandlers(deps: SettingsIpcDeps): void {
       return deps.copyCachedSettings()
     }
     return deps.persistEnginePathOverridesPatch(patch as EnginePathOverridesPatch)
-  })
-
-  ipcMain.handle(mw.settingsMergeMainWindowUiPanels, (event, raw: unknown): AppSettings => {
-    if (!deps.isMainWindowUiPanelSender(event)) {
-      return deps.copyCachedSettings()
-    }
-    return deps.persistMainWindowUiPanelsMerge(raw)
   })
 
   ipcMain.handle(mw.settingsBackupExport, async (event) => {

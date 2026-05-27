@@ -22,7 +22,6 @@ import {
   persistYtdlpDownloadCliOptionsPatch,
   persistYtdlpDownloadDirectory
 } from '../services/settings/main-ytdlp-settings-persist'
-import type { DownloadsWindowUiPanelState } from '../../shared/settings-contract'
 import type { AppSettings } from '../services/settings/settings-store'
 import { resolveYtdlpOutputDirectory } from '../services/ytdlp/ytdlp-download-output'
 
@@ -30,7 +29,6 @@ export type MainDownloadsWindowBoundsBootstrapAccess = {
   getMainWindowWebContentsId: () => number | null
   mainDownloadsUiLocale: () => AppUiLocale
   getSettings: () => AppSettings
-  mergeDownloadsWindowUiPanelsPatch: (patch: Partial<DownloadsWindowUiPanelState>) => void
   openDownloadedFileInMainHandler: (
     absoluteFile: string
   ) => Promise<{ ok: true } | { ok: false; error: string }>
@@ -131,8 +129,6 @@ export function configureMainDownloadsWindowBoundsBootstrap(
       persistYtdlpDownloadCliOptionsPatch(patch, uiLocale),
     openDownloadedFileInHandler: (absoluteFile) =>
       access.openDownloadedFileInMainHandler(absoluteFile),
-    getDownloadsWindowUiPanelsSnapshot: () => access.getSettings().downloadsWindowUiPanels,
-    mergeDownloadsWindowUiPanelsPatch: access.mergeDownloadsWindowUiPanelsPatch,
     getDownloadsUiLocale: access.mainDownloadsUiLocale
   })
 }

@@ -7,7 +7,6 @@ import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 export {
   configureDownloadsWindowBoundsHooks,
   broadcastDownloadsSnapshot,
-  broadcastDownloadsWindowUiPanelsSnapshot,
   broadcastDownloadsCliOptionsChanged,
   broadcastDownloadsOutputDirectorySnapshot,
   DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL

@@ -68,10 +68,8 @@ function broadcastSettingsReplacements(prev: AppSettings, next: AppSettings): vo
     }
   }
   h.refreshEnginePathOverridesSnapshot()
-  const panels = next.mainWindowUiPanels ?? {}
   for (const w of BrowserWindow.getAllWindows()) {
     if (!w.isDestroyed()) {
-      w.webContents.send(mw.mainWindowUiPanelsChanged, panels)
       w.webContents.send(mw.enginePathsChanged)
       w.webContents.send(mw.settingsBackupImported)
     }

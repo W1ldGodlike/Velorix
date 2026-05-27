@@ -1,6 +1,5 @@
 import { BrowserWindow, type WebContents } from 'electron'
 
-import type { DownloadsWindowUiPanelState } from '../../shared/settings-contract'
 import { downloadsIpc as d } from '../../shared/ipc-channels'
 import type {
   YtdlpDownloadOptionsPayload,
@@ -46,10 +45,6 @@ export interface DownloadsWindowBoundsHooks {
   openDownloadedFileInHandler?: (
     absoluteFile: string
   ) => Promise<{ ok: true } | { ok: false; error: string }>
-  /** §4.1 — снимок раскрытых секций shell-вкладки `Загрузки`. */
-  getDownloadsWindowUiPanelsSnapshot?: () => DownloadsWindowUiPanelState | undefined
-  /** §4.1 — сохранить частичное состояние раскрытых секций в `settings.json`. */
-  mergeDownloadsWindowUiPanelsPatch?: (patch: Partial<DownloadsWindowUiPanelState>) => void
   /** UI locale when renderer does not pass `uiLocale` in `openDownloadsWindow`. */
   getDownloadsUiLocale?: () => AppUiLocale
 }

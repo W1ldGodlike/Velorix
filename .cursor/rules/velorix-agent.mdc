@@ -24,13 +24,13 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 
 ## Git по номеру J
 
-- **Следующий commit по J:** **J-1610** (`NNN % 5 === 0`). **Следующий push по J:** **J-1610** (`NNN % 10 === 0`).
+- **Следующий commit по J:** **J-1685** (`NNN % 5 === 0`). **Следующий push по J:** **J-1690** (`NNN % 10 === 0`).
 - **Если** в итерации записана новая `J-NNN` и **check:quiet зелёный** **то:** `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push` (без force `main`/`master`). Cursor, SDK, обычный чат — без исключений.
 - **Запрещено:** пропускать `git commit` / `git push` при выполнении условий выше.
 
 ## UI
 
-**Запрещено:** `data:text/html`, `build*Html` pop-out, `*-window-ui-strings-*` вне `ui-text` / `locales/**`. **Если** `BrowserWindow` **то** тот же renderer + hash (`#inspector`, `#downloads`). **Обязательно:** `check:ui-surfaces-guard`, `check:ui-copy-quality` в `check:quiet`.
+**Запрещено:** `data:text/html`, `build*Html` pop-out, `*-window-ui-strings-*` вне `ui-text` / `locales/**`. **Если** `BrowserWindow` **то** тот же renderer + hash (`#inspector`, `#downloads`). **UI ZERO:** `check:ui-surfaces-guard` / `check:ui-copy-quality` / `check:renderer-state-approach` **удалены** до rebuild UI — **не** возвращать skip-режим ради зелёного `check:quiet`.
 
 ## Legacy (удалять, не копить)
 

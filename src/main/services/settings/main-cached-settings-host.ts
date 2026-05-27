@@ -7,21 +7,12 @@ import { is } from '@electron-toolkit/utils'
 
 import { resolveOpenMediaDialogDefaultPath } from '../../../shared/preview-open-dialog-default-path'
 import { setEnginePathOverridesSnapshot } from '../engines/engine-path-sync'
-import type { SettingsIpcPersistApi } from './settings-ipc-persist'
 import type { AppSettings, AppTheme, ResolvedAppTheme, WindowBoundsConfig } from './settings-store'
 import { stripExportUserPresetsFromSettingsForDisk } from '../presets/presets-export-disk-store'
 import { loadSettings, saveSettings } from './settings-store'
 import { boundsFromBrowserWindow } from '../../windows/window-bounds'
 
 let cachedSettings: AppSettings = { theme: 'dark' }
-
-let getSettingsIpcPersist: (() => SettingsIpcPersistApi) | null = null
-
-export function configureMainCachedSettingsRevealPanel(next: {
-  getSettingsIpcPersist: () => SettingsIpcPersistApi
-}): void {
-  getSettingsIpcPersist = next.getSettingsIpcPersist
-}
 
 export function settingsPath(): string {
   return join(app.getPath('userData'), 'settings.json')
@@ -153,14 +144,4 @@ export function batchExportOutputFolderPickOptsFromSettings(): { defaultPath: st
     }
   }
   return previewOpenDialogOptsFromSettings()
-}
-
-export function revealMainWindowBatchExportPanel(): void {
-  if (cachedSettings.mainWindowUiPanels?.batchExport === true) {
-    return
-  }
-  if (!getSettingsIpcPersist) {
-    throw new Error('main-cached-settings-host: configureMainCachedSettingsRevealPanel not called')
-  }
-  getSettingsIpcPersist().persistMainWindowUiPanelsMerge({ batchExport: true })
 }

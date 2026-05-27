@@ -32,7 +32,7 @@
 | Сборка / runtime Electron | [`package.json`](../package.json) → `main`: `./out/main/index.js` | После `electron-vite build` загружается **main process**. Linux/CI: [`electron-vite-build-meta.ts`](../src/shared/electron-vite-build-meta.ts) + плагин `fix:esm-shim` в [`electron.vite.config.ts`](../electron.vite.config.ts) (false-positive `vite:esm-shim` на `renderer-state-approach.ts`). |
 | Main | [`src/main/index.ts`](../src/main/index.ts) → [`main-application-bootstrap.ts`](../src/main/bootstrap/main-application-bootstrap.ts) | `app.whenReady` → окна, меню, IPC (`src/main/ipc/register-*`, `ipc/downloads/register-downloads-*`). |
 | Preload (один бандл) | [`src/preload/index.ts`](../src/preload/index.ts) + [`preload-velorix-*.ts`](../src/preload/) + [`velorix-api-block-*.d.ts`](../src/preload/) | `contextBridge` → `window.velorix`; без Node в renderer. |
-| Renderer | [`src/renderer/src/main.tsx`](../src/renderer/src/main.tsx) | Единая React entry для [`App`](../src/renderer/src/App.tsx) и Variant A shell. Hash-bootstrap `#downloads` / `#inspector` снят (**J-1652**); `openDownloadsWindow` / `openInspectorWindow` refocus main и шлют route-сигналы в shell. |
+| Renderer | [`src/renderer/src/main.tsx`](../src/renderer/src/main.tsx) | **UI ZERO:** пустой `#root` (без React/CSS). Rebuild — [`docs/reference/README.md`](reference/README.md). Main/preload IPC без изменений. |
 | SDK automation (вне IDE) | [`scripts/cursor-automation/src/run-loop.ts`](../scripts/cursor-automation/src/run-loop.ts) | [@cursor/sdk](https://cursor.com/docs/api/sdk/typescript); контракт — [`prompts/agent-contract.txt`](../scripts/cursor-automation/prompts/agent-contract.txt). |
 
 ### npm: lockfile и peer-deps
@@ -50,14 +50,14 @@
 ### Shell route adapters (`downloads` / `inspector`)
 
 - Main: [`downloads-window.ts`](../src/main/windows/downloads-window.ts) и [`inspector-window.ts`](../src/main/windows/inspector-window.ts) — **совместимость IPC** `openDownloadsWindow` / `openInspectorWindow`: refocus main shell + `openDownloadsRoute` / `openInspectorRoute` (отдельные `BrowserWindow` не создаются, **J-1651..1660**).
-- Main: [`downloads-window-runtime.ts`](../src/main/windows/downloads-window-runtime.ts) — broadcast очереди, лога и `downloadsWindowUiPanels` только в main shell (`resolveMainEditorWindow` → `mainWindowRef`).
-- Renderer: routes `downloads` и `inspector` в [`AppWorkspaceMain`](../src/renderer/src/components/shell/AppWorkspaceMain.tsx) (`DownloadsWorkspaceConnected`, `InspectorWorkspaceConnected`).
+- Main: [`downloads-window-runtime.ts`](../src/main/windows/downloads-window-runtime.ts) — broadcast очереди и лога в main shell (`resolveMainEditorWindow` → `mainWindowRef`).
+- Renderer: routes `downloads` / `inspector` — **после rebuild** (сейчас UI отсутствует); IPC route-сигналы в main/preload готовы.
 - При активном export/yt-dlp закрытие главного окна — диалог «Остаться / Закрыть и прервать» ([`main-window.ts`](../src/main/windows/main-window.ts)).
-- **Запрещено** возвращать `buildDownloadsHtml` / `*-window-ui-strings-*` / hash-bootstrap pop-out (guard `check:ui-surfaces-guard`, **J-1658**).
+- **Запрещено** возвращать `buildDownloadsHtml` / `*-window-ui-strings-*` / hash-bootstrap pop-out (**J-1658**; UI guard снят на UI ZERO — вернуть с rebuild).
 
-### Variant A legacy cleanup (выполнено в коде)
+### Variant A — UI ZERO REBUILD
 
-Порядок «сначала перенос, потом удаление» закрыт спринтами **VA.1–VA.5** и post-tail **J-1651..1662**: shell surfaces, single-NEON, dead pop-out runtime/no-ops, guards. **Остаётся:** layout 1:1 vs PNG — Phase D в [`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md); приёмка на железе — Support ZIP `ownerHardwareChecklist:`.
+Спринты **VA.1–VA.5** в журнале закрыли маршруты, pop-out и dual-theme **до** снятия renderer. **2026-05-27:** renderer обнулён (`UI ZERO`); весь UI по PNG — **с нуля** ([`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md), [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md)). Приёмка на железе — Support ZIP `ownerHardwareChecklist:`.
 
 ## Структура каталогов (логика, не полный список)
 
@@ -70,8 +70,8 @@
   - `ipc/` — `register-*-ipc` (+ `ipc/downloads/` для yt-dlp окна);
   - `platform/` — фасад `nativeMain` (реэкспорт shared);
   - `services/{settings,presets,ytdlp,ffmpeg,ffprobe,terminal,engines,workflow,downloads,diagnostics,history,knowledge,platform,preview,about,media}/` — spawn, FS, persist;
-  NEON UX — единый shell renderer (`AppShellLayout`, workspace routes); yt-dlp/очередь — `services/downloads` + IPC в main.
-- **`src/renderer/src/`** — React UI: [`AppRoot`](../src/renderer/src/components/shell/AppRoot.tsx) + [`stores/`](../src/renderer/src/stores/) + layout [`useAppShellLayoutController`](../src/renderer/src/use-app-shell-layout-controller.ts); workspace **Редактор / Загрузки / Терминал** (`*Connected` + доменные хуки); строки — [`locales/ui-text.ts`](../src/renderer/src/locales/ui-text.ts) + `locales/{ru,en}/*.json`.
+  yt-dlp/очередь — `services/downloads` + IPC в main; UI в renderer — **пока пусто** (см. § Состояние renderer).
+- **`src/renderer/src/`** — **UI ZERO:** только [`main.tsx`](../src/renderer/src/main.tsx). Строки — `locales/{ru,en}/*.json` в корне репо; renderer `ui-text` появится с rebuild.
 - **`src/shared/`** — типы и константы IPC/домена, общие для main и preload/renderer (без импорта Electron в «чистых» модулях); main UI strings — [`main-application-locale.ts`](../src/shared/main-application-locale.ts) (`main-application-locale-types` + `main-application-locale-strings-ru|en`); ffmpeg argv — [`ffmpeg-export-argv.ts`](../src/shared/ffmpeg-export-argv.ts) + [`ffmpeg-export-argv-build.ts`](../src/shared/ffmpeg-export-argv-build.ts) (`ffmpeg-export-argv-build-types|encode|vf-chain|codec-audio`); lucide stroke data — [`lucide-downloads-icons.ts`](../src/shared/lucide-downloads-icons.ts) (`lucide-downloads-icons-types|queue|clusters|editor|emit.ts`).
 - **`src/preload/`** — мост и типы для `window.velorix`: [`index.d.ts`](../src/preload/index.d.ts) (сборка `VelorixApi` из [`velorix-api-block-*.d.ts`](../src/preload/)); при новом IPC — править блок с методами + `index.ts` + `audit:ipc-architecture`, без отдельного codegen.
 - **`Data/`** — конфиги и доверенные хеши §3 ТЗ (`trusted_hashes.json`); в проде копируются как `extraResources` (см. [`electron-builder.yml`](../electron-builder.yml)).
@@ -84,7 +84,7 @@
 - Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`) — invoke + push + `logRenderer` через `ipcMain.on` (см. `npm run audit:ipc-architecture`).
 - Проверка связности: `npm run audit:ipc-architecture` — каждый invoke-канал имеет `ipcMain.handle` (или loop `FFMPEG_EXPORT_SETTING_CHANNELS`) в `src/main/` и `ipcRenderer.invoke` / `send` в `src/preload/`; push-каналы — в `PUSH_KEYS` скрипта.
 - Регистрация `ipcMain.handle` — по файлам `src/main/**/register-*-ipc.ts` и соседним `register-downloads-*`; точный список каналов и рассинхрон preload/main — **`npm run audit:ipc-architecture`** (exit 1 при пропуске).
-- Push-каналы (`webContents.send`, `ipcMain.on`): прогресс экспорта/очереди, снимки yt-dlp, `uiLocaleChanged`, `processingHistoryChanged`, `logRenderer`, `mainWindowUiPanelsChanged` и т.д. — см. `PUSH_KEYS` в скрипте audit.
+- Push-каналы (`webContents.send`, `ipcMain.on`): прогресс экспорта/очереди, снимки yt-dlp, `uiLocaleChanged`, `processingHistoryChanged`, `logRenderer` и т.д. — см. `PUSH_KEYS` в скрипте audit (legacy UI-panel push сняты).
 
 ## Shared contracts (один домен — явные файлы)
 
@@ -109,7 +109,7 @@
 
 - Настройки экспорта ffmpeg идут отдельными `settings-set-ffmpeg-export-*` каналами; значения проходят whitelist-парсеры main перед записью и spawn.
 - Пакетный экспорт и очередь yt-dlp — отдельные IPC/сервисы с persist в `app-data/` (`queue.json` и аналоги для batch).
-- Каталог вывода yt-dlp, CLI/options и раскрытие панелей загрузок: push `downloadsOutputDirectoryChanged` / `downloadsCliOptionsChanged` / `downloadsWindowUiPanelsChanged` из main в shell-route `downloads`.
+- Каталог вывода yt-dlp и CLI/options: push `downloadsOutputDirectoryChanged` / `downloadsCliOptionsChanged` из main в shell-route `downloads` (после rebuild renderer).
 - Терминал: allowlist команд и подсказки из `Data/*_commands.json` + [`terminal-contract.ts`](../src/shared/terminal-contract.ts); не произвольный shell.
 - Принцип: **узкий whitelist** — нет произвольного «выполни команду» или чтения произвольных путей без проверок.
 
@@ -118,41 +118,22 @@
 - **CSP:** [`src/renderer/index.html`](../src/renderer/index.html) — `media-src` / `connect-src`; при падении `<video>` / `fetch` — CSP и способ отдачи файла в main.
 - Кастомная схема **`velorixmedia://`** и множество **`allowedMediaPaths`** (реальный путь после `realpath`): см. [`src/main/core/media-protocol.ts`](../src/main/core/media-protocol.ts). Renderer не может открыть произвольный `file://` без регистрации пути через main.
 - **ffprobe** и экспорт допускаются только для путей, прошедших **`isGrantedMediaPath`** (открытие через диалог / явная выдача доступа из main).
-- **§7.5 спрайт:** renderer `EditorVideoSpritePanel` → preload `export.generateVideoSprite` → IPC `velorix:generate-video-sprite` ([`register-export-video-sprite-ipc.ts`](../src/main/ipc/register-export-video-sprite-ipc.ts)); argv `fps` + optional `drawtext` (PTS hms) + `scale` + `tile`; save dialog; история `ffmpegSnapshot`.
+- **§7.5 спрайт:** после rebuild renderer → preload `export.generateVideoSprite` → IPC `velorix:generate-video-sprite` ([`register-export-video-sprite-ipc.ts`](../src/main/ipc/register-export-video-sprite-ipc.ts)); main argv без изменений.
 
 ## Локализация UI (§2.2)
 
 - **Канон строк:** `locales/ru/*.json` и `locales/en/*.json` — плоские объекты `ключ → строка` (без вложенности). Список имён шардов — [`LOCALE_JSON_SHARDS`](../src/shared/locale-json-catalog.ts) (20 файлов на локаль: `common`, `about`, `maintenance`, `formatting`, `knowledge`, `terminal`, `processing`, `downloads`, `workspace`, `editor`, `video`, `mini`, `downloads-settings`, `shell`, `editor-ffmpeg`, `status`, `batch-export`, `settings`, `inspector`, `inspector-probe`). Паритет ru/en: `npm run check:locales-json`.
-- **Сборка в renderer:** [`ui-text-strings-build.ts`](../src/renderer/src/locales/ui-text-strings-build.ts) — `buildUiTextTables()`: spread JSON-шардов **в порядке импорта** (поздний перекрывает ранний при коллизии ключей). Legacy `ui-text-strings-{ru|en}-NN.ts` **удалены** (J-1142); guard `check:locales-ts-overlap` запрещает их возврат и дубли ключей TS+JSON. Тип `UiTextKey` — `keyof` таблицы `ru`.
-- **Чтение в UI:** [`ui-text-api.ts`](../src/renderer/src/locales/ui-text-api.ts) — `uiText(key)` → `getUiTextTables()[getUiLocale()][key]`; сессия локали — [`ui-text-session.ts`](../src/renderer/src/locales/ui-text-session.ts) (`settings.json` / `navigator`).
+- **Сборка в renderer (после rebuild):** `ui-text-strings-build` + `ui-text-api` в `src/renderer/src/locales/`; JSON-шарды — `locales/**/*.json`; guard `check:locales-ts-overlap`.
 - **Смена языка без reload:** main `settings.setUiLocale` → `uiLocaleChanged` на все окна → `setUiLocaleForSession` + `uiLocaleRenderTick` (см. [`ui-locale-runtime.ts`](../src/shared/ui-locale-runtime.ts)); заголовки окон — `syncBrowserWindowTitlesToLocale`.
-- **Dev hot-reload JSON:** Vite alias `@locales` → корень `locales/` ([`electron.vite.config.ts`](../electron.vite.config.ts)). Правка любого `locales/**/*.json` инвалидирует [`ui-text-strings.ts`](../src/renderer/src/locales/ui-text-strings.ts): `import.meta.hot.accept` → `reloadUiTextTablesFromModules()` → `notifyUiTextShardsUpdated()` → хук [`use-ui-text-hot-reload-bump.ts`](../src/renderer/src/locales/use-ui-text-hot-reload-bump.ts) увеличивает `uiLocaleRenderTick` в текущем renderer-сеансе. Перезапуск Electron не нужен.
+- **Dev hot-reload JSON:** Vite alias `@locales` → корень `locales/` ([`electron.vite.config.ts`](../electron.vite.config.ts)); HMR ui-text — после появления renderer-модулей.
 - **Main/preload UI** (меню, диалоги ОС): отдельные таблицы [`main-application-locale-strings-*`](../src/shared/main-application-locale.ts), не `locales/**`.
-- **Guards:** `check:locales-ts-overlap` (запрет дублей TS+JSON); `check:export-preview-hints-locale` (ключи `editorExportPreviewHint*` в `editor-ffmpeg.json`, канон [`editor-export-preview-hint-keys.ts`](../src/shared/editor-export-preview-hint-keys.ts), логика [`editor-export-preview-hint-resolve.ts`](../src/shared/editor-export-preview-hint-resolve.ts), без inline-ключей в `use-editor-export-pipeline-preview.ts`); §8 terminal — [`terminal-contract-hints-meta.ts`](../src/shared/terminal-contract-hints-meta.ts), `check:terminal-hints-guards-package-json`, `check:help-terminal-hints-docs` (22 Help + meta `formatTerminalContractHints*Help*` sync), `check:terminal-contract-hints-shards`, `check:terminal-hints-locale`, `check:support-bundle-terminal-hints` (`appSettingsTerminalHintsGuardHint`, `aboutSupportZipDiagnosticsSectionsHint` в `settings.json` / `about.json`). Support ZIP §18: [`main-diagnostics-service.ts`](../src/main/services/diagnostics/main-diagnostics-service.ts) → `formatTerminalContractHintsSupportZipLines()` → блок `terminalHints:` в `diagnostics.txt` ([`support-bundle.ts`](../src/main/services/diagnostics/support-bundle.ts)).
+- **Guards:** `check:locales-ts-overlap`; §8 terminal — meta + locales `about.json` / `settings.json`. UI-only guards (`check:ui-*`, `check:renderer-state-approach`, `check:export-preview-hints-locale`) **удалены** на UI ZERO. Support ZIP §18: [`main-diagnostics-service.ts`](../src/main/services/diagnostics/main-diagnostics-service.ts) → `diagnostics.txt`.
 
 ## Состояние renderer (§2.2)
 
-**Решение:** **Zustand** — атомарные доменные сторы в [`src/renderer/src/stores/`](../src/renderer/src/stores/); канон в [`renderer-state-approach.ts`](../src/shared/renderer-state-approach.ts).
+**UI ZERO:** в `src/renderer/src/` нет React/CSS/stores — только пустой [`main.tsx`](../src/renderer/src/main.tsx). Канон rebuild: [`docs/reference/README.md`](reference/README.md), [`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md) (**UI-first: бэкенд под refs, legacy удалять**). Зафиксировано в [`renderer-state-approach.ts`](../src/shared/renderer-state-approach.ts) (`RENDERER_STATE_APPROACH = 'none'`).
 
-| Слой            | Назначение                     | Примеры                                                                                                                                                                                                                                                                                        |
-| --------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Entry           | Bootstrap IPC + layout chrome  | [`AppRoot`](../src/renderer/src/components/shell/AppRoot.tsx) → `AppStoreBootstrap` → [`AppShellLayout`](../src/renderer/src/components/shell/AppShellLayout.tsx) (`useAppShellLayoutController`; workspace — [`AppWorkspaceMain`](../src/renderer/src/components/shell/AppWorkspaceMain.tsx)) |
-| Stores          | Глобальное состояние + actions | `useAppShellStore`, `useDownloadsStore`, `useExportSettingsStore`, `usePanelsStore`, `useProcessingHistoryStore`, `useBatchExportStore`, `useTerminalStore`, `useAppRefsStore`                                                                                                                 |
-| Orchestration   | Эффекты без дубля state        | `useAppShellPropsInputHooks`, `useAppMainWindowEffects`, `useEditorExportPipeline`, `useRendererAppState`                                                                                                                                                                                      |
-| Derived         | useMemo поверх сторов          | `useDownloadsDerivedState` (подсказки yt-dlp по категориям, фильтр history)                                                                                                                                                                                                                    |
-| Workspace tabs  | Общие сторы + route-aware UI   | `useAppShellStore`, `useDownloadsStore`, `useProcessingHistoryStore` и connected shell-поверхности в [`AppWorkspaceMain`](../src/renderer/src/components/shell/AppWorkspaceMain.tsx)                                                                                                          |
-
-**Persist и события main:** настройки и push-каналы (`onUiLocaleChanged`, `onMainWindowUiPanelsChanged`, …) обновляют сторы через `bind*StoreIpc()` и `useAppMainWindowEffects`; не дублировать одно поле в двух сторах.
-
-**i18n / dev:** `getUiLocale()` + `uiText()` (fallback EN при отсутствии ключа); HMR JSON — `uiLocaleRenderTick` + [`useUiTextHotReloadBump`](../src/renderer/src/locales/use-ui-text-hot-reload-bump.ts).
-
-**Производные списки (§6.3 hints, history filter):** не подписываться на `useDownloadsStore(selectYtdlpCommandHintsFilteredByCategory)` — селектор каждый раз создаёт новый массив → `Maximum update depth`. Канон: [`useDownloadsDerivedState`](../src/renderer/src/use-downloads-derived-state.ts) (`useMemo` + `uiLocale`).
-
-**Пути в renderer:** только [`path-lite.ts`](../src/shared/path-lite.ts); **запрещён** `import … from 'path'` в `src/renderer/` (guard `check:renderer-state-approach`).
-
-**Новый store:** один файл в `stores/`, строка в `RENDERER_ZUSTAND_STORES`, `resetAllRendererStores()` (**dev-only**: сброс всех сторов в памяти; не вызывается автоматически при смене окна), при IPC — `*-store-ipc.ts`; guard `check:renderer-state-approach`.
-
-**Redux DevTools (только dev):** [`create-renderer-store.ts`](../src/renderer/src/stores/create-renderer-store.ts) при `import.meta.env.DEV` оборачивает каждый store в `zustand/middleware` → `devtools({ name, enabled: true })`. Отдельный npm-пакет для devtools **не** ставится — middleware входит в `zustand` (`package.json`). Просмотр: расширение **Redux DevTools** в Chromium DevTools (Electron → DevTools → вкладка Redux); имена store — `AppShell`, `Downloads`, … как в `createRendererStore('…')`. Production-сборка middleware не подключает.
+**Main/preload/IPC** переписываются **под refs**, не наоборот. Новый renderer подключается к `window.velorix` после vertical slice; устаревшие каналы и persist-поля под старый UI — **удалять**, не адаптировать вёрстку.
 
 ## nativeMain / platform (§2.1)
 

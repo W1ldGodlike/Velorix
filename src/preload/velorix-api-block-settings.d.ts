@@ -36,11 +36,7 @@ import type {
   PresetsExportCloneBuiltinResult,
   PresetsExportDialogResult
 } from '../shared/presets-export-contract'
-import type {
-  AppSettings,
-  AppSettingsView,
-  MainWindowUiPanelState
-} from '../shared/settings-contract'
+import type { AppSettings, AppSettingsView } from '../shared/settings-contract'
 export type VelorixApiSettingsBlock = {
   settings: {
     get: () => Promise<AppSettingsView>
@@ -90,7 +86,6 @@ export type VelorixApiSettingsBlock = {
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]) => Promise<AppSettings>
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot) => Promise<AppSettings>
     setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId) => Promise<AppSettings>
-    mergeMainWindowUiPanels: (patch: Partial<MainWindowUiPanelState>) => Promise<AppSettings>
     exportBackup: () => Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     >

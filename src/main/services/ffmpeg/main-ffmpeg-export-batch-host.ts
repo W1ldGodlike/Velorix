@@ -32,7 +32,6 @@ export type MainFfmpegExportBatchHostAccess = {
   rememberExportOutputPath: (filePath: string) => void
   rememberFfmpegExportDirectory: (outputPath: string) => void
   broadcastBatchSnapshot: (win?: BrowserWindow | null) => void
-  revealMainWindowBatchExportPanel: () => void
 }
 
 let access: MainFfmpegExportBatchHostAccess | null = null
@@ -120,7 +119,6 @@ export function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: n
         stream: 'stderr',
         text: formatVelorixLogBatchEnqueueAdded(loc, absoluteFile)
       })
-      host.revealMainWindowBatchExportPanel()
     }
     host.broadcastBatchSnapshot()
     const cli = getYtdlpRunOptionsSnapshot()

@@ -217,7 +217,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine(): st
   const docGuards = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS.map(
     (s) => `\`npm run ${s}\``
   ).join(', ')
-  return `- Help smoke guards (\`check:quiet\`): registry \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\`, then ${docGuards}; §21 Playwright deferred — \`npm run check:packaged-gui-e2e-playwright-deferred\` (optional, не в quiet).`
+  return `- Help smoke guards (\`check:quiet\`): registry \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\`, then ${docGuards}; §21 Playwright GUI e2e suspended (UI ZERO rebuild).`
 }
 
 /** bin/README — registry guard requires partition in all workflow Help. */

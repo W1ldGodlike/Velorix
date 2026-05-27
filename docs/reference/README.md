@@ -1,5 +1,7 @@
 # Эталонные материалы UI (VELORIX NEON)
 
+**UI ZERO REBUILD (2026-05-27):** в `src/renderer/src/` нет React/CSS — только пустой [`main.tsx`](../../src/renderer/src/main.tsx). Все экраны ниже — **цель** rebuild; канон процесса — [`VELORIX_NEON_THEME.md`](../VELORIX_NEON_THEME.md), sprint — [`IMPLEMENTATION_NEON_CHECKLIST.md`](../IMPLEMENTATION_NEON_CHECKLIST.md).
+
 Каталог для **канонических** картинок, mockup и визуальных референсов темы.
 
 | Файл | Назначение |

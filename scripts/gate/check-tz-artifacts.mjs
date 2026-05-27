@@ -13,7 +13,7 @@ const NEON_CHECKLIST = join(REPO_ROOT, 'docs', 'IMPLEMENTATION_NEON_CHECKLIST.md
 const REQUIRED_PATHS = [
   'src/main/index.ts',
   'src/preload/index.ts',
-  'src/renderer/src/stores/app-shell-store.ts',
+  'src/renderer/src/main.tsx',
   'src/shared/renderer-state-approach.ts',
   'docs/VELORIX_NEON_THEME.md',
   'Data/trusted_hashes.json',
@@ -53,8 +53,13 @@ function main() {
     join(REPO_ROOT, 'src', 'shared', 'renderer-state-approach.ts'),
     'utf8'
   )
-  if (!approach.includes("RENDERER_STATE_APPROACH = 'zustand'")) {
-    violations.push('renderer-state-approach.ts: expected zustand')
+  const approachOk =
+    approach.includes("RENDERER_STATE_APPROACH = 'none'") ||
+    approach.includes("RENDERER_STATE_APPROACH = 'ref27-bootstrap'")
+  if (!approachOk) {
+    violations.push(
+      "renderer-state-approach.ts: expected 'none' or 'ref27-bootstrap' (UI ZERO rebuild)"
+    )
   }
 
   if (violations.length > 0) {

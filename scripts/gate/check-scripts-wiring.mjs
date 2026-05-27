@@ -3,7 +3,7 @@
  * scripts/ — каждый .mjs в gate|audit|release|maint|e2e в package.json или SCRIPTS_MAINT_MANUAL;
  * каждый `node scripts/...mjs` из package.json существует на диске.
  */
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import {
@@ -45,11 +45,6 @@ function main() {
         violations.push(`unwired: ${rel} (add npm script or SCRIPTS_WIRING_EXEMPT_REL_PATHS)`)
       }
     }
-  }
-
-  const e2eScaffold = join(REPO_ROOT, 'scripts/e2e/run-planned-gui-e2e-gui.mjs')
-  if (!existsSync(e2eScaffold) || !statSync(e2eScaffold).isFile()) {
-    violations.push('missing scripts/e2e/run-planned-gui-e2e-gui.mjs (Playwright fallback)')
   }
 
   if (violations.length > 0) {

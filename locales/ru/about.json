@@ -31,7 +31,7 @@
   "aboutTooltipMaintenanceCleanPreview": "Очистить только кэш превью. Два шага: сначала подсказка, затем подтверждение.",
   "aboutTooltipMaintenanceSummary": "Показать размер временных данных по категориям (байты и число файлов) в строке состояния — без удаления.",
   "aboutTooltipSupportZip": "Собрать архив диагностики в выбранный файл: версии, настройки, пути. Удобно для поддержки или своего бэкапа.",
-  "aboutSupportZipDiagnosticsSectionsHint": "В diagnostics.txt: ownerHardwareChecklist, releaseSmoke, terminalHints (§8, 22 статей Help). releaseSmoke — §21 Playwright (`check:packaged-gui-e2e-playwright-deferred`).",
+  "aboutSupportZipDiagnosticsSectionsHint": "В diagnostics.txt: ownerHardwareChecklist, releaseSmoke, terminalHints (§8, 22 статей Help). releaseSmoke — §21 Playwright: приостановлен (UI ZERO rebuild).",
   "mediaUtilitiesCancelled": "Отменено.",
   "mediaUtilitiesFileSelected": "Выбран: {name}",
   "mediaUtilitiesHashes": "Хеш-суммы",

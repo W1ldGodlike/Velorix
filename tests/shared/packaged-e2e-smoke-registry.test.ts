@@ -32,6 +32,6 @@ describe('packaged-e2e-smoke-registry §21 leaf', () => {
       PACKAGED_E2E_SMOKE_REGISTRY.filter((s) => s.automation === kind).length
     expect(count('ci-headless')).toBe(2)
     expect(count('planned-gui-e2e')).toBe(PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT)
-    expect(count('manual-owner')).toBe(1)
+    expect(count('manual-owner')).toBe(9)
   })
 })

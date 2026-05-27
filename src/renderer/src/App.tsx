@@ -1,3 +1,7 @@
-import App from './components/shell/AppRoot'
+import type { JSX } from 'react'
 
-export default App
+import { Ref27ComponentsPage } from './pages/Ref27ComponentsPage'
+
+export function App(): JSX.Element {
+  return <Ref27ComponentsPage />
+}

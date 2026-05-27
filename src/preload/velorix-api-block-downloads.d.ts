@@ -3,7 +3,6 @@
  * IPC-каналы: `src/shared/ipc-channels.ts`; синхрон с `src/preload/index.ts`.
  */
 import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
-import type { DownloadsWindowUiPanelState } from '../shared/settings-contract'
 import type {
   YtdlpDownloadOptionsPatch,
   YtdlpDownloadOptionsPayload,
@@ -75,12 +74,6 @@ export type VelorixApiDownloadsBlock = {
       text: string
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
     onLog: (listener: (payload: DownloadsLogPayload) => void) => () => void
-    mergeUiPanels: (
-      patch: Partial<DownloadsWindowUiPanelState>
-    ) => Promise<{ ok: true } | { ok: false; error: string }>
-    onDownloadsWindowUiPanelsChanged: (
-      listener: (panels: DownloadsWindowUiPanelState) => void
-    ) => () => void
     onDownloadsOutputDirectoryChanged: (
       listener: (
         snap: import('../shared/downloads-output-directory-snapshot').DownloadsOutputDirectorySnapshot

@@ -22,7 +22,6 @@ import { parseStoredTheme as parseAppThemeFromRaw } from '../../../shared/settin
 import { hydrateExportUserPresetsOnLoad } from '../presets/presets-export-disk-store'
 import { parseYtdlpFilenameTemplateStored } from '../../../shared/ytdlp-download-stored-parse'
 import {
-  parseDownloadsWindowUiPanels,
   parseEngineExecutablePaths,
   parseFfmpegExportAudioBitrateStored,
   parseFfmpegExportAudioModeStored,
@@ -36,7 +35,6 @@ import {
   parseFfmpegExportVideoCodecStored,
   parseFfmpegSnapshotDirectoryStored,
   parseFfmpegSnapshotFormatStored,
-  parseMainWindowUiPanels,
   parseWindowBoundsConfig,
   parseYtdlpCookiesBrowserProfileStored,
   parseYtdlpCookiesBrowserStored,
@@ -265,14 +263,6 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
     fromFile,
     presetUiLocale
   )
-  const mainWindowUiPanels = parseMainWindowUiPanels(parsed.mainWindowUiPanels)
-  if (mainWindowUiPanels !== undefined) {
-    base.mainWindowUiPanels = mainWindowUiPanels
-  }
-  const downloadsWindowUiPanels = parseDownloadsWindowUiPanels(parsed.downloadsWindowUiPanels)
-  if (downloadsWindowUiPanels !== undefined) {
-    base.downloadsWindowUiPanels = downloadsWindowUiPanels
-  }
   if (uiLocaleParsed !== undefined) {
     base.uiLocale = uiLocaleParsed
   }

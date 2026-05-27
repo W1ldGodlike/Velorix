@@ -11,7 +11,6 @@ import type {
   ProcessingHistoryWeeklySummary
 } from '../shared/processing-history-contract'
 import type { QuitConfirmRequestPayload } from '../shared/quit-confirm-contract'
-import type { MainWindowUiPanelState } from '../shared/settings-contract'
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `velorixmedia://`. */
 export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
@@ -60,7 +59,4 @@ export type VelorixApiEventsBlock = {
   onOpenExternalFilterScript: (listener: () => void) => () => void
   onOpenWorkflowPlanner: (listener: () => void) => () => void
   onOpenWorkflowScenarioBuilder: (listener: () => void) => () => void
-  onMainWindowUiPanelsChanged: (
-    listener: (panels: MainWindowUiPanelState | undefined) => void
-  ) => () => void
 }

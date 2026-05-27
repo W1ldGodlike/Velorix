@@ -54,12 +54,6 @@ export const DOWNLOADS_TOPBAR_CLUSTER_ICONS = {
         d: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'
       }
     }
-  ] as const satisfies readonly StrokePrim[],
-  /** Отдельное окно менеджера: те же штрихи, что `outbound` в очереди (external-link). */
-  popOutWindow: [
-    { tag: 'path', attr: { d: 'M15 3h6v6' } },
-    { tag: 'path', attr: { d: 'M10 14 21 3' } },
-    { tag: 'path', attr: { d: 'M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' } }
   ] as const satisfies readonly StrokePrim[]
 } as const
 

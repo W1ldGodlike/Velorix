@@ -3,7 +3,6 @@ import { ipcRenderer } from 'electron'
 import { sanitizeDownloadsOutputDirectorySnapshot } from '../shared/downloads-output-directory-snapshot'
 import type { DownloadsOutputDirectorySnapshot } from '../shared/downloads-output-directory-snapshot'
 import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
-import type { DownloadsWindowUiPanelState } from '../shared/settings-contract'
 import type {
   YtdlpDownloadOptionsPatch,
   YtdlpDownloadOptionsPayload,
@@ -15,7 +14,7 @@ import type {
 } from '../shared/ytdlp-history-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
-import { isDownloadsLogPayload, sanitizeDownloadsWindowUiPanelState } from './preload-sanitize'
+import { isDownloadsLogPayload } from './preload-sanitize'
 
 /** downloads.* — очередь yt-dlp, история, shell sync (main preload). */
 export const velorixDownloads = {
@@ -121,24 +120,6 @@ export const velorixDownloads = {
     ipcRenderer.on(d.log, handler)
     return (): void => {
       ipcRenderer.removeListener(d.log, handler)
-    }
-  },
-  /** §6: `downloadsWindowUiPanels` в settings (санитайз в main). */
-  mergeUiPanels: (
-    patch: Partial<DownloadsWindowUiPanelState>
-  ): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke(d.mergeUiPanels, patch),
-  /** Main → renderer: полный снимок панелей после merge (shell-вкладка «Загрузки»). */
-  onDownloadsWindowUiPanelsChanged: (
-    listener: (panels: DownloadsWindowUiPanelState) => void
-  ): (() => void) => {
-    const channel = mw.downloadsWindowUiPanelsChanged
-    const handler = (_: unknown, raw: unknown): void => {
-      listener(sanitizeDownloadsWindowUiPanelState(raw))
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
     }
   },
   /** Main → renderer: каталог вывода yt-dlp после pick/clear (shell-вкладка «Загрузки»). */

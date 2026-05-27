@@ -2,7 +2,6 @@ import { BrowserWindow } from 'electron'
 
 import { resolveAppPaths } from '../core/app-paths'
 import type { DownloadsOutputDirectorySnapshot } from '../../shared/downloads-output-directory-snapshot'
-import type { DownloadsWindowUiPanelState } from '../../shared/settings-contract'
 import { DOWNLOADS_LOG_CHANNEL, type DownloadsLogPayload } from '../ipc/downloads/downloads-log-ipc'
 import { schedulePersistDownloadsQueueDebounced } from '../services/ytdlp/ytdlp-download-queue-persist'
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
@@ -55,19 +54,6 @@ export function broadcastDownloadsLogPayload(payload: DownloadsLogPayload): void
   }
 }
 
-/** §6.1 — раскрытие секций rail / история / лог в shell-вкладке «Загрузки». */
-export function broadcastDownloadsWindowUiPanelsSnapshot(
-  snap: DownloadsWindowUiPanelState = {}
-): void {
-  for (const w of collectDownloadsShellBroadcastTargets()) {
-    try {
-      w.webContents.send(mw.downloadsWindowUiPanelsChanged, snap)
-    } catch {
-      /* окно закрывается */
-    }
-  }
-}
-
 /** §6.2 — yt-dlp CLI/options: shell-вкладка «Загрузки» после persist patch/cookies. */
 export function broadcastDownloadsCliOptionsChanged(): void {
   for (const w of collectDownloadsShellBroadcastTargets()) {
@@ -97,32 +83,4 @@ export function broadcastDownloadsOutputDirectorySnapshot(
       /* окно закрывается */
     }
   }
-}
-
-export function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWindowUiPanelState> {
-  if (!raw || typeof raw !== 'object') {
-    return {}
-  }
-  const keys = [
-    'settings',
-    'history',
-    'log',
-    'format',
-    'metadata',
-    'saving',
-    'network',
-    'expert',
-    'hints'
-  ] as const satisfies ReadonlyArray<Exclude<keyof DownloadsWindowUiPanelState, 'historyListMode'>>
-  const o = raw as Record<string, unknown>
-  const out: Partial<DownloadsWindowUiPanelState> = {}
-  for (const k of keys) {
-    if (typeof o[k] === 'boolean') {
-      out[k] = o[k]
-    }
-  }
-  if (o['historyListMode'] === 'compact' || o['historyListMode'] === 'full') {
-    out.historyListMode = o['historyListMode']
-  }
-  return out
 }

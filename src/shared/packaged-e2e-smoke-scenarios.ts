@@ -148,17 +148,16 @@ export function formatPackagedE2eSmokeDiagnosticLines(): string[] {
   return [
     `§21 packaged e2e registry: ${PACKAGED_E2E_SMOKE_SCENARIOS.length} steps (aligned with packaged manual smoke)`,
     `ci-headless (${headless.length}): ${headless.join(', ')}`,
-    `planned-gui-e2e (${planned.length}): ${planned.join(', ')}`,
+    `planned-gui-e2e (${planned.length}): ${planned.length > 0 ? planned.join(', ') : '(none — UI ZERO)'}`,
     `manual-owner (${manual.length}): ${manual.join(', ')}`,
     `ciSmokeScript npm (${PACKAGED_E2E_CI_SMOKE_SCRIPTS.length}): ${PACKAGED_E2E_CI_SMOKE_SCRIPTS.join(', ')}`,
     ...formatPackagedE2ePerStepDiagnosticLines(),
     'manual owner-smoke: Support ZIP ownerHardwareChecklist: + Settings copy (not automated GUI yet)',
-    `planned GUI e2e scope: ${PACKAGED_E2E_PLANNED_GUI_STEP_IDS.join(', ')} (Playwright: planned-gui-e2e-step-runners.ts; ytdlp/export have partial CLI smokes)`,
+    `planned GUI e2e scope: (none — UI ZERO; owner manual smoke until Playwright restore)`,
     formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine(),
     formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine(),
     formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine(),
     `Help crosslinks: ${formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine('articles')}`,
-    'check: npm run check:packaged-e2e-scenarios-registry',
-    'check: npm run check:packaged-gui-e2e-playwright-deferred'
+    'check: npm run check:packaged-e2e-scenarios-registry'
   ]
 }

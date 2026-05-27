@@ -20,23 +20,17 @@ import { formatTerminalContractHintsLoggingHelpDevGuardsLine } from './terminal-
 
 import {
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote,
-  formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiScaffoldExportsInline,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale
 } from './packaged-e2e-help-workflow-crosslinks-formatters-readme.ts'
-import {
-  PACKAGED_GUI_E2E_APP_ENV_VAR,
-  PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE,
-  PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE
-} from './packaged-gui-e2e-playwright-meta.ts'
 
 function formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiNpmRunClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
-  const guard = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD
   const script = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_NPM_SCRIPT
+  const guard = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PLAYWRIGHT_DEFERRED_GUARD
   return locale === 'ru'
-    ? `\`npm run ${script}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (skip без \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`; \`${guard}\`).`
-    : `\`npm run ${script}\` → \`${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_SPEC_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (skipped without \`${PACKAGED_GUI_E2E_APP_ENV_VAR}\`; \`${guard}\`).`
+    ? `\`npm run ${script}\` (канон — \`${guard}\`).`
+    : `\`npm run ${script}\` (canon — \`${guard}\`).`
 }
 
 export function formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(
@@ -68,8 +62,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistMan
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return locale === 'ru'
-    ? ' **manual-owner** без GUI-автоматизации: `video-sprite` (§7.5) — при Support ZIP смотрите `terminalHints:` (§8, `check:help-terminal-hints-docs`, 24 статьи).'
-    : ' **manual-owner** without GUI automation: `video-sprite` (§7.5) — attach Support ZIP `terminalHints:` (§8, `check:help-terminal-hints-docs`, 24 articles).'
+    ? ' **manual-owner (9 шагов)** до восстановления GUI: open-file, ytdlp, editor-dl, snapshot, export, video-sprite, knowledge, support-zip, settings — Support ZIP `terminalHints:` (§8).'
+    : ' **manual-owner (9 steps)** until GUI restore: open-file, ytdlp, editor-dl, snapshot, export, video-sprite, knowledge, support-zip, settings — Support ZIP `terminalHints:` (§8).'
 }
 
 /** Owner manual smoke Help — packaged-windows + workflow articles step Help tail. */
@@ -88,25 +82,23 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistSca
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   void locale
-  return ` Playwright: \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_SCENARIOS_MODULE}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiScaffoldExportsInline()}).`
+  return ''
 }
 
 /** Owner manual smoke Help — planned step notes map (Copy/releaseSmoke diagnostic). */
 export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
-  return locale === 'ru'
-    ? ` Copy/releaseSmoke: \`PLANNED_GUI_E2E_STEP_BY_ID\` (registry \`note\` на шаг; \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`).`
-    : ` Copy/releaseSmoke includes \`PLANNED_GUI_E2E_STEP_BY_ID\` (registry \`note\` per step; \`formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine\`).`
+  void locale
+  return ''
 }
 
 /** Owner/about/logging hub Help — Playwright specs handoff (§21). */
 export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
-  return locale === 'ru'
-    ? ` Specs: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\``
-    : ` Specs: \`docs/RELEASE.md\` — \`formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet\``
+  void locale
+  return ''
 }
 
 export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistPlannedGuiParagraph(
@@ -118,7 +110,6 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistPla
     formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistScaffoldClause(locale) +
     formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(locale) +
     formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(locale) +
-    '.' +
     ownerPlaywrightUiHintsClause +
     formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistManualOwnerClause(locale) +
     formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepHelpClause(locale)
@@ -150,14 +141,9 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxPlannedGu
 ): string {
   const count = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_E2E_COUNT
   const module = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_SCENARIOS_MODULE
-  const exportsInline = formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiScaffoldExportsInline()
-  const stepById =
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(locale)
-  const wiring =
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(locale)
   return locale === 'ru'
-    ? `§21 planned GUI e2e (${count} шагов) — [about-support-logs.md](about-support-logs.md); канон stepId: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; \`${module}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${exportsInline}).${stepById}${wiring}.`
-    : `§21 planned GUI e2e (${count} steps) — [about-support-logs.md](about-support-logs.md); canonical ids: \`PACKAGED_E2E_PLANNED_GUI_STEP_IDS\`; \`${module}\` + \`${PACKAGED_GUI_E2E_PLAYWRIGHT_STEP_RUNNERS_MODULE}\` (${exportsInline}).${stepById}${wiring}.`
+    ? `§21 planned GUI e2e (${count} шагов) — Playwright приостановлен (UI ZERO); owner manual — [about-support-logs.md](about-support-logs.md); канон — \`${module}\`.`
+    : `§21 planned GUI e2e (${count} steps) — Playwright suspended (UI ZERO); owner manual — [about-support-logs.md](about-support-logs.md); canon — \`${module}\`.`
 }
 
 const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE =
@@ -175,15 +161,9 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedPlannedGuiE2eClau
 ): string {
   const count = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_E2E_COUNT
   const reserved = formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiReservedClause(locale)
-  const scaffold =
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistScaffoldClause(locale)
-  const stepById =
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(locale)
-  const wiring =
-    formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(locale)
   return locale === 'ru'
-    ? `**Planned GUI e2e** (${count} шагов, Playwright wired) — ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}${scaffold}${stepById}${wiring}.`
-    : `**Planned GUI e2e** (${count} steps, Playwright wired): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}${scaffold}${stepById}${wiring}.`
+    ? `**Planned GUI e2e** (${count} шагов Playwright; owner manual — ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}). ${reserved}`
+    : `**Planned GUI e2e** (${count} Playwright steps; owner manual — ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}). ${reserved}`
 }
 
 /** Packaged windows Help — Dev guards on Copy line (`npm run` prefix). */
@@ -227,8 +207,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistPla
   const count = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_E2E_COUNT
   const reserved = formatPackagedE2eHelpWorkflowCrosslinksPlannedGuiReservedClause(locale)
   return locale === 'ru'
-    ? `**Planned GUI e2e** (${count} шагов; код — Playwright, приёмка — ручная): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}`
-    : `**Planned GUI e2e** (${count} steps; code — Playwright, acceptance — manual): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}`
+    ? `**Planned GUI e2e** (${count} Playwright; приёмка — owner manual): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}`
+    : `**Planned GUI e2e** (${count} Playwright; acceptance — owner manual): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNED_GUI_STEP_IDS_INLINE}. ${reserved}`
 }
 
 /** `docs/RELEASE.md` — `check:help-workflow-smoke-crosslinks` guard bullet. */
@@ -307,7 +287,6 @@ export function formatPackagedE2eHelpWorkflowCrosslinksLoggingDevParagraph(
     formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistScaffoldClause(locale) +
     formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistStepByIdClause(locale) +
     formatPackagedE2eHelpWorkflowCrosslinksOwnerHardwareChecklistWiringHandoffClause(locale) +
-    '.' +
     loggingDiagnosticsUiHintSuffix
   )
 }

@@ -7,7 +7,6 @@ import { configureDownloadsQueueRunnerHooks } from '../services/downloads/downlo
 import {
   broadcastDownloadsCliOptionsChanged,
   broadcastDownloadsOutputDirectorySnapshot,
-  broadcastDownloadsWindowUiPanelsSnapshot,
   syncDownloadsWindowLocale
 } from '../windows/downloads-window'
 import { configureMainDownloadsWindowBoundsBootstrap } from '../windows/main-downloads-window-bounds-bootstrap'
@@ -17,7 +16,6 @@ import {
   mainDownloadsUiLocale
 } from './main-bootstrap-ipc-helpers'
 import {
-  configureMainCachedSettingsRevealPanel,
   getCachedSettings,
   loadCachedSettingsFromDisk,
   mainSettingsAccess,
@@ -25,7 +23,6 @@ import {
   persistLastOpenedSource,
   previewOpenDialogOptsFromSettings,
   refreshEnginePathOverridesSnapshot,
-  revealMainWindowBatchExportPanel,
   saveCachedSettingsToDisk,
   setCachedSettings,
   technicalSpecPath
@@ -185,9 +182,6 @@ export function bootstrapMainApplicationHosts(): void {
       refreshEnginePathOverridesSnapshot
     })
   )
-  configureMainCachedSettingsRevealPanel({
-    getSettingsIpcPersist: getMainApplicationSettingsIpcPersist
-  })
   configureMainExportOutputPaths({
     mainAppStr,
     getFfmpegExportDirectory: () => getCachedSettings().ffmpegExportDirectory,
@@ -224,8 +218,7 @@ export function bootstrapMainApplicationHosts(): void {
     rememberFfmpegExportDirectory,
     broadcastBatchSnapshot: (win) => {
       broadcastFfmpegExportBatchSnapshot?.(win)
-    },
-    revealMainWindowBatchExportPanel
+    }
   })
   configureMainYtdlpDownloadMainHandler({
     mainAppStr,
@@ -248,16 +241,6 @@ export function bootstrapMainApplicationHosts(): void {
     getMainWindowWebContentsId: () => mainWindowWebContentsId,
     mainDownloadsUiLocale,
     getSettings: getCachedSettings,
-    mergeDownloadsWindowUiPanelsPatch: (patch) => {
-      patchCachedSettings((prev) => {
-        const prevPanels = prev.downloadsWindowUiPanels ?? {}
-        return {
-          ...prev,
-          downloadsWindowUiPanels: { ...prevPanels, ...patch }
-        }
-      })
-      broadcastDownloadsWindowUiPanelsSnapshot(getCachedSettings().downloadsWindowUiPanels ?? {})
-    },
     openDownloadedFileInMainHandler
   })
   configureDownloadsQueueRunnerHooks({

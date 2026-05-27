@@ -4,7 +4,6 @@ import { isAbsolute, normalize } from 'path'
 import { BrowserWindow } from 'electron'
 
 import { mainWindowIpc as mw } from '../../../shared/ipc-channels'
-import type { MainWindowUiPanelState } from '../../../shared/settings-contract'
 import { parseAppUiLocale } from '../../../shared/app-ui-locale'
 import { patchAppSettingsUiLocale } from '../../../shared/ui-locale-settings-patch'
 import {
@@ -25,10 +24,7 @@ export function createSettingsShellPersist(
   hooks: SettingsIpcPersistHooks
 ): Pick<
   import('./settings-ipc-persist-core').SettingsIpcPersistApi,
-  | 'persistUiLocale'
-  | 'persistConfirmCloseOnQuit'
-  | 'persistEnginePathOverridesPatch'
-  | 'persistMainWindowUiPanelsMerge'
+  'persistUiLocale' | 'persistConfirmCloseOnQuit' | 'persistEnginePathOverridesPatch'
 > {
   function validateEngineOverridePath(raw: string): string | null {
     const normalized = normalize(raw.trim())
@@ -73,59 +69,6 @@ export function createSettingsShellPersist(
     return saved
   }
 
-  function sanitizeMainWindowUiPanelPatch(raw: unknown): Partial<MainWindowUiPanelState> {
-    if (!raw || typeof raw !== 'object') {
-      return {}
-    }
-    const keys: (keyof MainWindowUiPanelState)[] = [
-      'ffmpegSettingsRailOpen',
-      'quickYtdlp',
-      'ffmpegVideo',
-      'ffmpegFormat',
-      'ffmpegAudio',
-      'ffmpegPresets',
-      'workflowScenario',
-      'ffmpegOutput',
-      'exportCommandPreview',
-      'processingHistory',
-      'probeExportSummary',
-      'probeTracks',
-      'probeChapters',
-      'probeRawJson'
-    ]
-    const o = raw as Record<string, unknown>
-    const out: Partial<MainWindowUiPanelState> = {}
-    for (const k of keys) {
-      if (typeof o[k] === 'boolean') {
-        out[k] = o[k]
-      }
-    }
-    return out
-  }
-
-  function persistMainWindowUiPanelsMerge(raw: unknown): AppSettings {
-    const patch = sanitizeMainWindowUiPanelPatch(raw)
-    if (Object.keys(patch).length === 0) {
-      return snapshot(access)
-    }
-    const next: AppSettings = {
-      ...access.get(),
-      mainWindowUiPanels: {
-        ...(access.get().mainWindowUiPanels ?? {}),
-        ...patch
-      }
-    }
-    access.set(next)
-    access.save()
-    const panelsSnapshot = next.mainWindowUiPanels
-    /** Синхронизация между главным окном и инспектором §9 без повторного `settings-get`. */
-    for (const w of BrowserWindow.getAllWindows()) {
-      if (!w.isDestroyed()) {
-        w.webContents.send(mw.mainWindowUiPanelsChanged, panelsSnapshot ?? {})
-      }
-    }
-    return snapshot(access)
-  }
   function persistUiLocale(raw: unknown): AppSettings {
     const v = parseAppUiLocale(raw)
     if (v === undefined) {
@@ -158,7 +101,6 @@ export function createSettingsShellPersist(
   return {
     persistUiLocale,
     persistConfirmCloseOnQuit,
-    persistEnginePathOverridesPatch,
-    persistMainWindowUiPanelsMerge
+    persistEnginePathOverridesPatch
   }
 }

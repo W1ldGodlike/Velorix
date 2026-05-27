@@ -3,51 +3,32 @@ import { describe, expect, it } from 'vitest'
 import {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,
   EDITOR_TIMELINE_ICONS,
-  EDITOR_THEME_ICONS,
   EDITOR_TOPBAR_ACTION_ICONS,
   EDITOR_TRANSPORT_ICONS,
   QUEUE_ROW_ACTION_ICONS,
   WORKSPACE_TAB_ICONS,
-  emitDownloadsQueueRowIcoBootstrapJs,
-  emitDownloadsTopbarClusterHtml,
   emitInlineStrokeSvg
 } from '../../src/shared/lucide-downloads-icons'
-import { DOWNLOADS_TOPBAR_CLUSTER_COPY_RU } from '../../src/shared/lucide-downloads-topbar-cluster-copy'
 
 describe('lucide-downloads-icons', () => {
-  it('эмит RowIco включает все ключи таблицы очереди', () => {
-    const js = emitDownloadsQueueRowIcoBootstrapJs()
-    expect(js).toContain('var RowIco')
-    expect(js).toContain('play:')
-    expect(js).toContain('pause:')
-    expect(js).toContain('svgIcon([')
-    for (const key of Object.keys(QUEUE_ROW_ACTION_ICONS)) {
-      expect(js).toContain(`${key}:`)
-    }
-  })
-
-  it('inline SVG топбара и кластера не пустые', () => {
+  it('inline SVG топбара не пустой', () => {
     const svg = emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.film, 18)
     expect(svg.startsWith('<svg')).toBe(true)
     expect(svg).toContain('viewBox="0 0 24 24"')
-    const html = emitDownloadsTopbarClusterHtml(18, DOWNLOADS_TOPBAR_CLUSTER_COPY_RU)
-    expect(html).toContain('id="dlTopFilm"')
-    expect(html).toContain('id="dlTopUrl"')
-    expect(html).toContain('role="toolbar"')
   })
 
-  it('иконки транспорта редактора (v0 §Editor layout) сериализуются в stroke SVG', () => {
+  it('иконки транспорта редактора сериализуются в stroke SVG', () => {
     expect(emitInlineStrokeSvg(EDITOR_TRANSPORT_ICONS.skipBack, 20)).toContain('polygon points=')
     expect(emitInlineStrokeSvg(EDITOR_TRANSPORT_ICONS.volume2, 20)).toContain('path d=')
   })
 
-  it('иконки zoom таймлайна (v0) содержат circle и ручку лупы', () => {
+  it('иконки zoom таймлайна содержат circle и ручку лупы', () => {
     const z = emitInlineStrokeSvg(EDITOR_TIMELINE_ICONS.zoomIn, 20)
     expect(z).toContain('circle')
     expect(z).toContain('line')
   })
 
-  it('EDITOR_TOPBAR_ACTION_ICONS (снимок/экспорт/бан/облако) сериализуются в stroke SVG', () => {
+  it('EDITOR_TOPBAR_ACTION_ICONS сериализуются в stroke SVG', () => {
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.folder, 20)).toContain('path d=')
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.save, 20)).toContain('path d=')
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.image, 20)).toContain('rect')
@@ -55,31 +36,23 @@ describe('lucide-downloads-icons', () => {
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.cloudDownload, 20)).toContain('path d=')
   })
 
-  it('EDITOR_THEME_ICONS (sun/moon) сериализуются в stroke SVG', () => {
-    expect(emitInlineStrokeSvg(EDITOR_THEME_ICONS.sun, 20)).toContain('circle')
-    expect(emitInlineStrokeSvg(EDITOR_THEME_ICONS.moon, 20)).toContain('path d=')
-  })
-
-  it('QUEUE_ROW_ACTION_ICONS.x (lucide close) попадает в bootstrap RowIco', () => {
+  it('QUEUE_ROW_ACTION_ICONS.x (lucide close) сериализуется', () => {
     expect(emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.x, 20)).toContain('<line')
-    expect(emitDownloadsQueueRowIcoBootstrapJs()).toContain('x:')
   })
 
-  it('DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard / popOutWindow сериализуются для вкладки «Загрузки»', () => {
+  it('DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard сериализуется', () => {
     expect(emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard, 18)).toContain('<rect')
-    expect(emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.popOutWindow, 18)).toContain('<path')
   })
 
-  it('QUEUE_ROW_ACTION_ICONS.plus — кнопки «Добавить…» на вкладке загрузок', () => {
+  it('QUEUE_ROW_ACTION_ICONS.plus — кнопки «Добавить…»', () => {
     expect(emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.plus, 17)).toContain('<path')
   })
 
-  it('QUEUE_ROW_ACTION_ICONS.copy — копирование (пакет и др.)', () => {
+  it('QUEUE_ROW_ACTION_ICONS.copy — копирование', () => {
     expect(emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.copy, 18)).toContain('<rect')
-    expect(emitDownloadsQueueRowIcoBootstrapJs()).toContain('copy:')
   })
 
-  it('WORKSPACE_TAB_ICONS.editor — кадр, play и ножницы (stroke SVG)', () => {
+  it('WORKSPACE_TAB_ICONS.editor — кадр, play и ножницы', () => {
     const svg = emitInlineStrokeSvg(WORKSPACE_TAB_ICONS.editor, 16)
     expect(svg).toContain('<rect')
     expect(svg).toContain('polygon points=')

@@ -30,33 +30,33 @@ export const PACKAGED_E2E_SMOKE_REGISTRY: readonly PackagedE2eSmokeScenario[] = 
   },
   {
     stepId: 'open-file',
-    automation: 'planned-gui-e2e',
+    automation: 'manual-owner',
     ciSmokeScript: null,
     note: 'Editor open local file + preview scrub (manual owner-smoke today)'
   },
   {
     stepId: 'ytdlp',
-    automation: 'planned-gui-e2e',
-    ciSmokeScript: 'smoke:packaged-ytdlp',
-    note: 'CLI yt-dlp smoke exists; full downloads queue UI — planned GUI e2e'
+    automation: 'manual-owner',
+    ciSmokeScript: null,
+    note: 'Downloads queue UI — owner manual until GUI restore (UI ZERO)'
   },
   {
     stepId: 'editor-dl',
-    automation: 'planned-gui-e2e',
+    automation: 'manual-owner',
     ciSmokeScript: null,
     note: 'Open in editor from downloads queue'
   },
   {
     stepId: 'snapshot',
-    automation: 'planned-gui-e2e',
+    automation: 'manual-owner',
     ciSmokeScript: null,
     note: 'Frame snapshot PNG/JPEG'
   },
   {
     stepId: 'export',
-    automation: 'planned-gui-e2e',
-    ciSmokeScript: 'smoke:packaged-ffmpeg',
-    note: 'CLI ffmpeg smoke exists; editor export MP4 — planned GUI e2e'
+    automation: 'manual-owner',
+    ciSmokeScript: null,
+    note: 'Editor export MP4 — owner manual until GUI restore (UI ZERO)'
   },
   {
     stepId: 'video-sprite',
@@ -66,19 +66,19 @@ export const PACKAGED_E2E_SMOKE_REGISTRY: readonly PackagedE2eSmokeScenario[] = 
   },
   {
     stepId: 'knowledge',
-    automation: 'planned-gui-e2e',
+    automation: 'manual-owner',
     ciSmokeScript: null,
     note: 'Knowledge base article + internal .md link'
   },
   {
     stepId: 'support-zip',
-    automation: 'planned-gui-e2e',
+    automation: 'manual-owner',
     ciSmokeScript: null,
     note: 'About → Support ZIP without secrets in text'
   },
   {
     stepId: 'settings',
-    automation: 'planned-gui-e2e',
+    automation: 'manual-owner',
     ciSmokeScript: null,
     note: 'Settings → Dependencies engine paths → resources/bin'
   }

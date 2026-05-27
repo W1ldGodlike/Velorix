@@ -32,11 +32,7 @@ import type {
   PresetsExportCloneBuiltinResult,
   PresetsExportDialogResult
 } from '../shared/presets-export-contract'
-import type {
-  AppSettings,
-  AppSettingsView,
-  MainWindowUiPanelState
-} from '../shared/settings-contract'
+import type { AppSettings, AppSettingsView } from '../shared/settings-contract'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
 /** settings.* — IPC setters ffmpeg/ytdlp/theme (main preload). */
@@ -127,8 +123,6 @@ export const velorixSettings = {
     ipcRenderer.invoke(mw.settingsApplyFfmpegExportSnapshot, snapshot),
   setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId): Promise<AppSettings> =>
     ipcRenderer.invoke(mw.settingsSetFfmpegSnapshotFormat, format),
-  mergeMainWindowUiPanels: (patch: Partial<MainWindowUiPanelState>): Promise<AppSettings> =>
-    ipcRenderer.invoke(mw.settingsMergeMainWindowUiPanels, patch),
   exportBackup: (): Promise<
     { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
   > => ipcRenderer.invoke(mw.settingsBackupExport),

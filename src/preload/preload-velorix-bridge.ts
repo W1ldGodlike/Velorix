@@ -22,7 +22,6 @@ import type { AppAboutInfo } from '../shared/about-contract'
 import type { EnginesStatusSnapshot } from '../shared/engine-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
-import type { MainWindowUiPanelState } from '../shared/settings-contract'
 import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
@@ -53,7 +52,6 @@ import {
   velorixProcessingHistory
 } from './preload-velorix-export'
 import { velorixSettings } from './preload-velorix-settings'
-import { sanitizeMainWindowUiPanelState } from './preload-sanitize'
 
 /** Единственная публичная поверхность приложения в renderer (§ preload). */
 export const velorix = {
@@ -429,24 +427,5 @@ export const velorix = {
   onOpenWorkflowPlanner: (listener: () => void): (() => void) =>
     subscribeVoidIpc(mw.openWorkflowPlanner, listener),
   onOpenWorkflowScenarioBuilder: (listener: () => void): (() => void) =>
-    subscribeVoidIpc(mw.openWorkflowScenarioBuilder, listener),
-  onMainWindowUiPanelsChanged: (
-    listener: (panels: MainWindowUiPanelState | undefined) => void
-  ): (() => void) => {
-    const channel = mw.mainWindowUiPanelsChanged
-    const handler = (_: unknown, raw: unknown): void => {
-      if (raw === undefined || raw === null) {
-        listener(undefined)
-        return
-      }
-      const panels = sanitizeMainWindowUiPanelState(raw)
-      if (panels !== undefined) {
-        listener(panels)
-      }
-    }
-    ipcRenderer.on(channel, handler)
-    return (): void => {
-      ipcRenderer.removeListener(channel, handler)
-    }
-  }
+    subscribeVoidIpc(mw.openWorkflowScenarioBuilder, listener)
 }

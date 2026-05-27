@@ -1,54 +1,24 @@
 /**
- * §2.2 — зафиксированный подход к состоянию renderer (Zustand).
+ * §2.2 — renderer UI: UI ZERO rebuild, neon.1 ref.27 bootstrap.
  */
 
-export const RENDERER_STATE_APPROACH = 'zustand' as const
+export const RENDERER_STATE_APPROACH = 'ref27-bootstrap' as const
 
-/** Точка входа shell: bootstrap IPC + controller → props для layout. */
-export const RENDERER_SHELL_ENTRY = 'AppRoot'
+export const RENDERER_SHELL_ENTRY = 'main.tsx → Ref27ComponentsPage'
 
-/** Атомарные Zustand-сторы по доменам (имена хуков `use*Store`). */
-export const RENDERER_ZUSTAND_STORES = [
-  'useAppShellStore',
-  'useAppRefsStore',
-  'useDownloadsStore',
-  'useExportSettingsStore',
-  'usePanelsStore',
-  'useProcessingHistoryStore',
-  'useBatchExportStore',
-  'useTerminalStore'
-] as const
+export const RENDERER_ZUSTAND_STORES = [] as const
 
-/** Orchestration (эффекты/IPC), не дублирует state: preview, export pipeline, batch handlers. */
-export const RENDERER_ORCHESTRATION_HOOKS = [
-  'useRendererAppState',
-  'useAppShellLayoutController',
-  'useAppWorkspaceEditorContainer',
-  'useAppShellPropsInputHooks',
-  'useAppMainWindowEffects'
-] as const
+export const RENDERER_ORCHESTRATION_HOOKS = [] as const
 
-/** Производное состояние из сторов — только useMemo (нестабильные селекторы Zustand). */
-export const RENDERER_DERIVED_STATE_HOOKS = ['useDownloadsDerivedState'] as const
+export const RENDERER_DERIVED_STATE_HOOKS = [] as const
 
-/** События main/preload → store actions (`uiLocaleRenderTick`, dev HMR JSON). */
-export const RENDERER_CROSS_CUTTING_TICKS = [
-  'uiLocaleRenderTick',
-  'useUiTextHotReloadBump'
-] as const
+export const RENDERER_CROSS_CUTTING_TICKS = [] as const
 
 export function formatRendererStateDiagnosticLines(): string[] {
   return [
-    `approach: ${RENDERER_STATE_APPROACH} (atomic domain stores + orchestration hooks)`,
-    `entry: ${RENDERER_SHELL_ENTRY} → AppShellLayout`,
-    `stores: ${RENDERER_ZUSTAND_STORES.join(', ')}`,
-    `orchestration: ${RENDERER_ORCHESTRATION_HOOKS.join(', ')}`,
-    `cross-cutting: ${RENDERER_CROSS_CUTTING_TICKS.join(', ')}; module-level ui-text session for i18n`,
-    'surfaces: single AppRoot shell with shared domain stores across workspace tabs',
-    'persist: settings IPC (uiLocale, theme, panels, export fields) — not duplicated across stores',
-    'devtools: zustand/middleware devtools in DEV via create-renderer-store (Redux DevTools extension in Chromium)',
-    `derived: ${RENDERER_DERIVED_STATE_HOOKS.join(', ')} (useMemo; ban useStore(unstableSelector))`,
-    'paths: src/shared/path-lite.ts in renderer — no Node path import',
-    'docs: ARCHITECTURE.md § Состояние renderer'
+    'approach: ref27-bootstrap (UI ZERO rebuild)',
+    `entry: ${RENDERER_SHELL_ENTRY}`,
+    'stores: (none)',
+    'docs: docs/VELORIX_NEON_THEME.md, docs/reference/velorix-neon-reference-ui-components.png'
   ]
 }

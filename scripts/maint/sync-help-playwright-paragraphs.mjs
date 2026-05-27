@@ -10,6 +10,8 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksLoggingDevParagraph,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCopyPlannedGuiTail,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxCopyDevClause,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxPlannedGuiFooter,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyAutomationGroupsParenthetical,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyDevClause
 } from '../lib/help-workflow-crosslinks-meta.mjs'
 import {
@@ -40,15 +42,33 @@ function replaceFromMarker(text, marker, replacement) {
   )
 }
 
-function replaceLinePrefix(text, prefix, replacement) {
-  const re = new RegExp(`^${prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s\\S]*?$`, 'm')
+function syncWinAutomationGroups(rel, locale) {
+  const path = join(REPO_ROOT, rel)
+  const snippet =
+    formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCopyAutomationGroupsParenthetical(locale)
+  const re = locale === 'ru' ? /\(группы 2\/\d+\/\d+[^)]*\)/ : /\(\d+\/\d+\/\d+ groups[^)]*\)/
+  let text = readFileSync(path, 'utf8')
   if (!re.test(text)) {
-    throw new Error(`line prefix not found: ${prefix}`)
+    throw new Error(`${rel}: win automation groups parenthetical not found`)
   }
-  return text.replace(re, replacement.trimEnd())
+  writeFileSync(path, text.replace(re, snippet))
+  console.log(`[${LOG_PREFIX}] ${rel} win-automation-groups`)
+}
+
+function syncMacLinuxFooter(rel, locale) {
+  const path = join(REPO_ROOT, rel)
+  const footer = formatPackagedE2eHelpWorkflowCrosslinksPackagedMacLinuxPlannedGuiFooter(locale)
+  const re = /§21 planned GUI e2e[^\n]*/
+  let text = readFileSync(path, 'utf8')
+  if (!re.test(text)) {
+    throw new Error(`${rel}: mac/linux planned GUI footer not found`)
+  }
+  writeFileSync(path, text.replace(re, footer))
+  console.log(`[${LOG_PREFIX}] ${rel} mac-linux-footer`)
 }
 
 function syncPackagedWin(rel, locale) {
+  syncWinAutomationGroups(rel, locale)
   const path = join(REPO_ROOT, rel)
   const tail = formatPackagedE2eHelpWorkflowCrosslinksPackagedCopyPlannedGuiTail(
     locale,
@@ -67,6 +87,7 @@ function syncPackagedMacLinux(rel, locale) {
     formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(locale)
   )
   writeFileSync(path, replaceFromMarker(readFileSync(path, 'utf8'), '**Planned GUI e2e**', tail))
+  syncMacLinuxFooter(rel, locale)
   console.log(`[${LOG_PREFIX}] ${rel} packaged-tail`)
 }
 
@@ -98,7 +119,9 @@ function syncLogging(rel, locale) {
     formatPackagedGuiE2ePlaywrightLoggingPlannedGuiScopeClause(locale),
     formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(locale)
   )
-  writeFileSync(path, replaceLinePrefix(readFileSync(path, 'utf8'), 'Dev:', paragraph))
+  let text = readFileSync(path, 'utf8')
+  text = text.replace(/\n\nDev:[\s\S]*$/m, '')
+  writeFileSync(path, `${text.trimEnd()}\n\n${paragraph.trimEnd()}\n`)
   console.log(`[${LOG_PREFIX}] ${rel} logging-dev`)
 }
 

@@ -30,5 +30,4 @@ export type SettingsIpcPersistApi = {
   persistUiLocale: (raw: unknown) => AppSettings
   persistConfirmCloseOnQuit: (raw: unknown) => AppSettings
   persistEnginePathOverridesPatch: (patch: EnginePathOverridesPatch) => AppSettings
-  persistMainWindowUiPanelsMerge: (raw: unknown) => AppSettings
 }

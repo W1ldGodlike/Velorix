@@ -1,7 +1,7 @@
 import { basename } from 'path'
 
 import { app, ipcMain } from 'electron'
-import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
+import type { IpcMainEvent } from 'electron'
 
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import {
@@ -147,11 +147,6 @@ function consumeRendererLogToken(senderId: number): boolean {
 }
 
 export function isMainWindowSender(event: IpcMainEvent): boolean {
-  const id = requireAccess().getMainWindowWebContentsId()
-  return id !== null && event.sender.id === id
-}
-
-export function isMainWindowUiPanelSender(event: IpcMainInvokeEvent): boolean {
   const id = requireAccess().getMainWindowWebContentsId()
   return id !== null && event.sender.id === id
 }

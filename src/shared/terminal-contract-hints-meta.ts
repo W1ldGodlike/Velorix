@@ -28,10 +28,7 @@ export const TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_SOURCE_PATHS = [
 ] as const
 
 /** Renderer UI — Support ZIP aria hints (`aboutSupportZipDiagnosticsSectionsHint`). */
-export const TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS = [
-  'src/renderer/src/components/AboutDialog.tsx',
-  'src/renderer/src/components/shell/app-settings-dialog-panes.tsx'
-] as const
+export const TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS = [] as const
 
 /** §8 terminal guards in `check:quiet` (registry → shards → locale → Support ZIP). */
 export const TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS = [

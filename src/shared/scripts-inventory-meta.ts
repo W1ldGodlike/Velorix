@@ -20,30 +20,22 @@ export const SCRIPTS_INVENTORY_BUCKETS = [
  * (gate/audit/release/e2e иначе обязаны быть в package.json.)
  */
 export const SCRIPTS_WIRING_EXEMPT_REL_PATHS = [
-  'scripts/e2e/run-planned-gui-e2e-gui.mjs',
   'scripts/maint/journal-lib.mjs',
   'scripts/maint/terminal-contract-hint-paths.mjs',
-  'scripts/maint/apply-theme-font-size-rem-tokenize.mjs',
-  'scripts/maint/apply-theme-line-height-tokenize.mjs',
-  'scripts/maint/apply-theme-spacing-rem-tokenize.mjs',
   'scripts/maint/sync-help-workflow-user-footers.mjs',
   'scripts/release/engines-bundled-sha256.mjs',
   'scripts/release/engines-exe-version-line.mjs',
   'scripts/release/prepare-engines-unix.mjs'
 ] as const
 
-/** Vitest: только tests `*.test.ts`; Playwright — tests/e2e/gui `*.spec.ts` через test:e2e:gui. */
+/** Vitest: только tests `*.test.ts`. Playwright GUI e2e снят (UI ZERO). */
 export const TESTS_VITEST_INCLUDE_GLOB = `tests/${'**'}/*.test.ts` as const
-
-export const TESTS_E2E_PLAYWRIGHT_DIR = 'tests/e2e/gui' as const
 
 export const TESTS_LAYOUT_BUCKETS = [
   { dir: 'tests/shared', role: 'contracts, parsers, argv tables (no Electron)' },
   { dir: 'tests/main', role: 'main process, IPC, services (mocks/integration)' },
-  { dir: 'tests/renderer', role: 'renderer helpers, ui-text, stores' },
   { dir: 'tests/scripts', role: 'npm scripts, release/engines smoke wiring' },
-  { dir: 'tests/fixtures', role: 'shared terminal/ffmpeg/ytdlp fixture data' },
-  { dir: TESTS_E2E_PLAYWRIGHT_DIR, role: 'Playwright GUI (not in Vitest)' }
+  { dir: 'tests/fixtures', role: 'shared terminal/ffmpeg/ytdlp fixture data' }
 ] as const
 
 /** Извлекает `scripts/.../*.mjs` из значений package.json scripts. */

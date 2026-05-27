@@ -40,56 +40,9 @@ export interface StoredWindowRect {
   height: number
 }
 
+/** Только главное окно (pop-out downloads/inspector сняты — Variant A / UI-first). */
 export interface WindowBoundsConfig {
   main?: StoredWindowRect
-  downloads?: StoredWindowRect
-  inspector?: StoredWindowRect
-}
-
-/**
- * §4.1 — раскрытие collapsible в главном окне (React `details` FFmpeg / быстрый yt-dlp).
- * Не заданные ключи при отображении трактуются как дефолты в renderer.
- */
-export interface MainWindowUiPanelState {
-  /** §4.1 — видимость правой колонки «Настройки FFmpeg»; `false` — только превью (больше места под таймлайн). */
-  ffmpegSettingsRailOpen?: boolean
-  quickYtdlp?: boolean
-  /** §7.3 — панель пакетного экспорта над workbench. */
-  batchExport?: boolean
-  ffmpegVideo?: boolean
-  ffmpegFormat?: boolean
-  ffmpegAudio?: boolean
-  ffmpegPresets?: boolean
-  /** §11 — блок «Сценарий» в правой панели FFmpeg. */
-  workflowScenario?: boolean
-  ffmpegOutput?: boolean
-  /** §4.1 — блок превью argv ffmpeg в секции «Вывод». */
-  exportCommandPreview?: boolean
-  /** §13 — журнал завершённых обработок FFmpeg в правой панели главного окна. */
-  processingHistory?: boolean
-  /** §4.1 / §9 — раскрытие секций сводки ffprobe (окно инспектора; те же ключи влияют на раскрытие блоков там). */
-  probeExportSummary?: boolean
-  probeTracks?: boolean
-  probeChapters?: boolean
-  probeRawJson?: boolean
-}
-
-/** Сколько карточек показывать в панели истории загрузок (вкладка и отдельное окно). */
-export type DownloadsHistoryListMode = 'compact' | 'full'
-
-/** §4.1 — раскрытие секций shell-вкладки `Загрузки`. */
-export interface DownloadsWindowUiPanelState {
-  /** Узкая shell-вкладка «Загрузки»: свёрнутая панель «Настройки yt-dlp» под очередью. */
-  settings?: boolean
-  history?: boolean
-  log?: boolean
-  format?: boolean
-  metadata?: boolean
-  saving?: boolean
-  network?: boolean
-  expert?: boolean
-  hints?: boolean
-  historyListMode?: DownloadsHistoryListMode
 }
 
 export interface AppSettings {
@@ -241,10 +194,6 @@ export interface AppSettings {
   ffmpegExportExternalFilterKind?: 'off' | 'avisynth' | 'vapoursynth'
   /** §17: абсолютный путь к `.avs` / `.vpy`. */
   ffmpegExportExternalFilterScriptPath?: string
-  /** §4.1 — сохранённое раскрытие панелей главного окна (см. `MainWindowUiPanelState`). */
-  mainWindowUiPanels?: MainWindowUiPanelState
-  /** §4.1 — сохранённое раскрытие панелей окна yt-dlp. */
-  downloadsWindowUiPanels?: DownloadsWindowUiPanelState
 }
 
 /** Ответ IPC `settingsGet`: `effectiveTheme` не пишется в `settings.json`. */

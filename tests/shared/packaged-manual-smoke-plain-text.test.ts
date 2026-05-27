@@ -3,8 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   formatPackagedGuiE2ePlaywrightDeferredDiagnosticLine,
   formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine,
-  formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine,
-  PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT
+  formatPackagedGuiE2ePlaywrightScaffoldDiagnosticLine
 } from '../../src/shared/packaged-gui-e2e-playwright-meta'
 import { formatPackagedE2eSmokeDiagnosticLines } from '../../src/shared/packaged-e2e-smoke-scenarios'
 import {
@@ -21,7 +20,7 @@ describe('packaged-manual-smoke-plain-text §3', () => {
     expect(text).toContain('automated: npm run verify:win-unpacked')
     expect(text).toContain('step [launch]:')
     expect(text).toContain(PACKAGED_MANUAL_SMOKE_E2E_APPENDIX_HEADING)
-    expect(text).toContain('planned GUI e2e scope:')
+    expect(text).toContain('UI ZERO')
     expect(text).toContain('e2e launch: ci-headless')
   })
 
@@ -29,14 +28,14 @@ describe('packaged-manual-smoke-plain-text §3', () => {
     const text = getPackagedManualSmokePlainTextForUiLocale('linux', 'ru')
     expect(text).toContain('doc: docs/RELEASE.md §4.1')
     expect(text).toContain('step [video-sprite]:')
-    expect(text).toContain(`planned-gui-e2e (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT}):`)
+    expect(text).toContain('planned-gui-e2e (0)')
     expect(text).toContain('check:help-workflow-smoke-crosslinks')
   })
 
   it('macos en copy appends the same §21 e2e block as other platforms', () => {
     const text = getPackagedManualSmokePlainTextForUiLocale('macos', 'en')
-    expect(text).toContain('manual-owner (1): video-sprite')
-    expect(text).toContain('e2e settings: planned-gui-e2e')
+    expect(text).toContain('manual-owner (9):')
+    expect(text).toContain('e2e settings: manual-owner')
   })
 
   it('formatPackagedManualSmokeE2eAppendixLines starts with canonical heading', () => {
@@ -49,7 +48,7 @@ describe('packaged-manual-smoke-plain-text §3', () => {
     expect(lines.join('\n')).toContain(
       formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine()
     )
-    expect(lines.join('\n')).toContain('check:packaged-gui-e2e-playwright-deferred')
+    expect(lines.join('\n')).not.toContain('check:packaged-gui-e2e-playwright-deferred')
   })
 
   it('checklist body matches owner packaged section plus §21 appendix', () => {

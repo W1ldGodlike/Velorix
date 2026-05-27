@@ -39,9 +39,26 @@
 
 ---
 
+## UI ZERO REBUILD (2026-05-27)
+
+**Смысл:** не удалять этот файл и не «убирать ZERO» — **сбросить ложные галочки** по визуалу после снятия renderer с диска. Журнал J-1633…J-1680 = история кода до purge; **для UI считаем старт с нуля**.
+
+| Факт | Деталь |
+| ---- | ------ |
+| **Renderer** | Только [`main.tsx`](../src/renderer/src/main.tsx) (пустой `#root`); `RENDERER_STATE_APPROACH = 'none'` — диагностика. |
+| **Старый React/CSS** | **Снят с диска** (не «режим none» ради зелёного CI). |
+| **Main/preload** | IPC и сервисы **сохранены**; подстраиваются под refs, не наоборот. |
+| **UI guards** | `check:ui-surfaces-guard`, `check:ui-copy-quality`, `check:renderer-state-approach`, `check:export-preview-hints-locale`, Playwright `test:e2e:gui` — **удалены**; **не** подгонять `check:quiet`. |
+| **Порядок rebuild** | **ref.27** → **ref.26** → **ref.1** → refs 2–9 → 10–25 → motion. |
+
+**Запрещено:** `git checkout` старого `src/renderer/`; восстанавливать `AppRoot` / `NeonShell` / `velorix-neon-*.css` как «готово».
+
+
+---
+
 ## Вариант A — единственный UI NEON (канон продукта, старт работ)
 
-**Статус:** принято владельцем **2026-05-22**. **2026-05-26** владелец подтвердил старт Variant A cleanup/migration: документ используется как активный трекер канона, shell-миграции и удаления legacy.
+**Статус:** принято владельцем **2026-05-22**. **2026-05-27** — **UI ZERO REBUILD** (см. § выше): renderer снят; канон PNG и этот документ **сохранены**; галочки визуала сброшены.
 
 ### Смысл варианта A (кратко, от агента)
 
@@ -153,12 +170,12 @@
 
 | # | Текст в доке | Зона | CSS / код (факт) | Sign-off vs PNG |
 |---|--------------|------|------------------|-----------------|
-| 1 | [x] | Design tokens, atmosphere | `themes/velorix-neon/*`, … (код J-1617 — пересмотр после sign-off) | [ ] |
-| 2 | [x] | Sidebar + topbar | `velorix-neon-chrome.css`, … (код J-1621 — пересмотр после sign-off) | [ ] |
-| 3 | [x] | Preview + transport | `velorix-neon-preview.css`, … (код J-1622 — пересмотр после sign-off) | [ ] |
-| 4 | [x] | Timeline + playhead | `velorix-neon-timeline.css`, … (код J-1623 — пересмотр после sign-off) | [ ] |
-| 5 | [x] | Inspector / export rail | `velorix-neon-inspector.css`, … (код J-1624 — пересмотр после sign-off) | [ ] |
-| 6 | [x] | Final polish (после sign-off 1–5) | `velorix-neon-polish.css`, … (код J-1625 — пересмотр) | [ ] |
+| 1 | [ ] | Design tokens, atmosphere | `themes/velorix-neon/*` (появятся с rebuild) | [ ] |
+| 2 | [ ] | Sidebar + topbar | `velorix-neon-chrome.css` (UI ZERO) | [ ] |
+| 3 | [ ] | Preview + transport | `velorix-neon-preview.css` (UI ZERO) | [ ] |
+| 4 | [ ] | Timeline + playhead | `velorix-neon-timeline.css` (UI ZERO) | [ ] |
+| 5 | [ ] | Inspector / export rail | `velorix-neon-inspector.css` (UI ZERO) | [ ] |
+| 6 | [ ] | Final polish (после sign-off 1–5) | `velorix-neon-polish.css` (UI ZERO) | [ ] |
 
 **Sign-off (2026-05-23, референс 1):** все `[ ]` в таблице выше и в фазе B — **сброшены** после замены `velorix-neon-canonical-reference.png`. Старые визуальные sign-off **недействительны**. Колонка «Код» `[x]` = черновик J-1621…1625; **не** считать закрытием этапа без новой сверки с PNG.
 
@@ -227,33 +244,33 @@
 
 ### Черновик для **D.1** (карта экранов)
 
-- [x] **Обработка** (эталон) — [`velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png) (реф. 1)
-- [x] Загрузки — [`velorix-neon-reference-downloads.png`](reference/velorix-neon-reference-downloads.png) (реф. 2)
-- [x] История — [`velorix-neon-reference-history.png`](reference/velorix-neon-reference-history.png) (реф. 3)
-- [x] Планировщик — [`velorix-neon-reference-planner.png`](reference/velorix-neon-reference-planner.png) (реф. 4)
-- [x] База знаний / Справка — [`velorix-neon-reference-knowledge.png`](reference/velorix-neon-reference-knowledge.png) (реф. 5)
-- [x] Настройки — [`velorix-neon-reference-settings.png`](reference/velorix-neon-reference-settings.png) (реф. 6)
-- [x] Сценарии — [`velorix-neon-reference-scenarios.png`](reference/velorix-neon-reference-scenarios.png) (реф. 7)
-- [x] Инспектор файлов — [`velorix-neon-reference-inspector.png`](reference/velorix-neon-reference-inspector.png) (реф. 8)
-- [x] Терминал — [`velorix-neon-reference-terminal.png`](reference/velorix-neon-reference-terminal.png) (реф. 9)
-- [x] Инструменты — [`velorix-neon-reference-tools.png`](reference/velorix-neon-reference-tools.png) (реф. 10)
-- [x] О программе — [`velorix-neon-reference-about.png`](reference/velorix-neon-reference-about.png) (реф. 11)
-- [x] Обслуживание файлов — [`velorix-neon-reference-file-maintenance.png`](reference/velorix-neon-reference-file-maintenance.png) (реф. 12)
-- [x] Конвертация изображений — [`velorix-neon-reference-image-conversion.png`](reference/velorix-neon-reference-image-conversion.png) (реф. 13)
-- [x] Генератор шума/тишины — [`velorix-neon-reference-noise-generator.png`](reference/velorix-neon-reference-noise-generator.png) (реф. 14)
-- [x] Слайдшоу — [`velorix-neon-reference-slideshow.png`](reference/velorix-neon-reference-slideshow.png) (реф. 15)
-- [x] Конструктор сценариев — [`velorix-neon-reference-scenario-builder.png`](reference/velorix-neon-reference-scenario-builder.png) (реф. 16)
-- [x] Внешний script-filter — [`velorix-neon-reference-external-script-filter.png`](reference/velorix-neon-reference-external-script-filter.png) (реф. 17)
-- [x] Имя пресета экспорта — [`velorix-neon-reference-export-preset-name.png`](reference/velorix-neon-reference-export-preset-name.png) (реф. 18)
-- [x] Пути к движкам — [`velorix-neon-reference-engine-paths.png`](reference/velorix-neon-reference-engine-paths.png) (реф. 19)
-- [x] Первый запуск / движки — [`velorix-neon-reference-first-run-engines.png`](reference/velorix-neon-reference-first-run-engines.png) (реф. 20)
-- [x] Закрыть Velorix? — [`velorix-neon-reference-quit-confirm.png`](reference/velorix-neon-reference-quit-confirm.png) (реф. 21)
-- [x] Ошибка FFmpeg — [`velorix-neon-reference-ffmpeg-error-dialog.png`](reference/velorix-neon-reference-ffmpeg-error-dialog.png) (реф. 22)
-- [x] Критический сбой приложения — [`velorix-neon-reference-critical-crash.png`](reference/velorix-neon-reference-critical-crash.png) (реф. 23)
-- [x] Бенчмарк кодеров — [`velorix-neon-reference-encoder-benchmark.png`](reference/velorix-neon-reference-encoder-benchmark.png) (реф. 24)
-- [x] Плагины — [`velorix-neon-reference-plugins.png`](reference/velorix-neon-reference-plugins.png) (реф. 25)
-- [x] UI State Showcase — [`velorix-neon-reference-ui-state-showcase.png`](reference/velorix-neon-reference-ui-state-showcase.png) (реф. 26)
-- [x] UI Components / States — [`velorix-neon-reference-ui-components.png`](reference/velorix-neon-reference-ui-components.png) (реф. 27)
+- [ ] **Обработка** (эталон) — [`velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png) (реф. 1)
+- [ ] Загрузки — [`velorix-neon-reference-downloads.png`](reference/velorix-neon-reference-downloads.png) (реф. 2)
+- [ ] История — [`velorix-neon-reference-history.png`](reference/velorix-neon-reference-history.png) (реф. 3)
+- [ ] Планировщик — [`velorix-neon-reference-planner.png`](reference/velorix-neon-reference-planner.png) (реф. 4)
+- [ ] База знаний / Справка — [`velorix-neon-reference-knowledge.png`](reference/velorix-neon-reference-knowledge.png) (реф. 5)
+- [ ] Настройки — [`velorix-neon-reference-settings.png`](reference/velorix-neon-reference-settings.png) (реф. 6)
+- [ ] Сценарии — [`velorix-neon-reference-scenarios.png`](reference/velorix-neon-reference-scenarios.png) (реф. 7)
+- [ ] Инспектор файлов — [`velorix-neon-reference-inspector.png`](reference/velorix-neon-reference-inspector.png) (реф. 8)
+- [ ] Терминал — [`velorix-neon-reference-terminal.png`](reference/velorix-neon-reference-terminal.png) (реф. 9)
+- [ ] Инструменты — [`velorix-neon-reference-tools.png`](reference/velorix-neon-reference-tools.png) (реф. 10)
+- [ ] О программе — [`velorix-neon-reference-about.png`](reference/velorix-neon-reference-about.png) (реф. 11)
+- [ ] Обслуживание файлов — [`velorix-neon-reference-file-maintenance.png`](reference/velorix-neon-reference-file-maintenance.png) (реф. 12)
+- [ ] Конвертация изображений — [`velorix-neon-reference-image-conversion.png`](reference/velorix-neon-reference-image-conversion.png) (реф. 13)
+- [ ] Генератор шума/тишины — [`velorix-neon-reference-noise-generator.png`](reference/velorix-neon-reference-noise-generator.png) (реф. 14)
+- [ ] Слайдшоу — [`velorix-neon-reference-slideshow.png`](reference/velorix-neon-reference-slideshow.png) (реф. 15)
+- [ ] Конструктор сценариев — [`velorix-neon-reference-scenario-builder.png`](reference/velorix-neon-reference-scenario-builder.png) (реф. 16)
+- [ ] Внешний script-filter — [`velorix-neon-reference-external-script-filter.png`](reference/velorix-neon-reference-external-script-filter.png) (реф. 17)
+- [ ] Имя пресета экспорта — [`velorix-neon-reference-export-preset-name.png`](reference/velorix-neon-reference-export-preset-name.png) (реф. 18)
+- [ ] Пути к движкам — [`velorix-neon-reference-engine-paths.png`](reference/velorix-neon-reference-engine-paths.png) (реф. 19)
+- [ ] Первый запуск / движки — [`velorix-neon-reference-first-run-engines.png`](reference/velorix-neon-reference-first-run-engines.png) (реф. 20)
+- [ ] Закрыть Velorix? — [`velorix-neon-reference-quit-confirm.png`](reference/velorix-neon-reference-quit-confirm.png) (реф. 21)
+- [ ] Ошибка FFmpeg — [`velorix-neon-reference-ffmpeg-error-dialog.png`](reference/velorix-neon-reference-ffmpeg-error-dialog.png) (реф. 22)
+- [ ] Критический сбой приложения — [`velorix-neon-reference-critical-crash.png`](reference/velorix-neon-reference-critical-crash.png) (реф. 23)
+- [ ] Бенчмарк кодеров — [`velorix-neon-reference-encoder-benchmark.png`](reference/velorix-neon-reference-encoder-benchmark.png) (реф. 24)
+- [ ] Плагины — [`velorix-neon-reference-plugins.png`](reference/velorix-neon-reference-plugins.png) (реф. 25)
+- [ ] UI State Showcase — [`velorix-neon-reference-ui-state-showcase.png`](reference/velorix-neon-reference-ui-state-showcase.png) (реф. 26)
+- [ ] UI Components / States — [`velorix-neon-reference-ui-components.png`](reference/velorix-neon-reference-ui-components.png) (реф. 27)
 - [ ] Диагностика — отдельного PNG всё ещё нет
 - [ ] Конвертация видео (полный экран без модалки) — на реф. 18 только как фон
 - [ ] Timeline: UI NLE vs модель данных (§ реф. 1)
@@ -618,7 +635,7 @@ The final visual system must feel immersive, premium and cinematic.
 
 **Критерии закрытия этапа:**
 
-- [x] Текст промпта в доке (дословно).
+- [ ] Текст промпта в доке (дословно).
 - [ ] Код по промпту + sign-off vs PNG (старый J-1617 — только ориентир, не «закрыто»).
 - [ ] `npm run check:quiet` в итерации доработки.
 - [ ] Явная команда владельца «делай этап 1» перед правками кода.
@@ -671,7 +688,7 @@ Match the reference image closely.
 
 **Критерии закрытия этапа:**
 
-- [x] Текст промпта в доке (дословно).
+- [ ] Текст промпта в доке (дословно).
 - [ ] Код по промпту + sign-off vs PNG (старый J-1621 — только ориентир).
 - [ ] `npm run check:quiet` в итерации доработки.
 - [ ] Явная команда владельца «делай этап 2» перед правками кода.
@@ -723,7 +740,7 @@ The result should feel atmospheric and futuristic.
 
 **Критерии закрытия этапа:**
 
-- [x] Текст промпта в доке (дословно).
+- [ ] Текст промпта в доке (дословно).
 - [ ] Код по промпту + sign-off vs PNG (старый J-1622 — только ориентир).
 - [ ] `npm run check:quiet` в итерации доработки.
 - [ ] Явная команда владельца «делай этап 3» перед правками кода.
@@ -781,7 +798,7 @@ The timeline should feel expensive and immersive.
 
 **Критерии закрытия этапа:**
 
-- [x] Текст промпта в доке (дословно).
+- [ ] Текст промпта в доке (дословно).
 - [ ] Код по промпту + sign-off vs PNG (старый J-1623 — только ориентир).
 - [ ] `npm run check:quiet` в итерации доработки.
 - [ ] Явная команда владельца «делай этап 4» перед правками кода.
@@ -836,7 +853,7 @@ Avoid:
 
 **Критерии закрытия этапа:**
 
-- [x] Текст промпта в доке (дословно).
+- [ ] Текст промпта в доке (дословно).
 - [ ] Код по промпту + sign-off vs PNG (старый J-1624 — только ориентир).
 - [ ] `npm run check:quiet` в итерации доработки.
 - [ ] Явная команда владельца «делай этап 5» перед правками кода.
@@ -892,7 +909,7 @@ Avoid generic SaaS appearance at all costs.
 
 **Критерии закрытия этапа:**
 
-- [x] Текст промпта в доке (дословно).
+- [ ] Текст промпта в доке (дословно).
 - [ ] **Предусловие:** sign-off этапов 1–5 vs PNG (или явное «делай этап 6» с пониманием, что 1–5 ещё не sign-off).
 - [ ] Код по промпту + sign-off всего окна vs PNG (старый J-1625 — пересмотреть/пересобрать после 1–5).
 - [ ] `npm run check:quiet` в итерации доработки.
@@ -922,10 +939,10 @@ Avoid generic SaaS appearance at all costs.
 
 **Честная метка:** **[x] в журнале J-1633..1667** = маршруты/зачистка кода, **не** визуал 1:1. Активная матрица — [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md).
 
-- [~] **VA.1** sidebar routes — shell частично; layout refs 1–9 — открыто.
-- [~] **VA.2** Tools hub refs 10–20 — не full-screen 1:1.
-- [~] **VA.3** System refs 21–25 — диалоги, не 1:1 PNG.
-- [~] **VA.4** Showcase 26–27 — эталон компонентов, не весь app.
+- [ ] **VA.1** sidebar routes — shell частично; layout refs 1–9 — открыто.
+- [ ] **VA.2** Tools hub refs 10–20 — не full-screen 1:1.
+- [ ] **VA.3** System refs 21–25 — диалоги, не 1:1 PNG.
+- [ ] **VA.4** Showcase 26–27 — эталон компонентов, не весь app.
 - [x] **VA.5** Legacy cleanup (pop-out/theme) — снято.
 
 ### Cleanup buckets (первый проход)
@@ -983,11 +1000,11 @@ src/renderer/src/assets/themes/
 
 | Пункт | Этап | Файл | Код | Sign-off |
 |-------|------|------|-----|----------|
-| B.1–B.2 | 2 | `velorix-neon-chrome.css` | [x] | [ ] |
-| B.P | 3 | `velorix-neon-preview.css` | [x] | [ ] |
-| B.8 | 4 | `velorix-neon-timeline.css` | [x] | [ ] |
-| B.I, B.5–B.6 | 5 | `velorix-neon-inspector.css` | [x] | [ ] |
-| B.3–B.4, B.7, B.9–B.12, B.F | 6 | `velorix-neon-polish.css` | [x] | [ ] |
+| B.1–B.2 | 2 | `velorix-neon-chrome.css` | [ ] | [ ] |
+| B.P | 3 | `velorix-neon-preview.css` | [ ] | [ ] |
+| B.8 | 4 | `velorix-neon-timeline.css` | [ ] | [ ] |
+| B.I, B.5–B.6 | 5 | `velorix-neon-inspector.css` | [ ] | [ ] |
+| B.3–B.4, B.7, B.9–B.12, B.F | 6 | `velorix-neon-polish.css` | [ ] | [ ] |
 
 **Фаза B не «закрыта»** — закрыт только **кодовый срез** J-1621…1625; визуальный канон — колонка Sign-off и фаза C.
 

@@ -31,7 +31,7 @@
   "aboutTooltipMaintenanceCleanPreview": "Clear preview cache only. Two-step flow: hint first, then confirm.",
   "aboutTooltipMaintenanceSummary": "Show temporary data size per category (bytes and file count) in the status line — no deletion yet.",
   "aboutTooltipSupportZip": "Build a diagnostics ZIP to a path you choose: versions, settings, paths. Handy for support or your own backup.",
-  "aboutSupportZipDiagnosticsSectionsHint": "diagnostics.txt: ownerHardwareChecklist, releaseSmoke, terminalHints (§8, 22 Help articles). releaseSmoke includes §21 Playwright (`check:packaged-gui-e2e-playwright-deferred`).",
+  "aboutSupportZipDiagnosticsSectionsHint": "diagnostics.txt: ownerHardwareChecklist, releaseSmoke, terminalHints (§8, 22 Help articles). releaseSmoke — §21 Playwright suspended (UI ZERO rebuild).",
   "mediaUtilitiesCancelled": "Cancelled.",
   "mediaUtilitiesFileSelected": "Selected: {name}",
   "mediaUtilitiesHashes": "File hashes",

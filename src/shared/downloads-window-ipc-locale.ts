@@ -46,7 +46,6 @@ export type DownloadsWindowIpcStrings = {
   rowNotFound: string
   cannotRetryWhileRunning: string
   failedToResetRow: string
-  mergeUiPanelsNotConnected: string
   mainWindowNotFound: string
   /** Queue runner */
   downloadAlreadyRunning: string
@@ -113,7 +112,6 @@ export const DOWNLOADS_WINDOW_IPC_STRINGS_RU: DownloadsWindowIpcStrings = {
   rowNotFound: 'Строка не найдена',
   cannotRetryWhileRunning: 'Нельзя повторить строку, пока она выполняется.',
   failedToResetRow: 'Не удалось сбросить строку',
-  mergeUiPanelsNotConnected: 'Сохранение раскладки панелей не подключено.',
   mainWindowNotFound: 'Главное окно редактора не найдено.',
   downloadAlreadyRunning: 'Уже выполняется загрузка. Отмените текущую или дождитесь окончания.',
   downloadOpenEditorNotReady:
@@ -173,7 +171,6 @@ export const DOWNLOADS_WINDOW_IPC_STRINGS_EN: DownloadsWindowIpcStrings = {
   rowNotFound: 'Row not found',
   cannotRetryWhileRunning: 'Cannot retry a row while it is running.',
   failedToResetRow: 'Failed to reset the row',
-  mergeUiPanelsNotConnected: 'Panel layout persistence is not connected.',
   mainWindowNotFound: 'Main editor window not found.',
   downloadAlreadyRunning: 'A download is already running. Cancel it or wait until it finishes.',
   downloadOpenEditorNotReady:
