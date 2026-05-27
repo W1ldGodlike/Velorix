@@ -2,6 +2,7 @@ import type { JSX } from 'react'
 
 import { useAppShellStore } from '../stores/app-shell-store'
 import { WORKSPACE_TAB_LABELS, WORKSPACE_TABS, type WorkspaceTab } from './workspace-tab'
+import { SystemModals } from './SystemModals'
 import { WorkspaceOutlet, WorkspaceRailOutlet } from './WorkspaceOutlet'
 
 export function NeonShell(): JSX.Element {
@@ -9,6 +10,7 @@ export function NeonShell(): JSX.Element {
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const railOpen = useAppShellStore((s) => s.railOpen)
   const setRailOpen = useAppShellStore((s) => s.setRailOpen)
+  const openModal = useAppShellStore((s) => s.openModal)
 
   const shellClass = railOpen ? 'neon-shell' : 'neon-shell neon-shell--no-rail'
 
@@ -27,12 +29,25 @@ export function NeonShell(): JSX.Element {
               />
             ))}
           </nav>
-          <div className="neon-shell__sidebar-metrics" aria-hidden>
-            <span className="neon-shell__metric">GPU 48%</span>
-            <span className="neon-shell__metric">CPU 68%</span>
+          <div className="neon-shell__sidebar-panel vn-surface-glass">
+            <p className="neon-shell__panel-title">GPU</p>
+            <p className="neon-shell__panel-line">NVIDIA RTX 4090 · 48%</p>
+            <p className="neon-shell__panel-sub">18.7 / 24.0 GB · 56°C</p>
+            <div className="neon-shell__sparkline" aria-hidden>
+              <span style={{ height: '45%' }} />
+              <span style={{ height: '70%' }} />
+              <span style={{ height: '55%' }} />
+              <span style={{ height: '90%' }} />
+            </div>
+            <div className="neon-shell__rings" aria-hidden>
+              <span className="neon-shell__ring" data-label="CPU 68%" />
+              <span className="neon-shell__ring" data-label="RAM 75%" />
+              <span className="neon-shell__ring" data-label="Disk 42%" />
+            </div>
+            <p className="neon-shell__panel-sub">↓ 12.6 MB/s · ↑ 2.4 MB/s</p>
           </div>
         </aside>
-        <main className="neon-shell__center">
+        <main className="neon-shell__center" key={workspaceTab}>
           <WorkspaceOutlet />
         </main>
         <div className="neon-shell__rail">
@@ -53,8 +68,16 @@ export function NeonShell(): JSX.Element {
           <span className="app-ui-showcase-status-pill app-ui-showcase-status-pill--ready">
             Готово
           </span>
+          <button
+            type="button"
+            className="app-btn app-btn-secondary neon-shell__about-btn"
+            onClick={() => openModal('about')}
+          >
+            О программе
+          </button>
         </footer>
       </div>
+      <SystemModals />
     </div>
   )
 }

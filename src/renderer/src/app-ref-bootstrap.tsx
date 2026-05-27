@@ -9,16 +9,16 @@ type RefBootstrapRoute = 'ref27' | 'ref26' | 'ref1'
 
 function readRoute(): RefBootstrapRoute {
   if (typeof window === 'undefined') {
-    return 'ref27'
-  }
-  const hash = window.location.hash
-  if (hash === '#ref26') {
-    return 'ref26'
-  }
-  if (hash === '#ref1' || hash === '#shell') {
     return 'ref1'
   }
-  return 'ref27'
+  const hash = window.location.hash
+  if (hash === '#ref27' || hash === '#components') {
+    return 'ref27'
+  }
+  if (hash === '#ref26' || hash === '#states') {
+    return 'ref26'
+  }
+  return 'ref1'
 }
 
 function RefBootstrapNav(props: { route: RefBootstrapRoute }): JSX.Element {

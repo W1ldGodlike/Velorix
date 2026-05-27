@@ -1,0 +1,59 @@
+/* neon.5 — motion v1 (shell + shared controls; respects reduced-motion) */
+
+@media (prefers-reduced-motion: no-preference) {
+  .neon-shell__nav-btn,
+  .app-btn,
+  .app-pill-switch,
+  .app-ui-showcase-icon-btn,
+  .downloads-screen__filter,
+  .downloads-card,
+  .history-event,
+  .planner-grid__cell,
+  .portal-card,
+  .inspector-rail__chapter,
+  .tools-card {
+    transition: var(--vn-transition-surface);
+  }
+
+  .neon-shell__nav-btn:hover:not(.is-active) {
+    color: var(--fa-text-primary);
+    background: color-mix(in srgb, var(--fa-accent) 10%, transparent);
+  }
+
+  .neon-shell__nav-btn:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  .app-btn:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  .downloads-card:hover {
+    border-color: color-mix(in srgb, var(--fa-accent) 28%, var(--fa-border-subtle));
+  }
+
+  .app-ui-showcase-progress-fill {
+    transition: width var(--vn-duration-normal) var(--vn-ease-out-cinematic);
+  }
+
+  .neon-shell__center > * {
+    animation: neon-workspace-in var(--vn-duration-normal) var(--vn-ease-out-cinematic);
+  }
+}
+
+@keyframes neon-workspace-in {
+  from {
+    opacity: 0.88;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-shell__center > * {
+    animation: none;
+  }
+}

@@ -19,7 +19,7 @@
 | Слой | Факт |
 | ---- | ---- |
 | **Окно** | Одно `BrowserWindow`; тёмный фон; **нет** продуктового React UI. |
-| **Renderer** | `AppRefBootstrap`: `#ref27`/`#` kit, `#ref26` states, `#ref1` → `NeonShell` (D.2 bootstrap). |
+| **Renderer** | `npm run dev` → `#ref1` NeonShell (default); `#ref27` / `#ref26` kit; sidebar GPU panel. |
 | **Main/preload** | IPC, ffmpeg, yt-dlp, workflow — **сохранены**. |
 | **Refs 1–27** | PNG в `docs/reference/`; **ни один** экран не сверен 1:1 с кодом. |
 
@@ -47,7 +47,7 @@
 | ------- | -- | ----------- |
 | Токены / тема в renderer | **~25** | `velorix-neon/*` + `ref27-showcase*.css`; kit ~28 карточек; sign-off PNG — нет. |
 | Shell layout (Phase D.2) | **~20** | `NeonShell` + `#ref1`; sign-off ref.1 PNG — нет. |
-| Визуал экранов refs **1–9** | **0** | Только PNG. |
+| Визуал экранов refs **1–9** | **~28** | ref.1–10 bootstrap в `#ref1` shell; sign-off PNG — нет. |
 | Модалки / утилиты refs **10–25** | **0** | Только PNG. |
 | Showcase refs **26–27** | **0** | Только PNG. |
 | Функционал «вишек» с PNG | **0** | Backend отдельно; UI не сверен. |
@@ -73,9 +73,9 @@
 
 - [ ] **neon.1** **ref.27** — примитивы 1:1 `velorix-neon-reference-ui-components.png`; tokens CSS в renderer.
 - [ ] **neon.2** **ref.26** — состояния 1:1 showcase PNG.
-- [ ] **neon.3** **ref.1** — Обработка: shell (sidebar + center + right rail) + layout 1:1 canonical PNG.
-- [ ] **neon.4** **refs 2–4** — Загрузки / История / Планировщик — full-screen shell + layout.
-- [ ] **neon.5** Motion-pass v1 — hover/focus/transition на shell + ref.1 (после layout).
+- [~] **neon.3** **ref.1** — bootstrap shell+processing в `#ref1`; sign-off canonical PNG — нет.
+- [~] **neon.4** **refs 2–4** — bootstrap layouts в shell; sign-off PNG — нет.
+- [~] **neon.5** Motion-pass v1 — `neon-motion-v1.css`; polish hover/glow — нет.
 
 ---
 
@@ -91,7 +91,7 @@
 
 - [ ] **X.1** Brand: horizontal/stacked logo по зонам (sidebar, about, splash).
 - [ ] **X.2** Иконка app ↔ `resources/icon.png` ↔ ref app-icon.
-- [ ] **X.3** Единый **dialog** / **modal** chrome (refs 11, 18–22) vs отдельные стили.
+- [~] **X.3** Единый modal chrome — `SystemModals`+`neon-modal.css` (about/quit/ffmpeg/preset); остальные refs 11–25 — нет.
 - [ ] **X.4** **Motion system:** duration/easing tokens; hover glow; route transition; reduced-motion.
 - [ ] **X.5** GPU/CPU/RAM виджеты в sidebar как на PNG (если в scope).
 - [ ] **X.6** Ctrl+K command palette где на mockup (knowledge, scenarios, …).

@@ -1,6 +1,15 @@
 import type { JSX } from 'react'
 
-import { RoutePlaceholderScreen } from '../features/placeholder/RoutePlaceholderScreen'
+import { DownloadsRail, DownloadsScreen } from '../features/downloads/DownloadsScreen'
+import { HistoryRail, HistoryScreen } from '../features/history/HistoryScreen'
+import { KnowledgeRail, KnowledgeScreen } from '../features/knowledge/KnowledgeScreen'
+import { PlannerRail, PlannerScreen } from '../features/planner/PlannerScreen'
+import { ScenariosRail, ScenariosScreen } from '../features/scenarios/ScenariosScreen'
+import { InspectorRail, InspectorScreen } from '../features/inspector/InspectorScreen'
+import { SettingsRail, SettingsScreen } from '../features/settings/SettingsScreen'
+import { TerminalRail, TerminalScreen } from '../features/terminal/TerminalScreen'
+import { HelpRail, HelpScreen } from '../features/help/HelpScreen'
+import { ToolsRail, ToolsHubScreen } from '../features/tools/ToolsHubScreen'
 import { ProcessingRail, ProcessingScreen } from '../features/processing/ProcessingScreen'
 import { useAppShellStore } from '../stores/app-shell-store'
 
@@ -10,23 +19,25 @@ export function WorkspaceOutlet(): JSX.Element {
     case 'processing':
       return <ProcessingScreen />
     case 'downloads':
-      return <RoutePlaceholderScreen tab="downloads" refLabel="ref.2" />
+      return <DownloadsScreen />
     case 'history':
-      return <RoutePlaceholderScreen tab="history" refLabel="ref.3" />
+      return <HistoryScreen />
     case 'planner':
-      return <RoutePlaceholderScreen tab="planner" refLabel="ref.4" />
+      return <PlannerScreen />
     case 'knowledge':
-      return <RoutePlaceholderScreen tab="knowledge" refLabel="ref.5" />
+      return <KnowledgeScreen />
     case 'settings':
-      return <RoutePlaceholderScreen tab="settings" refLabel="ref.6" />
+      return <SettingsScreen />
     case 'scenarios':
-      return <RoutePlaceholderScreen tab="scenarios" refLabel="ref.7" />
+      return <ScenariosScreen />
     case 'inspector':
-      return <RoutePlaceholderScreen tab="inspector" refLabel="ref.8" />
+      return <InspectorScreen />
     case 'terminal':
-      return <RoutePlaceholderScreen tab="terminal" refLabel="ref.9" />
+      return <TerminalScreen />
     case 'tools':
-      return <RoutePlaceholderScreen tab="tools" refLabel="ref.10" />
+      return <ToolsHubScreen />
+    case 'help':
+      return <HelpScreen />
     default:
       return <ProcessingScreen />
   }
@@ -41,9 +52,35 @@ export function WorkspaceRailOutlet(): JSX.Element | null {
   if (tab === 'processing') {
     return <ProcessingRail />
   }
-  return (
-    <div className="neon-route-placeholder vn-surface-glass">
-      <p className="neon-route-placeholder__hint">Правый rail — по PNG для вкладки «{tab}».</p>
-    </div>
-  )
+  if (tab === 'downloads') {
+    return <DownloadsRail />
+  }
+  if (tab === 'history') {
+    return <HistoryRail />
+  }
+  if (tab === 'planner') {
+    return <PlannerRail />
+  }
+  if (tab === 'knowledge') {
+    return <KnowledgeRail />
+  }
+  if (tab === 'settings') {
+    return <SettingsRail />
+  }
+  if (tab === 'scenarios') {
+    return <ScenariosRail />
+  }
+  if (tab === 'inspector') {
+    return <InspectorRail />
+  }
+  if (tab === 'terminal') {
+    return <TerminalRail />
+  }
+  if (tab === 'tools') {
+    return <ToolsRail />
+  }
+  if (tab === 'help') {
+    return <HelpRail />
+  }
+  return null
 }

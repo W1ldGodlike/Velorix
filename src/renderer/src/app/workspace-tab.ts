@@ -11,6 +11,7 @@ export type WorkspaceTab =
   | 'inspector'
   | 'terminal'
   | 'tools'
+  | 'help'
 
 export const WORKSPACE_TABS: WorkspaceTab[] = [
   'processing',
@@ -22,7 +23,8 @@ export const WORKSPACE_TABS: WorkspaceTab[] = [
   'terminal',
   'tools',
   'knowledge',
-  'settings'
+  'settings',
+  'help'
 ]
 
 export const WORKSPACE_TAB_LABELS: Record<WorkspaceTab, string> = {
@@ -35,5 +37,6 @@ export const WORKSPACE_TAB_LABELS: Record<WorkspaceTab, string> = {
   terminal: 'Терминал',
   tools: 'Инструменты',
   knowledge: 'База знаний',
-  settings: 'Настройки'
+  settings: 'Настройки',
+  help: 'Справка'
 }

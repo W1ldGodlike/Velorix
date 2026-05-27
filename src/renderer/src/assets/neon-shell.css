@@ -90,11 +90,73 @@
   box-shadow: 0 0 10px color-mix(in srgb, var(--fa-accent) 45%, transparent);
 }
 
-.neon-shell__sidebar-metrics {
+.neon-shell__sidebar-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--fa-space-1);
+  gap: var(--fa-space-2);
+  margin-top: auto;
+  padding: var(--fa-space-3);
+  border-radius: var(--fa-radius-control);
   font-size: var(--fa-font-size-xs);
+  color: var(--fa-text-secondary);
+}
+
+.neon-shell__panel-title {
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fa-text-muted);
+}
+
+.neon-shell__panel-line {
+  margin: 0;
+  color: var(--fa-text-primary);
+  font-weight: 600;
+}
+
+.neon-shell__panel-sub {
+  margin: 0;
+  color: var(--fa-text-muted);
+}
+
+.neon-shell__sparkline {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 1.5rem;
+}
+
+.neon-shell__sparkline span {
+  flex: 1;
+  min-width: 3px;
+  border-radius: var(--fa-radius-2xs);
+  background: var(--fa-accent);
+}
+
+.neon-shell__rings {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--fa-space-2);
+}
+
+.neon-shell__ring {
+  position: relative;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: var(--fa-radius-circle);
+  background: conic-gradient(var(--fa-accent) 0 68%, var(--fa-surface) 68% 100%);
+  mask: radial-gradient(farthest-side, transparent 58%, #000 60%);
+}
+
+.neon-shell__ring::after {
+  content: attr(data-label);
+  position: absolute;
+  inset: auto 0 -1.1rem;
+  left: 50%;
+  width: max-content;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
   color: var(--fa-text-muted);
 }
 
@@ -122,6 +184,10 @@
 
 .neon-shell__rail-toggle {
   align-self: flex-start;
+}
+
+.neon-shell__about-btn {
+  margin-left: auto;
 }
 
 .neon-shell__status {

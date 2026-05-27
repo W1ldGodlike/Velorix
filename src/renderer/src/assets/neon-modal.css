@@ -1,0 +1,61 @@
+/* System modals — X.3 bootstrap (refs 11, 18–25) */
+
+.app-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--fa-space-4);
+  background: var(--fa-modal-backdrop);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.app-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-3);
+  width: min(100%, 26rem);
+  max-height: min(90vh, 32rem);
+  padding: var(--fa-space-4);
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: var(--fa-radius-preview);
+  background: color-mix(in srgb, var(--fa-bg-elevated) 94%, transparent);
+  box-shadow: var(--fa-elevation-lg);
+}
+
+.app-modal__title {
+  margin: 0;
+  font-size: var(--fa-font-size-lg);
+}
+
+.app-modal__subtitle {
+  margin: 0;
+  font-weight: 700;
+}
+
+.app-modal__body {
+  margin: 0;
+  color: var(--fa-text-secondary);
+  font-size: var(--fa-font-size-body-sm);
+  line-height: var(--fa-line-height-ui);
+}
+
+.app-modal__body--error {
+  color: var(--fa-danger);
+}
+
+.app-modal__hint {
+  margin: 0;
+  color: var(--fa-text-muted);
+  font-size: var(--fa-font-size-caption);
+}
+
+.app-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--fa-space-2);
+  margin-top: var(--fa-space-2);
+}
