@@ -282,7 +282,7 @@ export function AppWorkspaceMain({
           role="tabpanel"
           aria-labelledby={workspaceTabId('history')}
           aria-describedby={workspaceTabDescId('history')}
-          className="app-main"
+          className="app-main app-main-surface"
         >
           <ProcessingHistoryPanelConnected
             open
@@ -302,7 +302,7 @@ export function AppWorkspaceMain({
           role="tabpanel"
           aria-labelledby={workspaceTabId('inspector')}
           aria-describedby={workspaceTabDescId('inspector')}
-          className="app-main"
+          className="app-main app-main-surface"
         >
           <InspectorWorkspaceConnected
             onOpenKnowledgeArticle={(slug) => {

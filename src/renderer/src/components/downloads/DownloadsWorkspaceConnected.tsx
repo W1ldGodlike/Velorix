@@ -129,7 +129,7 @@ export function DownloadsWorkspaceConnected(): JSX.Element {
       aria-labelledby="workspace-tab-downloads"
       aria-describedby="downloads-page-hint"
       aria-busy={downloadsWorkspaceAriaBusy}
-      className="app-main app-downloads-workspace"
+      className="app-main app-main-surface app-downloads-workspace"
     >
       <DownloadsWorkspaceMain
         downloadsOptionsBusy={downloadsWorkspace.downloadsOptionsBusy}

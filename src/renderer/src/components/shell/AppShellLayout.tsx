@@ -15,7 +15,6 @@ import { AppOverlayDialogs } from './AppOverlayDialogs'
 import { AppStatusbar } from './AppStatusbar'
 import { AppWorkspaceMain } from './AppWorkspaceMain'
 import { AppWorkspaceSidebar } from './AppWorkspaceSidebar'
-import { AppWorkspaceTopbar } from './AppWorkspaceTopbar'
 import { ExportPresetNameDialog } from './ExportPresetNameDialog'
 
 export type AppShellLayoutProps = AppShellLayoutChromeProps & {
@@ -41,7 +40,6 @@ export function AppShellLayout({
       aria-label={uiText('appMainShellAria')}
       aria-busy={appChromeBusy}
     >
-      {topbar.workspaceTab !== 'processing' ? <AppWorkspaceTopbar {...topbar} /> : null}
       <div className="app-shell-row">
         <AppWorkspaceSidebar
           appChromeBusy={topbar.appChromeBusy}
