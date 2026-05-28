@@ -1769,3 +1769,8 @@
 - [J-1743] 2026-05-28 05:01:21 [Assistant]: ref.1 seek bar trim highlight; Ctrl+K Trim In/Out на playhead; history «Повторить сценарий»; `buildSeekTrimTrackBackground`+tests. `npm run check:quiet`.
 - [J-1744] 2026-05-28 05:08:43 [Assistant]: neon.5 motion polish ref.1 — transport/seek/trim state-classes (`--playing`, `--trim-active`) + reduced-motion-safe transitions/glow и `aria-valuetext` для seek. `npm run check:quiet`.
 - [J-1745] 2026-05-28 05:17:13 [Assistant]: neon.3 ref.1 timeline zoom 1×–4× (scroll, ruler ticks); пакет J-1741..1745 (trim seek/history, motion, Ctrl+K trim, downloads). `npm run check:quiet`, `git commit`.
+- [J-1746] 2026-05-28 05:25:33 [Assistant]: neon.3 ref.1 zoom UX — hotkeys `-`/`+`/`0` на V1 + кнопки `−/1x/+` возле zoom slider; helper `timelineKeyboardZoomLevel` + tests. `npm run check:quiet`.
+- [J-1747] 2026-05-28 05:35:46 [Assistant]: X.6 Ctrl+K zoom-команды ref.1 (`timeline-zoom-out/reset/in`) + store `timelineZoom` как единый state для таймлайна/палитры; tests обновлены. `npm run check:quiet`.
+- [J-1748] 2026-05-28 05:41:34 [Assistant]: neon.3 UX — глобальные hotkeys `-`/`+`/`0` для zoom в центре «Обработка» (без фокуса на V1, кроме input/editable). `npm run check:quiet`.
+- [J-1749] 2026-05-28 05:47:23 [Assistant]: neon.3 discoverability — подсказка `Hotkeys: - / + / 0` рядом с zoom-контролом ref.1. `npm run check:quiet`.
+- [J-1750] 2026-05-28 05:51:57 [Assistant]: X.6 polish Ctrl+K — у zoom-команд добавлены hotkey-хинты (`-`, `0`, `+`); пакет J-1746..1750 (zoom UX, palette, global hotkeys, discoverability). `npm run check:quiet`, `git commit`, `git push`.

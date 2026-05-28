@@ -369,6 +369,19 @@
   max-width: 12rem;
 }
 
+.processing-screen__timeline-zoom-btn {
+  min-width: 2rem;
+  padding: 2px var(--fa-space-2);
+  font-size: var(--fa-font-size-xs);
+}
+
+.processing-screen__timeline-zoom-hint {
+  margin-left: auto;
+  font-size: var(--fa-font-size-xs);
+  color: var(--fa-text-muted);
+  white-space: nowrap;
+}
+
 .processing-screen__ruler {
   display: grid;
   grid-template-columns: 2.25rem minmax(0, 1fr);

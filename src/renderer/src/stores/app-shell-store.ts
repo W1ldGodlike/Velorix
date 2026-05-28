@@ -9,6 +9,10 @@ import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import type { ProcessErrorDialogPayload } from '../../../shared/process-error-dialog-contract'
 import type { QuitConfirmRequestPayload } from '../../../shared/quit-confirm-contract'
 import type { ShellMediaSource } from './shell-media-source'
+import {
+  clampTimelineZoom,
+  TIMELINE_ZOOM_MIN
+} from '../features/processing/processing-timeline-model'
 
 export type SettingsSectionId = 'app' | 'processing' | 'cache'
 
@@ -26,6 +30,7 @@ type AppShellState = {
   previewSeekSec: number | null
   previewPlayheadSec: number | null
   previewTogglePlayNonce: number
+  timelineZoom: number
   pendingKnowledgeSlug: string | null
   quitConfirmRequest: QuitConfirmRequestPayload | null
   ffmpegErrorMessage: string | null
@@ -47,6 +52,7 @@ type AppShellState = {
   ackPreviewSeek: () => void
   setPreviewPlayheadSec: (sec: number | null) => void
   requestPreviewTogglePlay: () => void
+  setTimelineZoom: (zoom: number) => void
   setPendingKnowledgeSlug: (slug: string | null) => void
   setQuitConfirmRequest: (payload: QuitConfirmRequestPayload | null) => void
   setFfmpegErrorMessage: (message: string | null) => void
@@ -75,6 +81,7 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   previewSeekSec: null,
   previewPlayheadSec: null,
   previewTogglePlayNonce: 0,
+  timelineZoom: TIMELINE_ZOOM_MIN,
   pendingKnowledgeSlug: null,
   quitConfirmRequest: null,
   ffmpegErrorMessage: null,
@@ -100,7 +107,8 @@ export const useAppShellStore = create<AppShellState>((set) => ({
         mediaSource,
         mediaProbe: samePath ? state.mediaProbe : null,
         exportTrim: samePath ? state.exportTrim : null,
-        previewPlayheadSec: mediaSource == null ? null : samePath ? state.previewPlayheadSec : null
+        previewPlayheadSec: mediaSource == null ? null : samePath ? state.previewPlayheadSec : null,
+        timelineZoom: samePath ? state.timelineZoom : TIMELINE_ZOOM_MIN
       }
     }),
   setMediaProbe: (mediaProbe) => set({ mediaProbe }),
@@ -110,6 +118,7 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   setPreviewPlayheadSec: (previewPlayheadSec) => set({ previewPlayheadSec }),
   requestPreviewTogglePlay: () =>
     set((state) => ({ previewTogglePlayNonce: state.previewTogglePlayNonce + 1 })),
+  setTimelineZoom: (timelineZoom) => set({ timelineZoom: clampTimelineZoom(timelineZoom) }),
   setPendingKnowledgeSlug: (pendingKnowledgeSlug) => set({ pendingKnowledgeSlug }),
   setQuitConfirmRequest: (quitConfirmRequest) => set({ quitConfirmRequest }),
   setFfmpegErrorMessage: (ffmpegErrorMessage) => set({ ffmpegErrorMessage }),

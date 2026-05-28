@@ -24,6 +24,7 @@ import {
   TIMELINE_ZOOM_MAX,
   TIMELINE_ZOOM_MIN,
   timelineKeyboardSeekSec,
+  timelineKeyboardZoomLevel,
   timelineRulerTickCountForZoom,
   timelineSecFromPointer
 } from './processing-timeline-model'
@@ -51,10 +52,11 @@ export function ProcessingScreen(): JSX.Element {
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
   const requestPreviewSeek = useAppShellStore((s) => s.requestPreviewSeek)
   const previewPlayheadSec = useAppShellStore((s) => s.previewPlayheadSec)
+  const timelineZoom = useAppShellStore((s) => s.timelineZoom)
+  const setTimelineZoom = useAppShellStore((s) => s.setTimelineZoom)
   const [centerTab, setCenterTab] = useState<ProcessingCenterTab>('editor')
   const [ytdlpUrl, setYtdlpUrl] = useState('')
   const [headStatus, setHeadStatus] = useState<string | null>(null)
-  const [timelineZoom, setTimelineZoom] = useState(TIMELINE_ZOOM_MIN)
 
   const timelineLanes = useMemo(
     () =>
@@ -87,6 +89,30 @@ export function ProcessingScreen(): JSX.Element {
       cancelled = true
     }
   }, [setMediaSource, setMediaProbe])
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent): void {
+      if (centerTab !== 'editor' || mediaSource == null) {
+        return
+      }
+      const target = event.target
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        (target instanceof HTMLElement && target.isContentEditable)
+      ) {
+        return
+      }
+      const nextZoom = timelineKeyboardZoomLevel(event.key, timelineZoom)
+      if (nextZoom != null) {
+        event.preventDefault()
+        setTimelineZoom(nextZoom)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [centerTab, mediaSource, setTimelineZoom, timelineZoom])
 
   async function handleOpenMedia(): Promise<void> {
     await applyOpenMediaPick({ setMediaSource, setMediaProbe })
@@ -327,6 +353,12 @@ export function ProcessingScreen(): JSX.Element {
                                   if (sec != null) {
                                     e.preventDefault()
                                     requestPreviewSeek(sec)
+                                    return
+                                  }
+                                  const nextZoom = timelineKeyboardZoomLevel(e.key, timelineZoom)
+                                  if (nextZoom != null) {
+                                    e.preventDefault()
+                                    setTimelineZoom(nextZoom)
                                   }
                                 }
                               : undefined
@@ -363,6 +395,15 @@ export function ProcessingScreen(): JSX.Element {
                 aria-label="Масштаб таймлайна"
               >
                 <span className="processing-screen__timeline-zoom-label">Zoom</span>
+                <button
+                  type="button"
+                  className="app-btn app-btn-secondary processing-screen__timeline-zoom-btn"
+                  onClick={() => setTimelineZoom(timelineZoom - 1)}
+                  disabled={mediaSource == null || timelineZoom <= TIMELINE_ZOOM_MIN}
+                  aria-label="Уменьшить масштаб таймлайна"
+                >
+                  −
+                </button>
                 <input
                   type="range"
                   className="app-ui-showcase-range vn-progress-neon processing-screen__timeline-zoom-range"
@@ -374,7 +415,28 @@ export function ProcessingScreen(): JSX.Element {
                   disabled={mediaSource == null}
                   onChange={(e) => setTimelineZoom(clampTimelineZoom(Number(e.target.value)))}
                 />
+                <button
+                  type="button"
+                  className="app-btn app-btn-secondary processing-screen__timeline-zoom-btn"
+                  onClick={() => setTimelineZoom(TIMELINE_ZOOM_MIN)}
+                  disabled={mediaSource == null || timelineZoom === TIMELINE_ZOOM_MIN}
+                  aria-label="Сбросить масштаб таймлайна"
+                >
+                  1x
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-secondary processing-screen__timeline-zoom-btn"
+                  onClick={() => setTimelineZoom(timelineZoom + 1)}
+                  disabled={mediaSource == null || timelineZoom >= TIMELINE_ZOOM_MAX}
+                  aria-label="Увеличить масштаб таймлайна"
+                >
+                  +
+                </button>
                 <span className="processing-screen__timeline-zoom-value">{timelineZoom}×</span>
+                <span className="processing-screen__timeline-zoom-hint" aria-hidden>
+                  Hotkeys: - / + / 0
+                </span>
               </div>
             </div>
             <ProcessingBatchPeek />

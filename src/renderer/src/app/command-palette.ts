@@ -29,6 +29,9 @@ export type CommandPaletteAction =
   | { type: 'toggle-preview-play' }
   | { type: 'seek-preview-start' }
   | { type: 'seek-preview-end' }
+  | { type: 'timeline-zoom-out' }
+  | { type: 'timeline-zoom-reset' }
+  | { type: 'timeline-zoom-in' }
   | { type: 'set-export-trim-in' }
   | { type: 'set-export-trim-out' }
   | { type: 'export-preset-name' }
@@ -140,6 +143,24 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     label: 'Trim In на playhead',
     hint: 'Обработка',
     action: { type: 'set-export-trim-in' }
+  },
+  {
+    id: 'timeline-zoom-out',
+    label: 'Таймлайн — zoom -',
+    hint: 'Обработка · ref.1 · hotkey -',
+    action: { type: 'timeline-zoom-out' }
+  },
+  {
+    id: 'timeline-zoom-reset',
+    label: 'Таймлайн — zoom 1x',
+    hint: 'Обработка · ref.1 · hotkey 0',
+    action: { type: 'timeline-zoom-reset' }
+  },
+  {
+    id: 'timeline-zoom-in',
+    label: 'Таймлайн — zoom +',
+    hint: 'Обработка · ref.1 · hotkey +',
+    action: { type: 'timeline-zoom-in' }
   },
   {
     id: 'set-export-trim-out',

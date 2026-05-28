@@ -7,6 +7,7 @@ import {
   buildTrimSpanStyle,
   clampTimelineZoom,
   timelineKeyboardSeekSec,
+  timelineKeyboardZoomLevel,
   timelineRulerTickCountForZoom,
   timelineSecFromPointer
 } from '../../src/renderer/src/features/processing/processing-timeline-model'
@@ -47,6 +48,14 @@ describe('timeline zoom helpers', () => {
     expect(timelineRulerTickCountForZoom(1)).toBe(3)
     expect(timelineRulerTickCountForZoom(4)).toBe(9)
     expect(buildTimelineZoomTrackMinWidthPercent(3)).toBe('300%')
+  })
+
+  it('handles keyboard zoom controls', () => {
+    expect(timelineKeyboardZoomLevel('-', 3)).toBe(2)
+    expect(timelineKeyboardZoomLevel('+', 3)).toBe(4)
+    expect(timelineKeyboardZoomLevel('NumpadAdd', 4)).toBe(4)
+    expect(timelineKeyboardZoomLevel('0', 4)).toBe(1)
+    expect(timelineKeyboardZoomLevel('Enter', 2)).toBeNull()
   })
 })
 

@@ -107,6 +107,21 @@ export function buildTimelineZoomTrackMinWidthPercent(zoom: number): string {
   return `${String(clampTimelineZoom(zoom) * 100)}%`
 }
 
+/** Горячие клавиши масштаба таймлайна: -, +, 0 (reset). */
+export function timelineKeyboardZoomLevel(key: string, currentZoom: number): number | null {
+  const zoom = clampTimelineZoom(currentZoom)
+  if (key === '-' || key === '_' || key === 'Subtract' || key === 'NumpadSubtract') {
+    return clampTimelineZoom(zoom - 1)
+  }
+  if (key === '=' || key === '+' || key === 'Add' || key === 'NumpadAdd') {
+    return clampTimelineZoom(zoom + 1)
+  }
+  if (key === '0' || key === 'Digit0' || key === 'Numpad0') {
+    return TIMELINE_ZOOM_MIN
+  }
+  return null
+}
+
 /** Метки шкалы 0…duration для ref.1 (без форматирования времени — в UI). */
 export function buildTimelineRulerMarks(
   durationSec: number | null | undefined,

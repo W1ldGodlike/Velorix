@@ -4,6 +4,7 @@ import { applyOpenMediaPick } from '../lib/apply-open-media-pick'
 import { applyExportTrimIn, applyExportTrimOut } from '../lib/export-trim-markers'
 import { trimFromProbeDuration } from '../lib/inspector-chapter-trim'
 import { startPreviewMediaExport } from '../lib/start-preview-media-export'
+import { TIMELINE_ZOOM_MIN } from '../features/processing/processing-timeline-model'
 import { useAppShellStore } from '../stores/app-shell-store'
 import { filterCommandPaletteItems, type CommandPaletteAction } from './command-palette'
 
@@ -219,6 +220,21 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
     if (next != null) {
       store.setExportTrim(next)
     }
+    return
+  }
+  if (action.type === 'timeline-zoom-out') {
+    store.setWorkspaceTab('processing')
+    store.setTimelineZoom(store.timelineZoom - 1)
+    return
+  }
+  if (action.type === 'timeline-zoom-reset') {
+    store.setWorkspaceTab('processing')
+    store.setTimelineZoom(TIMELINE_ZOOM_MIN)
+    return
+  }
+  if (action.type === 'timeline-zoom-in') {
+    store.setWorkspaceTab('processing')
+    store.setTimelineZoom(store.timelineZoom + 1)
     return
   }
   if (action.type === 'open-knowledge-slug') {
