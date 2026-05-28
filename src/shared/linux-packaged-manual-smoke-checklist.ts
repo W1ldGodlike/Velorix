@@ -3,7 +3,7 @@
  * Канон: locales/ru/linux-packaged-manual-smoke.json + docs/RELEASE.md §4.1.
  */
 
-import ruLinuxPackagedManualSmoke from '../../locales/ru/linux-packaged-manual-smoke.json'
+import ruLinuxPackagedManualSmoke from './post-purge-manual-smoke/ru/linux-packaged-manual-smoke.json'
 import { formatPackagedManualSmokeChecklistLinesFromLocaleShard } from './packaged-manual-smoke-locale-lines'
 import { buildLinuxPackagedManualSmokeChecklistFromLocaleShard } from './linux-packaged-manual-smoke-checklist-build'
 

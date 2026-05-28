@@ -45,6 +45,11 @@ const PUSH_KEYS = new Set([
 /** Renderer → main one-way (`ipcMain.on` + `ipcRenderer.send`). */
 const MAIN_ON_KEYS = new Set(['logRenderer', 'quitConfirmRespond'])
 
+/** Post UI PURGE v3: invoke channels without renderer/preload until NEON rebuild. */
+const POST_PURGE_MAIN_ONLY_INVOKE = true
+
+const SURVIVAL_PRELOAD_INVOKE_KEYS = new Set(['shellRequestClose', 'shellRequestMinimize'])
+
 function parseIpcObject(exportName) {
   const start = channelsText.indexOf(`export const ${exportName}`)
   if (start < 0) {
@@ -137,16 +142,22 @@ for (const [key, channel] of mainWindow) {
   if (PUSH_KEYS.has(key) || MAIN_ON_KEYS.has(key)) {
     continue
   }
-  if (!mainRegistersKey(key, 'main')) {
-    missingMain.push(`mainWindowIpc.${key} (${channel})`)
-  }
-  if (!preloadExposesKey(key, 'main')) {
-    missingPreload.push(`mainWindowIpc.${key} (${channel})`)
+  const survival = SURVIVAL_PRELOAD_INVOKE_KEYS.has(key)
+  if (!POST_PURGE_MAIN_ONLY_INVOKE || survival) {
+    if (!mainRegistersKey(key, 'main')) {
+      missingMain.push(`mainWindowIpc.${key} (${channel})`)
+    }
+    if (!preloadExposesKey(key, 'main')) {
+      missingPreload.push(`mainWindowIpc.${key} (${channel})`)
+    }
   }
 }
 
 for (const [key, channel] of downloads) {
   if (PUSH_KEYS.has(key)) {
+    continue
+  }
+  if (POST_PURGE_MAIN_ONLY_INVOKE) {
     continue
   }
   if (!mainRegistersKey(key, 'downloads')) {

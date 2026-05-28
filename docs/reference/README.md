@@ -4,9 +4,11 @@
 
 Каталог для **канонических** картинок, mockup и визуальных референсов темы.
 
+**Именование экранов:** `velorix-neon-reference-<экран>.png` (реф. 1 = `processing` — **Обработка / редактор**; тот же mockup задаёт **shell chrome** для refs 2–27). Константа в коде: `VELORIX_NEON_REFERENCE_PROCESSING_REL`.
+
 | Файл | Назначение |
 |------|------------|
-| [`velorix-neon-canonical-reference.png`](velorix-neon-canonical-reference.png) | Эталон экрана **«Обработка»** (превью, timeline, FFmpeg rail; реф. 1) |
+| [`velorix-neon-reference-processing.png`](velorix-neon-reference-processing.png) | **Обработка / редактор** (реф. 1): превью, timeline, FFmpeg rail; **канон shell chrome** для refs 2–27 |
 | [`velorix-neon-app-icon-reference.png`](velorix-neon-app-icon-reference.png) | Эталон **иконки приложения** (V + lightning, neon gradient) → упаковка: `resources/icon.png` |
 | [`velorix-neon-logo-wordmark-reference.png`](velorix-neon-logo-wordmark-reference.png) | Эталон **горизонтального** логотипа: mark слева + **VELORIX** справа (sidebar / topbar) |
 | [`velorix-neon-logo-stacked-reference.png`](velorix-neon-logo-stacked-reference.png) | Эталон **вертикального** логотипа: mark сверху + **VELORIX** снизу (splash, about, узкий sidebar) |

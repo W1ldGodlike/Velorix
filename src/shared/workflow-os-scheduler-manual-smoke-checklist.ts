@@ -3,7 +3,7 @@
  * Канон: locales/ru/workflow-os-scheduler-manual-smoke.json + docs/RELEASE.md §4.3.
  */
 
-import ruWorkflowOsSchedulerManualSmoke from '../../locales/ru/workflow-os-scheduler-manual-smoke.json'
+import ruWorkflowOsSchedulerManualSmoke from './post-purge-manual-smoke/ru/workflow-os-scheduler-manual-smoke.json'
 import { buildWorkflowOsSchedulerManualSmokeChecklistFromLocaleShard } from './workflow-os-scheduler-manual-smoke-checklist-build'
 import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 

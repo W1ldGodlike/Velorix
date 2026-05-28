@@ -20,6 +20,7 @@ import {
 import { repeatWorkflowScenarioFromHistoryId } from '../services/history/processing-history-repeat-workflow'
 import type { ProcessingHistoryFilter } from '../../shared/processing-history-contract'
 import { getTerminalCommandHints, runTerminalCommand } from '../services/terminal/terminal-service'
+import { mainWindowRef } from '../windows/main-window-runtime-state'
 
 let ipcRegistered = false
 
@@ -257,4 +258,18 @@ export function registerMainUtilitiesIpcHandlers(deps: MainUtilitiesIpcDeps): vo
       }
     }
   )
+
+  ipcMain.handle(mw.shellRequestClose, () => {
+    const win = mainWindowRef
+    if (win != null && !win.isDestroyed()) {
+      win.close()
+    }
+  })
+
+  ipcMain.handle(mw.shellRequestMinimize, () => {
+    const win = mainWindowRef
+    if (win != null && !win.isDestroyed()) {
+      win.minimize()
+    }
+  })
 }

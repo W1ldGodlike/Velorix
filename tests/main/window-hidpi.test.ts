@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 
 import {
   defaultMainEditorSize,
-  mainEditorMinLogicalSize
+  mainEditorMinLogicalSize,
+  mainEditorWorkAreaBounds
 } from '../../src/main/windows/window-hidpi'
 
 describe('window-hidpi', () => {
@@ -26,6 +27,18 @@ describe('window-hidpi', () => {
     expect(defaultMainEditorSize(1920, 1080, 520, 392)).toEqual({
       width: 1920,
       height: 1080
+    })
+  })
+
+  it('mainEditorWorkAreaBounds берёт workArea дисплея', () => {
+    const display = {
+      workArea: { x: 8, y: 8, width: 2560, height: 1400 }
+    } as import('electron').Display
+    expect(mainEditorWorkAreaBounds(display)).toEqual({
+      x: 8,
+      y: 8,
+      width: 2560,
+      height: 1400
     })
   })
 })

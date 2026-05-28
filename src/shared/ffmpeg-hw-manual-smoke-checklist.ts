@@ -3,7 +3,7 @@
  * Канон шагов: `locales/ru/hw-manual-smoke.json` + owner hardware checklist (Support ZIP).
  */
 
-import ruHwManualSmoke from '../../locales/ru/hw-manual-smoke.json'
+import ruHwManualSmoke from './post-purge-manual-smoke/ru/hw-manual-smoke.json'
 import { buildFfmpegHwManualSmokeChecklistFromLocaleShard } from './ffmpeg-hw-manual-smoke-checklist-build'
 
 export type {

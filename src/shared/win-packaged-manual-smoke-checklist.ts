@@ -3,7 +3,7 @@
  * Канон: locales/ru/win-packaged-manual-smoke.json + docs/RELEASE.md §4.
  */
 
-import ruWinPackagedManualSmoke from '../../locales/ru/win-packaged-manual-smoke.json'
+import ruWinPackagedManualSmoke from './post-purge-manual-smoke/ru/win-packaged-manual-smoke.json'
 import { formatPackagedManualSmokeChecklistLinesFromLocaleShard } from './packaged-manual-smoke-locale-lines'
 import { buildWinPackagedManualSmokeChecklistFromLocaleShard } from './win-packaged-manual-smoke-checklist-build'
 

@@ -78,7 +78,11 @@ for (const rel of TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS) {
   }
 }
 
-for (const locale of LOCALE_JSON_LOCALES) {
+const localesAboutGuardActive = LOCALE_JSON_LOCALES.every((locale) =>
+  fs.existsSync(path.join(REPO_ROOT, 'locales', locale, 'about.json'))
+)
+
+for (const locale of localesAboutGuardActive ? LOCALE_JSON_LOCALES : []) {
   const aboutPath = path.join(REPO_ROOT, 'locales', locale, 'about.json')
   const aboutTable = JSON.parse(fs.readFileSync(aboutPath, 'utf8'))
   const expected = formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintBody(

@@ -1,25 +1,12 @@
-/**
- * §2.2 — смена языка UI без перезапуска: IPC + валидация payload (main/preload/renderer).
- */
+import type { AppUiLocale } from './app-ui-locale'
 import { parseAppUiLocale } from './app-ui-locale'
-import { mainWindowIpc } from './ipc-channels'
 
-export type UiLocaleBroadcastPayload = ReturnType<typeof parseAppUiLocale>
+/** Post UI PURGE v3 — UI locale IPC/HMR removed until NEON rebuild. */
 
-/** Whitelist для `uiLocaleChanged` и `settings.setUiLocale` (как preload `onUiLocaleChanged`). */
-export function coerceUiLocaleBroadcastPayload(raw: unknown): UiLocaleBroadcastPayload {
+export function coerceUiLocaleBroadcastPayload(raw: unknown): AppUiLocale | undefined {
   return parseAppUiLocale(raw)
 }
 
-/** Support ZIP / диагностика: цепочка hot-reload локали. */
 export function formatUiLocaleIpcDiagnosticLines(): string[] {
-  return [
-    `invoke: ${mainWindowIpc.settingsSetUiLocale} → persist settings.json uiLocale`,
-    `event: ${mainWindowIpc.uiLocaleChanged} → all BrowserWindow webContents`,
-    'renderer: onUiLocaleChanged → setUiLocaleForSession + syncDocumentUiLocale + presets refresh (без reload)',
-    'main: syncBrowserWindowTitlesToLocale + renderer document.title / lang',
-    'downloads / inspector shell routes: uiLocaleChanged + BrowserWindow setTitle',
-    'dev: Vite HMR on locales/**/*.json → reloadUiTextTablesFromModules + uiLocaleRenderTick bump',
-    'allowed locales: ru | en'
-  ]
+  return ['ui-locale: (purged — restore with NEON ui-text)']
 }

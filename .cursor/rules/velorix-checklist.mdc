@@ -16,6 +16,7 @@ alwaysApply: false
 
 ## Обязательно
 
+- **Задача №1 (блокер):** UI **1:1** refs 1–27 — [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](../../docs/IMPLEMENTATION_NEON_CHECKLIST.md) § «Задача №1»; **«продолжай» / `+`** только её срезы (`ui.1`…`ui.5`).
 - **Навигатор «продолжай» / `+`:** [`docs/VELORIX_NEON_THEME.md`](../../docs/VELORIX_NEON_THEME.md) — Phase D, refs 1–27, открытые пробелы VA.
 - **Запрещено:** [`docs/archive/IMPLEMENTATION_CHECKLIST.OLD.md`](../../docs/archive/IMPLEMENTATION_CHECKLIST.OLD.md), [`docs/archive/VELORIX_TZ.OLD.md`](../../docs/archive/VELORIX_TZ.OLD.md) как рабочий план; корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`.
 - **`## Ближайший TODO спринта`:** **3–7** пунктов, каждый ≤ **220** символов; матрица refs **1–27** и Phase D — в том же файле ниже `---`.

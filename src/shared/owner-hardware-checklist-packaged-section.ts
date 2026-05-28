@@ -3,12 +3,12 @@
  */
 
 import type { AppUiLocale } from './app-ui-locale'
-import enLinuxPackagedManualSmoke from '../../locales/en/linux-packaged-manual-smoke.json'
-import enMacosPackagedManualSmoke from '../../locales/en/macos-packaged-manual-smoke.json'
-import enWinPackagedManualSmoke from '../../locales/en/win-packaged-manual-smoke.json'
-import ruLinuxPackagedManualSmoke from '../../locales/ru/linux-packaged-manual-smoke.json'
-import ruMacosPackagedManualSmoke from '../../locales/ru/macos-packaged-manual-smoke.json'
-import ruWinPackagedManualSmoke from '../../locales/ru/win-packaged-manual-smoke.json'
+import enLinuxPackagedManualSmoke from './post-purge-manual-smoke/en/linux-packaged-manual-smoke.json'
+import enMacosPackagedManualSmoke from './post-purge-manual-smoke/en/macos-packaged-manual-smoke.json'
+import enWinPackagedManualSmoke from './post-purge-manual-smoke/en/win-packaged-manual-smoke.json'
+import ruLinuxPackagedManualSmoke from './post-purge-manual-smoke/ru/linux-packaged-manual-smoke.json'
+import ruMacosPackagedManualSmoke from './post-purge-manual-smoke/ru/macos-packaged-manual-smoke.json'
+import ruWinPackagedManualSmoke from './post-purge-manual-smoke/ru/win-packaged-manual-smoke.json'
 import { formatLinuxPackagedManualSmokeChecklistLinesFromShard } from './linux-packaged-manual-smoke-checklist'
 import { formatMacosPackagedManualSmokeChecklistLinesFromShard } from './macos-packaged-manual-smoke-checklist'
 import {

@@ -5,19 +5,9 @@ import { bootstrapMainApplicationHosts } from './main-application-bootstrap-host
 import { registerMainApplicationBootstrapIpc } from './main-application-bootstrap-ipc'
 import { buildApplicationMenu } from '../menu/main-application-menu'
 import { createMainApplicationWindow } from '../windows/main-window-runtime-state'
-import { broadcastDownloadsHistoryChanged } from '../services/downloads/downloads-history-broadcast'
-import { onProcessingHistoryChanged } from '../services/history/processing-history'
-import { broadcastProcessingHistoryChanged } from '../services/history/processing-history-broadcast'
-import { onYtdlpDownloadHistoryChanged } from '../services/ytdlp/ytdlp-download-history'
 
 export function runMainApplicationBootstrap(): void {
   bootstrapMainApplicationHosts()
-  onProcessingHistoryChanged(() => {
-    broadcastProcessingHistoryChanged()
-  })
-  onYtdlpDownloadHistoryChanged(() => {
-    broadcastDownloadsHistoryChanged()
-  })
   registerMainApplicationBootstrapIpc()
 
   app.on('browser-window-created', (_, window) => {

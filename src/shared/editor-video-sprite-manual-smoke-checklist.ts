@@ -3,7 +3,7 @@
  * Канон: locales/ru/editor-video-sprite-manual-smoke.json
  */
 
-import ruEditorVideoSpriteManualSmoke from '../../locales/ru/editor-video-sprite-manual-smoke.json'
+import ruEditorVideoSpriteManualSmoke from './post-purge-manual-smoke/ru/editor-video-sprite-manual-smoke.json'
 import { buildEditorVideoSpriteManualSmokeChecklistFromLocaleShard } from './editor-video-sprite-manual-smoke-checklist-build'
 import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 import { formatPackagedVideoSpriteSmokeDiagnosticLines } from './packaged-video-sprite-smoke'

@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 
-import { mainWindowIpc } from '../../src/shared/ipc-channels'
 import {
   coerceUiLocaleBroadcastPayload,
   formatUiLocaleIpcDiagnosticLines
@@ -16,10 +15,6 @@ describe('ui-locale-runtime', () => {
 
   it('formatUiLocaleIpcDiagnosticLines', () => {
     const lines = formatUiLocaleIpcDiagnosticLines()
-    expect(lines.some((l) => l.includes(mainWindowIpc.settingsSetUiLocale))).toBe(true)
-    expect(lines.some((l) => l.includes(mainWindowIpc.uiLocaleChanged))).toBe(true)
-    expect(lines.some((l) => l.includes('syncDocumentUiLocale'))).toBe(true)
-    expect(lines.some((l) => l.includes('syncBrowserWindowTitlesToLocale'))).toBe(true)
-    expect(lines.some((l) => l.includes('reloadUiTextTablesFromModules'))).toBe(true)
+    expect(lines.some((l) => l.includes('purged'))).toBe(true)
   })
 })

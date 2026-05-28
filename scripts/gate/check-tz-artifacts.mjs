@@ -16,9 +16,7 @@ const REQUIRED_PATHS = [
   'src/renderer/src/main.tsx',
   'src/shared/renderer-state-approach.ts',
   'docs/VELORIX_NEON_THEME.md',
-  'Data/trusted_hashes.json',
-  'locales/ru/common.json',
-  'locales/en/common.json'
+  'Data/trusted_hashes.json'
 ]
 
 const FORBIDDEN_ROOT_ARTIFACTS = ['VELORIX_TZ.md', 'IMPLEMENTATION_CHECKLIST.md']
@@ -43,7 +41,7 @@ function main() {
   }
 
   const ipc = readFileSync(IPC_PATH, 'utf8')
-  for (const token of ['velorix:settings', 'velorix:export', 'velorix:downloads']) {
+  for (const token of ['velorix:shell-request-close', 'velorix:log-renderer']) {
     if (!ipc.includes(token)) {
       violations.push(`ipc-channels.ts: missing ${token}`)
     }
@@ -53,13 +51,8 @@ function main() {
     join(REPO_ROOT, 'src', 'shared', 'renderer-state-approach.ts'),
     'utf8'
   )
-  const approachOk =
-    approach.includes("RENDERER_STATE_APPROACH = 'none'") ||
-    approach.includes("RENDERER_STATE_APPROACH = 'ref27-bootstrap'")
-  if (!approachOk) {
-    violations.push(
-      "renderer-state-approach.ts: expected 'none' or 'ref27-bootstrap' (UI ZERO rebuild)"
-    )
+  if (!approach.includes("RENDERER_STATE_APPROACH = 'none'")) {
+    violations.push("renderer-state-approach.ts: expected RENDERER_STATE_APPROACH = 'none'")
   }
 
   if (violations.length > 0) {

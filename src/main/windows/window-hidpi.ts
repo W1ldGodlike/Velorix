@@ -40,6 +40,12 @@ export function defaultMainEditorSize(
   return { width, height }
 }
 
+/** Главное окно NEON: на весь workArea монитора (FHD / 2K / 4K), без ручного ресайза. */
+export function mainEditorWorkAreaBounds(d: Display): StoredWindowRect {
+  const { x, y, width, height } = d.workArea
+  return { x, y, width, height }
+}
+
 export const WINDOW_LOGICAL_SCALE_TIERS = [1, 1.25, 1.5, 1.75, 2] as const
 
 export function formatWindowHidpiDiagnosticLines(): string[] {

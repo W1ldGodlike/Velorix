@@ -8,9 +8,12 @@ export const VELORIX_NEON_THEME_ID = 'velorix-neon' as const
 /** Каталог эталонных PNG/mockup (новые референсы — только сюда). */
 export const VELORIX_REFERENCE_ASSETS_DIR = 'docs/reference' as const
 
-/** Эталонный mockup (в репозитории, не только в кэше Cursor). */
-export const VELORIX_NEON_CANONICAL_REFERENCE_REL =
-  `${VELORIX_REFERENCE_ASSETS_DIR}/velorix-neon-canonical-reference.png` as const
+/**
+ * Реф. 1 — экран «Обработка» / редактор (`workspaceTab` processing).
+ * Канон shell chrome (sidebar + center + rail + statusbar) для сверки refs 2–27.
+ */
+export const VELORIX_NEON_REFERENCE_PROCESSING_REL =
+  `${VELORIX_REFERENCE_ASSETS_DIR}/velorix-neon-reference-processing.png` as const
 
 /** Эталон иконки приложения (V + lightning, magenta→cyan gradient). Упаковка: `resources/icon.png`. */
 export const VELORIX_NEON_APP_ICON_REFERENCE_REL =
@@ -130,7 +133,7 @@ export const VELORIX_NEON_REFERENCE_UI_COMPONENTS_REL =
 
 /** Все эталонные PNG экранов/модалок NEON (порядок реф. 1–27 где применимо). */
 export const VELORIX_NEON_REFERENCE_SCREEN_RELS = [
-  VELORIX_NEON_CANONICAL_REFERENCE_REL,
+  VELORIX_NEON_REFERENCE_PROCESSING_REL,
   VELORIX_NEON_REFERENCE_DOWNLOADS_REL,
   VELORIX_NEON_REFERENCE_HISTORY_REL,
   VELORIX_NEON_REFERENCE_PLANNER_REL,

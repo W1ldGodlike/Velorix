@@ -3,7 +3,7 @@
  * Канон: locales/ru/windows-shell-manual-smoke.json + Help windows-shell-integration.
  */
 
-import ruWindowsShellManualSmoke from '../../locales/ru/windows-shell-manual-smoke.json'
+import ruWindowsShellManualSmoke from './post-purge-manual-smoke/ru/windows-shell-manual-smoke.json'
 import { buildWindowsShellManualSmokeChecklistFromLocaleShard } from './windows-shell-manual-smoke-checklist-build'
 import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 

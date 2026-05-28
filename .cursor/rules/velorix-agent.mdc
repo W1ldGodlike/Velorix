@@ -36,6 +36,8 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 
 **Если** устаревший артефакт **мешает** задаче или NEON-плану **то** удалить/заменить в той же итерации; `npm run check:quiet`. **Запрещено:** оставлять «на всякий случай», параллельный старый+новый путь, обход новым слоем. Канон: глоссарий **«Удаление мешающего legacy»**, [`velorix-simplicity.mdc`](velorix-simplicity.mdc) § «Рефакторинг и legacy».
 
+**UI PURGE v3 (2026-05-28):** **Запрещено** `git revert` / `git restore` / `checkout` удалённого `src/renderer` UI и `locales/**` без **явной** просьбы владельца — только rebuild вперёд ([`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](../../docs/IMPLEMENTATION_NEON_CHECKLIST.md) § UI PURGE v3).
+
 ## Audit
 
 **Обязательно:** `npm run check:quiet` перед `git commit` по J. Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs). **Запрещено:** файл в scope **>500** строк без **логического** split **или** `{ glob, reason }` в `AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED` (`npm run audit:structural`; **запрещено:** дробление только ради лимита — [`velorix-simplicity.mdc`](velorix-simplicity.mdc)). Реестры вместо копипасты `parseX` — `npm run check:field-registries`.

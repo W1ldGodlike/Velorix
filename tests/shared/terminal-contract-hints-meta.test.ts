@@ -27,7 +27,7 @@ describe('terminal-contract-hints-meta §8', () => {
   })
 
   it('guard registries list quiet steps and npm scripts', () => {
-    expect(TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS.length).toBe(4)
+    expect(TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS.length).toBe(3)
     expect(TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS).toContain(
       TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT
     )

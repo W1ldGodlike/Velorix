@@ -1,8 +1,8 @@
 import type { AppUiLocale } from './app-ui-locale'
 import { formatPackagedE2eSmokeDiagnosticLines } from './packaged-e2e-smoke-scenarios'
-import enLinuxPackagedManualSmoke from '../../locales/en/linux-packaged-manual-smoke.json'
-import enMacosPackagedManualSmoke from '../../locales/en/macos-packaged-manual-smoke.json'
-import enWinPackagedManualSmoke from '../../locales/en/win-packaged-manual-smoke.json'
+import enLinuxPackagedManualSmoke from './post-purge-manual-smoke/en/linux-packaged-manual-smoke.json'
+import enMacosPackagedManualSmoke from './post-purge-manual-smoke/en/macos-packaged-manual-smoke.json'
+import enWinPackagedManualSmoke from './post-purge-manual-smoke/en/win-packaged-manual-smoke.json'
 import {
   formatLinuxPackagedManualSmokeChecklistLines,
   formatLinuxPackagedManualSmokeChecklistLinesFromShard

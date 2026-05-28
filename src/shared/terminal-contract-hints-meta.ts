@@ -30,18 +30,16 @@ export const TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_SOURCE_PATHS = [
 /** Renderer UI — Support ZIP aria hints (`aboutSupportZipDiagnosticsSectionsHint`). */
 export const TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS = [] as const
 
-/** §8 terminal guards in `check:quiet` (registry → shards → locale → Support ZIP). */
+/** §8 terminal guards in `check:quiet` (registry → shards → Support ZIP). Locale guard off post PURGE v3. */
 export const TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS = [
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT
 ] as const
 
-/** `run-quiet-check.mjs` step labels (registry → shards → locale → Support ZIP). */
+/** `run-quiet-check.mjs` step labels (registry → shards → Support ZIP). */
 export const TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS = [
   'terminal-hints-guards-package-json',
   'terminal-contract-hints-shards',
-  'terminal-hints-locale',
   'support-bundle-terminal-hints'
 ] as const
 
@@ -69,8 +67,7 @@ export const TERMINAL_CONTRACT_HINTS_BIN_README_PATH = 'bin/README.md' as const
 export const TERMINAL_CONTRACT_HINTS_BIN_README_REQUIRED_SNIPPETS = [
   TERMINAL_CONTRACT_HINTS_GUARD_REGISTRY_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT
+  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT
 ] as const
 
 /** Help §18 about/support — releaseSmoke dev line cites §8 terminal guards. */
@@ -381,7 +378,7 @@ export function formatTerminalContractHintsLoggingHelpDevGuardsLine(
       ? formatTerminalContractHintsShardCountRuSnippet()
       : formatTerminalContractHintsShardCountEnSnippet()
   const hintCounts = `${TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT}+${TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT}`
-  return `§8 terminal — \`check:terminal-contract-hints-shards\` (${shardSnippet}, ${hintCounts} hints), \`check:help-terminal-hints-docs\` (${helpCountLabel}), \`check:support-bundle-terminal-hints\`, \`check:terminal-hints-locale\` (${settingsTail}).`
+  return `§8 terminal — \`check:terminal-contract-hints-shards\` (${shardSnippet}, ${hintCounts} hints), \`check:help-terminal-hints-docs\` (${helpCountLabel}), \`check:support-bundle-terminal-hints\` (post PURGE v3: locale guard off; settings: ${settingsTail}).`
 }
 
 /** Tail of `appSettingsTerminalHintsGuardHint` in locales settings.json. */

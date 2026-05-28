@@ -3,7 +3,7 @@
  * Канон: locales/ru/workflow-scenario-manual-smoke.json + Help workflows-planner-scenarios.
  */
 
-import ruWorkflowScenarioManualSmoke from '../../locales/ru/workflow-scenario-manual-smoke.json'
+import ruWorkflowScenarioManualSmoke from './post-purge-manual-smoke/ru/workflow-scenario-manual-smoke.json'
 import { buildWorkflowScenarioManualSmokeChecklistFromLocaleShard } from './workflow-scenario-manual-smoke-checklist-build'
 import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 

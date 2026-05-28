@@ -63,7 +63,7 @@ describe('toolchain baseline (package.json / .npmrc / tsconfig.web)', () => {
     }
     expect(web.compilerOptions?.baseUrl).toBeUndefined()
     expect(web.compilerOptions?.paths?.['@renderer/*']).toEqual(['./src/renderer/src/*'])
-    expect(web.compilerOptions?.paths?.['@locales/*']).toEqual(['./locales/*'])
+    expect(web.compilerOptions?.paths?.['@locales/*']).toBeUndefined()
   })
 
   it('locks electron-vite 5 and Vitest 4; check:quiet script present', () => {
@@ -165,13 +165,13 @@ describe('toolchain baseline (package.json / .npmrc / tsconfig.web)', () => {
     expect(viteConfig).toContain('renderer:')
     expect(viteConfig).toContain("index: resolve('src/preload/index.ts')")
     expect(viteConfig).toContain("@renderer': resolve('src/renderer/src')")
-    expect(viteConfig).toContain("@locales': resolve('locales')")
+    expect(viteConfig).not.toContain('@locales')
     expect(viteConfig).toContain('plugins: [react(), rendererDevCspPlugin()]')
     expect(viteConfig).toContain("name: 'VELORIX-renderer-dev-csp'")
     const webOpts = readCompilerOptions('tsconfig.web.json')
     const paths = webOpts['paths'] as Record<string, string[]>
     expect(paths['@renderer/*']).toEqual(['./src/renderer/src/*'])
-    expect(paths['@locales/*']).toEqual(['./locales/*'])
+    expect(paths['@locales/*']).toBeUndefined()
     expect(webOpts['baseUrl']).toBeUndefined()
     expect(webOpts['jsx']).toBe('react-jsx')
   })
@@ -195,7 +195,7 @@ describe('toolchain baseline (package.json / .npmrc / tsconfig.web)', () => {
     const webJson = JSON.parse(readFileSync('tsconfig.web.json', 'utf8')) as {
       include?: string[]
     }
-    expect(webJson.include).toContain('locales/**/*.json')
+    expect(webJson.include).toContain('src/shared/post-purge-manual-smoke/**/*.json')
     expect(webJson.include).toContain('src/shared/**/*.ts')
     expect(majorOfRange(dev['@electron-toolkit/eslint-config-ts'] ?? '')).toBe(3)
     expect(majorOfRange(dev['@electron-toolkit/eslint-config-prettier'] ?? '')).toBe(3)

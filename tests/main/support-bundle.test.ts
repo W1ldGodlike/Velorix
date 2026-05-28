@@ -107,15 +107,12 @@ describe('createSupportBundleZip', () => {
         'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
         'candidate: C:\\bin\\ffprobe.exe (present)'
       ],
-      uiLocaleIpcLines: [
-        'invoke: velorix:settings-set-ui-locale → persist settings.json uiLocale',
-        'event: velorix:ui-locale-changed → all BrowserWindow webContents'
-      ],
+      uiLocaleIpcLines: ['ui-locale: (purged — restore with NEON ui-text)'],
       localeJsonCatalogLines: [
-        'catalog: locales/ru/*.json + locales/en/*.json (flat string values)',
-        'guard: npm run check:locales-json (ru/en key parity per shard)'
+        'catalog: (empty — UI PURGE v3)',
+        'manual-smoke: src/shared/post-purge-manual-smoke/{ru,en}/*.json'
       ],
-      rendererStateLines: ['approach: hooks-composition'],
+      rendererStateLines: ['approach: none (UI PURGE v3)'],
       uiDpiLines: [
         'CSS HiDPI: @media 120/144/168/192dpi — main.css (editor, downloads, terminal, modals, knowledge, probe, history)'
       ],
@@ -175,9 +172,9 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('smoke:packaged-ffprobe'))).toBe(true)
     expect(zip.includes(Buffer.from('ParsableForSmoke'))).toBe(true)
     expect(zip.includes(Buffer.from('uiLocale:'))).toBe(true)
-    expect(zip.includes(Buffer.from('ui-locale-changed'))).toBe(true)
+    expect(zip.includes(Buffer.from('purged'))).toBe(true)
     expect(zip.includes(Buffer.from('localeJson:'))).toBe(true)
-    expect(zip.includes(Buffer.from('check:locales-json'))).toBe(true)
+    expect(zip.includes(Buffer.from('PURGE v3'))).toBe(true)
     expect(zip.includes(Buffer.from('uiDpi:'))).toBe(true)
     expect(zip.includes(Buffer.from('build:linux'))).toBe(true)
     expect(zip.includes(Buffer.from('hwManualSmoke:'))).toBe(true)

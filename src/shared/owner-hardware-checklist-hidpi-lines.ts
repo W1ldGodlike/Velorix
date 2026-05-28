@@ -2,7 +2,7 @@
  * §1.1 — строки HiDPI-чеклиста для Support ZIP / owner bundle (канон ru settings).
  */
 
-import ruSettings from '../../locales/ru/settings.json'
+import ruSettings from './post-purge-manual-smoke/ru/settings.json'
 import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from './app-settings-visual-smoke-checklists'
 import { formatOwnerHardwareChecklistSectionLines } from './owner-hardware-checklist-lines'
 

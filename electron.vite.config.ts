@@ -105,9 +105,7 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        // Алиас нужен, чтобы будущие UI-модули не строили длинные относительные импорты из renderer.
-        '@renderer': resolve('src/renderer/src'),
-        '@locales': resolve('locales')
+        '@renderer': resolve('src/renderer/src')
       }
     },
     plugins: [react(), rendererDevCspPlugin()]

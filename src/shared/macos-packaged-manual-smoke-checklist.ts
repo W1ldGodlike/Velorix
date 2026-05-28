@@ -3,7 +3,7 @@
  * Канон: locales/ru/macos-packaged-manual-smoke.json + docs/RELEASE.md §4.2.
  */
 
-import ruMacosPackagedManualSmoke from '../../locales/ru/macos-packaged-manual-smoke.json'
+import ruMacosPackagedManualSmoke from './post-purge-manual-smoke/ru/macos-packaged-manual-smoke.json'
 import { formatPackagedManualSmokeChecklistLinesFromLocaleShard } from './packaged-manual-smoke-locale-lines'
 import { buildMacosPackagedManualSmokeChecklistFromLocaleShard } from './macos-packaged-manual-smoke-checklist-build'
 

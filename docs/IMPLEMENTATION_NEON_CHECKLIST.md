@@ -2,28 +2,69 @@
 
 **Навигатор срезов:** [`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md) (анализ PNG, Phase D, открытые пробелы).
 
-**«продолжай» / `+`:** (1) задача в чате → (2) **`## Ближайший TODO спринта`** → (3) матрица **refs 1–27** и Phase D ниже. **Запрещено:** [`docs/archive/`](archive/).
+**«продолжай» / `+`:** **только [Задача №1](#задача-1--ui-11-по-png)** → активный срез в **`## Ближайший TODO спринта`** → матрица refs. **Запрещено:** IPC/фичи/другие sprint до sign-off UI. **Запрещено:** [`docs/archive/`](archive/).
 
 **Хроника:** [`IMPLEMENTATION_JOURNAL.md`](../IMPLEMENTATION_JOURNAL.md). **Правила:** [`.cursor/rules/velorix-checklist.mdc`](../.cursor/rules/velorix-checklist.mdc), legacy — удалять (глоссарий «Удаление мешающего legacy»).
 
 ---
 
-## UI ZERO REBUILD (2026-05-27)
+## Задача №1 — UI 1:1 по PNG (блокер продукта)
 
-**Смысл:** «zero» = **сброс галочек** визуального sign-off, не удаление этого чеклиста. Renderer снят с диска (`main.tsx` очищает `#root`); main/preload/IPC **сохранены**. Канон PNG — [`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md).
+**Статус:** **в работе** (владелец, 2026-05-28). **Пока не выполнена — ничего другого не делать** (ни NEON-фич, ни «улучшений» UX вне refs).
+
+| Правило | Деталь |
+| ------- | ------ |
+| **Канон** | `docs/reference/*.png` — **идентично** layout, плотность, цвет, glow, rails (допуск: подписи mockup vs `ui-text`). |
+| **Функции** | Кнопки/поля **без** backend — **ок**; пустышки помечать disabled/декор. |
+| **Сверка** | Владелец: `npm run dev` без настроек. Агент: overlay/capture в CI; sign-off по PNG. |
+| **Авто-setup** | После rebuild: bootstrap NEON; сейчас stub renderer. |
+| **Sign-off** | `[x]` в матрице refs **только** после overlay ≈ 0 или скрин в J. |
+| **Порядок срезов** | `ui.1` ref.27→26 → `ui.2` ref.1 → `ui.3` refs 2–9 → `ui.4` 10–25 → `ui.5` 26–27 + motion. |
+
+**Охват:** **все** `docs/reference/*.png` (refs **1–27** + логотипы/иконка). **ref.1** в sprint — только **порядок работ**, не «единственный экран».
+
+**Активный срез:** **ui.2** (ref.1 первым в очереди экранов после kit 27→26). Детали: [`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md).
 
 ---
 
-## Что видно в `npm run dev` сейчас (UI ZERO)
+## UI PURGE v3 — выполнен (2026-05-28)
+
+**Статус:** renderer = **stub** (`data-velorix-ui=rebuild`); `locales/**` удалены; UI IPC в preload — **shell / log / quit**; `RENDERER_STATE_APPROACH = 'none'`. Матрица refs 1–27 — **все `[ ]`**. Rebuild не начат.
+
+**Запрещено** без явной просьбы владельца: `git revert` / `git restore` / `checkout` удалённого renderer/locales.
+
+### Исключения / cross-cutting chrome (все refs)
+
+| Элемент | Решение |
+| ------- | ------- |
+| Footer сайдбара (2× settings + power) | **Не в каноне** — не верстаем |
+| ─ / ✕ | **Обязательны** на каждом ref (`NeonWindowChrome` при rebuild) |
+| □ maximize, app menu, OS title bar | **Нет** |
+| ref.1 PNG | Chrome вне сравнения overlay до обновления PNG |
+
+### После rebuild
+
+1. ref.27→26 токены → `NeonWindowChrome` + px-shell → refs 1–27 → IPC вертикальными срезами → новые `locales`/ui-text с PNG.
+2. `dev:capture-ui` — **новая** команда после rebuild (старая удалена).
+
+---
+
+## UI ZERO / PURGE v2 — архив смысла
+
+Не использовать как навигатор; факты выше (**PURGE v3**).
+
+---
+
+## Что видно в `npm run dev` сейчас
 
 | Слой | Факт |
 | ---- | ---- |
-| **Окно** | Одно `BrowserWindow`; тёмный фон; **нет** продуктового React UI. |
-| **Renderer** | `npm run dev` → `#ref1` NeonShell (default); `#ref27` / `#ref26` kit; sidebar GPU panel. |
-| **Main/preload** | IPC, ffmpeg, yt-dlp, workflow — **сохранены**. |
-| **Refs 1–27** | PNG в `docs/reference/`; **ни один** экран не сверен 1:1 с кодом. |
+| **Окно** | Frameless; на весь workArea; только ─ и ✕ (**J-1807**). |
+| **Renderer** | `NeonShell` + старые `components/**` параллельно; **ни один** ref не 1:1. |
+| **Main/preload** | Сохранены. |
+| **Refs 1–27** | PNG на диске; матрица ниже — все **`[ ]`**. |
 
-**Вывод:** backend ≠ UI. Пересборка — sprint `neon.*` и матрица refs ниже.
+**Вывод:** нужен **UI PURGE v2** или тот же 0% останется.
 
 ## Стратегия burn-down UI (канон; refs = единственная истина)
 
@@ -46,7 +87,7 @@
 | Область | ~% | Комментарий |
 | ------- | -- | ----------- |
 | Токены / тема в renderer | **~25** | `velorix-neon/*` + `ref27-showcase*.css`; kit ~28 карточек; sign-off PNG — нет. |
-| Shell layout (Phase D.2) | **~24** | `NeonShell` + ref.1 center tabs (Редактор/Загрузки/Консоль); sign-off PNG — нет. |
+| Shell layout (Phase D.2) | **~28** | `NeonShell` + ref.1 center (превью + таймлайн, без вкладок/dock); sign-off PNG — нет. |
 | Визуал экранов refs **1–9** | **~45** | refs 2–9 + ref.6 settings IPC; ref.5 markdown; sign-off PNG — нет. |
 | Модалки / утилиты refs **10–25** | **~35** | modals 11, 18–23 + tools full-screen 12–17, 24–25; sign-off PNG — нет. |
 | Showcase refs **26–27** | **0** | Только PNG. |
@@ -69,13 +110,13 @@
 
 ## Ближайший TODO спринта
 
-**Правило:** **3–7** пунктов, ≤ **220** символов. Детали — матрица refs ниже.
+**Правило:** **3–7** пунктов, ≤ **220** символов. **Блокер:** пока UI ≠ PNG 1:1 — **только** вёрстка refs; IPC/фичи — после sign-off.
 
-- [~] **neon.1** **ref.27** — `--vn-*`→`--fa-*` bridge, `02-surfaces` в index, палитра на `#ref27`; sign-off PNG — нет.
-- [~] **neon.2** **ref.26** — матрица кнопок/nav/статусов + forced states + reduced-motion; sign-off PNG — нет.
-- [~] **neon.3** **ref.1** — export trim In/Out, openOutput, transport; sign-off PNG — нет.
-- [~] **neon.4** **refs 2–3,8** — downloads/history openOutput; inspector→trim; sign-off PNG — нет.
-- [~] **neon.5** Motion v1 — trim/tabs/seek + palette; sign-off PNG — нет.
+- [~] **ui.1** **ref.27→26** — kit 1:1 + токены; overlay `?refOverlay=1`; `npm run dev:capture-ui` (фундамент есть).
+- [~] **ui.2** **ref.1** ← **активный срез** — shell+dock+preview chrome+timeline toolbar+FFmpeg rail 1:1; sign-off PNG — нет.
+- [ ] **ui.3** **refs 2–9** — экраны portal 1:1; ref.5 = `KnowledgeEmbeddedWorkspace` + rail превью.
+- [ ] **ui.4** **refs 10–25** — modals/tools full-screen 1:1.
+- [ ] **ui.5** **refs 26–27** — showcase в prod hash; sign-off каждого PNG в J.
 
 ---
 
@@ -127,7 +168,7 @@ PNG: `docs/reference/`. Анализ: NEON § «Анализ референса 
 
 | Ref | Экран / поверхность | Shell | Layout | Функц. | Motion |
 | --- | ------------------- | ----- | ------ | ------ | ------ |
-| 1 | Обработка (canonical) | [ ] | [ ] | [ ] | [ ] |
+| 1 | Обработка / редактор (`velorix-neon-reference-processing.png`) | [ ] | [ ] | [ ] | [ ] |
 | 2 | Загрузки | [ ] | [ ] | [ ] | [ ] |
 | 3 | История + аналитика | [ ] | [ ] | [ ] | [ ] |
 | 4 | Планировщик (week grid) | [ ] | [ ] | [ ] | [ ] |
@@ -180,7 +221,7 @@ PNG: `docs/reference/`. Анализ: NEON § «Анализ референса 
 
 - [x] **snap.1** Electron + TS + single-NEON; pop-out снят.
 - [x] **snap.2** `npm run check:quiet` зелёный.
-- [x] **snap.3** Vitest **238** test files / **1802** tests (2026-05-28, J-1705).
+- [x] **snap.3** Vitest **234** test files / **1787** tests (2026-05-28, UI PURGE v3).
 - [x] **snap.4** `audit-manifest` **1156** файлов.
 - [x] **snap.5** Help 44 workflow; guards OK.
 - [ ] **snap.6** **NEON UI 0%** — UI ZERO REBUILD; backend отдельно.

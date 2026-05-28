@@ -1779,3 +1779,57 @@
 - [J-1753] 2026-05-28 06:13:08 [Assistant]: neon.3 keyboard zoom расширен (`PageUp`/`PageDown`) + tests; zoom-hint обновлён (`PgUp/PgDn`). `npm run check:quiet`.
 - [J-1754] 2026-05-28 06:18:17 [Assistant]: neon.3 UX — double-click reset zoom (`1x`) на timeline-scroll + hint обновлён (`Double-click reset`). `npm run check:quiet`.
 - [J-1755] 2026-05-28 06:23:48 [Assistant]: neon.3 accessibility polish — timeline zoom получил tooltip (`Ctrl+Wheel / double-click`) и aria/title для reset `1x`; пакет J-1751..1755. `npm run check:quiet`, `git commit`.
+- [J-1756] 2026-05-28 06:33:04 [Assistant]: neon.3 UX — быстрые zoom-presets `1x/2x/4x` в ref.1 (active state + hint update), чтобы быстрее переключать scale. `npm run check:quiet`.
+- [J-1757] 2026-05-28 06:38:57 [Assistant]: neon.3 shortcuts — zoom presets по клавишам `1/2/4` (кроме input/editable) + tests; hint синхронизирован. `npm run check:quiet`.
+- [J-1758] 2026-05-28 06:45:29 [Assistant]: X.6 Ctrl+K zoom расширен: команды preset `zoom 2x` и `zoom 4x` (hotkey-подсказки в palette) + tests. `npm run check:quiet`.
+- [J-1759] 2026-05-28 06:51:06 [Assistant]: X.6 Ctrl+K zoom flow — добавлена команда `следующий preset` (`1x→2x→4x→1x`) для быстрых повторных переключений; tests обновлены. `npm run check:quiet`.
+- [J-1760] 2026-05-28 07:11:54 [Assistant]: Задача №1 зафиксирована (NEON-чеклист, VELORIX_NEON_THEME, velorix-continue, SOURCES_OF_TRUTH); ui.2 ref.1 — preview chrome, timeline toolbar, FFmpeg rail плотность, statusbar; overlay/knowledge ref.5. `npm run check:quiet`.
+- [J-1761] 2026-05-28 07:19:02 [Assistant]: Задача №1 авто-setup — `bootstrapNeonUi` (тёмная NEON, атмосфера/motion/global CSS, скрытие dev-подписей); ref.1 timeline (мульти-сегменты V1, pink playhead, rail glow), neon-chrome/statusbar; docs: владелец только `npm run dev`. `npm run check:quiet`.
+- [J-1762] 2026-05-28 07:22:32 [Assistant]: ui.2 ref.1 — mock-таймлайн без медиа (01:36:53), глобальный playhead, V1–V3 клипы+thumb, A1/A2 waveform+envelope A2, lock/mute; preview chrome/dock glow; tests duration helpers. `npm run check:quiet`.
+- [J-1763] 2026-05-28 07:25:21 [Assistant]: ui.2 ref.1 layout — вкладки Редактор/Загрузки/Консоль; dock Проект+Медиатека; transport без trim; FFmpeg rail плотнее + CTA «Начать экспорт»; statusbar путь; flex превью/таймлайн. `npm run check:quiet`.
+- [J-1764] 2026-05-28 07:28:21 [Assistant]: ui.2+ui.1 — SVG toolbar таймлайна; preview empty glow; sidebar nav ref.27 glow; GPU mock RTX 3090; `neon-ref27-bridge.css`. `npm run check:quiet`.
+- [J-1765] 2026-05-28 07:30:55 [Assistant]: ui.2 ref.1 — SVG transport; FFmpeg rail scroll+sticky CTA+pulse; пресеты/аудио плотнее; timeline Snap/zoom; preview vignette. `npm run check:quiet`.
+- [J-1766] 2026-05-28 07:36:33 [Assistant]: Новый канон ref.1 PNG (2026-05-28); удалены dock/вкладки/peeks/trim UI не с рефа; layout sidebar+center+rail; SMPT timecode; toolbar/zoom/statusbar/sidebar по mockup. `npm run check:quiet`.
+- [J-1767] 2026-05-28 07:39:02 [Assistant]: Переименование ref.1 — `velorix-neon-reference-processing.png`, `VELORIX_NEON_REFERENCE_PROCESSING_REL` (вместо canonical); docs/reference README + NEON theme + чеклист. `npm run check:quiet`.
+- [J-1768] 2026-05-28 07:43:24 [Assistant]: ui.2 ref.1 — playhead `01:36:53:08` mock, transport/rail по PNG (секции свёрнуты, CTA без лишних кнопок), lane lock/eye vs mute/solo, statusbar `.vlxr`; dead CSS tabs. `npm run check:quiet`.
+- [J-1769] 2026-05-28 07:46:32 [Assistant]: ui.2 ref.1 — подписи клипов на сегментах V1–V3, превью city-night placeholder, transport grid, rail порядок секций + CTA→YouTube 4K footer, uppercase summaries. `npm run check:quiet`.
+- [J-1770] 2026-05-28 07:49:13 [Assistant]: ui.2 ref.1 — transport внутри preview-shell; toolbar «Выделение»; GPU mock 68%/58°C; statusbar сепараторы. `npm run check:quiet`.
+- [J-1771] 2026-05-28 07:51:31 [Assistant]: ui.2 ref.1 — rail лейблы RU, кольца CPU/RAM/Диск 18/42/38%, ruler/sparkline/head/center atmosphere; title gradient (ref.27 bridge). `npm run check:quiet`.
+- [J-1772] 2026-05-28 07:53:57 [Assistant]: ui.2 ref.1 — thumb-strip на видео-клипах V1–V3, audio-clip spans A1/A2, zoom label N×, выше video lanes. `npm run check:quiet`.
+- [J-1773] 2026-05-28 07:55:59 [Assistant]: ui.2 ref.1 — lane labels V/A цвет, playhead z-index; sidebar ⚙→settings, ⏻→quit modal; footer glow. `npm run check:quiet`.
+- [J-1774] 2026-05-28 18:24:25 [Assistant]: ui.2 ref.1 — дорожки V3→V1 сверху вниз; playhead через ruler+lanes (bubble на шкале); sidebar footer внизу; preset footer audio codec. `npm run check:quiet`.
+- [J-1775] 2026-05-28 18:27:23 [Assistant]: ui.2 ref.1 — mock таймлайн по PNG: V2/V3 пустые, V1 три клипа + glitch_effect; бейджи 4K/fx; preview badge «4K Ultra HD». `npm run check:quiet`.
+- [J-1776] 2026-05-28 18:30:08 [Assistant]: ui.2 ref.1 — statusbar mock 3840×2160/174,708; toolbar divider; A2 keyframes; playhead triangle; rail controls neon; preview badge chrome. `npm run check:quiet`.
+- [J-1777] 2026-05-28 18:32:30 [Assistant]: ui.2 ref.1 — empty preview crop из ref.1 PNG; пропорции preview~62%/timeline~36%; play transport glow. `npm run check:quiet`.
+- [J-1778] 2026-05-28 18:36:25 [Assistant]: ui.2 ref.1 — crop константы превью 195%/47% 31%; mock seek по ruler+V1; timecode из store; ref.27 focus-visible на transport/nav. `npm run check:quiet`.
+- [J-1779] 2026-05-28 18:40:13 [Assistant]: ui.2 ref.1 — превью: «Сохранено 2 мин», watermark VELORIX, mock transport seek/play; таймлайн V1 active, A1 «Высокая громк.», snap glow; statusbar «Выделение». `npm run check:quiet`.
+- [J-1780] 2026-05-28 18:43:17 [Assistant]: ui.2 ref.1 — nav sidebar порядок PNG; badge 4K слева; сеть под GPU; footer 🔔; rail ? help + preset footer ⚙; toolbar без «Слои». `npm run check:quiet`.
+- [J-1781] 2026-05-28 18:46:59 [Assistant]: ui.2 ref.1 — thumb-strip V1 из ref PNG; SVG lock/eye/mute/solo; rail плотность секций; выше video lanes. `npm run check:quiet`.
+- [J-1782] 2026-05-28 18:50:34 [Assistant]: ui.2 ref.1 — playhead `--vn-glow-playhead` + bubble; A2 envelope fill/line + 6 keyframes; magnet U-icon; crop thumb/preview. `npm run check:quiet`.
+- [J-1783] 2026-05-28 18:53:33 [Assistant]: ui.2 ref.1 — ruler playhead+9 ticks mock; major ticks; rail open/closed chrome; export CTA decor; preview vignette; «ПРОЕКТ». `npm run check:quiet`.
+- [J-1784] 2026-05-28 18:56:28 [Assistant]: ui.2 ref.1 — V1 шесть клипов PNG; statusbar 3840×2160 (4K)/174 708/выделение 00; sidebar хранилище 1.2/2.0 TB; toolbar без «Группировать». `npm run check:quiet`.
+- [J-1785] 2026-05-28 18:59:33 [Assistant]: ui.2 ref.1 — иконка ножниц cut; rail chevrons ▾/▸; play glow mock; labels 6 клипов; timeline scrollbar; тест V1×6. `npm run check:quiet`.
+- [J-1786] 2026-05-28 19:02:23 [Assistant]: ui.2 ref.1 — overlay processing cover; V2/V3 empty lanes dashed; CRF badge 18; 3840×2160 (4K); ref overlay HUD всегда. `npm run check:quiet`.
+- [J-1787] 2026-05-28 19:06:08 [Assistant]: ui.2 ref.1 — refOverlay fit cover/contain/fill (HUD+?refOverlayFit=); saved dot; two-pass toggle glow; GPU 24 GB; shell 15rem. `npm run check:quiet`.
+- [J-1788] 2026-05-28 19:08:58 [Assistant]: ui.2 ref.1 — link-маркеры на стыках V1; overlay opacity в localStorage; zoom 70% pill; marker flag icon. `npm run check:quiet`.
+- [J-1789] 2026-05-28 19:11:46 [Assistant]: ui.2 ref.1 — preview chrome SVG (fit/search/expand/close); nav processing clapper; timeline edge fade; export 🚀 CTA. `npm run check:quiet`.
+- [J-1790] 2026-05-28 19:15:08 [Assistant]: ui.2 ref.1 — export rocket SVG; volume icon+slider; timeline zoom slider-only; audio waveform denser; rail open accent + CTA uppercase. `npm run check:quiet`.
+- [J-1791] 2026-05-28 19:17:48 [Assistant]: ui.2 ref.1 — sidebar footer SVG (settings/profile/power); transport settings icon; V1 lane highlight; nav active glow 4px; GPU sparkline glow. `npm run check:quiet`.
+- [J-1792] 2026-05-28 19:21:28 [Assistant]: ui.2 ref.1 — preview 16:9; zoom/Вписать ▾; transport expand; footer database hex; V1 lane-head accent; timeline 38%. `npm run check:quiet`.
+- [J-1793] 2026-05-28 19:24:47 [Assistant]: ui.2 ref.1 — badge 4K справа под watermark; crop icon transport; solo «S»; scanlines still; preset footer glow; statusbar tech align. `npm run check:quiet`.
+- [J-1794] 2026-05-28 19:27:17 [Assistant]: ui.2 ref.1 — ruler playhead bubble SMPTE; GPU load/temp строки; timeline glow; play крупнее; rail footer shadow; ruler minor labels скрыты. `npm run check:quiet`.
+- [J-1795] 2026-05-28 19:29:55 [Assistant]: ui.2 ref.1 — timecode ▾; A1 envelope+keyframes; badge fk; V2/V3 head dim; rings glow; toolbar bg; two-pass uppercase. `npm run check:quiet`.
+- [J-1796] 2026-05-28 19:32:13 [Assistant]: ui.2 ref.1 — status ✓ в круге; clip badges слева; nav scrollbar; still no-repeat; тест A1 envelope + fk. `npm run check:quiet` (1834 tests).
+- [J-1797] 2026-05-28 19:34:28 [Assistant]: ui.2 ref.1 — rail scroll/select chrome; open section pink summary; audio lane height; envelope keys; nav label ellipsis. `npm run check:quiet`.
+- [J-1798] 2026-05-28 19:37:14 [Assistant]: ui.2 ref.1 — один playhead bubble (без дубля на ruler); overlay HUD ref1 tag; editor overflow; export label flex; playhead bubble компактнее. `npm run check:quiet`.
+- [J-1799] 2026-05-28 19:40:28 [Assistant]: ui.2 ref.1 — shell grid 15rem; center bg merge; thumb 62%; nav compact; ref1 layout gap/duplicate CSS cleanup. `npm run check:quiet`.
+- [J-1800] 2026-05-28 19:43:34 [Assistant]: ui.2 ref.1 — `processing-screen__center-pane` в разметке (flex preview+timeline); head flex-shrink; overlay HUD opacity %. `npm run check:quiet`.
+- [J-1801] 2026-05-28 19:47:45 [Assistant]: ui.2 ref.1 — удалён legacy CSS dock/workspace/tabs/trim; palette «Сверка с PNG» + `toggleRefOverlayEnabled`; ref1-chrome без dock/workspace. `npm run check:quiet`.
+- [J-1802] 2026-05-28 19:52:03 [Assistant]: ui.2 ref.1 — снят orphan `VideoTimeline*` + hooks; удалены `velorix-neon-timeline/preview.css`; capture `#ref1`+ref26/27; motion без trim-tab. `npm run check:quiet`.
+- [J-1803] 2026-05-28 19:57:15 [Assistant]: ui.1+ui.2 — ref overlay ref26/27 на `#ref26`/`#ref27`; `neon-ref-overlay-tab.ts`+тест; `refOverlayUrlForId`. `npm run check:quiet` (1838 tests).
+- [J-1804] 2026-05-28 20:05:11 [Assistant]: ui.2 ref.1 — fix logo import (`neon-brand-assets`); frameless+без menu bar (refs); drag region; power→`requestShellClose` quit-flow. `npm run check:quiet`.
+- [J-1805] 2026-05-28 20:35:30 [Assistant]: ui.2 refs — `NeonWindowChrome` (─ □ ✕) + IPC minimize/maximize/close; drag только полоса; в `NeonShell`. `npm run check:quiet`.
+- [J-1806] 2026-05-28 20:42:15 [Assistant]: ui.2 — убран дубль footer сайдбара (2×настройки + power); навигация только в списке + ✕ окна. `npm run check:quiet`.
+- [J-1807] 2026-05-28 21:05:00 [Assistant]: ui.2 — главное окно на весь workArea монитора, `resizable/maximizable` off; chrome только ─ и ✕; IPC maximize снят. `npm run check:quiet`.
+- [J-1808] 2026-05-28 21:18:00 [Assistant]: NEON-чеклист — UI PURGE v2: условия полного сноса renderer UI, правила 1:1 для refs 1–27, команда «режь UI»; снят устаревший факт «нет React UI». `npm run check:checklist`.
+- [J-1809] 2026-05-28 22:23:48 [Assistant]: UI PURGE v3 — renderer stub; locales удалены; preload shell/log/quit; tests/renderer сняты; docs/guards sync; `RENDERER_STATE_APPROACH=none`; manual-smoke → post-purge-manual-smoke. `npm run check:quiet` (234 files / 1787 tests).

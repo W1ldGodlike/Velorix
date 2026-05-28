@@ -2,7 +2,7 @@
 
 **Навигатор агента:** UI/UX, NEON, Phase D, refs **1–27**, открытые пробелы Variant A, новый функционал под PNG. **«продолжай» / `+`:** этот файл → sprint TODO в [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md). **Запрещено:** [`docs/archive/`](archive/README.md) как навигатор. Ручная проверка на железе (владелец) — Support ZIP `ownerHardwareChecklist:`.
 
-**Эталон UI — «Обработка» (реф. 1):** [`reference/velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png)  
+**Эталон UI — «Обработка» / редактор (реф. 1):** [`reference/velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png) — **канон shell chrome** для всех PNG refs 1–27  
 **Эталон иконки приложения:** [`reference/velorix-neon-app-icon-reference.png`](reference/velorix-neon-app-icon-reference.png) → в сборке: `resources/icon.png` (по явной просьбе владельца).  
 **Эталон логотипа (горизонтальный):** [`reference/velorix-neon-logo-wordmark-reference.png`](reference/velorix-neon-logo-wordmark-reference.png) — mark слева, **VELORIX** справа (этап 2 sidebar/topbar).  
 **Эталон логотипа (вертикальный):** [`reference/velorix-neon-logo-stacked-reference.png`](reference/velorix-neon-logo-stacked-reference.png) — mark сверху, **VELORIX** снизу (splash, about, узкий brand).  
@@ -53,6 +53,18 @@
 
 **Запрещено:** `git checkout` старого `src/renderer/`; восстанавливать `AppRoot` / `NeonShell` / `velorix-neon-*.css` как «готово».
 
+### Задача №1 (блокер; владелец 2026-05-28)
+
+**Смысл:** весь UI **идентично** PNG refs **1–27**; функционал кнопок — позже. **Пока Задача №1 не закрыта — другие продуктовые срезы запрещены.**
+
+| Команда | Действие агента |
+| ------- | ---------------- |
+| **«продолжай» / `+`** | Продолжить **Задачу №1**; активный срез — [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) `## Ближайший TODO` (сейчас **ui.2 ref.1**). |
+| Сверка владельца | Только `npm run dev` — без overlay/настроек |
+| Сверка агента | `npm run dev:capture-ui`; overlay debug: `localStorage velorixRefOverlay=1` |
+| Sign-off | Матрица refs: `[x]` только при 1:1 vs PNG |
+
+Чеклист sprint: [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) § «Задача №1».
 
 ---
 
@@ -133,7 +145,7 @@
 
 | Артефакт | Файл | Роль |
 |----------|------|------|
-| **Обработка** (эталон / реф. 1) | `velorix-neon-canonical-reference.png` | Главный mockup: превью + timeline + FFmpeg rail; этапы 1–6 |
+| **Обработка** (эталон / реф. 1) | `velorix-neon-reference-processing.png` | Главный mockup: превью + timeline + FFmpeg rail; этапы 1–6 |
 | **Иконка приложения** | `velorix-neon-app-icon-reference.png` | Только mark (квадрат под app icon / favicon). Упаковка → `resources/icon.png`. |
 | **Логотип горизонтальный** | `velorix-neon-logo-wordmark-reference.png` | Mark **слева** + **VELORIX** **справа** (sidebar / topbar). |
 | **Логотип вертикальный** | `velorix-neon-logo-stacked-reference.png` | Mark **сверху** + **VELORIX** **снизу** (splash, about, узкий brand). |
@@ -148,7 +160,7 @@
 | **Инструменты** (реф. 10) | `velorix-neon-reference-tools.png` | Хаб карточек; дочерние окна — реф. 11–19, 22 |
 | Модалки / мастера (реф. 11–22) | `velorix-neon-reference-*.png` | См. шапку дока; этап 6 или фаза D |
 
-**Именование реф. 1:** на mockup экран в sidebar и в заголовке — **«Обработка»** (не «Редактор»). Файл `velorix-neon-canonical-reference.png` = **эталонный PNG** этого экрана. В **текущем** приложении та же зона — workspace `editor` / строка «Редактор» в topbar (`Help` → вкладки); целевой NEON-shell (фаза D) — пункт sidebar **Обработка**.
+**Именование реф. 1:** файл `velorix-neon-reference-processing.png` (паттерн `velorix-neon-reference-<экран>.png`). На mockup: sidebar **«Обработка»** (active), заголовок **«Обработка»**. Синонимы в коде: `processing`, «редактор», «обработчик». Workspace `processing` в `workspace-tab.ts` — **не** переименовывать без миграции IPC; UI-лейбл — **Обработка**.
 
 **Терминал = Консоль (решение владельца):** на части mockup’ов встречаются оба слова (sidebar **Терминал**, topbar реф. 1 — **Консоль**). Для продукта и референсов — **один экран**, один канон: реф. 9 `velorix-neon-reference-terminal.png`. Отдельный PNG «Консоль» **не** нужен; вкладки внутри экрана (FFmpeg Logs / System Console / Live / Debug) — **подрежимы**, не второй пункт nav.
 
@@ -166,7 +178,7 @@
 - Не переделывать layout / плотность сетки (до фазы D).
 - Не упрощать UI до generic SaaS dark mode.
 - До полного варианта A (§ выше): только dark + `html:not([data-theme])` для черновика CSS. **Цель A:** светлая и legacy dark/light **удалены**, остаётся только NEON.
-- Сверка с [`reference/velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png).
+- Сверка с [`reference/velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png).
 
 | # | Текст в доке | Зона | CSS / код (факт) | Sign-off vs PNG |
 |---|--------------|------|------------------|-----------------|
@@ -177,13 +189,13 @@
 | 5 | [ ] | Inspector / export rail | `velorix-neon-inspector.css` (UI ZERO) | [ ] |
 | 6 | [ ] | Final polish (после sign-off 1–5) | `velorix-neon-polish.css` (UI ZERO) | [ ] |
 
-**Sign-off (2026-05-23, референс 1):** все `[ ]` в таблице выше и в фазе B — **сброшены** после замены `velorix-neon-canonical-reference.png`. Старые визуальные sign-off **недействительны**. Колонка «Код» `[x]` = черновик J-1621…1625; **не** считать закрытием этапа без новой сверки с PNG.
+**Sign-off (2026-05-23, референс 1):** все `[ ]` в таблице выше и в фазе B — **сброшены** после замены `velorix-neon-reference-processing.png`. Старые визуальные sign-off **недействительны**. Колонка «Код» `[x]` = черновик J-1621…1625; **не** считать закрытием этапа без новой сверки с PNG.
 
 ---
 
-## Анализ референса 1 (`velorix-neon-canonical-reference.png`)
+## Анализ референса processing / ref. 1 (`velorix-neon-reference-processing.png`)
 
-Экран **«Обработка»** v1.7.0 — **эталонный** полный mockup (файл `velorix-neon-canonical-reference.png`). Подзаголовок на PNG: «Профессиональная обработка и монтаж медиафайлов». Ниже: что на картинке, что уже есть в Velorix, и что **не входит** в этапы NEON 1–6 (только стиль).
+Экран **«Обработка»** (редактор) v1.7.0 — **эталонный** полный mockup (файл `velorix-neon-reference-processing.png`, обновлён 2026-05-28). Синонимы в продукте: **Обработка / редактор / processing**. Подзаголовок на PNG: «Профессиональная обработка и монтаж медиафайлов». Layout: **sidebar nav + center (превью + таймлайн) + FFmpeg rail** — без второго левого dock и без вкладок «Редактор/Загрузки/Консоль» в центре.
 
 ### Карта зон → этапы NEON
 
@@ -225,11 +237,11 @@
 
 ### Что есть в коде **сегодня** (editor timeline)
 
-- **Сейчас в коде (legacy, под удаление):** waveform + trim in/out — `VideoTimeline*`. **Цель ref.1:** layout и поведение **по PNG**, не клон старого trim-редактора.
+- **Legacy trim-editor:** `VideoTimeline*` снят (**J-1802**); канон ref.1 — `ProcessingTimeline` + mock NLE по PNG (не клон trim In/Out).
 - Toolbar: **In/Out**, reset trim, zoom, save frame, export jump — **не** blade/link/snap/multi-track.
 - Нет модели **клипов**, **дорожек V1–V3 / A1–A2**, drag-and-drop на линии, split/join на timeline.
 
-Архив ТЗ описывал trim-редактор; **канон — ref.1 PNG** (NLE-визуал на mockup). Legacy `VideoTimeline*` снять при внедрении ref.1.
+Архив ТЗ описывал trim-редактор; **канон — ref.1 PNG** (NLE-визуал на mockup).
 
 ### Классификация работ (чтобы не смешать с NEON 1–6)
 
@@ -244,7 +256,7 @@
 
 ### Черновик для **D.1** (карта экранов)
 
-- [ ] **Обработка** (эталон) — [`velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png) (реф. 1)
+- [ ] **Обработка** (эталон) — [`velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png) (реф. 1)
 - [ ] Загрузки — [`velorix-neon-reference-downloads.png`](reference/velorix-neon-reference-downloads.png) (реф. 2)
 - [ ] История — [`velorix-neon-reference-history.png`](reference/velorix-neon-reference-history.png) (реф. 3)
 - [ ] Планировщик — [`velorix-neon-reference-planner.png`](reference/velorix-neon-reference-planner.png) (реф. 4)
@@ -579,7 +591,7 @@
 ### Этап 1 — VELORIX NEON foundation (design system)
 
 **Статус текста:** зафиксирован дословно (2026-05-23, «1промт»).  
-**Эталон:** [`reference/velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png) — в сообщении вложен тот же mockup («attached reference image»).
+**Эталон:** [`reference/velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png) — в сообщении вложен тот же mockup («attached reference image»).
 
 <details>
 <summary><strong>Промпт владельца (этап 1) — полный текст</strong></summary>
@@ -645,7 +657,7 @@ The final visual system must feel immersive, premium and cinematic.
 ### Этап 2 — Sidebar + top navigation
 
 **Статус текста:** зафиксирован дословно (2026-05-23, «2 промт»).  
-**Эталон:** [`reference/velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png) — в сообщении вложен mockup («attached reference image»).
+**Эталон:** [`reference/velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png) — в сообщении вложен mockup («attached reference image»).
 
 <details>
 <summary><strong>Промпт владельца (этап 2) — полный текст</strong></summary>
@@ -699,7 +711,7 @@ Match the reference image closely.
 ### Этап 3 — Preview area (centerpiece)
 
 **Статус текста:** зафиксирован дословно (2026-05-23, «3 промт»).  
-**Эталон:** [`reference/velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png) — в сообщении вложен mockup («attached reference image»).
+**Эталон:** [`reference/velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png) — в сообщении вложен mockup («attached reference image»).
 
 <details>
 <summary><strong>Промпт владельца (этап 3) — полный текст</strong></summary>
@@ -751,7 +763,7 @@ The result should feel atmospheric and futuristic.
 ### Этап 4 — Timeline (главная визуальная зона)
 
 **Статус текста:** зафиксирован дословно (2026-05-23, «4 промт»; дубликат с тем же текстом ранее подписан «3промт» — канон: **этап 4**).  
-**Эталон:** [`reference/velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png) — в сообщении вложен mockup («attached reference image»).
+**Эталон:** [`reference/velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png) — в сообщении вложен mockup («attached reference image»).
 
 <details>
 <summary><strong>Промпт владельца (этап 4) — полный текст</strong></summary>
@@ -809,7 +821,7 @@ The timeline should feel expensive and immersive.
 ### Этап 5 — Inspector / export settings (правый rail)
 
 **Статус текста:** зафиксирован дословно (2026-05-23, «5промт»).  
-**Эталон:** [`reference/velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png) — в сообщении вложен mockup («attached reference image»).
+**Эталон:** [`reference/velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png) — в сообщении вложен mockup («attached reference image»).
 
 <details>
 <summary><strong>Промпт владельца (этап 5) — полный текст</strong></summary>
@@ -864,7 +876,7 @@ Avoid:
 ### Этап 6 — Final polish (весь интерфейс)
 
 **Статус текста:** зафиксирован дословно (2026-05-23, «6 промт»).  
-**Эталон:** [`reference/velorix-neon-canonical-reference.png`](reference/velorix-neon-canonical-reference.png) — в сообщении вложен mockup («attached reference image»).
+**Эталон:** [`reference/velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png) — в сообщении вложен mockup («attached reference image»).
 
 <details>
 <summary><strong>Промпт владельца (этап 6) — полный текст</strong></summary>
@@ -1056,7 +1068,7 @@ src/renderer/src/assets/themes/
 | 2026-05-23 | — | Эталон логотипа mark+wordmark: `velorix-neon-logo-wordmark-reference.png`, `VELORIX_NEON_LOGO_WORDMARK_REFERENCE_REL`. |
 | 2026-05-23 | — | Замена PNG wordmark (исправленный файл владельца; тот же путь `velorix-neon-logo-wordmark-reference.png`). |
 | 2026-05-23 | — | Эталон вертикального логотипа: `velorix-neon-logo-stacked-reference.png`, `VELORIX_NEON_LOGO_STACKED_REFERENCE_REL`. |
-| 2026-05-23 | — | **Референс 1 (владелец):** замена главного mockup — `velorix-neon-canonical-reference.png` (тот же путь / `VELORIX_NEON_CANONICAL_REFERENCE_REL`). |
+| 2026-05-23 | — | **Референс 1 (владелец):** замена главного mockup — `velorix-neon-reference-processing.png` (тот же путь / `VELORIX_NEON_REFERENCE_PROCESSING_REL`). |
 | 2026-05-23 | — | Sign-off этапов 1–6 и фазы B **сброшен** под новый canonical; § «Анализ референса 1» (NLE timeline vs код). |
 | 2026-05-23 | — | **Референс 2:** `velorix-neon-reference-downloads.png`, `VELORIX_NEON_REFERENCE_DOWNLOADS_REL`; § «Анализ референса 2». |
 | 2026-05-23 | — | **Референс 3:** `velorix-neon-reference-history.png`, `VELORIX_NEON_REFERENCE_HISTORY_REL`; § «Анализ референса 3». |

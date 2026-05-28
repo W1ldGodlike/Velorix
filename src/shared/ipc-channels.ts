@@ -146,6 +146,9 @@ export const mainWindowIpc = {
   uiLocaleChanged: 'velorix:ui-locale-changed',
   quitConfirmRequested: 'velorix:quit-confirm-requested',
   quitConfirmRespond: 'velorix:quit-confirm-respond',
+  /** Frameless shell: закрытие с тем же quit-flow, что и системный close. */
+  shellRequestClose: 'velorix:shell-request-close',
+  shellRequestMinimize: 'velorix:shell-request-minimize',
   processErrorReported: 'velorix:process-error-reported',
   openEnginePaths: 'velorix:open-engine-paths',
   /** Main → renderer: открыть единое окно настроек; payload — `AppSettingsDialogSection` или пусто. */

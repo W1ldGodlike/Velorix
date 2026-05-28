@@ -12,12 +12,7 @@ import {
 import { installExternalNavigationGuard, openAllowedExternalUrl } from '../core/external-url'
 import { resolvePreloadOutFile } from '../core/preload-resolve'
 import type { WindowBoundsConfig } from '../services/settings/settings-store'
-import {
-  defaultMainEditorSize,
-  displayMatchingRestoreRect,
-  logicalScaleFactor,
-  mainEditorMinLogicalSize
-} from './window-hidpi'
+import { displayMatchingRestoreRect, mainEditorWorkAreaBounds } from './window-hidpi'
 import { isNativeMainBrowserWindowNeedsIcon } from '../platform'
 import { rectifyBoundsForRestore } from './window-bounds'
 
@@ -92,23 +87,23 @@ export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
   const savedMain = deps.getSavedMainBounds()
   const rect = savedMain ? rectifyBoundsForRestore(savedMain) : null
   const mainDisp = displayMatchingRestoreRect(rect)
-  const mainScale = logicalScaleFactor(mainDisp)
-  const mainMin = mainEditorMinLogicalSize(mainScale)
-  const mainDefault = defaultMainEditorSize(
-    mainDisp.size.width,
-    mainDisp.size.height,
-    mainMin.minWidth,
-    mainMin.minHeight
-  )
+  const workArea = mainEditorWorkAreaBounds(mainDisp)
 
   const mainWindow = new BrowserWindow({
-    width: rect?.width ?? mainDefault.width,
-    height: rect?.height ?? mainDefault.height,
-    minWidth: mainMin.minWidth,
-    minHeight: mainMin.minHeight,
-    ...(rect ? { x: rect.x, y: rect.y } : {}),
+    x: workArea.x,
+    y: workArea.y,
+    width: workArea.width,
+    height: workArea.height,
+    minWidth: workArea.width,
+    minHeight: workArea.height,
+    maxWidth: workArea.width,
+    maxHeight: workArea.height,
+    resizable: false,
+    maximizable: false,
+    fullscreenable: false,
     show: false,
-    autoHideMenuBar: false,
+    frame: false,
+    autoHideMenuBar: true,
     ...(isNativeMainBrowserWindowNeedsIcon() ? { icon } : {}),
     webPreferences: {
       preload: resolvePreloadOutFile('index', deps.mainDirname),
