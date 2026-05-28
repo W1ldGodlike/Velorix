@@ -1744,3 +1744,8 @@
 - [J-1718] 2026-05-28 02:47:39 [Assistant]: меню main→NeonShell (about/settings/downloads/inspector/engine-paths/tools); ref.3 история — `ProcessingHistoryFeed`+weeklySummary в rail. `npm run check:quiet`.
 - [J-1719] 2026-05-28 02:52:02 [Assistant]: ref.25 `PluginsModalBody`; `onPreviewOpened`→превью; tools hub bench/plugins→modals; Ctrl+K пресет+плагины. `npm run check:quiet`.
 - [J-1720] 2026-05-28 02:54:20 [Assistant]: пакет J-1716..1719 — ffmpeg error/presets, critical-crash, history+menu IPC, plugins/preview; `npm run check:quiet`, `git commit`, `git push`.
+- [J-1721] 2026-05-28 02:59:49 [Assistant]: neon.4 — `onSettingsBackupImported`/`onExportPresetsDiskChanged`→reload settings+FFmpeg rail; загрузки→пакетный экспорт (⊕, rail, Ctrl+K) с переходом на «Обработка». `npm run check:quiet`.
+- [J-1722] 2026-05-28 03:04:49 [Assistant]: neon.4/5 — инспектор «Экспорт всего файла»+`trimFromProbeDuration`; история yt-dlp live `onDownloadsHistoryChanged`; Ctrl+K export-trim-full; motion Ctrl+K palette. `npm run check:quiet`.
+- [J-1723] 2026-05-28 03:10:42 [Assistant]: neon.3/5 ref.1 — seek по клику V1+`requestPreviewSeek`; transport «К In/Out»; Ctrl+K seek trim; motion center tabs. `npm run check:quiet`.
+- [J-1724] 2026-05-28 03:15:26 [Assistant]: neon.1/2 — ref.27 utilities+semantic labels; ref.26 reduced-motion demo; тесты timeline/trim/palette; GPU sidebar async load. `npm run check:quiet`.
+- [J-1725] 2026-05-28 03:18:40 [Assistant]: пакет J-1721..1724 — batch export, settings reload, inspector trim, timeline seek, ref26/27 showcase, tests; `npm run check:quiet`, `git commit`.

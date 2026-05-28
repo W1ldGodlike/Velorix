@@ -9,6 +9,10 @@ export type CommandPaletteAction =
   | { type: 'modal'; id: SystemModalId }
   | { type: 'clear-export-trim' }
   | { type: 'batch-export-pick' }
+  | { type: 'batch-export-from-downloads' }
+  | { type: 'export-trim-full-file' }
+  | { type: 'seek-export-trim-in' }
+  | { type: 'seek-export-trim-out' }
   | { type: 'export-preset-name' }
 
 export type CommandPaletteItem = {
@@ -38,6 +42,30 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     label: 'Пакетный экспорт — выбрать файлы…',
     hint: 'Обработка',
     action: { type: 'batch-export-pick' }
+  },
+  {
+    id: 'batch-export-from-downloads',
+    label: 'Пакетный экспорт — готовые загрузки',
+    hint: 'Загрузки → Обработка',
+    action: { type: 'batch-export-from-downloads' }
+  },
+  {
+    id: 'export-trim-full-file',
+    label: 'Экспорт всего открытого файла',
+    hint: 'Инспектор → Обработка',
+    action: { type: 'export-trim-full-file' }
+  },
+  {
+    id: 'seek-export-trim-in',
+    label: 'Перейти к In',
+    hint: 'Обработка · превью',
+    action: { type: 'seek-export-trim-in' }
+  },
+  {
+    id: 'seek-export-trim-out',
+    label: 'Перейти к Out',
+    hint: 'Обработка · превью',
+    action: { type: 'seek-export-trim-out' }
   },
   {
     id: 'engine-paths',

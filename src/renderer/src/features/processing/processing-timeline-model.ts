@@ -19,3 +19,16 @@ export function buildTrimSpanStyle(
   const rightPct = Math.min(100, Math.max(leftPct, (trim.outSec / durationSec) * 100))
   return { left: `${String(leftPct)}%`, width: `${String(rightPct - leftPct)}%` }
 }
+
+/** Позиция на шкале таймлайна по клику (0…duration). */
+export function timelineSecFromPointer(
+  clientX: number,
+  rect: Pick<DOMRect, 'left' | 'width'>,
+  durationSec: number
+): number | null {
+  if (!Number.isFinite(durationSec) || durationSec <= 0 || rect.width <= 0) {
+    return null
+  }
+  const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width))
+  return ratio * durationSec
+}

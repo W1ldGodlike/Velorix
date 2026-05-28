@@ -39,6 +39,14 @@
     border-color: color-mix(in srgb, var(--fa-accent) 22%, transparent);
   }
 
+  .processing-screen__tab--active {
+    transition: var(--vn-transition-colors);
+  }
+
+  .processing-screen__center-pane {
+    animation: neon-workspace-in var(--vn-duration-fast) var(--vn-ease-out-cinematic);
+  }
+
   .vn-surface-glass:hover {
     box-shadow: var(--vn-shadow-elevation-2), var(--vn-glow-accent-soft);
   }
@@ -75,6 +83,18 @@
   .neon-shell__center > * {
     animation: neon-workspace-in var(--vn-duration-normal) var(--vn-ease-out-cinematic);
   }
+
+  .command-palette-backdrop {
+    animation: neon-palette-backdrop-in var(--vn-duration-fast) var(--vn-ease-out-cinematic);
+  }
+
+  .command-palette {
+    animation: neon-palette-in var(--vn-duration-normal) var(--vn-ease-out-cinematic);
+  }
+
+  .command-palette__item {
+    transition: var(--vn-transition-colors);
+  }
 }
 
 @keyframes neon-workspace-in {
@@ -88,8 +108,31 @@
   }
 }
 
+@keyframes neon-palette-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes neon-palette-in {
+  from {
+    opacity: 0.9;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .neon-shell__center > * {
+  .neon-shell__center > *,
+  .processing-screen__center-pane,
+  .command-palette-backdrop,
+  .command-palette {
     animation: none;
   }
 }

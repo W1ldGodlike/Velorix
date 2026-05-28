@@ -318,6 +318,22 @@
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fa-accent) 35%, transparent);
 }
 
+.processing-screen__lane-track--seekable {
+  cursor: pointer;
+}
+
+.processing-screen__lane-track--seekable:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--fa-accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.processing-screen__center-pane {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .processing-screen__trim-span {
   position: absolute;
   top: 0;

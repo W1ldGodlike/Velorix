@@ -82,19 +82,38 @@ export function Ref27PrimitivesPalette(): JSX.Element {
           <h3 className="ref27-primitives__group-title">Семантика (--fa-* bridge)</h3>
           <div className="ref27-primitives__semantic">
             <span className="ref27-primitives__semantic-chip" data-token="bg">
-              bg
+              --fa-bg
             </span>
             <span className="ref27-primitives__semantic-chip" data-token="surface">
-              surface
+              --fa-surface-elevated
             </span>
             <span className="ref27-primitives__semantic-chip" data-token="accent">
-              accent
+              --fa-accent
             </span>
             <span className="ref27-primitives__semantic-chip" data-token="success">
-              success
+              --fa-success
             </span>
             <span className="ref27-primitives__semantic-chip" data-token="danger">
-              danger
+              --fa-danger
+            </span>
+          </div>
+        </section>
+        <section className="ref27-primitives__group">
+          <h3 className="ref27-primitives__group-title">NEON utilities (--fa-neon-*)</h3>
+          <div className="ref27-primitives__utilities">
+            <span className="ref27-primitives__utility ref27-primitives__utility--glass vn-surface-glass">
+              vn-surface-glass
+            </span>
+            <span className="ref27-primitives__utility ref27-primitives__utility--gradient">
+              --fa-neon-surface-gradient
+            </span>
+            <span className="ref27-primitives__utility ref27-primitives__utility--progress">
+              <span className="app-ui-showcase-progress-track">
+                <span
+                  className="app-ui-showcase-progress-fill vn-progress-neon"
+                  style={{ width: '62%' }}
+                />
+              </span>
             </span>
           </div>
         </section>

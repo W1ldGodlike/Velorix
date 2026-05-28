@@ -4,7 +4,7 @@ import { VELORIX_NEON_REFERENCE_INSPECTOR_REL } from '../../../../shared/velorix
 
 import { applyOpenMediaPick } from '../../lib/apply-open-media-pick'
 import { formatMediaProbeSummary } from '../../lib/format-media-probe-summary'
-import { trimFromProbeChapter } from '../../lib/inspector-chapter-trim'
+import { trimFromProbeChapter, trimFromProbeDuration } from '../../lib/inspector-chapter-trim'
 import { useAppShellStore } from '../../stores/app-shell-store'
 
 export function InspectorScreen(): JSX.Element {
@@ -12,6 +12,7 @@ export function InspectorScreen(): JSX.Element {
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
   const setMediaSource = useAppShellStore((s) => s.setMediaSource)
   const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
+  const setExportTrim = useAppShellStore((s) => s.setExportTrim)
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
 
   const title = mediaSource?.name ?? 'Файл не выбран'
@@ -28,6 +29,21 @@ export function InspectorScreen(): JSX.Element {
           <p className="portal-screen__subtitle">Эталон: {VELORIX_NEON_REFERENCE_INSPECTOR_REL}</p>
         </div>
         <div className="portal-screen__head-actions">
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            disabled={mediaProbe == null}
+            onClick={() => {
+              const trim = trimFromProbeDuration(mediaProbe?.durationSec)
+              if (trim == null) {
+                return
+              }
+              setExportTrim(trim)
+              setWorkspaceTab('processing')
+            }}
+          >
+            Экспорт всего файла
+          </button>
           <button
             type="button"
             className="app-btn app-btn-secondary"

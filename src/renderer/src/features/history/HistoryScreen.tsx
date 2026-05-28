@@ -25,19 +25,36 @@ export function HistoryScreen(): JSX.Element {
   const [loadError, setLoadError] = useState<string | null>(null)
 
   useEffect(() => {
-    void (async () => {
+    let cancelled = false
+    async function load(): Promise<void> {
       const getHistory = window.velorix?.downloads?.getHistory
       if (getHistory == null) {
-        setLoadError('downloads.getHistory недоступен')
+        if (!cancelled) {
+          setLoadError('downloads.getHistory недоступен')
+        }
         return
       }
       try {
         const rows = await getHistory()
-        setEntries(rows)
+        if (!cancelled) {
+          setEntries(rows)
+          setLoadError(null)
+        }
       } catch {
-        setLoadError('Не удалось загрузить историю')
+        if (!cancelled) {
+          setLoadError('Не удалось загрузить историю')
+        }
       }
-    })()
+    }
+    void load()
+    const onChanged = window.velorix?.downloads?.onDownloadsHistoryChanged
+    const unsub = onChanged?.(() => {
+      void load()
+    })
+    return () => {
+      cancelled = true
+      unsub?.()
+    }
   }, [])
 
   return (
@@ -128,13 +145,20 @@ export function HistoryRail(): JSX.Element {
       }
     }
     void load()
-    const onChanged = window.velorix?.onProcessingHistoryChanged
-    const unsub = onChanged?.(() => {
-      void load()
-    })
+    const unsubs: Array<() => void> = []
+    const onProcessing = window.velorix?.onProcessingHistoryChanged
+    const onDownloads = window.velorix?.downloads?.onDownloadsHistoryChanged
+    if (onProcessing != null) {
+      unsubs.push(onProcessing(() => void load()))
+    }
+    if (onDownloads != null) {
+      unsubs.push(onDownloads(() => void load()))
+    }
     return () => {
       cancelled = true
-      unsub?.()
+      for (const unsub of unsubs) {
+        unsub()
+      }
     }
   }, [])
 

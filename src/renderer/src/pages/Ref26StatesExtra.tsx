@@ -41,6 +41,21 @@ export function Ref26StatesExtra(): JSX.Element {
         </div>
       </StatesSection>
 
+      <StatesSection title="prefers-reduced-motion">
+        <p className="ref26-reduced-motion__hint">
+          При <code>prefers-reduced-motion: reduce</code> в <code>neon-motion-v1.css</code>{' '}
+          отключены workspace/palette анимации и <code>transform</code> на :active у кнопок.
+        </p>
+        <div className="ref26-reduced-motion__demo">
+          <button type="button" className="app-btn app-btn-primary">
+            Primary (motion v1)
+          </button>
+          <button type="button" className="app-btn app-btn-secondary">
+            Secondary
+          </button>
+        </div>
+      </StatesSection>
+
       <StatesSection title="Рендер / экспорт">
         <ul className="app-ui-states-queue">
           <li className="app-ui-states-queue-item">

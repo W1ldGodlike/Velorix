@@ -6,6 +6,7 @@ import {
   isDownloadsRowComplete,
   parseDownloadsProgressPercent
 } from '../../lib/parse-downloads-queue-row'
+import { useAppShellStore } from '../../stores/app-shell-store'
 import { useDownloadsQueue } from './use-downloads-queue'
 
 const FILTER_TABS = [
@@ -16,6 +17,7 @@ const FILTER_TABS = [
 ] as const
 
 export function DownloadsScreen(): JSX.Element {
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const queueRows = useDownloadsQueue()
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [filterId, setFilterId] = useState<(typeof FILTER_TABS)[number]['id']>('all')
@@ -199,6 +201,24 @@ export function DownloadsScreen(): JSX.Element {
                       >
                         📁
                       </button>
+                      <button
+                        type="button"
+                        className="app-ui-showcase-icon-btn"
+                        aria-label="В пакетный экспорт"
+                        title="В пакетный экспорт"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          void window.velorix?.batchExport
+                            ?.addFromDownloadsDone([row.id])
+                            .then((result) => {
+                              if (result.ok) {
+                                setWorkspaceTab('processing')
+                              }
+                            })
+                        }}
+                      >
+                        ⊕
+                      </button>
                     </>
                   ) : null}
                   <button
@@ -243,6 +263,7 @@ export function DownloadsScreen(): JSX.Element {
 }
 
 export function DownloadsRail(): JSX.Element {
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const [outputPath, setOutputPath] = useState('—')
 
   async function refreshOutputPath(): Promise<void> {
@@ -306,6 +327,19 @@ export function DownloadsRail(): JSX.Element {
             }}
           >
             Из буфера
+          </button>
+          <button
+            type="button"
+            className="app-btn app-btn-primary"
+            onClick={() => {
+              void window.velorix?.batchExport?.addFromDownloadsDone().then((result) => {
+                if (result.ok) {
+                  setWorkspaceTab('processing')
+                }
+              })
+            }}
+          >
+            В пакетный экспорт
           </button>
         </div>
       </section>

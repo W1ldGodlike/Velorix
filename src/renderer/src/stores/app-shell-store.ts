@@ -23,6 +23,7 @@ type AppShellState = {
   mediaSource: ShellMediaSource | null
   mediaProbe: MediaProbeSuccess | null
   exportTrim: MediaExportTrimPayload | null
+  previewSeekSec: number | null
   pendingKnowledgeSlug: string | null
   quitConfirmRequest: QuitConfirmRequestPayload | null
   ffmpegErrorMessage: string | null
@@ -40,6 +41,8 @@ type AppShellState = {
   setMediaSource: (source: ShellMediaSource | null) => void
   setMediaProbe: (probe: MediaProbeSuccess | null) => void
   setExportTrim: (trim: MediaExportTrimPayload | null) => void
+  requestPreviewSeek: (sec: number) => void
+  ackPreviewSeek: () => void
   setPendingKnowledgeSlug: (slug: string | null) => void
   setQuitConfirmRequest: (payload: QuitConfirmRequestPayload | null) => void
   setFfmpegErrorMessage: (message: string | null) => void
@@ -65,6 +68,7 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   mediaSource: null,
   mediaProbe: null,
   exportTrim: null,
+  previewSeekSec: null,
   pendingKnowledgeSlug: null,
   quitConfirmRequest: null,
   ffmpegErrorMessage: null,
@@ -90,6 +94,8 @@ export const useAppShellStore = create<AppShellState>((set) => ({
     })),
   setMediaProbe: (mediaProbe) => set({ mediaProbe }),
   setExportTrim: (exportTrim) => set({ exportTrim }),
+  requestPreviewSeek: (sec) => set({ previewSeekSec: sec }),
+  ackPreviewSeek: () => set({ previewSeekSec: null }),
   setPendingKnowledgeSlug: (pendingKnowledgeSlug) => set({ pendingKnowledgeSlug }),
   setQuitConfirmRequest: (quitConfirmRequest) => set({ quitConfirmRequest }),
   setFfmpegErrorMessage: (ffmpegErrorMessage) => set({ ffmpegErrorMessage }),

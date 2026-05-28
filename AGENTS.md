@@ -16,7 +16,7 @@
 
 **Git author (локально, без `--global`):** `user.name` **W1ldGodlike**, `user.email` **W1ld.Godlike@gmail.com**.
 
-**Git по J-NNN:** `NNN % 5` → commit, `NNN % 10` → push (любой чат); **следующий commit по J** **J-1725**, **следующий push по J** **J-1730** — [`velorix-agent.mdc`](.cursor/rules/velorix-agent.mdc).
+**Git по J-NNN:** `NNN % 5` → commit, `NNN % 10` → push (любой чат); **следующий commit по J** **J-1730**, **следующий push по J** **J-1730** — [`velorix-agent.mdc`](.cursor/rules/velorix-agent.mdc).
 
 **§19 signing · §21 Help:** канон — [`docs/RELEASE.md`](docs/RELEASE.md) §1/§4; карта — [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md); lock — `tests/shared/toolchain-baseline-package.test.ts`.
 

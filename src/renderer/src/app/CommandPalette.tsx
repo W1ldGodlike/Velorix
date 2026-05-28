@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type JSX } from 'react'
 
 import { applyOpenMediaPick } from '../lib/apply-open-media-pick'
+import { trimFromProbeDuration } from '../lib/inspector-chapter-trim'
 import { useAppShellStore } from '../stores/app-shell-store'
 import { filterCommandPaletteItems, type CommandPaletteAction } from './command-palette'
 
@@ -112,6 +113,38 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
     const pick = window.velorix?.batchExport?.pickFiles
     if (pick != null) {
       await pick()
+    }
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'batch-export-from-downloads') {
+    const add = window.velorix?.batchExport?.addFromDownloadsDone
+    if (add != null) {
+      await add()
+    }
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'export-trim-full-file') {
+    const trim = trimFromProbeDuration(store.mediaProbe?.durationSec)
+    if (trim != null) {
+      store.setExportTrim(trim)
+    }
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'seek-export-trim-in') {
+    const trim = store.exportTrim
+    if (trim != null) {
+      store.requestPreviewSeek(trim.inSec)
+    }
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'seek-export-trim-out') {
+    const trim = store.exportTrim
+    if (trim != null) {
+      store.requestPreviewSeek(trim.outSec)
     }
     store.setWorkspaceTab('processing')
     return

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type JSX } from 'react'
+import { useCallback, useEffect, useRef, useState, type JSX } from 'react'
 
 import { capturePreviewSnapshot } from '../../lib/capture-preview-snapshot'
 import { applyExportTrimIn, applyExportTrimOut } from '../../lib/export-trim-markers'
@@ -16,6 +16,8 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
   const { mediaSource, durationSec, onActionNote } = props
   const exportTrim = useAppShellStore((s) => s.exportTrim)
   const setExportTrim = useAppShellStore((s) => s.setExportTrim)
+  const previewSeekSec = useAppShellStore((s) => s.previewSeekSec)
+  const ackPreviewSeek = useAppShellStore((s) => s.ackPreviewSeek)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [currentSec, setCurrentSec] = useState(0)
   const [duration, setDuration] = useState(durationSec ?? 0)
@@ -51,15 +53,27 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
     return () => video.removeEventListener('loadedmetadata', applySeek)
   }, [exportTrim, mediaSource, duration])
 
-  function seekTo(sec: number): void {
-    const video = videoRef.current
-    if (video == null) {
+  const seekTo = useCallback(
+    (sec: number): void => {
+      const video = videoRef.current
+      if (video == null) {
+        return
+      }
+      const max = duration > 0 ? duration : video.duration || 0
+      const next = Math.min(Math.max(0, sec), max > 0 ? max : 0)
+      video.currentTime = next
+      setCurrentSec(next)
+    },
+    [duration]
+  )
+
+  useEffect(() => {
+    if (previewSeekSec == null || mediaSource == null) {
       return
     }
-    const next = Math.min(Math.max(0, sec), duration > 0 ? duration : video.duration || 0)
-    video.currentTime = next
-    setCurrentSec(next)
-  }
+    seekTo(previewSeekSec)
+    ackPreviewSeek()
+  }, [previewSeekSec, mediaSource, seekTo, ackPreviewSeek])
 
   async function togglePlay(): Promise<void> {
     const video = videoRef.current
@@ -195,9 +209,25 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
             Сброс
           </button>
           {exportTrim != null ? (
-            <span className="processing-screen__trim-range">
-              {formatMediaClock(exportTrim.inSec)} → {formatMediaClock(exportTrim.outSec)}
-            </span>
+            <>
+              <button
+                type="button"
+                className="app-btn app-btn-secondary processing-screen__trim-btn"
+                onClick={() => seekTo(exportTrim.inSec)}
+              >
+                К In
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-secondary processing-screen__trim-btn"
+                onClick={() => seekTo(exportTrim.outSec)}
+              >
+                К Out
+              </button>
+              <span className="processing-screen__trim-range">
+                {formatMediaClock(exportTrim.inSec)} → {formatMediaClock(exportTrim.outSec)}
+              </span>
+            </>
           ) : null}
           <button
             type="button"

@@ -20,3 +20,13 @@ export function trimFromProbeChapter(
   }
   return { inSec, outSec }
 }
+
+/** Диапазон экспорта на весь файл (In = 0, Out = duration). */
+export function trimFromProbeDuration(
+  durationSec: number | null | undefined
+): MediaExportTrimPayload | null {
+  if (durationSec == null || !Number.isFinite(durationSec) || durationSec <= 0) {
+    return null
+  }
+  return { inSec: 0, outSec: durationSec }
+}

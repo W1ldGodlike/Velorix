@@ -46,6 +46,13 @@ export function SettingsScreen(): JSX.Element {
     void (async () => {
       await refresh()
     })()
+    const onBackup = window.velorix?.onSettingsBackupImported
+    if (onBackup == null) {
+      return undefined
+    }
+    return onBackup(() => {
+      void refresh()
+    })
   }, [])
 
   const meta = SECTION_LABELS[section]

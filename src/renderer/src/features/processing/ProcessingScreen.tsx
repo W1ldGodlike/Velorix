@@ -12,7 +12,11 @@ import {
   ProcessingHistoryPeek,
   ProcessingTerminalPeek
 } from './ProcessingScreenPeeks'
-import { buildTrimSpanStyle, PROCESSING_TIMELINE_LANES } from './processing-timeline-model'
+import {
+  buildTrimSpanStyle,
+  PROCESSING_TIMELINE_LANES,
+  timelineSecFromPointer
+} from './processing-timeline-model'
 
 type ProcessingCenterTab = 'editor' | 'downloads' | 'terminal'
 
@@ -43,6 +47,7 @@ export function ProcessingScreen(): JSX.Element {
   const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
   const mediaSource = useAppShellStore((s) => s.mediaSource)
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
+  const requestPreviewSeek = useAppShellStore((s) => s.requestPreviewSeek)
   const [centerTab, setCenterTab] = useState<ProcessingCenterTab>('editor')
   const [ytdlpUrl, setYtdlpUrl] = useState('')
   const [headStatus, setHeadStatus] = useState<string | null>(null)
@@ -155,13 +160,17 @@ export function ProcessingScreen(): JSX.Element {
       </div>
 
       {centerTab === 'downloads' ? (
-        <ProcessingDownloadsPeek onOpenFull={() => setWorkspaceTab('downloads')} />
+        <div key="downloads" className="processing-screen__center-pane">
+          <ProcessingDownloadsPeek onOpenFull={() => setWorkspaceTab('downloads')} />
+        </div>
       ) : null}
       {centerTab === 'terminal' ? (
-        <ProcessingTerminalPeek onOpenFull={() => setWorkspaceTab('terminal')} />
+        <div key="terminal" className="processing-screen__center-pane">
+          <ProcessingTerminalPeek onOpenFull={() => setWorkspaceTab('terminal')} />
+        </div>
       ) : null}
       {centerTab === 'editor' ? (
-        <div className="processing-screen__workspace">
+        <div key="editor" className="processing-screen__workspace processing-screen__center-pane">
           <aside className="processing-screen__library vn-surface-glass">
             <h2 className="processing-screen__library-title">Медиатека</h2>
             <ul className="processing-screen__library-groups">
@@ -201,7 +210,36 @@ export function ProcessingScreen(): JSX.Element {
                   <div key={lane.id} className="processing-screen__lane">
                     <span className="processing-screen__lane-label">{lane.id}</span>
                     <div
-                      className={`processing-screen__lane-track${lane.clip != null ? ' processing-screen__lane-track--clip' : ''}`}
+                      className={`processing-screen__lane-track${lane.clip != null ? ' processing-screen__lane-track--clip' : ''}${lane.id === 'V1' && mediaSource != null ? ' processing-screen__lane-track--seekable' : ''}`}
+                      role={lane.id === 'V1' && mediaSource != null ? 'slider' : undefined}
+                      aria-label={
+                        lane.id === 'V1' && mediaSource != null ? 'Позиция на таймлайне' : undefined
+                      }
+                      aria-valuemin={lane.id === 'V1' ? 0 : undefined}
+                      aria-valuemax={
+                        lane.id === 'V1' && mediaProbe?.durationSec != null
+                          ? mediaProbe.durationSec
+                          : undefined
+                      }
+                      tabIndex={lane.id === 'V1' && mediaSource != null ? 0 : undefined}
+                      onClick={
+                        lane.id === 'V1' && mediaSource != null
+                          ? (e) => {
+                              const duration = mediaProbe?.durationSec
+                              if (duration == null) {
+                                return
+                              }
+                              const sec = timelineSecFromPointer(
+                                e.clientX,
+                                e.currentTarget.getBoundingClientRect(),
+                                duration
+                              )
+                              if (sec != null) {
+                                requestPreviewSeek(sec)
+                              }
+                            }
+                          : undefined
+                      }
                     >
                       {trimStyle != null ? (
                         <span

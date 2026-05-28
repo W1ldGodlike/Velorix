@@ -9,13 +9,19 @@ export function NeonShellSidebarGpu(): JSX.Element {
   const [sub, setSub] = useState('')
 
   useEffect(() => {
-    void (async () => {
+    let cancelled = false
+    async function load(): Promise<void> {
       const probe = window.velorix?.engines?.probeHwEncoders
       if (probe == null) {
-        setLine('engines.probeHwEncoders недоступен')
+        if (!cancelled) {
+          setLine('engines.probeHwEncoders недоступен')
+        }
         return
       }
       const result = await probe()
+      if (cancelled) {
+        return
+      }
       if (!result.ok) {
         setLine(result.error)
         return
@@ -31,7 +37,11 @@ export function NeonShellSidebarGpu(): JSX.Element {
       setTitle('Видеоадаптер')
       setLine(adapter ?? 'Не обнаружен')
       setSub(`HW-кодеки ffmpeg: ${String(countHwEncoders(result.snapshot))}`)
-    })()
+    }
+    void load()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return (

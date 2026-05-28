@@ -32,10 +32,30 @@ export function useFfmpegExportSettings(): {
   }, [])
 
   useEffect(() => {
-    void (async () => {
-      await reload()
-    })()
-  }, [reload])
+    let cancelled = false
+    async function load(): Promise<void> {
+      const next = await readSettingsView()
+      if (!cancelled) {
+        setView(next)
+      }
+    }
+    void load()
+    const unsubs: Array<() => void> = []
+    const onPresets = window.velorix?.onExportPresetsDiskChanged
+    const onBackup = window.velorix?.onSettingsBackupImported
+    if (onPresets != null) {
+      unsubs.push(onPresets(() => void load()))
+    }
+    if (onBackup != null) {
+      unsubs.push(onBackup(() => void load()))
+    }
+    return () => {
+      cancelled = true
+      for (const unsub of unsubs) {
+        unsub()
+      }
+    }
+  }, [])
 
   async function patch(apply: () => Promise<unknown>): Promise<void> {
     await apply()
