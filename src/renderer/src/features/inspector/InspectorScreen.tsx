@@ -1,11 +1,15 @@
-import { useState, type JSX } from 'react'
+import type { JSX } from 'react'
 
 import { KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR } from '../../../../shared/knowledge-contract'
 import { VELORIX_NEON_REFERENCE_INSPECTOR_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
 import { applyOpenMediaPick } from '../../lib/apply-open-media-pick'
 import { formatMediaProbeSummary } from '../../lib/format-media-probe-summary'
-import { trimFromProbeChapter, trimFromProbeDuration } from '../../lib/inspector-chapter-trim'
+import {
+  findChapterIndexMatchingTrim,
+  trimFromProbeChapter,
+  trimFromProbeDuration
+} from '../../lib/inspector-chapter-trim'
 import { useAppShellStore } from '../../stores/app-shell-store'
 
 export function InspectorScreen(): JSX.Element {
@@ -151,34 +155,40 @@ function formatSize(bytes: number | null | undefined): string {
 
 export function InspectorRail(): JSX.Element {
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
+  const exportTrim = useAppShellStore((s) => s.exportTrim)
   const setExportTrim = useAppShellStore((s) => s.setExportTrim)
   const requestPreviewSeek = useAppShellStore((s) => s.requestPreviewSeek)
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
-  const chapters = mediaProbe?.chapters ?? []
-  const [activeChapterIndex, setActiveChapterIndex] = useState<number | null>(null)
+  const chapterRows = mediaProbe?.chapters
+  const activeChapterIndex = findChapterIndexMatchingTrim(
+    exportTrim,
+    chapterRows ?? [],
+    mediaProbe?.durationSec
+  )
 
   return (
     <aside className="portal-rail vn-surface-glass inspector-rail">
       <h2 className="portal-rail__title">Главы</h2>
       <ul className="inspector-rail__chapters">
-        {chapters.length === 0 ? (
+        {(chapterRows ?? []).length === 0 ? (
           <li className="portal-rail__hint">Главы не найдены</li>
         ) : (
-          chapters.map((chapter) => {
-            const isActive =
-              activeChapterIndex === chapter.index &&
-              chapters.some((row) => row.index === activeChapterIndex)
+          (chapterRows ?? []).map((chapter) => {
+            const isActive = activeChapterIndex === chapter.index
             return (
               <li key={`${chapter.index}-${chapter.startSec}`}>
                 <button
                   type="button"
                   className={`inspector-rail__chapter${isActive ? ' inspector-rail__chapter--active' : ''}`}
                   onClick={() => {
-                    const trim = trimFromProbeChapter(chapter, chapters, mediaProbe?.durationSec)
+                    const trim = trimFromProbeChapter(
+                      chapter,
+                      chapterRows ?? [],
+                      mediaProbe?.durationSec
+                    )
                     if (trim == null) {
                       return
                     }
-                    setActiveChapterIndex(chapter.index)
                     setExportTrim(trim)
                     requestPreviewSeek(trim.inSec)
                     setWorkspaceTab('processing')

@@ -73,3 +73,27 @@ export function timelineKeyboardSeekSec(
   }
   return null
 }
+
+export type TimelineRulerMark = {
+  left: string
+  sec: number
+}
+
+/** Метки шкалы 0…duration для ref.1 (без форматирования времени — в UI). */
+export function buildTimelineRulerMarks(
+  durationSec: number | null | undefined,
+  tickCount = 5
+): TimelineRulerMark[] {
+  if (durationSec == null || !Number.isFinite(durationSec) || durationSec <= 0 || tickCount < 2) {
+    return []
+  }
+  const marks: TimelineRulerMark[] = []
+  for (let i = 0; i < tickCount; i++) {
+    const ratio = i / (tickCount - 1)
+    marks.push({
+      left: `${String(ratio * 100)}%`,
+      sec: ratio * durationSec
+    })
+  }
+  return marks
+}

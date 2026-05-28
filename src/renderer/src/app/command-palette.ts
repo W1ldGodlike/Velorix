@@ -1,7 +1,9 @@
 import {
   KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS,
   KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS,
-  KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR
+  KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR,
+  KNOWLEDGE_SLUG_PROCESSING_HISTORY,
+  KNOWLEDGE_SLUG_SESSION_AND_QUEUES
 } from '../../../shared/knowledge-contract'
 
 import type { SystemModalId } from './system-modal'
@@ -19,11 +21,15 @@ export type CommandPaletteAction =
   | { type: 'batch-export-cancel' }
   | { type: 'batch-export-clear-completed' }
   | { type: 'batch-export-retry-failed' }
+  | { type: 'batch-export-start' }
+  | { type: 'start-preview-export' }
   | { type: 'export-trim-full-file' }
   | { type: 'seek-export-trim-in' }
   | { type: 'seek-export-trim-out' }
+  | { type: 'toggle-preview-play' }
   | { type: 'export-preset-name' }
   | { type: 'open-knowledge-slug'; slug: string }
+  | { type: 'dev-showcase'; target: 'ref27' | 'ref26' | 'ref1' }
 
 export type CommandPaletteItem = {
   id: string
@@ -78,6 +84,18 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     action: { type: 'batch-export-retry-failed' }
   },
   {
+    id: 'batch-export-start',
+    label: 'Пакетный экспорт — запустить',
+    hint: 'Обработка',
+    action: { type: 'batch-export-start' }
+  },
+  {
+    id: 'start-preview-export',
+    label: 'Экспорт открытого файла',
+    hint: 'Обработка · FFmpeg rail',
+    action: { type: 'start-preview-export' }
+  },
+  {
     id: 'export-trim-full-file',
     label: 'Экспорт всего открытого файла',
     hint: 'Инспектор → Обработка',
@@ -94,6 +112,12 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     label: 'Перейти к Out',
     hint: 'Обработка · превью',
     action: { type: 'seek-export-trim-out' }
+  },
+  {
+    id: 'toggle-preview-play',
+    label: 'Превью — play/pause',
+    hint: 'Обработка · как Space',
+    action: { type: 'toggle-preview-play' }
   },
   {
     id: 'engine-paths',
@@ -149,8 +173,38 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     hint: 'База знаний',
     action: { type: 'open-knowledge-slug', slug: KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR }
   },
+  {
+    id: 'knowledge-session-queues',
+    label: 'Справка: пакет и очереди',
+    hint: 'База знаний',
+    action: { type: 'open-knowledge-slug', slug: KNOWLEDGE_SLUG_SESSION_AND_QUEUES }
+  },
+  {
+    id: 'knowledge-processing-history',
+    label: 'Справка: журнал обработки',
+    hint: 'База знаний',
+    action: { type: 'open-knowledge-slug', slug: KNOWLEDGE_SLUG_PROCESSING_HISTORY }
+  },
   { id: 'about', label: 'О программе', action: { type: 'modal', id: 'about' } },
   { id: 'toggle-rail', label: 'Показать/скрыть правый rail', action: { type: 'toggle-rail' } },
+  {
+    id: 'dev-showcase-ref27',
+    label: 'UI kit ref.27',
+    hint: 'Dev bootstrap',
+    action: { type: 'dev-showcase', target: 'ref27' }
+  },
+  {
+    id: 'dev-showcase-ref26',
+    label: 'UI states ref.26',
+    hint: 'Dev bootstrap',
+    action: { type: 'dev-showcase', target: 'ref26' }
+  },
+  {
+    id: 'dev-showcase-ref1',
+    label: 'Вернуться в Neon shell (ref.1)',
+    hint: 'Dev bootstrap',
+    action: { type: 'dev-showcase', target: 'ref1' }
+  },
   ...NAV_COMMANDS
 ]
 

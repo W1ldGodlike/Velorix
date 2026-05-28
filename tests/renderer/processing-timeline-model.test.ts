@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   buildPlayheadStyle,
+  buildTimelineRulerMarks,
   buildTrimSpanStyle,
   timelineKeyboardSeekSec,
   timelineSecFromPointer
@@ -28,6 +29,20 @@ describe('buildPlayheadStyle', () => {
 
   it('returns null without duration', () => {
     expect(buildPlayheadStyle(1, null)).toBeNull()
+  })
+})
+
+describe('buildTimelineRulerMarks', () => {
+  it('returns evenly spaced marks', () => {
+    expect(buildTimelineRulerMarks(100, 3)).toEqual([
+      { left: '0%', sec: 0 },
+      { left: '50%', sec: 50 },
+      { left: '100%', sec: 100 }
+    ])
+  })
+
+  it('returns empty without duration', () => {
+    expect(buildTimelineRulerMarks(null)).toEqual([])
   })
 })
 

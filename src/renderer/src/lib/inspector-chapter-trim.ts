@@ -30,3 +30,25 @@ export function trimFromProbeDuration(
   }
   return { inSec: 0, outSec: durationSec }
 }
+
+function trimSpansEqual(a: MediaExportTrimPayload, b: MediaExportTrimPayload): boolean {
+  return Math.abs(a.inSec - b.inSec) < 0.02 && Math.abs(a.outSec - b.outSec) < 0.02
+}
+
+/** Индекс главы, если текущий trim совпадает с диапазоном главы. */
+export function findChapterIndexMatchingTrim(
+  trim: MediaExportTrimPayload | null,
+  chapters: MediaProbeChapterRow[],
+  durationSec: number | null | undefined
+): number | null {
+  if (trim == null || chapters.length === 0) {
+    return null
+  }
+  for (const chapter of chapters) {
+    const fromChapter = trimFromProbeChapter(chapter, chapters, durationSec)
+    if (fromChapter != null && trimSpansEqual(fromChapter, trim)) {
+      return chapter.index
+    }
+  }
+  return null
+}

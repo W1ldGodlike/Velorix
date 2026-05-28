@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type JSX } from 'react'
 
 import { applyOpenMediaPick } from '../lib/apply-open-media-pick'
 import { trimFromProbeDuration } from '../lib/inspector-chapter-trim'
+import { startPreviewMediaExport } from '../lib/start-preview-media-export'
 import { useAppShellStore } from '../stores/app-shell-store'
 import { filterCommandPaletteItems, type CommandPaletteAction } from './command-palette'
 
@@ -140,6 +141,26 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
     store.setWorkspaceTab('processing')
     return
   }
+  if (action.type === 'batch-export-start') {
+    await window.velorix?.batchExport?.start?.()
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'start-preview-export') {
+    store.setWorkspaceTab('processing')
+    const { mediaSource, mediaProbe, exportTrim } = store
+    if (mediaSource == null) {
+      return
+    }
+    const view = await window.velorix?.settings?.get()
+    await startPreviewMediaExport({
+      inputPath: mediaSource.path,
+      mediaProbe,
+      exportTrim,
+      settings: view ?? null
+    })
+    return
+  }
   if (action.type === 'export-trim-full-file') {
     const trim = trimFromProbeDuration(store.mediaProbe?.durationSec)
     if (trim != null) {
@@ -165,9 +186,18 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
     store.setWorkspaceTab('processing')
     return
   }
+  if (action.type === 'toggle-preview-play') {
+    store.setWorkspaceTab('processing')
+    store.requestPreviewTogglePlay()
+    return
+  }
   if (action.type === 'open-knowledge-slug') {
     store.setPendingKnowledgeSlug(action.slug)
     store.setWorkspaceTab('knowledge')
+    return
+  }
+  if (action.type === 'dev-showcase') {
+    window.location.hash = action.target === 'ref1' ? '#ref1' : `#${action.target}`
     return
   }
   if (action.type === 'export-preset-name') {

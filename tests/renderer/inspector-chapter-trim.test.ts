@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  findChapterIndexMatchingTrim,
   trimFromProbeChapter,
   trimFromProbeDuration
 } from '../../src/renderer/src/lib/inspector-chapter-trim'
@@ -23,6 +24,15 @@ describe('trimFromProbeChapter', () => {
       inSec: 0,
       outSec: 30
     })
+  })
+
+  it('finds chapter index for matching trim', () => {
+    const chapters = [
+      { index: 1, title: 'A', startSec: 0, endSec: 30 },
+      { index: 2, title: 'B', startSec: 30, endSec: 90 }
+    ]
+    expect(findChapterIndexMatchingTrim({ inSec: 30, outSec: 90 }, chapters, 120)).toBe(2)
+    expect(findChapterIndexMatchingTrim({ inSec: 0, outSec: 10 }, chapters, 120)).toBeNull()
   })
 
   it('uses next chapter start when end missing', () => {

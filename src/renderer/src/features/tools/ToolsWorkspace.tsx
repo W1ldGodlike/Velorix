@@ -36,12 +36,24 @@ function ToolsHubRail(): JSX.Element {
         <li>Бенчмарк кодеров</li>
       </ul>
       <div className="tools-rail__showcase">
-        <a href="#ref27" className="app-btn app-btn-secondary">
+        <button
+          type="button"
+          className="app-btn app-btn-secondary"
+          onClick={() => {
+            window.location.hash = '#ref27'
+          }}
+        >
           ref.27 kit
-        </a>
-        <a href="#ref26" className="app-btn">
+        </button>
+        <button
+          type="button"
+          className="app-btn"
+          onClick={() => {
+            window.location.hash = '#ref26'
+          }}
+        >
           ref.26 states
-        </a>
+        </button>
       </div>
     </aside>
   )

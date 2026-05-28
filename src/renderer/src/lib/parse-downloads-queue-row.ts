@@ -66,6 +66,11 @@ export function isDownloadsRowComplete(status: string): boolean {
   )
 }
 
+export function isDownloadsRowError(status: string): boolean {
+  const lower = status.toLowerCase()
+  return lower.includes('ошиб') || lower.includes('error') || lower.includes('fail')
+}
+
 export function parseDownloadsProgressPercent(progress: string): number {
   const match = /(\d+)\s*%/.exec(progress)
   if (match == null) {

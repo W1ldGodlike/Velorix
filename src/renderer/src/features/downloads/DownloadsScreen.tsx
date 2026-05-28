@@ -4,6 +4,7 @@ import { VELORIX_NEON_REFERENCE_DOWNLOADS_REL } from '../../../../shared/velorix
 
 import {
   isDownloadsRowComplete,
+  isDownloadsRowError,
   parseDownloadsProgressPercent
 } from '../../lib/parse-downloads-queue-row'
 import { useAppShellStore } from '../../stores/app-shell-store'
@@ -43,10 +44,10 @@ export function DownloadsScreen(): JSX.Element {
         )
       }
       if (filterId === 'done') {
-        return status.includes('готов') || status.includes('done') || status.includes('complete')
+        return isDownloadsRowComplete(row.status)
       }
       if (filterId === 'error') {
-        return status.includes('ошиб') || status.includes('error') || status.includes('fail')
+        return isDownloadsRowError(row.status)
       }
       return true
     })

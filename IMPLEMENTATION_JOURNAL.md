@@ -1759,3 +1759,8 @@
 - [J-1733] 2026-05-28 04:00:22 [Assistant]: ref.1 playhead bubble timecode на V1 + statusbar `TC/duration`; neon.3 polish. `npm run check:quiet`.
 - [J-1734] 2026-05-28 04:07:24 [Assistant]: neon.4 inspector→trim+seek In; V1 ←/→ seek; peek history/downloads openOutput; Ctrl+K full-file seek; motion bubble. `npm run check:quiet`.
 - [J-1735] 2026-05-28 04:14:53 [Assistant]: ref.1 медиатека — открытый файл вместо mock-списка, V1 clip=name; store сброс playhead при смене path; пакет J-1731..1735 (playhead, batch peek, peeks openOutput, inspector seek). `npm run check:quiet`, `git commit`.
+- [J-1736] 2026-05-28 04:22:04 [Assistant]: ref.1 timeline ruler (`buildTimelineRulerMarks`), gradient lanes, playhead `--vn-glow-playhead`; neon.3/5 polish. `npm run check:quiet`.
+- [J-1737] 2026-05-28 04:28:20 [Assistant]: X.6 Ctrl+K — пакет start, экспорт файла, справка session-and-queues; neon.4 inspector rail подсветка главы по `exportTrim` (`findChapterIndexMatchingTrim`). `npm run check:quiet`.
+- [J-1738] 2026-05-28 04:32:48 [Assistant]: ref.1 V1 waveform CSS mock, Space play/pause; store сброс `mediaProbe` при смене path; rail trim timecode. `npm run check:quiet`.
+- [J-1739] 2026-05-28 04:38:40 [Assistant]: neon.4 downloads filter `isDownloadsRowComplete`/`Error`; X.3 Help quick knowledge; Ctrl+K ref.26/27/ref.1 dev showcase; tools rail hash buttons. `npm run check:quiet`.
+- [J-1740] 2026-05-28 04:43:50 [Assistant]: X.6 Ctrl+K play/pause (`requestPreviewTogglePlay`)+журнал history; пакет J-1736..1740 (ruler, palette export, inspector, downloads, waveform). `npm run check:quiet`, `git commit`, `git push`.

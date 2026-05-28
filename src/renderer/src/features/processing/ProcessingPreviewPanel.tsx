@@ -19,6 +19,7 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
   const previewSeekSec = useAppShellStore((s) => s.previewSeekSec)
   const ackPreviewSeek = useAppShellStore((s) => s.ackPreviewSeek)
   const setPreviewPlayheadSec = useAppShellStore((s) => s.setPreviewPlayheadSec)
+  const previewTogglePlayNonce = useAppShellStore((s) => s.previewTogglePlayNonce)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [currentSec, setCurrentSec] = useState(0)
   const [duration, setDuration] = useState(durationSec ?? 0)
@@ -77,7 +78,7 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
     ackPreviewSeek()
   }, [previewSeekSec, mediaSource, seekTo, ackPreviewSeek])
 
-  async function togglePlay(): Promise<void> {
+  const togglePlay = useCallback(async (): Promise<void> => {
     const video = videoRef.current
     if (video == null) {
       return
@@ -93,7 +94,38 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
       video.pause()
       setPlaying(false)
     }
-  }
+  }, [exportTrim])
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent): void {
+      if (event.code !== 'Space' || event.repeat) {
+        return
+      }
+      const target = event.target
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        (target instanceof HTMLElement && target.isContentEditable)
+      ) {
+        return
+      }
+      if (mediaSource == null) {
+        return
+      }
+      event.preventDefault()
+      void togglePlay()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [mediaSource, togglePlay])
+
+  useEffect(() => {
+    if (previewTogglePlayNonce < 1 || mediaSource == null) {
+      return
+    }
+    void togglePlay()
+  }, [previewTogglePlayNonce, mediaSource, togglePlay])
 
   if (mediaSource == null) {
     return (

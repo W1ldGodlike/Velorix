@@ -16,6 +16,7 @@ import {
 } from './ProcessingScreenPeeks'
 import {
   buildPlayheadStyle,
+  buildTimelineRulerMarks,
   buildTrimSpanStyle,
   PROCESSING_TIMELINE_LANES,
   timelineKeyboardSeekSec,
@@ -55,6 +56,10 @@ export function ProcessingScreen(): JSX.Element {
         lane.id === 'V1' && mediaSource != null ? { ...lane, clip: mediaSource.name } : lane
       ),
     [mediaSource]
+  )
+  const timelineRulerMarks = useMemo(
+    () => buildTimelineRulerMarks(mediaProbe?.durationSec),
+    [mediaProbe?.durationSec]
   )
 
   useEffect(() => {
@@ -229,6 +234,24 @@ export function ProcessingScreen(): JSX.Element {
               onActionNote={setHeadStatus}
             />
             <div className="processing-screen__timeline vn-surface-glass" aria-label="Таймлайн">
+              {mediaSource != null && timelineRulerMarks.length > 0 ? (
+                <div className="processing-screen__ruler" aria-hidden>
+                  <span className="processing-screen__lane-label" />
+                  <div className="processing-screen__ruler-track">
+                    {timelineRulerMarks.map((mark) => (
+                      <span
+                        key={mark.left}
+                        className="processing-screen__ruler-tick"
+                        style={{ left: mark.left }}
+                      >
+                        <span className="processing-screen__ruler-label">
+                          {formatMediaClock(mark.sec)}
+                        </span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
               {timelineLanes.map((lane) => {
                 const trimStyle =
                   lane.id === 'V1' ? buildTrimSpanStyle(exportTrim, mediaProbe?.durationSec) : null

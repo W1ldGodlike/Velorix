@@ -1,6 +1,8 @@
 import { useEffect, useState, type JSX } from 'react'
 
 import {
+  KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS,
+  KNOWLEDGE_SLUG_SESSION_AND_QUEUES,
   KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS,
   type KnowledgeArticleListItem
 } from '../../../../shared/knowledge-contract'
@@ -52,6 +54,28 @@ export function HelpScreen(): JSX.Element {
         </p>
       </header>
       {loadError != null ? <p className="help-screen__error">{loadError}</p> : null}
+      <div className="help-screen__quick">
+        <button
+          type="button"
+          className="app-btn app-btn-secondary"
+          onClick={() => {
+            setPendingKnowledgeSlug(KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS)
+            setWorkspaceTab('knowledge')
+          }}
+        >
+          Логи и диагностика
+        </button>
+        <button
+          type="button"
+          className="app-btn app-btn-secondary"
+          onClick={() => {
+            setPendingKnowledgeSlug(KNOWLEDGE_SLUG_SESSION_AND_QUEUES)
+            setWorkspaceTab('knowledge')
+          }}
+        >
+          Пакет и очереди
+        </button>
+      </div>
       <div className="help-screen__list vn-surface-glass">
         <ul>
           {articles.map((article) => (

@@ -165,6 +165,13 @@
   font-size: var(--fa-font-size-body-sm);
 }
 
+.help-screen__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fa-space-2);
+  margin-bottom: var(--fa-space-3);
+}
+
 .help-screen__list {
   padding: var(--fa-space-3);
   border-radius: var(--fa-radius-preview);

@@ -3,6 +3,7 @@ import { useState, type JSX } from 'react'
 import type { FfmpegExportEncodePresetId } from '../../../../shared/ffmpeg-export-contract'
 import { KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS } from '../../../../shared/knowledge-contract'
 
+import { formatMediaClock } from '../../lib/format-media-clock'
 import { startPreviewMediaExport } from '../../lib/start-preview-media-export'
 import { useAppShellStore } from '../../stores/app-shell-store'
 import { useExportProgressNote } from './use-export-progress-note'
@@ -258,7 +259,7 @@ export function ProcessingRail(): JSX.Element {
       </div>
       {exportTrim != null ? (
         <p className="processing-rail__trim-hint">
-          Экспорт: {exportTrim.inSec.toFixed(1)}–{exportTrim.outSec.toFixed(1)} с
+          Экспорт: {formatMediaClock(exportTrim.inSec)}–{formatMediaClock(exportTrim.outSec)}
         </p>
       ) : null}
       {displayExportNote != null ? (

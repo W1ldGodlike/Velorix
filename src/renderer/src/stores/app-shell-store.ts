@@ -25,6 +25,7 @@ type AppShellState = {
   exportTrim: MediaExportTrimPayload | null
   previewSeekSec: number | null
   previewPlayheadSec: number | null
+  previewTogglePlayNonce: number
   pendingKnowledgeSlug: string | null
   quitConfirmRequest: QuitConfirmRequestPayload | null
   ffmpegErrorMessage: string | null
@@ -45,6 +46,7 @@ type AppShellState = {
   requestPreviewSeek: (sec: number) => void
   ackPreviewSeek: () => void
   setPreviewPlayheadSec: (sec: number | null) => void
+  requestPreviewTogglePlay: () => void
   setPendingKnowledgeSlug: (slug: string | null) => void
   setQuitConfirmRequest: (payload: QuitConfirmRequestPayload | null) => void
   setFfmpegErrorMessage: (message: string | null) => void
@@ -72,6 +74,7 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   exportTrim: null,
   previewSeekSec: null,
   previewPlayheadSec: null,
+  previewTogglePlayNonce: 0,
   pendingKnowledgeSlug: null,
   quitConfirmRequest: null,
   ffmpegErrorMessage: null,
@@ -95,6 +98,7 @@ export const useAppShellStore = create<AppShellState>((set) => ({
       const samePath = mediaSource?.path === state.mediaSource?.path
       return {
         mediaSource,
+        mediaProbe: samePath ? state.mediaProbe : null,
         exportTrim: samePath ? state.exportTrim : null,
         previewPlayheadSec: mediaSource == null ? null : samePath ? state.previewPlayheadSec : null
       }
@@ -104,6 +108,8 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   requestPreviewSeek: (sec) => set({ previewSeekSec: sec }),
   ackPreviewSeek: () => set({ previewSeekSec: null }),
   setPreviewPlayheadSec: (previewPlayheadSec) => set({ previewPlayheadSec }),
+  requestPreviewTogglePlay: () =>
+    set((state) => ({ previewTogglePlayNonce: state.previewTogglePlayNonce + 1 })),
   setPendingKnowledgeSlug: (pendingKnowledgeSlug) => set({ pendingKnowledgeSlug }),
   setQuitConfirmRequest: (quitConfirmRequest) => set({ quitConfirmRequest }),
   setFfmpegErrorMessage: (ffmpegErrorMessage) => set({ ffmpegErrorMessage }),
