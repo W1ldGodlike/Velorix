@@ -24,3 +24,15 @@ export function batchExportCanStart(snapshot: FfmpegExportBatchSnapshot): boolea
   }
   return snapshot.rows.some((row) => row.status === FFMPEG_EXPORT_BATCH_STATUS_WAITING)
 }
+
+export function batchExportCanCancel(snapshot: FfmpegExportBatchSnapshot): boolean {
+  return snapshot.running
+}
+
+export function batchExportHasCompleted(snapshot: FfmpegExportBatchSnapshot): boolean {
+  return snapshot.completedOk + snapshot.completedError + snapshot.completedCancelled > 0
+}
+
+export function batchExportCanRetryFailed(snapshot: FfmpegExportBatchSnapshot): boolean {
+  return !snapshot.running && snapshot.completedError > 0
+}

@@ -32,3 +32,44 @@ export function timelineSecFromPointer(
   const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width))
   return ratio * durationSec
 }
+
+/** Маркер текущей позиции превью на шкале V1. */
+export function buildPlayheadStyle(
+  playheadSec: number | null | undefined,
+  durationSec: number | null | undefined
+): { left: string } | null {
+  if (
+    playheadSec == null ||
+    durationSec == null ||
+    !Number.isFinite(playheadSec) ||
+    !Number.isFinite(durationSec) ||
+    durationSec <= 0
+  ) {
+    return null
+  }
+  const pct = Math.min(100, Math.max(0, (playheadSec / durationSec) * 100))
+  return { left: `${String(pct)}%` }
+}
+
+const TIMELINE_KEYBOARD_SEEK_FINE_SEC = 1
+const TIMELINE_KEYBOARD_SEEK_COARSE_SEC = 5
+
+/** Шаг seek по стрелкам на дорожке V1 (Shift = крупный шаг). */
+export function timelineKeyboardSeekSec(
+  key: string,
+  shiftKey: boolean,
+  currentSec: number,
+  durationSec: number
+): number | null {
+  if (!Number.isFinite(durationSec) || durationSec <= 0 || !Number.isFinite(currentSec)) {
+    return null
+  }
+  const delta = shiftKey ? TIMELINE_KEYBOARD_SEEK_COARSE_SEC : TIMELINE_KEYBOARD_SEEK_FINE_SEC
+  if (key === 'ArrowLeft') {
+    return Math.max(0, currentSec - delta)
+  }
+  if (key === 'ArrowRight') {
+    return Math.min(durationSec, currentSec + delta)
+  }
+  return null
+}

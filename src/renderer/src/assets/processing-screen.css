@@ -195,6 +195,17 @@
   color: var(--fa-text-primary);
 }
 
+.processing-screen__library-empty {
+  padding: var(--fa-space-2);
+  font-size: var(--fa-font-size-body-sm);
+  color: var(--fa-text-muted);
+}
+
+.processing-screen__library-open {
+  width: 100%;
+  margin-top: var(--fa-space-2);
+}
+
 .processing-screen__storage {
   margin: 0;
   font-size: var(--fa-font-size-xs);
@@ -355,6 +366,35 @@
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fa-accent) 55%, transparent);
   pointer-events: none;
   z-index: 0;
+}
+
+.processing-screen__playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--fa-accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--fa-accent) 65%, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.processing-screen__playhead-bubble {
+  position: absolute;
+  bottom: calc(100% + var(--fa-space-1));
+  left: 0;
+  transform: translateX(-50%);
+  padding: 2px var(--fa-space-2);
+  border-radius: var(--fa-radius-sm);
+  font-size: var(--fa-font-size-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--fa-text-primary);
+  background: color-mix(in srgb, var(--fa-surface-elevated) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--fa-accent) 35%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--fa-accent) 40%, transparent);
+  white-space: nowrap;
 }
 
 .processing-screen__clip {

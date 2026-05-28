@@ -24,14 +24,22 @@ function formatPreviewResolution(probe: MediaProbeSuccess | null): string {
 export function NeonShellStatusbar(): JSX.Element {
   const mediaSource = useAppShellStore((s) => s.mediaSource)
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
+  const previewPlayheadSec = useAppShellStore((s) => s.previewPlayheadSec)
   const exportTrim = useAppShellStore((s) => s.exportTrim)
   const openModal = useAppShellStore((s) => s.openModal)
 
   const projectLabel = mediaSource?.name ?? 'Медиа не открыто'
-  const duration =
+  const durationClock =
     mediaProbe?.durationSec != null && Number.isFinite(mediaProbe.durationSec)
       ? formatMediaClock(mediaProbe.durationSec)
       : '—'
+  const timeLabel =
+    mediaSource != null &&
+    previewPlayheadSec != null &&
+    Number.isFinite(previewPlayheadSec) &&
+    durationClock !== '—'
+      ? `${formatMediaClock(previewPlayheadSec)} / ${durationClock}`
+      : durationClock
   const trimLabel =
     exportTrim != null
       ? `${formatMediaClock(exportTrim.inSec)}–${formatMediaClock(exportTrim.outSec)}`
@@ -40,7 +48,7 @@ export function NeonShellStatusbar(): JSX.Element {
   return (
     <footer className="neon-shell__status">
       <span className="neon-shell__status-project">{projectLabel}</span>
-      <span>{duration}</span>
+      <span>{timeLabel}</span>
       {trimLabel != null ? <span>Trim {trimLabel}</span> : null}
       <span>{formatPreviewResolution(mediaProbe)}</span>
       <span className="app-ui-showcase-status-pill app-ui-showcase-status-pill--ready">

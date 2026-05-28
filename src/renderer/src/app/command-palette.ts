@@ -16,6 +16,9 @@ export type CommandPaletteAction =
   | { type: 'clear-export-trim' }
   | { type: 'batch-export-pick' }
   | { type: 'batch-export-from-downloads' }
+  | { type: 'batch-export-cancel' }
+  | { type: 'batch-export-clear-completed' }
+  | { type: 'batch-export-retry-failed' }
   | { type: 'export-trim-full-file' }
   | { type: 'seek-export-trim-in' }
   | { type: 'seek-export-trim-out' }
@@ -55,6 +58,24 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     label: 'Пакетный экспорт — готовые загрузки',
     hint: 'Загрузки → Обработка',
     action: { type: 'batch-export-from-downloads' }
+  },
+  {
+    id: 'batch-export-cancel',
+    label: 'Отменить пакетный экспорт',
+    hint: 'Обработка',
+    action: { type: 'batch-export-cancel' }
+  },
+  {
+    id: 'batch-export-clear-completed',
+    label: 'Пакет — очистить завершённые',
+    hint: 'Обработка',
+    action: { type: 'batch-export-clear-completed' }
+  },
+  {
+    id: 'batch-export-retry-failed',
+    label: 'Пакет — повторить ошибки',
+    hint: 'Обработка',
+    action: { type: 'batch-export-retry-failed' }
   },
   {
     id: 'export-trim-full-file',

@@ -34,6 +34,11 @@
     transition: var(--vn-transition-colors);
   }
 
+  .processing-screen__playhead,
+  .processing-screen__playhead-bubble {
+    transition: left var(--vn-duration-fast) var(--vn-ease-out-cinematic);
+  }
+
   .processing-screen__tab:hover:not(.processing-screen__tab--active) {
     color: var(--fa-text-primary);
     border-color: color-mix(in srgb, var(--fa-accent) 22%, transparent);

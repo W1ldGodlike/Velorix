@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  buildPlayheadStyle,
   buildTrimSpanStyle,
+  timelineKeyboardSeekSec,
   timelineSecFromPointer
 } from '../../src/renderer/src/features/processing/processing-timeline-model'
 
@@ -16,6 +18,34 @@ describe('buildTrimSpanStyle', () => {
       left: '10%',
       width: '20%'
     })
+  })
+})
+
+describe('buildPlayheadStyle', () => {
+  it('maps playhead to left percent', () => {
+    expect(buildPlayheadStyle(30, 120)).toEqual({ left: '25%' })
+  })
+
+  it('returns null without duration', () => {
+    expect(buildPlayheadStyle(1, null)).toBeNull()
+  })
+})
+
+describe('timelineKeyboardSeekSec', () => {
+  it('steps by 1s or 5s with shift', () => {
+    expect(timelineKeyboardSeekSec('ArrowLeft', false, 10, 100)).toBe(9)
+    expect(timelineKeyboardSeekSec('ArrowLeft', true, 10, 100)).toBe(5)
+    expect(timelineKeyboardSeekSec('ArrowRight', false, 10, 100)).toBe(11)
+    expect(timelineKeyboardSeekSec('ArrowRight', true, 10, 100)).toBe(15)
+  })
+
+  it('clamps to range', () => {
+    expect(timelineKeyboardSeekSec('ArrowLeft', false, 0, 100)).toBe(0)
+    expect(timelineKeyboardSeekSec('ArrowRight', false, 100, 100)).toBe(100)
+  })
+
+  it('ignores other keys', () => {
+    expect(timelineKeyboardSeekSec('Enter', false, 10, 100)).toBeNull()
   })
 })
 

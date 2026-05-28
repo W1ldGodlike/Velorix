@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  batchExportCanCancel,
+  batchExportCanRetryFailed,
   batchExportCanStart,
+  batchExportHasCompleted,
   formatBatchExportSummary
 } from '../../src/renderer/src/lib/format-batch-export-summary'
 import { FFMPEG_EXPORT_BATCH_STATUS_WAITING } from '../../src/shared/ffmpeg-export-batch-contract'
@@ -90,5 +93,60 @@ describe('batchExportCanStart', () => {
         completedCancelled: 0
       })
     ).toBe(false)
+  })
+})
+
+describe('batchExportCanCancel', () => {
+  it('is true only while running', () => {
+    expect(
+      batchExportCanCancel({
+        rows: [],
+        running: true,
+        concurrency: 1,
+        completedOk: 0,
+        completedError: 0,
+        completedCancelled: 0
+      })
+    ).toBe(true)
+    expect(
+      batchExportCanCancel({
+        rows: [],
+        running: false,
+        concurrency: 1,
+        completedOk: 0,
+        completedError: 0,
+        completedCancelled: 0
+      })
+    ).toBe(false)
+  })
+})
+
+describe('batchExportHasCompleted', () => {
+  it('detects completed rows', () => {
+    expect(
+      batchExportHasCompleted({
+        rows: [],
+        running: false,
+        concurrency: 1,
+        completedOk: 1,
+        completedError: 0,
+        completedCancelled: 0
+      })
+    ).toBe(true)
+  })
+})
+
+describe('batchExportCanRetryFailed', () => {
+  it('is true when errors and idle', () => {
+    expect(
+      batchExportCanRetryFailed({
+        rows: [],
+        running: false,
+        concurrency: 1,
+        completedOk: 0,
+        completedError: 2,
+        completedCancelled: 0
+      })
+    ).toBe(true)
   })
 })

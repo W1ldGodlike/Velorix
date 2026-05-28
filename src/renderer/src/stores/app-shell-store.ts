@@ -24,6 +24,7 @@ type AppShellState = {
   mediaProbe: MediaProbeSuccess | null
   exportTrim: MediaExportTrimPayload | null
   previewSeekSec: number | null
+  previewPlayheadSec: number | null
   pendingKnowledgeSlug: string | null
   quitConfirmRequest: QuitConfirmRequestPayload | null
   ffmpegErrorMessage: string | null
@@ -43,6 +44,7 @@ type AppShellState = {
   setExportTrim: (trim: MediaExportTrimPayload | null) => void
   requestPreviewSeek: (sec: number) => void
   ackPreviewSeek: () => void
+  setPreviewPlayheadSec: (sec: number | null) => void
   setPendingKnowledgeSlug: (slug: string | null) => void
   setQuitConfirmRequest: (payload: QuitConfirmRequestPayload | null) => void
   setFfmpegErrorMessage: (message: string | null) => void
@@ -69,6 +71,7 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   mediaProbe: null,
   exportTrim: null,
   previewSeekSec: null,
+  previewPlayheadSec: null,
   pendingKnowledgeSlug: null,
   quitConfirmRequest: null,
   ffmpegErrorMessage: null,
@@ -88,14 +91,19 @@ export const useAppShellStore = create<AppShellState>((set) => ({
   setTerminalCommandLine: (terminalCommandLine) => set({ terminalCommandLine }),
   setSettingsSection: (settingsSection) => set({ settingsSection }),
   setMediaSource: (mediaSource) =>
-    set((state) => ({
-      mediaSource,
-      exportTrim: mediaSource?.path === state.mediaSource?.path ? state.exportTrim : null
-    })),
+    set((state) => {
+      const samePath = mediaSource?.path === state.mediaSource?.path
+      return {
+        mediaSource,
+        exportTrim: samePath ? state.exportTrim : null,
+        previewPlayheadSec: mediaSource == null ? null : samePath ? state.previewPlayheadSec : null
+      }
+    }),
   setMediaProbe: (mediaProbe) => set({ mediaProbe }),
   setExportTrim: (exportTrim) => set({ exportTrim }),
   requestPreviewSeek: (sec) => set({ previewSeekSec: sec }),
   ackPreviewSeek: () => set({ previewSeekSec: null }),
+  setPreviewPlayheadSec: (previewPlayheadSec) => set({ previewPlayheadSec }),
   setPendingKnowledgeSlug: (pendingKnowledgeSlug) => set({ pendingKnowledgeSlug }),
   setQuitConfirmRequest: (quitConfirmRequest) => set({ quitConfirmRequest }),
   setFfmpegErrorMessage: (ffmpegErrorMessage) => set({ ffmpegErrorMessage }),

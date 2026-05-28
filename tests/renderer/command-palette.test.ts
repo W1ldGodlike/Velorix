@@ -33,5 +33,8 @@ describe('COMMAND_PALETTE_ITEMS', () => {
     expect(ids.has('knowledge-support-logs')).toBe(true)
     expect(ids.has('knowledge-ffmpeg-presets')).toBe(true)
     expect(ids.has('knowledge-probe-inspector')).toBe(true)
+    expect(ids.has('batch-export-cancel')).toBe(true)
+    expect(ids.has('batch-export-clear-completed')).toBe(true)
+    expect(ids.has('batch-export-retry-failed')).toBe(true)
   })
 })

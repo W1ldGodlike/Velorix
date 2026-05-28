@@ -5,14 +5,21 @@ import type { FfmpegExportProgressPayload } from '../../../../shared/ffmpeg-expo
 import type { ProcessingHistoryEntry } from '../../../../shared/processing-history-contract'
 
 import {
+  batchExportCanCancel,
+  batchExportCanRetryFailed,
   batchExportCanStart,
+  batchExportHasCompleted,
   formatBatchExportSummary
 } from '../../lib/format-batch-export-summary'
-import { parseDownloadsProgressPercent } from '../../lib/parse-downloads-queue-row'
+import {
+  isDownloadsRowComplete,
+  parseDownloadsProgressPercent
+} from '../../lib/parse-downloads-queue-row'
 import { useAppShellStore } from '../../stores/app-shell-store'
 import { useDownloadsQueue } from '../downloads/use-downloads-queue'
 
 export function ProcessingDownloadsPeek(props: { onOpenFull: () => void }): JSX.Element {
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const rows = useDownloadsQueue().slice(0, 5)
   return (
     <section className="processing-screen__peek vn-surface-glass">
@@ -24,18 +31,58 @@ export function ProcessingDownloadsPeek(props: { onOpenFull: () => void }): JSX.
           rows.map((row) => {
             const pct = parseDownloadsProgressPercent(row.progress)
             const suffix = pct > 0 ? ` · ${String(pct)}%` : ''
+            const rowComplete = isDownloadsRowComplete(row.status)
             return (
-              <li key={row.id}>
-                {row.shortLabel}
-                {suffix} · {row.status}
+              <li key={row.id} className="processing-screen__peek-history-row">
+                <span>
+                  {row.shortLabel}
+                  {suffix} · {row.status}
+                </span>
+                {rowComplete ? (
+                  <>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-secondary"
+                      onClick={() => {
+                        void window.velorix?.downloads?.openQueueOutput(row.id, 'file')
+                      }}
+                    >
+                      Открыть
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn"
+                      onClick={() => {
+                        void window.velorix?.downloads?.openQueueOutput(row.id, 'folder')
+                      }}
+                    >
+                      Папка
+                    </button>
+                  </>
+                ) : null}
               </li>
             )
           })
         )}
       </ul>
-      <button type="button" className="app-btn app-btn-primary" onClick={props.onOpenFull}>
-        Открыть загрузки
-      </button>
+      <div className="processing-screen__peek-actions">
+        <button type="button" className="app-btn app-btn-secondary" onClick={props.onOpenFull}>
+          Открыть загрузки
+        </button>
+        <button
+          type="button"
+          className="app-btn"
+          onClick={() => {
+            void window.velorix?.batchExport?.addFromDownloadsDone().then((result) => {
+              if (result.ok) {
+                setWorkspaceTab('processing')
+              }
+            })
+          }}
+        >
+          Готовые → пакет
+        </button>
+      </div>
     </section>
   )
 }
@@ -77,6 +124,9 @@ export function ProcessingBatchPeek(): JSX.Element {
   }, [])
 
   const canStart = snapshot != null && batchExportCanStart(snapshot)
+  const canCancel = snapshot != null && batchExportCanCancel(snapshot)
+  const canClearDone = snapshot != null && batchExportHasCompleted(snapshot)
+  const canRetryFailed = snapshot != null && batchExportCanRetryFailed(snapshot)
 
   return (
     <section className="processing-screen__peek vn-surface-glass">
@@ -99,6 +149,39 @@ export function ProcessingBatchPeek(): JSX.Element {
           }}
         >
           {startBusy ? 'Запуск…' : 'Запустить пакет'}
+        </button>
+        <button
+          type="button"
+          className="app-btn app-btn-secondary"
+          disabled={!canCancel}
+          onClick={() => void window.velorix?.batchExport?.cancel?.()}
+        >
+          Отменить
+        </button>
+        <button
+          type="button"
+          className="app-btn"
+          disabled={!canClearDone}
+          onClick={() => void window.velorix?.batchExport?.clearCompleted?.()}
+        >
+          Очистить готовые
+        </button>
+        <button
+          type="button"
+          className="app-btn app-btn-secondary"
+          disabled={!canRetryFailed || startBusy}
+          onClick={() => {
+            const retry = window.velorix?.batchExport?.retryFailed
+            if (retry == null) {
+              return
+            }
+            setStartBusy(true)
+            void retry().finally(() => {
+              setStartBusy(false)
+            })
+          }}
+        >
+          Повтор ошибок
         </button>
       </div>
     </section>
@@ -157,6 +240,15 @@ export function ProcessingHistoryPeek(): JSX.Element {
                     }}
                   >
                     Открыть
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-secondary"
+                    onClick={() => {
+                      void window.velorix?.processingHistory?.openOutput(entry.id, 'folder')
+                    }}
+                  >
+                    Папка
                   </button>
                   <button
                     type="button"

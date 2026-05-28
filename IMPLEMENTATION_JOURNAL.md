@@ -1754,3 +1754,8 @@
 - [J-1728] 2026-05-28 03:35:59 [Assistant]: X.3 rail «Справка» FFmpeg presets + Ctrl+K probe/presets; ref.9 очистка терминала; downloads rail `onDownloadsOutputDirectoryChanged`; async load planner/scenarios/session. `npm run check:quiet`.
 - [J-1729] 2026-05-28 03:42:11 [Assistant]: ref.1 `ProcessingBatchPeek` «Запустить пакет»+`batchExportCanStart`; ref.8 инспектор→probe Help; knowledge read async. `npm run check:quiet`.
 - [J-1730] 2026-05-28 03:44:21 [Assistant]: пакет J-1726..1729 — Help/knowledge deep links, batch peek+start, trim preview, terminal clear; `npm run check:quiet`, `git commit`, `git push`.
+- [J-1731] 2026-05-28 03:49:46 [Assistant]: ref.1 пакет — peek «Отменить»/«Очистить готовые»+Ctrl+K; downloads peek «Готовые→пакет»; `batchExportCanCancel`/`HasCompleted`+tests. `npm run check:quiet`.
+- [J-1732] 2026-05-28 03:56:12 [Assistant]: ref.1 V1 playhead (`previewPlayheadSec`, `buildPlayheadStyle`, motion CSS); peek «Повторить ошибки»+Ctrl+K `batchExportCanRetryFailed`; Settings mount async `cancelled` load. `npm run check:quiet`.
+- [J-1733] 2026-05-28 04:00:22 [Assistant]: ref.1 playhead bubble timecode на V1 + statusbar `TC/duration`; neon.3 polish. `npm run check:quiet`.
+- [J-1734] 2026-05-28 04:07:24 [Assistant]: neon.4 inspector→trim+seek In; V1 ←/→ seek; peek history/downloads openOutput; Ctrl+K full-file seek; motion bubble. `npm run check:quiet`.
+- [J-1735] 2026-05-28 04:14:53 [Assistant]: ref.1 медиатека — открытый файл вместо mock-списка, V1 clip=name; store сброс playhead при смене path; пакет J-1731..1735 (playhead, batch peek, peeks openOutput, inspector seek). `npm run check:quiet`, `git commit`.

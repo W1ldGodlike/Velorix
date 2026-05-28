@@ -125,10 +125,26 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
     store.setWorkspaceTab('processing')
     return
   }
+  if (action.type === 'batch-export-cancel') {
+    await window.velorix?.batchExport?.cancel?.()
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'batch-export-clear-completed') {
+    await window.velorix?.batchExport?.clearCompleted?.()
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'batch-export-retry-failed') {
+    await window.velorix?.batchExport?.retryFailed?.()
+    store.setWorkspaceTab('processing')
+    return
+  }
   if (action.type === 'export-trim-full-file') {
     const trim = trimFromProbeDuration(store.mediaProbe?.durationSec)
     if (trim != null) {
       store.setExportTrim(trim)
+      store.requestPreviewSeek(trim.inSec)
     }
     store.setWorkspaceTab('processing')
     return

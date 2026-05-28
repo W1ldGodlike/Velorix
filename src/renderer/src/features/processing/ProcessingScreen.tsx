@@ -1,8 +1,9 @@
-import { useEffect, useState, type JSX } from 'react'
+import { useEffect, useMemo, useState, type JSX } from 'react'
 
 import { VELORIX_NEON_CANONICAL_REFERENCE_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
 import { applyOpenMediaPick } from '../../lib/apply-open-media-pick'
+import { formatMediaClock } from '../../lib/format-media-clock'
 import { restoreLastMediaSession } from '../../lib/restore-last-media-session'
 import { reportFfmpegError } from '../../lib/report-ffmpeg-error'
 import { useAppShellStore } from '../../stores/app-shell-store'
@@ -14,8 +15,10 @@ import {
   ProcessingTerminalPeek
 } from './ProcessingScreenPeeks'
 import {
+  buildPlayheadStyle,
   buildTrimSpanStyle,
   PROCESSING_TIMELINE_LANES,
+  timelineKeyboardSeekSec,
   timelineSecFromPointer
 } from './processing-timeline-model'
 
@@ -33,14 +36,6 @@ const MEDIA_GROUPS = [
   { label: 'Изображения', count: 18 }
 ] as const
 
-const MEDIA_FILES = [
-  'city_night_4k.mp4',
-  'drive_sequence.mov',
-  'neon_building.mp4',
-  'music_background.mp3',
-  'ambience_city.wav'
-] as const
-
 export function ProcessingScreen(): JSX.Element {
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const exportTrim = useAppShellStore((s) => s.exportTrim)
@@ -49,9 +44,18 @@ export function ProcessingScreen(): JSX.Element {
   const mediaSource = useAppShellStore((s) => s.mediaSource)
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
   const requestPreviewSeek = useAppShellStore((s) => s.requestPreviewSeek)
+  const previewPlayheadSec = useAppShellStore((s) => s.previewPlayheadSec)
   const [centerTab, setCenterTab] = useState<ProcessingCenterTab>('editor')
   const [ytdlpUrl, setYtdlpUrl] = useState('')
   const [headStatus, setHeadStatus] = useState<string | null>(null)
+
+  const timelineLanes = useMemo(
+    () =>
+      PROCESSING_TIMELINE_LANES.map((lane) =>
+        lane.id === 'V1' && mediaSource != null ? { ...lane, clip: mediaSource.name } : lane
+      ),
+    [mediaSource]
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -190,18 +194,31 @@ export function ProcessingScreen(): JSX.Element {
               ))}
             </ul>
             <ul className="processing-screen__library-files">
-              {MEDIA_FILES.map((file, index) => (
-                <li key={file}>
+              {mediaSource != null ? (
+                <li>
                   <button
                     type="button"
-                    className={`processing-screen__file${mediaSource?.name === file || (mediaSource == null && index === 0) ? ' processing-screen__file--active' : ''}`}
+                    className="processing-screen__file processing-screen__file--active"
+                    title={mediaSource.path}
+                    onClick={() => void handleOpenMedia()}
                   >
-                    {file}
+                    {mediaSource.name}
                   </button>
                 </li>
-              ))}
+              ) : (
+                <li className="processing-screen__library-empty">Медиафайл не открыт</li>
+              )}
             </ul>
-            <p className="processing-screen__storage">Хранилище: 1.2 TB / 2.0 TB</p>
+            <button
+              type="button"
+              className="app-btn app-btn-secondary processing-screen__library-open"
+              onClick={() => void handleOpenMedia()}
+            >
+              {mediaSource != null ? 'Сменить файл…' : 'Открыть файл…'}
+            </button>
+            <p className="processing-screen__storage" aria-hidden>
+              Хранилище: 1.2 TB / 2.0 TB
+            </p>
           </aside>
 
           <div className="processing-screen__main">
@@ -212,9 +229,13 @@ export function ProcessingScreen(): JSX.Element {
               onActionNote={setHeadStatus}
             />
             <div className="processing-screen__timeline vn-surface-glass" aria-label="Таймлайн">
-              {PROCESSING_TIMELINE_LANES.map((lane) => {
+              {timelineLanes.map((lane) => {
                 const trimStyle =
                   lane.id === 'V1' ? buildTrimSpanStyle(exportTrim, mediaProbe?.durationSec) : null
+                const playheadStyle =
+                  lane.id === 'V1'
+                    ? buildPlayheadStyle(previewPlayheadSec, mediaProbe?.durationSec)
+                    : null
                 return (
                   <div key={lane.id} className="processing-screen__lane">
                     <span className="processing-screen__lane-label">{lane.id}</span>
@@ -249,6 +270,27 @@ export function ProcessingScreen(): JSX.Element {
                             }
                           : undefined
                       }
+                      onKeyDown={
+                        lane.id === 'V1' && mediaSource != null
+                          ? (e) => {
+                              const duration = mediaProbe?.durationSec
+                              if (duration == null) {
+                                return
+                              }
+                              const current = previewPlayheadSec ?? 0
+                              const sec = timelineKeyboardSeekSec(
+                                e.key,
+                                e.shiftKey,
+                                current,
+                                duration
+                              )
+                              if (sec != null) {
+                                e.preventDefault()
+                                requestPreviewSeek(sec)
+                              }
+                            }
+                          : undefined
+                      }
                     >
                       {trimStyle != null ? (
                         <span
@@ -256,6 +298,15 @@ export function ProcessingScreen(): JSX.Element {
                           style={trimStyle}
                           aria-hidden
                         />
+                      ) : null}
+                      {playheadStyle != null ? (
+                        <span className="processing-screen__playhead" style={playheadStyle}>
+                          {previewPlayheadSec != null && Number.isFinite(previewPlayheadSec) ? (
+                            <span className="processing-screen__playhead-bubble">
+                              {formatMediaClock(previewPlayheadSec)}
+                            </span>
+                          ) : null}
+                        </span>
                       ) : null}
                       {lane.clip != null ? (
                         <span className="processing-screen__clip">{lane.clip}</span>

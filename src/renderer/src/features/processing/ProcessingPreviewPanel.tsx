@@ -18,6 +18,7 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
   const setExportTrim = useAppShellStore((s) => s.setExportTrim)
   const previewSeekSec = useAppShellStore((s) => s.previewSeekSec)
   const ackPreviewSeek = useAppShellStore((s) => s.ackPreviewSeek)
+  const setPreviewPlayheadSec = useAppShellStore((s) => s.setPreviewPlayheadSec)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [currentSec, setCurrentSec] = useState(0)
   const [duration, setDuration] = useState(durationSec ?? 0)
@@ -63,8 +64,9 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
       const next = Math.min(Math.max(0, sec), max > 0 ? max : 0)
       video.currentTime = next
       setCurrentSec(next)
+      setPreviewPlayheadSec(next)
     },
-    [duration]
+    [duration, setPreviewPlayheadSec]
   )
 
   useEffect(() => {
@@ -136,6 +138,7 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
               setPlaying(false)
             }
             setCurrentSec(nextSec)
+            setPreviewPlayheadSec(nextSec)
           }}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}

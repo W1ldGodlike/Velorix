@@ -14,6 +14,7 @@ export function InspectorScreen(): JSX.Element {
   const setMediaSource = useAppShellStore((s) => s.setMediaSource)
   const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
   const setExportTrim = useAppShellStore((s) => s.setExportTrim)
+  const requestPreviewSeek = useAppShellStore((s) => s.requestPreviewSeek)
   const setPendingKnowledgeSlug = useAppShellStore((s) => s.setPendingKnowledgeSlug)
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
 
@@ -41,6 +42,7 @@ export function InspectorScreen(): JSX.Element {
                 return
               }
               setExportTrim(trim)
+              requestPreviewSeek(trim.inSec)
               setWorkspaceTab('processing')
             }}
           >
@@ -150,6 +152,7 @@ function formatSize(bytes: number | null | undefined): string {
 export function InspectorRail(): JSX.Element {
   const mediaProbe = useAppShellStore((s) => s.mediaProbe)
   const setExportTrim = useAppShellStore((s) => s.setExportTrim)
+  const requestPreviewSeek = useAppShellStore((s) => s.requestPreviewSeek)
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const chapters = mediaProbe?.chapters ?? []
   const [activeChapterIndex, setActiveChapterIndex] = useState<number | null>(null)
@@ -177,6 +180,7 @@ export function InspectorRail(): JSX.Element {
                     }
                     setActiveChapterIndex(chapter.index)
                     setExportTrim(trim)
+                    requestPreviewSeek(trim.inSec)
                     setWorkspaceTab('processing')
                   }}
                 >

@@ -43,16 +43,30 @@ export function SettingsScreen(): JSX.Element {
   }
 
   useEffect(() => {
-    void (async () => {
-      await refresh()
-    })()
-    const onBackup = window.velorix?.onSettingsBackupImported
-    if (onBackup == null) {
-      return undefined
+    let cancelled = false
+    async function load(): Promise<void> {
+      const next = await loadSettingsView()
+      if (cancelled) {
+        return
+      }
+      setView(next)
+      const status = window.velorix?.settings?.windowsExplorerContextMenuStatus
+      if (status != null) {
+        const menu = await status()
+        if (!cancelled) {
+          setWinMenu(menu)
+        }
+      }
     }
-    return onBackup(() => {
+    void load()
+    const onBackup = window.velorix?.onSettingsBackupImported
+    const unsub = onBackup?.(() => {
       void refresh()
     })
+    return () => {
+      cancelled = true
+      unsub?.()
+    }
   }, [])
 
   const meta = SECTION_LABELS[section]
