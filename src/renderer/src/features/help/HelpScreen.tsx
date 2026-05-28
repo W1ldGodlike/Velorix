@@ -2,6 +2,7 @@ import { useEffect, useState, type JSX } from 'react'
 
 import {
   KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS,
+  KNOWLEDGE_SLUG_DOWNLOADS_WORKFLOW,
   KNOWLEDGE_SLUG_SESSION_AND_QUEUES,
   KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS,
   type KnowledgeArticleListItem
@@ -74,6 +75,16 @@ export function HelpScreen(): JSX.Element {
           }}
         >
           Пакет и очереди
+        </button>
+        <button
+          type="button"
+          className="app-btn app-btn-secondary"
+          onClick={() => {
+            setPendingKnowledgeSlug(KNOWLEDGE_SLUG_DOWNLOADS_WORKFLOW)
+            setWorkspaceTab('knowledge')
+          }}
+        >
+          Загрузки (workflow)
         </button>
       </div>
       <div className="help-screen__list vn-surface-glass">

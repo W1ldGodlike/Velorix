@@ -76,43 +76,71 @@ export function ProcessingHistoryFeed(): JSX.Element {
           </span>
           <strong>{event.inputPath.split(/[/\\]/).pop() ?? event.inputPath}</strong>
           <span className="history-event__when">{formatHistoryTimestamp(event.finishedAt)}</span>
-          {event.outcome === 'success' ? (
-            <div className="history-event__actions">
+          <div className="history-event__actions">
+            <button
+              type="button"
+              className="app-btn app-btn-secondary"
+              onClick={() => {
+                void window.velorix?.processingHistory
+                  ?.openInputInHandler(event.id)
+                  .then((result) => {
+                    if (result?.ok) {
+                      setWorkspaceTab('processing')
+                    }
+                  })
+              }}
+            >
+              Исходник
+            </button>
+            {event.outcome === 'success' ? (
+              <>
+                <button
+                  type="button"
+                  className="app-btn app-btn-secondary"
+                  onClick={() => {
+                    void window.velorix?.processingHistory?.openOutput(event.id, 'file')
+                  }}
+                >
+                  Открыть
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  onClick={() => {
+                    void window.velorix?.processingHistory?.openOutput(event.id, 'folder')
+                  }}
+                >
+                  Папка
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-secondary"
+                  onClick={() => {
+                    void window.velorix?.batchExport
+                      ?.addFromHistoryInputs([event.id])
+                      .then((result) => {
+                        if (result.ok) {
+                          setWorkspaceTab('processing')
+                        }
+                      })
+                  }}
+                >
+                  В пакет
+                </button>
+              </>
+            ) : null}
+            {event.kind === 'workflowScenario' && event.workflowScenarioId != null ? (
               <button
                 type="button"
                 className="app-btn app-btn-secondary"
                 onClick={() => {
-                  void window.velorix?.processingHistory?.openOutput(event.id, 'file')
+                  void window.velorix?.processingHistory?.repeatWorkflowScenario(event.id)
                 }}
               >
-                Открыть
+                Повторить сценарий
               </button>
-              <button
-                type="button"
-                className="app-btn"
-                onClick={() => {
-                  void window.velorix?.processingHistory?.openOutput(event.id, 'folder')
-                }}
-              >
-                Папка
-              </button>
-              <button
-                type="button"
-                className="app-btn app-btn-secondary"
-                onClick={() => {
-                  void window.velorix?.batchExport
-                    ?.addFromHistoryInputs([event.id])
-                    .then((result) => {
-                      if (result.ok) {
-                        setWorkspaceTab('processing')
-                      }
-                    })
-                }}
-              >
-                В пакет
-              </button>
-            </div>
-          ) : null}
+            ) : null}
+          </div>
         </article>
       ))}
     </>

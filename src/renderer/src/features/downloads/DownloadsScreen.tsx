@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState, type JSX } from 'react'
 import { VELORIX_NEON_REFERENCE_DOWNLOADS_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
 import {
+  isDownloadsRowActive,
   isDownloadsRowComplete,
   isDownloadsRowError,
   parseDownloadsProgressPercent
@@ -37,11 +38,8 @@ export function DownloadsScreen(): JSX.Element {
       if (filterId === 'all') {
         return true
       }
-      const status = row.status.toLowerCase()
       if (filterId === 'active') {
-        return (
-          status.includes('загруз') || status.includes('download') || status.includes('running')
-        )
+        return isDownloadsRowActive(row.status)
       }
       if (filterId === 'done') {
         return isDownloadsRowComplete(row.status)

@@ -230,6 +230,21 @@ export function ProcessingHistoryPeek(): JSX.Element {
                   ? ` · ${entry.errorHint}`
                   : ''}
               </span>
+              <button
+                type="button"
+                className="app-btn app-btn-secondary"
+                onClick={() => {
+                  void window.velorix?.processingHistory
+                    ?.openInputInHandler(entry.id)
+                    .then((result) => {
+                      if (result?.ok) {
+                        setWorkspaceTab('processing')
+                      }
+                    })
+                }}
+              >
+                Исходник
+              </button>
               {entry.outcome === 'success' && entry.outputPath != null ? (
                 <>
                   <button

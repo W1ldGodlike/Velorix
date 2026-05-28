@@ -3,8 +3,11 @@ import { describe, expect, it } from 'vitest'
 import {
   buildPlayheadStyle,
   buildTimelineRulerMarks,
+  buildTimelineZoomTrackMinWidthPercent,
   buildTrimSpanStyle,
+  clampTimelineZoom,
   timelineKeyboardSeekSec,
+  timelineRulerTickCountForZoom,
   timelineSecFromPointer
 } from '../../src/renderer/src/features/processing/processing-timeline-model'
 
@@ -29,6 +32,21 @@ describe('buildPlayheadStyle', () => {
 
   it('returns null without duration', () => {
     expect(buildPlayheadStyle(1, null)).toBeNull()
+  })
+})
+
+describe('timeline zoom helpers', () => {
+  it('clamps zoom to 1..4', () => {
+    expect(clampTimelineZoom(0)).toBe(1)
+    expect(clampTimelineZoom(2.4)).toBe(2)
+    expect(clampTimelineZoom(99)).toBe(4)
+    expect(clampTimelineZoom(Number.NaN)).toBe(1)
+  })
+
+  it('maps zoom to tick count and track width', () => {
+    expect(timelineRulerTickCountForZoom(1)).toBe(3)
+    expect(timelineRulerTickCountForZoom(4)).toBe(9)
+    expect(buildTimelineZoomTrackMinWidthPercent(3)).toBe('300%')
   })
 })
 
@@ -57,6 +75,11 @@ describe('timelineKeyboardSeekSec', () => {
   it('clamps to range', () => {
     expect(timelineKeyboardSeekSec('ArrowLeft', false, 0, 100)).toBe(0)
     expect(timelineKeyboardSeekSec('ArrowRight', false, 100, 100)).toBe(100)
+  })
+
+  it('seeks to start and end', () => {
+    expect(timelineKeyboardSeekSec('Home', false, 50, 100)).toBe(0)
+    expect(timelineKeyboardSeekSec('End', false, 50, 100)).toBe(100)
   })
 
   it('ignores other keys', () => {

@@ -27,6 +27,10 @@ export type CommandPaletteAction =
   | { type: 'seek-export-trim-in' }
   | { type: 'seek-export-trim-out' }
   | { type: 'toggle-preview-play' }
+  | { type: 'seek-preview-start' }
+  | { type: 'seek-preview-end' }
+  | { type: 'set-export-trim-in' }
+  | { type: 'set-export-trim-out' }
   | { type: 'export-preset-name' }
   | { type: 'open-knowledge-slug'; slug: string }
   | { type: 'dev-showcase'; target: 'ref27' | 'ref26' | 'ref1' }
@@ -118,6 +122,30 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     label: 'Превью — play/pause',
     hint: 'Обработка · как Space',
     action: { type: 'toggle-preview-play' }
+  },
+  {
+    id: 'seek-preview-start',
+    label: 'Превью — в начало',
+    hint: 'Обработка · Home',
+    action: { type: 'seek-preview-start' }
+  },
+  {
+    id: 'seek-preview-end',
+    label: 'Превью — в конец',
+    hint: 'Обработка · End',
+    action: { type: 'seek-preview-end' }
+  },
+  {
+    id: 'set-export-trim-in',
+    label: 'Trim In на playhead',
+    hint: 'Обработка',
+    action: { type: 'set-export-trim-in' }
+  },
+  {
+    id: 'set-export-trim-out',
+    label: 'Trim Out на playhead',
+    hint: 'Обработка',
+    action: { type: 'set-export-trim-out' }
   },
   {
     id: 'engine-paths',

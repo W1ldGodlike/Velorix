@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type JSX } from 'react'
 
 import { applyOpenMediaPick } from '../lib/apply-open-media-pick'
+import { applyExportTrimIn, applyExportTrimOut } from '../lib/export-trim-markers'
 import { trimFromProbeDuration } from '../lib/inspector-chapter-trim'
 import { startPreviewMediaExport } from '../lib/start-preview-media-export'
 import { useAppShellStore } from '../stores/app-shell-store'
@@ -189,6 +190,35 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
   if (action.type === 'toggle-preview-play') {
     store.setWorkspaceTab('processing')
     store.requestPreviewTogglePlay()
+    return
+  }
+  if (action.type === 'seek-preview-start') {
+    store.requestPreviewSeek(0)
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'seek-preview-end') {
+    const duration = store.mediaProbe?.durationSec
+    if (duration != null && Number.isFinite(duration) && duration > 0) {
+      store.requestPreviewSeek(duration)
+    }
+    store.setWorkspaceTab('processing')
+    return
+  }
+  if (action.type === 'set-export-trim-in' || action.type === 'set-export-trim-out') {
+    store.setWorkspaceTab('processing')
+    const duration = store.mediaProbe?.durationSec
+    const playhead = store.previewPlayheadSec ?? 0
+    if (duration == null || !Number.isFinite(duration) || duration <= 0) {
+      return
+    }
+    const next =
+      action.type === 'set-export-trim-in'
+        ? applyExportTrimIn(playhead, duration, store.exportTrim)
+        : applyExportTrimOut(playhead, store.exportTrim)
+    if (next != null) {
+      store.setExportTrim(next)
+    }
     return
   }
   if (action.type === 'open-knowledge-slug') {

@@ -17,9 +17,14 @@ import {
 import {
   buildPlayheadStyle,
   buildTimelineRulerMarks,
+  buildTimelineZoomTrackMinWidthPercent,
   buildTrimSpanStyle,
+  clampTimelineZoom,
   PROCESSING_TIMELINE_LANES,
+  TIMELINE_ZOOM_MAX,
+  TIMELINE_ZOOM_MIN,
   timelineKeyboardSeekSec,
+  timelineRulerTickCountForZoom,
   timelineSecFromPointer
 } from './processing-timeline-model'
 
@@ -49,6 +54,7 @@ export function ProcessingScreen(): JSX.Element {
   const [centerTab, setCenterTab] = useState<ProcessingCenterTab>('editor')
   const [ytdlpUrl, setYtdlpUrl] = useState('')
   const [headStatus, setHeadStatus] = useState<string | null>(null)
+  const [timelineZoom, setTimelineZoom] = useState(TIMELINE_ZOOM_MIN)
 
   const timelineLanes = useMemo(
     () =>
@@ -58,9 +64,11 @@ export function ProcessingScreen(): JSX.Element {
     [mediaSource]
   )
   const timelineRulerMarks = useMemo(
-    () => buildTimelineRulerMarks(mediaProbe?.durationSec),
-    [mediaProbe?.durationSec]
+    () =>
+      buildTimelineRulerMarks(mediaProbe?.durationSec, timelineRulerTickCountForZoom(timelineZoom)),
+    [mediaProbe?.durationSec, timelineZoom]
   )
+  const timelineZoomTrackWidth = buildTimelineZoomTrackMinWidthPercent(timelineZoom)
 
   useEffect(() => {
     let cancelled = false
@@ -234,110 +242,140 @@ export function ProcessingScreen(): JSX.Element {
               onActionNote={setHeadStatus}
             />
             <div className="processing-screen__timeline vn-surface-glass" aria-label="Таймлайн">
-              {mediaSource != null && timelineRulerMarks.length > 0 ? (
-                <div className="processing-screen__ruler" aria-hidden>
-                  <span className="processing-screen__lane-label" />
-                  <div className="processing-screen__ruler-track">
-                    {timelineRulerMarks.map((mark) => (
-                      <span
-                        key={mark.left}
-                        className="processing-screen__ruler-tick"
-                        style={{ left: mark.left }}
-                      >
-                        <span className="processing-screen__ruler-label">
-                          {formatMediaClock(mark.sec)}
-                        </span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-              {timelineLanes.map((lane) => {
-                const trimStyle =
-                  lane.id === 'V1' ? buildTrimSpanStyle(exportTrim, mediaProbe?.durationSec) : null
-                const playheadStyle =
-                  lane.id === 'V1'
-                    ? buildPlayheadStyle(previewPlayheadSec, mediaProbe?.durationSec)
-                    : null
-                return (
-                  <div key={lane.id} className="processing-screen__lane">
-                    <span className="processing-screen__lane-label">{lane.id}</span>
-                    <div
-                      className={`processing-screen__lane-track${lane.clip != null ? ' processing-screen__lane-track--clip' : ''}${lane.id === 'V1' && mediaSource != null ? ' processing-screen__lane-track--seekable' : ''}`}
-                      role={lane.id === 'V1' && mediaSource != null ? 'slider' : undefined}
-                      aria-label={
-                        lane.id === 'V1' && mediaSource != null ? 'Позиция на таймлайне' : undefined
-                      }
-                      aria-valuemin={lane.id === 'V1' ? 0 : undefined}
-                      aria-valuemax={
-                        lane.id === 'V1' && mediaProbe?.durationSec != null
-                          ? mediaProbe.durationSec
-                          : undefined
-                      }
-                      tabIndex={lane.id === 'V1' && mediaSource != null ? 0 : undefined}
-                      onClick={
-                        lane.id === 'V1' && mediaSource != null
-                          ? (e) => {
-                              const duration = mediaProbe?.durationSec
-                              if (duration == null) {
-                                return
-                              }
-                              const sec = timelineSecFromPointer(
-                                e.clientX,
-                                e.currentTarget.getBoundingClientRect(),
-                                duration
-                              )
-                              if (sec != null) {
-                                requestPreviewSeek(sec)
-                              }
-                            }
-                          : undefined
-                      }
-                      onKeyDown={
-                        lane.id === 'V1' && mediaSource != null
-                          ? (e) => {
-                              const duration = mediaProbe?.durationSec
-                              if (duration == null) {
-                                return
-                              }
-                              const current = previewPlayheadSec ?? 0
-                              const sec = timelineKeyboardSeekSec(
-                                e.key,
-                                e.shiftKey,
-                                current,
-                                duration
-                              )
-                              if (sec != null) {
-                                e.preventDefault()
-                                requestPreviewSeek(sec)
-                              }
-                            }
-                          : undefined
-                      }
-                    >
-                      {trimStyle != null ? (
-                        <span
-                          className="processing-screen__trim-span"
-                          style={trimStyle}
-                          aria-hidden
-                        />
-                      ) : null}
-                      {playheadStyle != null ? (
-                        <span className="processing-screen__playhead" style={playheadStyle}>
-                          {previewPlayheadSec != null && Number.isFinite(previewPlayheadSec) ? (
-                            <span className="processing-screen__playhead-bubble">
-                              {formatMediaClock(previewPlayheadSec)}
+              <div className="processing-screen__timeline-scroll">
+                <div
+                  className="processing-screen__timeline-scale"
+                  style={{ minWidth: timelineZoomTrackWidth }}
+                >
+                  {mediaSource != null && timelineRulerMarks.length > 0 ? (
+                    <div className="processing-screen__ruler" aria-hidden>
+                      <span className="processing-screen__lane-label" />
+                      <div className="processing-screen__ruler-track">
+                        {timelineRulerMarks.map((mark) => (
+                          <span
+                            key={mark.left}
+                            className="processing-screen__ruler-tick"
+                            style={{ left: mark.left }}
+                          >
+                            <span className="processing-screen__ruler-label">
+                              {formatMediaClock(mark.sec)}
+                            </span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {timelineLanes.map((lane) => {
+                    const trimStyle =
+                      lane.id === 'V1'
+                        ? buildTrimSpanStyle(exportTrim, mediaProbe?.durationSec)
+                        : null
+                    const playheadStyle =
+                      lane.id === 'V1'
+                        ? buildPlayheadStyle(previewPlayheadSec, mediaProbe?.durationSec)
+                        : null
+                    return (
+                      <div key={lane.id} className="processing-screen__lane">
+                        <span className="processing-screen__lane-label">{lane.id}</span>
+                        <div
+                          className={`processing-screen__lane-track${lane.clip != null ? ' processing-screen__lane-track--clip' : ''}${lane.id === 'V1' && mediaSource != null ? ' processing-screen__lane-track--seekable' : ''}`}
+                          role={lane.id === 'V1' && mediaSource != null ? 'slider' : undefined}
+                          aria-label={
+                            lane.id === 'V1' && mediaSource != null
+                              ? 'Позиция на таймлайне'
+                              : undefined
+                          }
+                          aria-valuemin={lane.id === 'V1' ? 0 : undefined}
+                          aria-valuemax={
+                            lane.id === 'V1' && mediaProbe?.durationSec != null
+                              ? mediaProbe.durationSec
+                              : undefined
+                          }
+                          tabIndex={lane.id === 'V1' && mediaSource != null ? 0 : undefined}
+                          onClick={
+                            lane.id === 'V1' && mediaSource != null
+                              ? (e) => {
+                                  const duration = mediaProbe?.durationSec
+                                  if (duration == null) {
+                                    return
+                                  }
+                                  const sec = timelineSecFromPointer(
+                                    e.clientX,
+                                    e.currentTarget.getBoundingClientRect(),
+                                    duration
+                                  )
+                                  if (sec != null) {
+                                    requestPreviewSeek(sec)
+                                  }
+                                }
+                              : undefined
+                          }
+                          onKeyDown={
+                            lane.id === 'V1' && mediaSource != null
+                              ? (e) => {
+                                  const duration = mediaProbe?.durationSec
+                                  if (duration == null) {
+                                    return
+                                  }
+                                  const current = previewPlayheadSec ?? 0
+                                  const sec = timelineKeyboardSeekSec(
+                                    e.key,
+                                    e.shiftKey,
+                                    current,
+                                    duration
+                                  )
+                                  if (sec != null) {
+                                    e.preventDefault()
+                                    requestPreviewSeek(sec)
+                                  }
+                                }
+                              : undefined
+                          }
+                        >
+                          {trimStyle != null ? (
+                            <span
+                              className="processing-screen__trim-span"
+                              style={trimStyle}
+                              aria-hidden
+                            />
+                          ) : null}
+                          {playheadStyle != null ? (
+                            <span className="processing-screen__playhead" style={playheadStyle}>
+                              {previewPlayheadSec != null && Number.isFinite(previewPlayheadSec) ? (
+                                <span className="processing-screen__playhead-bubble">
+                                  {formatMediaClock(previewPlayheadSec)}
+                                </span>
+                              ) : null}
                             </span>
                           ) : null}
-                        </span>
-                      ) : null}
-                      {lane.clip != null ? (
-                        <span className="processing-screen__clip">{lane.clip}</span>
-                      ) : null}
-                    </div>
-                  </div>
-                )
-              })}
+                          {lane.clip != null ? (
+                            <span className="processing-screen__clip">{lane.clip}</span>
+                          ) : null}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+              <div
+                className="processing-screen__timeline-zoom"
+                role="group"
+                aria-label="Масштаб таймлайна"
+              >
+                <span className="processing-screen__timeline-zoom-label">Zoom</span>
+                <input
+                  type="range"
+                  className="app-ui-showcase-range vn-progress-neon processing-screen__timeline-zoom-range"
+                  min={TIMELINE_ZOOM_MIN}
+                  max={TIMELINE_ZOOM_MAX}
+                  step={1}
+                  value={timelineZoom}
+                  aria-valuetext={`${String(timelineZoom)}×`}
+                  disabled={mediaSource == null}
+                  onChange={(e) => setTimelineZoom(clampTimelineZoom(Number(e.target.value)))}
+                />
+                <span className="processing-screen__timeline-zoom-value">{timelineZoom}×</span>
+              </div>
             </div>
             <ProcessingBatchPeek />
             <ProcessingHistoryPeek />

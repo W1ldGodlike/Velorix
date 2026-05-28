@@ -1764,3 +1764,8 @@
 - [J-1738] 2026-05-28 04:32:48 [Assistant]: ref.1 V1 waveform CSS mock, Space play/pause; store сброс `mediaProbe` при смене path; rail trim timecode. `npm run check:quiet`.
 - [J-1739] 2026-05-28 04:38:40 [Assistant]: neon.4 downloads filter `isDownloadsRowComplete`/`Error`; X.3 Help quick knowledge; Ctrl+K ref.26/27/ref.1 dev showcase; tools rail hash buttons. `npm run check:quiet`.
 - [J-1740] 2026-05-28 04:43:50 [Assistant]: X.6 Ctrl+K play/pause (`requestPreviewTogglePlay`)+журнал history; пакет J-1736..1740 (ruler, palette export, inspector, downloads, waveform). `npm run check:quiet`, `git commit`, `git push`.
+- [J-1741] 2026-05-28 04:50:15 [Assistant]: ref.1 Home/End seek (timeline V1 + превью); neon.4 `isDownloadsRowActive`; Help → downloads-workflow. `npm run check:quiet`.
+- [J-1742] 2026-05-28 04:56:26 [Assistant]: neon.4 history «Исходник» (`openInputInHandler`→обработка); X.6 Ctrl+K seek start/end. `npm run check:quiet`.
+- [J-1743] 2026-05-28 05:01:21 [Assistant]: ref.1 seek bar trim highlight; Ctrl+K Trim In/Out на playhead; history «Повторить сценарий»; `buildSeekTrimTrackBackground`+tests. `npm run check:quiet`.
+- [J-1744] 2026-05-28 05:08:43 [Assistant]: neon.5 motion polish ref.1 — transport/seek/trim state-classes (`--playing`, `--trim-active`) + reduced-motion-safe transitions/glow и `aria-valuetext` для seek. `npm run check:quiet`.
+- [J-1745] 2026-05-28 05:17:13 [Assistant]: neon.3 ref.1 timeline zoom 1×–4× (scroll, ruler ticks); пакет J-1741..1745 (trim seek/history, motion, Ctrl+K trim, downloads). `npm run check:quiet`, `git commit`.

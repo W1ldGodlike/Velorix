@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  isDownloadsRowActive,
   isDownloadsRowComplete,
   isDownloadsRowError,
   parseDownloadsProgressPercent,
@@ -41,6 +42,14 @@ describe('isDownloadsRowError', () => {
   it('detects error statuses', () => {
     expect(isDownloadsRowError('Ошибка сети')).toBe(true)
     expect(isDownloadsRowError('Загрузка')).toBe(false)
+  })
+})
+
+describe('isDownloadsRowActive', () => {
+  it('detects in-progress rows', () => {
+    expect(isDownloadsRowActive('Загрузка 12%')).toBe(true)
+    expect(isDownloadsRowActive('Готово')).toBe(false)
+    expect(isDownloadsRowActive('Ошибка')).toBe(false)
   })
 })
 

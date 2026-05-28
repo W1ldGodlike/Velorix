@@ -64,6 +64,12 @@ export function timelineKeyboardSeekSec(
   if (!Number.isFinite(durationSec) || durationSec <= 0 || !Number.isFinite(currentSec)) {
     return null
   }
+  if (key === 'Home') {
+    return 0
+  }
+  if (key === 'End') {
+    return durationSec
+  }
   const delta = shiftKey ? TIMELINE_KEYBOARD_SEEK_COARSE_SEC : TIMELINE_KEYBOARD_SEEK_FINE_SEC
   if (key === 'ArrowLeft') {
     return Math.max(0, currentSec - delta)
@@ -77,6 +83,28 @@ export function timelineKeyboardSeekSec(
 export type TimelineRulerMark = {
   left: string
   sec: number
+}
+
+export const TIMELINE_ZOOM_MIN = 1
+export const TIMELINE_ZOOM_MAX = 4
+
+/** Дискретный zoom таймлайна ref.1 (1 = весь файл, 4 = крупный масштаб). */
+export function clampTimelineZoom(value: number): number {
+  if (!Number.isFinite(value)) {
+    return TIMELINE_ZOOM_MIN
+  }
+  return Math.min(TIMELINE_ZOOM_MAX, Math.max(TIMELINE_ZOOM_MIN, Math.round(value)))
+}
+
+/** Число делений шкалы растёт с zoom (больше меток при увеличении). */
+export function timelineRulerTickCountForZoom(zoom: number): number {
+  const z = clampTimelineZoom(zoom)
+  return 3 + (z - 1) * 2
+}
+
+/** Минимальная ширина дорожек в % видимой области (горизонтальный scroll). */
+export function buildTimelineZoomTrackMinWidthPercent(zoom: number): string {
+  return `${String(clampTimelineZoom(zoom) * 100)}%`
 }
 
 /** Метки шкалы 0…duration для ref.1 (без форматирования времени — в UI). */

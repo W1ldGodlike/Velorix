@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type JSX } from 'react'
 
 import { capturePreviewSnapshot } from '../../lib/capture-preview-snapshot'
-import { applyExportTrimIn, applyExportTrimOut } from '../../lib/export-trim-markers'
+import {
+  applyExportTrimIn,
+  applyExportTrimOut,
+  buildSeekTrimTrackBackground
+} from '../../lib/export-trim-markers'
 import { formatMediaClock } from '../../lib/format-media-clock'
 import { useAppShellStore } from '../../stores/app-shell-store'
 import type { ShellMediaSource } from '../../stores/shell-media-source'
@@ -28,6 +32,8 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
 
   const seekMax = duration > 0 ? duration : 1
   const seekPercent = duration > 0 ? Math.min(100, (currentSec / duration) * 100) : 0
+  const seekTrimBackground = buildSeekTrimTrackBackground(exportTrim, duration)
+  const isTrimActive = exportTrim != null
 
   useEffect(() => {
     if (exportTrim == null || mediaSource == null) {
@@ -98,7 +104,7 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent): void {
-      if (event.code !== 'Space' || event.repeat) {
+      if (mediaSource == null) {
         return
       }
       const target = event.target
@@ -110,7 +116,20 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
       ) {
         return
       }
-      if (mediaSource == null) {
+      if (event.code === 'Home') {
+        event.preventDefault()
+        seekTo(0)
+        return
+      }
+      if (event.code === 'End') {
+        event.preventDefault()
+        const max = duration > 0 ? duration : (videoRef.current?.duration ?? 0)
+        if (max > 0) {
+          seekTo(max)
+        }
+        return
+      }
+      if (event.code !== 'Space' || event.repeat) {
         return
       }
       event.preventDefault()
@@ -118,7 +137,7 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [mediaSource, togglePlay])
+  }, [duration, mediaSource, seekTo, togglePlay])
 
   useEffect(() => {
     if (previewTogglePlayNonce < 1 || mediaSource == null) {
@@ -181,7 +200,9 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
         ) : null}
         <span className="processing-screen__preview-hint">{mediaSource.name}</span>
       </div>
-      <div className="processing-screen__transport">
+      <div
+        className={`processing-screen__transport${playing ? ' processing-screen__transport--playing' : ''}${isTrimActive ? ' processing-screen__transport--trim-active' : ''}`}
+      >
         <button
           type="button"
           className="app-ui-showcase-icon-btn"
@@ -212,17 +233,23 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
         <input
           type="range"
           className="app-ui-showcase-range vn-progress-neon processing-screen__seek"
+          style={seekTrimBackground != null ? { background: seekTrimBackground } : undefined}
           value={seekPercent}
           min={0}
           max={100}
           step={0.1}
           aria-label="Позиция"
+          aria-valuetext={`${formatMediaClock(currentSec)} из ${formatMediaClock(duration)}`}
           onChange={(e) => {
             const ratio = Number(e.target.value) / 100
             seekTo(ratio * seekMax)
           }}
         />
-        <div className="processing-screen__trim" role="group" aria-label="Диапазон экспорта">
+        <div
+          className={`processing-screen__trim${isTrimActive ? ' processing-screen__trim--active' : ''}`}
+          role="group"
+          aria-label="Диапазон экспорта"
+        >
           <button
             type="button"
             className="app-btn app-btn-secondary processing-screen__trim-btn"
