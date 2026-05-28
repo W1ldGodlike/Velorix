@@ -107,19 +107,37 @@ export function buildTimelineZoomTrackMinWidthPercent(zoom: number): string {
   return `${String(clampTimelineZoom(zoom) * 100)}%`
 }
 
-/** Горячие клавиши масштаба таймлайна: -, +, 0 (reset). */
+/** Горячие клавиши масштаба таймлайна: -, +, 0 (reset), PageUp/PageDown. */
 export function timelineKeyboardZoomLevel(key: string, currentZoom: number): number | null {
   const zoom = clampTimelineZoom(currentZoom)
-  if (key === '-' || key === '_' || key === 'Subtract' || key === 'NumpadSubtract') {
+  if (
+    key === '-' ||
+    key === '_' ||
+    key === 'Subtract' ||
+    key === 'NumpadSubtract' ||
+    key === 'PageDown'
+  ) {
     return clampTimelineZoom(zoom - 1)
   }
-  if (key === '=' || key === '+' || key === 'Add' || key === 'NumpadAdd') {
+  if (key === '=' || key === '+' || key === 'Add' || key === 'NumpadAdd' || key === 'PageUp') {
     return clampTimelineZoom(zoom + 1)
   }
   if (key === '0' || key === 'Digit0' || key === 'Numpad0') {
     return TIMELINE_ZOOM_MIN
   }
   return null
+}
+
+/**
+ * Zoom по колесу: Ctrl/Meta + wheel.
+ * Вверх (deltaY < 0) = увеличить, вниз = уменьшить.
+ */
+export function timelineWheelZoomLevel(deltaY: number, currentZoom: number): number {
+  if (!Number.isFinite(deltaY) || deltaY === 0) {
+    return clampTimelineZoom(currentZoom)
+  }
+  const delta = deltaY < 0 ? 1 : -1
+  return clampTimelineZoom(currentZoom + delta)
 }
 
 /** Метки шкалы 0…duration для ref.1 (без форматирования времени — в UI). */

@@ -36,8 +36,26 @@
   }
 
   .processing-screen__transport,
-  .processing-screen__trim {
+  .processing-screen__trim,
+  .processing-screen__timeline-zoom {
     transition: var(--vn-transition-surface);
+  }
+
+  .processing-screen__timeline-zoom-btn,
+  .processing-screen__timeline-zoom-hint {
+    transition: var(--vn-transition-colors);
+  }
+
+  .processing-screen__timeline-zoom-btn:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--fa-accent) 28%, transparent);
+  }
+
+  .processing-screen__timeline-zoom-value {
+    transition: color var(--vn-duration-fast) var(--vn-ease-out-cinematic);
+  }
+
+  .processing-screen__timeline-zoom:focus-within .processing-screen__timeline-zoom-value {
+    color: var(--fa-accent);
   }
 
   .processing-screen__transport--trim-active .processing-screen__seek {

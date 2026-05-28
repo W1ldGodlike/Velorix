@@ -9,6 +9,7 @@ import {
   timelineKeyboardSeekSec,
   timelineKeyboardZoomLevel,
   timelineRulerTickCountForZoom,
+  timelineWheelZoomLevel,
   timelineSecFromPointer
 } from '../../src/renderer/src/features/processing/processing-timeline-model'
 
@@ -52,10 +53,20 @@ describe('timeline zoom helpers', () => {
 
   it('handles keyboard zoom controls', () => {
     expect(timelineKeyboardZoomLevel('-', 3)).toBe(2)
+    expect(timelineKeyboardZoomLevel('PageDown', 3)).toBe(2)
     expect(timelineKeyboardZoomLevel('+', 3)).toBe(4)
+    expect(timelineKeyboardZoomLevel('PageUp', 3)).toBe(4)
     expect(timelineKeyboardZoomLevel('NumpadAdd', 4)).toBe(4)
     expect(timelineKeyboardZoomLevel('0', 4)).toBe(1)
     expect(timelineKeyboardZoomLevel('Enter', 2)).toBeNull()
+  })
+
+  it('handles wheel zoom controls', () => {
+    expect(timelineWheelZoomLevel(-120, 2)).toBe(3)
+    expect(timelineWheelZoomLevel(120, 2)).toBe(1)
+    expect(timelineWheelZoomLevel(-120, 4)).toBe(4)
+    expect(timelineWheelZoomLevel(120, 1)).toBe(1)
+    expect(timelineWheelZoomLevel(0, 3)).toBe(3)
   })
 })
 

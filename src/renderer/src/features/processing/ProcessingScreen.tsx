@@ -25,6 +25,7 @@ import {
   TIMELINE_ZOOM_MIN,
   timelineKeyboardSeekSec,
   timelineKeyboardZoomLevel,
+  timelineWheelZoomLevel,
   timelineRulerTickCountForZoom,
   timelineSecFromPointer
 } from './processing-timeline-model'
@@ -268,7 +269,23 @@ export function ProcessingScreen(): JSX.Element {
               onActionNote={setHeadStatus}
             />
             <div className="processing-screen__timeline vn-surface-glass" aria-label="Таймлайн">
-              <div className="processing-screen__timeline-scroll">
+              <div
+                className="processing-screen__timeline-scroll"
+                title="Ctrl+колесо или двойной клик: масштаб таймлайна"
+                onWheel={(e) => {
+                  if (mediaSource == null || (!e.ctrlKey && !e.metaKey)) {
+                    return
+                  }
+                  e.preventDefault()
+                  setTimelineZoom(timelineWheelZoomLevel(e.deltaY, timelineZoom))
+                }}
+                onDoubleClick={() => {
+                  if (mediaSource == null) {
+                    return
+                  }
+                  setTimelineZoom(TIMELINE_ZOOM_MIN)
+                }}
+              >
                 <div
                   className="processing-screen__timeline-scale"
                   style={{ minWidth: timelineZoomTrackWidth }}
@@ -420,7 +437,8 @@ export function ProcessingScreen(): JSX.Element {
                   className="app-btn app-btn-secondary processing-screen__timeline-zoom-btn"
                   onClick={() => setTimelineZoom(TIMELINE_ZOOM_MIN)}
                   disabled={mediaSource == null || timelineZoom === TIMELINE_ZOOM_MIN}
-                  aria-label="Сбросить масштаб таймлайна"
+                  aria-label="Сбросить масштаб таймлайна (1x)"
+                  title="Сбросить масштаб к 1x"
                 >
                   1x
                 </button>
@@ -435,7 +453,7 @@ export function ProcessingScreen(): JSX.Element {
                 </button>
                 <span className="processing-screen__timeline-zoom-value">{timelineZoom}×</span>
                 <span className="processing-screen__timeline-zoom-hint" aria-hidden>
-                  Hotkeys: - / + / 0
+                  Hotkeys: - / + / 0 / PgUp / PgDn · Ctrl+Wheel · Double-click reset
                 </span>
               </div>
             </div>

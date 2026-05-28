@@ -1774,3 +1774,8 @@
 - [J-1748] 2026-05-28 05:41:34 [Assistant]: neon.3 UX — глобальные hotkeys `-`/`+`/`0` для zoom в центре «Обработка» (без фокуса на V1, кроме input/editable). `npm run check:quiet`.
 - [J-1749] 2026-05-28 05:47:23 [Assistant]: neon.3 discoverability — подсказка `Hotkeys: - / + / 0` рядом с zoom-контролом ref.1. `npm run check:quiet`.
 - [J-1750] 2026-05-28 05:51:57 [Assistant]: X.6 polish Ctrl+K — у zoom-команд добавлены hotkey-хинты (`-`, `0`, `+`); пакет J-1746..1750 (zoom UX, palette, global hotkeys, discoverability). `npm run check:quiet`, `git commit`, `git push`.
+- [J-1751] 2026-05-28 05:57:55 [Assistant]: neon.5 motion v1 — zoom-panel transitions/hover/focus (кнопки/label/value) в ref.1 для более живого feedback. `npm run check:quiet`.
+- [J-1752] 2026-05-28 06:05:26 [Assistant]: neon.3 ref.1 zoom by `Ctrl/Meta + Wheel` на timeline; helper `timelineWheelZoomLevel` + tests; hint обновлён (`Ctrl+Wheel`). `npm run check:quiet`.
+- [J-1753] 2026-05-28 06:13:08 [Assistant]: neon.3 keyboard zoom расширен (`PageUp`/`PageDown`) + tests; zoom-hint обновлён (`PgUp/PgDn`). `npm run check:quiet`.
+- [J-1754] 2026-05-28 06:18:17 [Assistant]: neon.3 UX — double-click reset zoom (`1x`) на timeline-scroll + hint обновлён (`Double-click reset`). `npm run check:quiet`.
+- [J-1755] 2026-05-28 06:23:48 [Assistant]: neon.3 accessibility polish — timeline zoom получил tooltip (`Ctrl+Wheel / double-click`) и aria/title для reset `1x`; пакет J-1751..1755. `npm run check:quiet`, `git commit`.
