@@ -16,20 +16,31 @@ export function HelpScreen(): JSX.Element {
   const [loadError, setLoadError] = useState<string | null>(null)
 
   useEffect(() => {
-    void (async () => {
+    let cancelled = false
+    async function load(): Promise<void> {
       const list = window.velorix?.knowledge?.listArticles
       if (list == null) {
-        setLoadError('knowledge.listArticles недоступен')
+        if (!cancelled) {
+          setLoadError('knowledge.listArticles недоступен')
+        }
         return
       }
       const result = await list({ preferredUiLocale: 'ru' })
+      if (cancelled) {
+        return
+      }
       if (!result.ok) {
         setLoadError(result.error)
         return
       }
       const visible = result.articles.filter((article) => !HIDDEN_SLUGS.has(article.slug))
       setArticles(visible.slice(0, 12))
-    })()
+      setLoadError(null)
+    }
+    void load()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return (

@@ -55,6 +55,16 @@ export function TerminalScreen(): JSX.Element {
         <h1 className="portal-screen__title">Терминал</h1>
         <p className="portal-screen__subtitle">Эталон: {VELORIX_NEON_REFERENCE_TERMINAL_REL}</p>
       </header>
+      <div className="terminal-screen__head-actions">
+        <button
+          type="button"
+          className="app-btn app-btn-secondary"
+          disabled={logLines.length === 0}
+          onClick={() => setLogLines(['Журнал очищен.'])}
+        >
+          Очистить журнал
+        </button>
+      </div>
       <div className="terminal-screen__log vn-surface-glass" role="log" aria-live="polite">
         {logLines.map((line, index) => (
           <code key={`${index}-${line.slice(0, 24)}`}>{line}</code>
@@ -89,14 +99,21 @@ export function TerminalRail(): JSX.Element {
   const [hints, setHints] = useState<TerminalCommandHintEntry[]>([])
 
   useEffect(() => {
-    void (async () => {
+    let cancelled = false
+    async function load(): Promise<void> {
       const getHints = window.velorix?.terminal?.getHints
       if (getHints == null) {
         return
       }
       const rows = await getHints()
-      setHints(rows.slice(0, 6))
-    })()
+      if (!cancelled) {
+        setHints(rows.slice(0, 6))
+      }
+    }
+    void load()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return (

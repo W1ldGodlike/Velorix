@@ -6,6 +6,7 @@ import type {
 } from '../../../../shared/processing-history-contract'
 
 import { formatHistoryTimestamp } from '../../lib/format-history-timestamp'
+import { useAppShellStore } from '../../stores/app-shell-store'
 
 function outcomeTone(outcome: ProcessingHistoryOutcome): 'ready' | 'info' | 'error' {
   if (outcome === 'success') {
@@ -19,6 +20,7 @@ function outcomeTone(outcome: ProcessingHistoryOutcome): 'ready' | 'info' | 'err
 
 /** ref.3 — лента журнала FFmpeg/экспорта (`processingHistory`). */
 export function ProcessingHistoryFeed(): JSX.Element {
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const [entries, setEntries] = useState<ProcessingHistoryEntry[]>([])
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -93,6 +95,21 @@ export function ProcessingHistoryFeed(): JSX.Element {
                 }}
               >
                 Папка
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-secondary"
+                onClick={() => {
+                  void window.velorix?.batchExport
+                    ?.addFromHistoryInputs([event.id])
+                    .then((result) => {
+                      if (result.ok) {
+                        setWorkspaceTab('processing')
+                      }
+                    })
+                }}
+              >
+                В пакет
               </button>
             </div>
           ) : null}

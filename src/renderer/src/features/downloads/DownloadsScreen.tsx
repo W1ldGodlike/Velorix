@@ -276,9 +276,22 @@ export function DownloadsRail(): JSX.Element {
   }
 
   useEffect(() => {
-    void (async () => {
+    let cancelled = false
+    async function load(): Promise<void> {
       await refreshOutputPath()
-    })()
+      if (cancelled) {
+        return
+      }
+    }
+    void load()
+    const onDir = window.velorix?.downloads?.onDownloadsOutputDirectoryChanged
+    const unsub = onDir?.(() => {
+      void refreshOutputPath()
+    })
+    return () => {
+      cancelled = true
+      unsub?.()
+    }
   }, [])
 
   return (

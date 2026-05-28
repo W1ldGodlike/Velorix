@@ -81,6 +81,10 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
       return
     }
     if (video.paused) {
+      if (exportTrim != null && video.currentTime >= exportTrim.outSec) {
+        video.currentTime = exportTrim.inSec
+        setCurrentSec(exportTrim.inSec)
+      }
       await video.play()
       setPlaying(true)
     } else {
@@ -121,9 +125,17 @@ export function ProcessingPreviewPanel(props: ProcessingPreviewPanelProps): JSX.
           }}
           onTimeUpdate={() => {
             const video = videoRef.current
-            if (video != null) {
-              setCurrentSec(video.currentTime)
+            if (video == null) {
+              return
             }
+            let nextSec = video.currentTime
+            if (exportTrim != null && nextSec > exportTrim.outSec) {
+              video.currentTime = exportTrim.inSec
+              nextSec = exportTrim.inSec
+              video.pause()
+              setPlaying(false)
+            }
+            setCurrentSec(nextSec)
           }}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}

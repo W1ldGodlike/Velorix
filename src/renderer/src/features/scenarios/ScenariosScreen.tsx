@@ -1,4 +1,4 @@
-import { useEffect, useState, type JSX } from 'react'
+import { useCallback, useEffect, useState, type JSX } from 'react'
 
 import {
   WORKFLOW_SCENARIO_TEMPLATE_V1,
@@ -29,7 +29,7 @@ export function ScenariosScreen(): JSX.Element {
   const [busyId, setBusyId] = useState<string | null>(null)
   const [runNote, setRunNote] = useState<string | null>(null)
 
-  async function refresh(): Promise<void> {
+  const refresh = useCallback(async (): Promise<void> => {
     const list = window.velorix?.workflows?.listScenarios
     if (list == null) {
       setLoadError('workflows.listScenarios недоступен')
@@ -42,12 +42,33 @@ export function ScenariosScreen(): JSX.Element {
     }
     setLoadError(null)
     setFlows(result.items)
-  }
+  }, [])
 
   useEffect(() => {
-    void (async () => {
-      await refresh()
-    })()
+    let cancelled = false
+    async function load(): Promise<void> {
+      const list = window.velorix?.workflows?.listScenarios
+      if (list == null) {
+        if (!cancelled) {
+          setLoadError('workflows.listScenarios недоступен')
+        }
+        return
+      }
+      const result = await list()
+      if (cancelled) {
+        return
+      }
+      if (!result.ok) {
+        setLoadError(result.error)
+        return
+      }
+      setLoadError(null)
+      setFlows(result.items)
+    }
+    void load()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   async function handleNewScenario(): Promise<void> {

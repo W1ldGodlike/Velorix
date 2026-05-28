@@ -1749,3 +1749,8 @@
 - [J-1723] 2026-05-28 03:10:42 [Assistant]: neon.3/5 ref.1 — seek по клику V1+`requestPreviewSeek`; transport «К In/Out»; Ctrl+K seek trim; motion center tabs. `npm run check:quiet`.
 - [J-1724] 2026-05-28 03:15:26 [Assistant]: neon.1/2 — ref.27 utilities+semantic labels; ref.26 reduced-motion demo; тесты timeline/trim/palette; GPU sidebar async load. `npm run check:quiet`.
 - [J-1725] 2026-05-28 03:18:40 [Assistant]: пакет J-1721..1724 — batch export, settings reload, inspector trim, timeline seek, ref26/27 showcase, tests; `npm run check:quiet`, `git commit`.
+- [J-1726] 2026-05-28 03:24:14 [Assistant]: X.3 Help→knowledge pending slug при уже открытой вкладке; neon.3 превью clamp In–Out; Ctrl+K «Справка»; `pickInitialKnowledgeSlug`+test. `npm run check:quiet`.
+- [J-1727] 2026-05-28 03:29:56 [Assistant]: X.3 About→`about-support-logs`; история→пакет (`addFromHistoryInputs`); `ProcessingBatchPeek`+`onSnapshot`; Ctrl+K knowledge slug; planner load pattern. `npm run check:quiet`.
+- [J-1728] 2026-05-28 03:35:59 [Assistant]: X.3 rail «Справка» FFmpeg presets + Ctrl+K probe/presets; ref.9 очистка терминала; downloads rail `onDownloadsOutputDirectoryChanged`; async load planner/scenarios/session. `npm run check:quiet`.
+- [J-1729] 2026-05-28 03:42:11 [Assistant]: ref.1 `ProcessingBatchPeek` «Запустить пакет»+`batchExportCanStart`; ref.8 инспектор→probe Help; knowledge read async. `npm run check:quiet`.
+- [J-1730] 2026-05-28 03:44:21 [Assistant]: пакет J-1726..1729 — Help/knowledge deep links, batch peek+start, trim preview, terminal clear; `npm run check:quiet`, `git commit`, `git push`.

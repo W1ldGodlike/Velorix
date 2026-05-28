@@ -1,3 +1,9 @@
+import {
+  KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS,
+  KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS,
+  KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR
+} from '../../../shared/knowledge-contract'
+
 import type { SystemModalId } from './system-modal'
 import type { WorkspaceTab } from './workspace-tab'
 import { WORKSPACE_TAB_LABELS, WORKSPACE_TABS } from './workspace-tab'
@@ -14,6 +20,7 @@ export type CommandPaletteAction =
   | { type: 'seek-export-trim-in' }
   | { type: 'seek-export-trim-out' }
   | { type: 'export-preset-name' }
+  | { type: 'open-knowledge-slug'; slug: string }
 
 export type CommandPaletteItem = {
   id: string
@@ -96,6 +103,30 @@ export const COMMAND_PALETTE_ITEMS: CommandPaletteItem[] = [
     label: 'Плагины',
     hint: 'Инструменты',
     action: { type: 'modal', id: 'plugins' }
+  },
+  {
+    id: 'open-help',
+    label: 'Справка — быстрый каталог',
+    hint: 'Help → База знаний',
+    action: { type: 'workspace-tab', tab: 'help' }
+  },
+  {
+    id: 'knowledge-support-logs',
+    label: 'Справка: логи и диагностика',
+    hint: 'База знаний',
+    action: { type: 'open-knowledge-slug', slug: KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS }
+  },
+  {
+    id: 'knowledge-ffmpeg-presets',
+    label: 'Справка: пресеты FFmpeg rail',
+    hint: 'База знаний',
+    action: { type: 'open-knowledge-slug', slug: KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS }
+  },
+  {
+    id: 'knowledge-probe-inspector',
+    label: 'Справка: probe и инспектор',
+    hint: 'База знаний',
+    action: { type: 'open-knowledge-slug', slug: KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR }
   },
   { id: 'about', label: 'О программе', action: { type: 'modal', id: 'about' } },
   { id: 'toggle-rail', label: 'Показать/скрыть правый rail', action: { type: 'toggle-rail' } },

@@ -35,9 +35,17 @@ export function PlannerScreen(): JSX.Element {
   }, [])
 
   useEffect(() => {
-    void (async () => {
-      setTasks(await loadScheduledTasks())
-    })()
+    let cancelled = false
+    async function load(): Promise<void> {
+      const rows = await loadScheduledTasks()
+      if (!cancelled) {
+        setTasks(rows)
+      }
+    }
+    void load()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const tasksByCell = useMemo(() => {
@@ -151,13 +159,14 @@ export function PlannerRail(): JSX.Element {
   const [busy, setBusy] = useState(false)
 
   useEffect(() => {
-    void (async () => {
+    let cancelled = false
+    async function load(): Promise<void> {
       const listScenarios = window.velorix?.workflows?.listScenarios
       const listTasks = window.velorix?.workflows?.listScheduledTasks
       const caps = window.velorix?.workflows?.capabilities
       if (listScenarios != null) {
         const result = await listScenarios()
-        if (result.ok) {
+        if (!cancelled && result.ok) {
           const items = result.items.map((item) => ({ id: item.id, title: item.title }))
           setScenarios(items)
           if (items.length > 0) {
@@ -167,13 +176,13 @@ export function PlannerRail(): JSX.Element {
       }
       if (listTasks != null) {
         const result = await listTasks()
-        if (result.ok) {
+        if (!cancelled && result.ok) {
           setTasks(result.items)
         }
       }
       if (caps != null) {
         const result = await caps()
-        if (result.ok) {
+        if (!cancelled && result.ok) {
           const parts: string[] = []
           if (result.windowsTaskScheduler) {
             parts.push('Windows Task Scheduler')
@@ -187,7 +196,11 @@ export function PlannerRail(): JSX.Element {
           setOsHint(parts.length > 0 ? parts.join(' · ') : 'Только in-app watch-folder')
         }
       }
-    })()
+    }
+    void load()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   async function handleRunNow(): Promise<void> {

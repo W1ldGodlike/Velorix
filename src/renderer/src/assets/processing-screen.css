@@ -92,6 +92,18 @@
   font-size: var(--fa-font-size-md);
 }
 
+.processing-screen__peek-summary {
+  margin: 0;
+  color: var(--fa-text-secondary);
+  font-size: var(--fa-font-size-body-sm);
+}
+
+.processing-screen__peek-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fa-space-snug);
+}
+
 .processing-screen__peek-list {
   margin: 0;
   padding-left: var(--fa-space-4);
@@ -407,7 +419,8 @@
   margin-top: var(--fa-space-2);
 }
 
-.processing-rail__output-actions {
+.processing-rail__output-actions,
+.processing-rail__preset-actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--fa-space-snug);

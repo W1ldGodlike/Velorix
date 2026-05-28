@@ -8,6 +8,7 @@ import { reportFfmpegError } from '../../lib/report-ffmpeg-error'
 import { useAppShellStore } from '../../stores/app-shell-store'
 import { ProcessingPreviewPanel } from './ProcessingPreviewPanel'
 import {
+  ProcessingBatchPeek,
   ProcessingDownloadsPeek,
   ProcessingHistoryPeek,
   ProcessingTerminalPeek
@@ -53,13 +54,21 @@ export function ProcessingScreen(): JSX.Element {
   const [headStatus, setHeadStatus] = useState<string | null>(null)
 
   useEffect(() => {
-    void (async () => {
+    let cancelled = false
+    async function load(): Promise<void> {
       await restoreLastMediaSession({
         hasMedia: useAppShellStore.getState().mediaSource != null,
         setMediaSource,
         setMediaProbe
       })
-    })()
+      if (cancelled) {
+        return
+      }
+    }
+    void load()
+    return () => {
+      cancelled = true
+    }
   }, [setMediaSource, setMediaProbe])
 
   async function handleOpenMedia(): Promise<void> {
@@ -256,6 +265,7 @@ export function ProcessingScreen(): JSX.Element {
                 )
               })}
             </div>
+            <ProcessingBatchPeek />
             <ProcessingHistoryPeek />
           </div>
         </div>

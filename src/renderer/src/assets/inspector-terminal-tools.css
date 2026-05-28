@@ -70,6 +70,12 @@
   background: color-mix(in srgb, var(--fa-accent) 14%, var(--fa-surface));
 }
 
+.terminal-screen__head-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--fa-space-2);
+}
+
 .terminal-screen__log {
   flex: 1;
   min-height: 8rem;

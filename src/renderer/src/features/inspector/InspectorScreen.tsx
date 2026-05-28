@@ -1,5 +1,6 @@
 import { useState, type JSX } from 'react'
 
+import { KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR } from '../../../../shared/knowledge-contract'
 import { VELORIX_NEON_REFERENCE_INSPECTOR_REL } from '../../../../shared/velorix-neon-theme-tokens'
 
 import { applyOpenMediaPick } from '../../lib/apply-open-media-pick'
@@ -13,6 +14,7 @@ export function InspectorScreen(): JSX.Element {
   const setMediaSource = useAppShellStore((s) => s.setMediaSource)
   const setMediaProbe = useAppShellStore((s) => s.setMediaProbe)
   const setExportTrim = useAppShellStore((s) => s.setExportTrim)
+  const setPendingKnowledgeSlug = useAppShellStore((s) => s.setPendingKnowledgeSlug)
   const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
 
   const title = mediaSource?.name ?? 'Файл не выбран'
@@ -51,6 +53,16 @@ export function InspectorScreen(): JSX.Element {
             onClick={() => setWorkspaceTab('processing')}
           >
             Обработка
+          </button>
+          <button
+            type="button"
+            className="app-btn app-btn-secondary"
+            onClick={() => {
+              setPendingKnowledgeSlug(KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR)
+              setWorkspaceTab('knowledge')
+            }}
+          >
+            Справка
           </button>
           <button
             type="button"

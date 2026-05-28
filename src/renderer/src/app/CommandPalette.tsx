@@ -149,6 +149,11 @@ async function runCommandAction(action: CommandPaletteAction): Promise<void> {
     store.setWorkspaceTab('processing')
     return
   }
+  if (action.type === 'open-knowledge-slug') {
+    store.setPendingKnowledgeSlug(action.slug)
+    store.setWorkspaceTab('knowledge')
+    return
+  }
   if (action.type === 'export-preset-name') {
     store.setExportPresetDraftLabel('Мой пресет')
     store.openModal('export-preset-name')

@@ -1,9 +1,15 @@
 import { useEffect, useState, type JSX } from 'react'
 
+import type { FfmpegExportBatchSnapshot } from '../../../../shared/ffmpeg-export-batch-contract'
 import type { FfmpegExportProgressPayload } from '../../../../shared/ffmpeg-export-contract'
 import type { ProcessingHistoryEntry } from '../../../../shared/processing-history-contract'
 
+import {
+  batchExportCanStart,
+  formatBatchExportSummary
+} from '../../lib/format-batch-export-summary'
 import { parseDownloadsProgressPercent } from '../../lib/parse-downloads-queue-row'
+import { useAppShellStore } from '../../stores/app-shell-store'
 import { useDownloadsQueue } from '../downloads/use-downloads-queue'
 
 export function ProcessingDownloadsPeek(props: { onOpenFull: () => void }): JSX.Element {
@@ -34,7 +40,73 @@ export function ProcessingDownloadsPeek(props: { onOpenFull: () => void }): JSX.
   )
 }
 
+export function ProcessingBatchPeek(): JSX.Element {
+  const [summary, setSummary] = useState('Пакетная очередь…')
+  const [snapshot, setSnapshot] = useState<FfmpegExportBatchSnapshot | null>(null)
+  const [startBusy, setStartBusy] = useState(false)
+
+  function applySnapshot(snap: FfmpegExportBatchSnapshot): void {
+    setSnapshot(snap)
+    setSummary(formatBatchExportSummary(snap))
+  }
+
+  useEffect(() => {
+    let cancelled = false
+    async function load(): Promise<void> {
+      const get = window.velorix?.batchExport?.getSnapshot
+      if (get == null) {
+        if (!cancelled) {
+          setSummary('batchExport.getSnapshot недоступен')
+        }
+        return
+      }
+      const snap = await get()
+      if (!cancelled) {
+        applySnapshot(snap)
+      }
+    }
+    void load()
+    const onSnapshot = window.velorix?.batchExport?.onSnapshot
+    const unsub = onSnapshot?.((snap: FfmpegExportBatchSnapshot) => {
+      applySnapshot(snap)
+    })
+    return () => {
+      cancelled = true
+      unsub?.()
+    }
+  }, [])
+
+  const canStart = snapshot != null && batchExportCanStart(snapshot)
+
+  return (
+    <section className="processing-screen__peek vn-surface-glass">
+      <h2 className="processing-screen__peek-title">Пакетный экспорт</h2>
+      <p className="processing-screen__peek-summary">{summary}</p>
+      <div className="processing-screen__peek-actions">
+        <button
+          type="button"
+          className="app-btn app-btn-primary"
+          disabled={!canStart || startBusy}
+          onClick={() => {
+            const start = window.velorix?.batchExport?.start
+            if (start == null) {
+              return
+            }
+            setStartBusy(true)
+            void start().finally(() => {
+              setStartBusy(false)
+            })
+          }}
+        >
+          {startBusy ? 'Запуск…' : 'Запустить пакет'}
+        </button>
+      </div>
+    </section>
+  )
+}
+
 export function ProcessingHistoryPeek(): JSX.Element {
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const [entries, setEntries] = useState<ProcessingHistoryEntry[]>([])
 
   useEffect(() => {
@@ -76,15 +148,32 @@ export function ProcessingHistoryPeek(): JSX.Element {
                   : ''}
               </span>
               {entry.outcome === 'success' && entry.outputPath != null ? (
-                <button
-                  type="button"
-                  className="app-btn app-btn-secondary"
-                  onClick={() => {
-                    void window.velorix?.processingHistory?.openOutput(entry.id, 'file')
-                  }}
-                >
-                  Открыть
-                </button>
+                <>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-secondary"
+                    onClick={() => {
+                      void window.velorix?.processingHistory?.openOutput(entry.id, 'file')
+                    }}
+                  >
+                    Открыть
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn"
+                    onClick={() => {
+                      void window.velorix?.batchExport
+                        ?.addFromHistoryInputs([entry.id])
+                        .then((result) => {
+                          if (result.ok) {
+                            setWorkspaceTab('processing')
+                          }
+                        })
+                    }}
+                  >
+                    В пакет
+                  </button>
+                </>
               ) : null}
             </li>
           ))

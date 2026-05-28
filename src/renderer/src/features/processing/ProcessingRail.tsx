@@ -1,6 +1,7 @@
 import { useState, type JSX } from 'react'
 
 import type { FfmpegExportEncodePresetId } from '../../../../shared/ffmpeg-export-contract'
+import { KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS } from '../../../../shared/knowledge-contract'
 
 import { startPreviewMediaExport } from '../../lib/start-preview-media-export'
 import { useAppShellStore } from '../../stores/app-shell-store'
@@ -19,6 +20,8 @@ export function ProcessingRail(): JSX.Element {
   const { view, reload, setCrf, setVideoCodec, setContainer, setEncodePreset, setAudioMode } =
     useFfmpegExportSettings()
   const setExportPresetDraftLabel = useAppShellStore((s) => s.setExportPresetDraftLabel)
+  const setPendingKnowledgeSlug = useAppShellStore((s) => s.setPendingKnowledgeSlug)
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
   const userPresets = view?.ffmpegExportUserPresets ?? []
 
   const displayExportNote = exportBusy ? (exportProgressNote ?? 'Экспорт…') : exportNote
@@ -231,16 +234,28 @@ export function ProcessingRail(): JSX.Element {
           Показать в папке
         </button>
       </div>
-      <button
-        type="button"
-        className="app-btn app-btn-secondary"
-        onClick={() => {
-          setExportPresetDraftLabel('Мой пресет')
-          openModal('export-preset-name')
-        }}
-      >
-        Имя пресета
-      </button>
+      <div className="processing-rail__preset-actions">
+        <button
+          type="button"
+          className="app-btn app-btn-secondary"
+          onClick={() => {
+            setExportPresetDraftLabel('Мой пресет')
+            openModal('export-preset-name')
+          }}
+        >
+          Имя пресета
+        </button>
+        <button
+          type="button"
+          className="app-btn"
+          onClick={() => {
+            setPendingKnowledgeSlug(KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS)
+            setWorkspaceTab('knowledge')
+          }}
+        >
+          Справка
+        </button>
+      </div>
       {exportTrim != null ? (
         <p className="processing-rail__trim-hint">
           Экспорт: {exportTrim.inSec.toFixed(1)}–{exportTrim.outSec.toFixed(1)} с
