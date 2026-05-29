@@ -1,0 +1,282 @@
+/* ref.3 — table/action/event glyphs (CSS; not sign-off) */
+
+.history-event-glyph {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.35rem;
+  vertical-align: -0.1rem;
+}
+
+.history-event-glyph--video {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  box-shadow: inset 0 -3px 0 currentColor;
+}
+
+.history-event-glyph--download {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.history-event-glyph--download::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  transform: translateX(-50%);
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid currentColor;
+}
+
+.history-event-glyph--script {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  font-size: 0.45rem;
+  font-family: var(--vn-font-mono);
+  line-height: 0.75rem;
+  text-align: center;
+}
+
+.history-event-glyph--script::before {
+  content: '{}';
+}
+
+.history-event-glyph--system {
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+}
+
+.history-event-glyph--import {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.history-event-glyph--import::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 55%;
+  height: 1px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.history-event-glyph--import::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 55%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.history-event-glyph--planner {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.history-event-glyph--planner::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: 1px;
+  height: 35%;
+  background: currentColor;
+  transform: translateX(-50%) rotate(45deg);
+  transform-origin: bottom center;
+}
+
+.history-action-glyph {
+  width: 0.55rem;
+  height: 0.55rem;
+}
+
+.history-action-glyph--play {
+  border-left: 5px solid currentColor;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  width: 0;
+  height: 0;
+  margin-left: 0.15rem;
+}
+
+.history-action-glyph--menu {
+  width: 0.15rem;
+  height: 0.15rem;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow:
+    0 -4px 0 currentColor,
+    0 4px 0 currentColor;
+}
+
+.history-status-glyph {
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: 0.2rem;
+}
+
+.history-status-glyph--success {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.history-status-glyph--success::after {
+  content: '';
+  position: absolute;
+  left: 22%;
+  top: 42%;
+  width: 35%;
+  height: 18%;
+  border-left: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+.history-status-glyph--error {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.history-status-glyph--error::before,
+.history-status-glyph--error::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 55%;
+  height: 1px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.history-status-glyph--error::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.history-status-glyph--paused {
+  width: 0.35rem;
+  height: 0.55rem;
+  border-left: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}
+
+.history-head-glyph {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.history-head-glyph--filter {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.history-head-glyph--filter::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 28%;
+  transform: translateX(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+}
+
+.history-head-glyph--export {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.history-head-glyph--export::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: 1px;
+  height: 45%;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+
+.history-head-glyph--export::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  transform: translateX(-50%);
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid currentColor;
+}
+
+.history-error-glyph {
+  width: 0.65rem;
+  height: 0.65rem;
+  flex-shrink: 0;
+  border: 1px solid #ff6b8a;
+  border-radius: 50%;
+  color: #ff6b8a;
+}
+
+.history-error-glyph::before,
+.history-error-glyph::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 55%;
+  height: 1px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.history-error-glyph::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.history-util-btn {
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--vn-radius-sm);
+  background: transparent;
+  color: var(--fa-text-muted);
+  cursor: default;
+}
+
+.history-util-btn--profile {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.history-util-btn--profile::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: 45%;
+  height: 45%;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.history-util-btn--profile::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  width: 70%;
+  height: 28%;
+  border: 1px solid currentColor;
+  border-radius: 50% 50% 0 0;
+  transform: translateX(-50%);
+}

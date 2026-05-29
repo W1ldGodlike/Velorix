@@ -1,0 +1,639 @@
+/* ref.1 — line icons (CSS glyphs; not sign-off) */
+
+.processing-glyph {
+  display: inline-block;
+  flex-shrink: 0;
+  position: relative;
+  color: currentColor;
+  box-sizing: border-box;
+}
+
+/* —— Sidebar nav —— */
+.processing-nav__icon {
+  width: 0.85rem;
+  height: 0.85rem;
+  opacity: 0.55;
+}
+
+.processing-nav__item--active .processing-nav__icon {
+  opacity: 1;
+  color: var(--vn-color-magenta-neon);
+}
+
+.processing-nav__icon--processing {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  box-shadow: inset 0 -4px 0 currentColor;
+}
+
+.processing-nav__icon--downloads {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.processing-nav__icon--downloads::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  transform: translateX(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+}
+
+.processing-nav__icon--terminal {
+  font-size: 0.55rem;
+  font-family: var(--vn-font-mono);
+  line-height: 0.85rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.processing-nav__icon--terminal::before {
+  content: '>_';
+}
+
+.processing-nav__icon--history {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.processing-nav__icon--history::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  width: 1px;
+  height: 35%;
+  background: currentColor;
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(55deg);
+}
+
+.processing-nav__icon--inspector {
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.processing-nav__icon--inspector::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 4px;
+  height: 1px;
+  background: currentColor;
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
+.processing-nav__icon--planner {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.processing-nav__icon--planner::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 28%;
+  height: 1px;
+  background: currentColor;
+}
+
+.processing-nav__icon--scenarios {
+  border-left: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  width: 0.65rem;
+  height: 0.75rem;
+}
+
+.processing-nav__icon--scenarios::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  right: 2px;
+  height: 1px;
+  box-shadow: 0 3px 0 currentColor, 0 6px 0 currentColor;
+  background: currentColor;
+}
+
+.processing-nav__icon--tools {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.processing-nav__icon--tools::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid currentColor;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
+.processing-nav__icon--settings {
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.processing-nav__icon--settings::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.processing-nav__icon--knowledge {
+  border: 1px solid currentColor;
+  border-radius: 1px 1px 3px 3px;
+  width: 0.65rem;
+  height: 0.8rem;
+}
+
+.processing-nav__icon--help {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  width: 0.75rem;
+  height: 0.75rem;
+  font-size: 0.55rem;
+  font-weight: 700;
+  line-height: 0.7rem;
+  text-align: center;
+}
+
+.processing-nav__icon--help::before {
+  content: '?';
+}
+
+/* —— Track header —— */
+.processing-track-icon {
+  width: 0.65rem;
+  height: 0.65rem;
+  opacity: 0.7;
+}
+
+.processing-track-icon--lock {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.processing-track-icon--lock::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  width: 5px;
+  height: 4px;
+  border: 1px solid currentColor;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  transform: translateX(-50%);
+}
+
+.processing-track-icon--visible {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.processing-track-icon--visible::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  background: currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.processing-track-icon--solo {
+  width: auto;
+  height: auto;
+  border: none;
+  font-size: 0.5rem;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.processing-track-icon--solo::before {
+  content: 'S';
+}
+
+/* —— Sidebar GPU / utilities —— */
+.processing-sidebar__gpu-glyph {
+  width: 1.35rem;
+  height: 1rem;
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(168, 85, 247, 0.2), transparent);
+}
+
+.processing-sidebar__gpu-glyph::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 255, 255, 0.5) 0,
+    rgba(0, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+}
+
+.processing-util-btn {
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--vn-radius-sm);
+  background: transparent;
+  color: var(--fa-text-muted);
+  cursor: default;
+}
+
+.processing-util-btn--search {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.processing-util-btn--search::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  bottom: -1px;
+  width: 4px;
+  height: 1px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+.processing-util-btn--settings {
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+}
+
+.processing-util-btn--power::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  width: 1px;
+  height: 55%;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+
+.processing-util-btn--power {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+/* —— Preview transport (media controls) —— */
+.processing-media-glyph {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+.processing-media-glyph--play::before {
+  content: '';
+  position: absolute;
+  left: 38%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid currentColor;
+}
+
+.processing-media-glyph--pause::before,
+.processing-media-glyph--pause::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: 9px;
+  background: currentColor;
+  transform: translateY(-50%);
+}
+
+.processing-media-glyph--pause::before {
+  left: 32%;
+}
+
+.processing-media-glyph--pause::after {
+  right: 32%;
+}
+
+.processing-media-glyph--rewind::before,
+.processing-media-glyph--forward::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.processing-media-glyph--rewind::before {
+  left: 28%;
+  border-right: 6px solid currentColor;
+  box-shadow: -5px 0 0 currentColor;
+}
+
+.processing-media-glyph--forward::before {
+  right: 28%;
+  border-left: 6px solid currentColor;
+  box-shadow: 5px 0 0 currentColor;
+}
+
+.processing-media-glyph--skip-start::before,
+.processing-media-glyph--skip-end::before,
+.processing-media-glyph--skip-start::after,
+.processing-media-glyph--skip-end::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.processing-media-glyph--skip-start::before {
+  left: 18%;
+  border-right: 5px solid currentColor;
+}
+
+.processing-media-glyph--skip-start::after {
+  left: 48%;
+  border-right: 5px solid currentColor;
+}
+
+.processing-media-glyph--skip-end::before {
+  right: 48%;
+  border-left: 5px solid currentColor;
+}
+
+.processing-media-glyph--skip-end::after {
+  right: 18%;
+  border-left: 5px solid currentColor;
+}
+
+.processing-rail__preset-gear {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+  opacity: 0.65;
+}
+
+.processing-rail__preset-gear::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+/* —— Preview chrome —— */
+.processing-chrome-glyph {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.processing-chrome-glyph--search {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.processing-chrome-glyph--fullscreen {
+  border: 1px solid currentColor;
+}
+
+.processing-chrome-glyph--close::before,
+.processing-chrome-glyph--close::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  background: currentColor;
+}
+
+.processing-chrome-glyph--close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.processing-chrome-glyph--close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.processing-transport-glyph {
+  width: 0.85rem;
+  height: 0.85rem;
+  opacity: 0.75;
+}
+
+.processing-transport-glyph--snap {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.processing-transport-glyph--snap::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px dotted currentColor;
+  border-radius: 50%;
+}
+
+.processing-transport-glyph--camera {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.processing-transport-glyph--camera::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 5px;
+  height: 3px;
+  border: 1px solid currentColor;
+  border-bottom: none;
+  transform: translateX(-50%);
+}
+
+.processing-transport-glyph--pip {
+  border: 1px solid currentColor;
+  box-shadow: 3px 3px 0 -1px currentColor;
+}
+
+.processing-transport-glyph--crop {
+  border: 1px dashed currentColor;
+}
+
+/* —— Timeline tools —— */
+.processing-tool-glyph {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.processing-tool-glyph--select {
+  border: 1px solid currentColor;
+  transform: rotate(-12deg);
+}
+
+.processing-tool-glyph--blade::before {
+  content: '';
+  position: absolute;
+  left: 20%;
+  top: 10%;
+  width: 1px;
+  height: 80%;
+  background: currentColor;
+  transform: rotate(25deg);
+}
+
+.processing-tool-glyph--blade::after {
+  content: '';
+  position: absolute;
+  right: 15%;
+  bottom: 15%;
+  width: 45%;
+  height: 1px;
+  background: currentColor;
+  box-shadow: 0 -4px 0 currentColor;
+  transform: rotate(-35deg);
+}
+
+.processing-tool-glyph--delete {
+  border: 1px solid currentColor;
+  border-radius: 0 0 2px 2px;
+}
+
+.processing-tool-glyph--delete::before {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: -3px;
+  height: 3px;
+  border: 1px solid currentColor;
+}
+
+.processing-tool-glyph--link {
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  box-shadow: 4px 0 0 -3px currentColor;
+}
+
+.processing-tool-glyph--group {
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 -1px currentColor;
+}
+
+.processing-tool-glyph--snap {
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.processing-tool-glyph--cloud {
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+
+.processing-tool-glyph--cloud::before {
+  content: '';
+  position: absolute;
+  left: 18%;
+  top: 35%;
+  width: 55%;
+  height: 35%;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  border-bottom: none;
+}
+
+.processing-volume-glyph {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+}
+
+.processing-volume-glyph::before {
+  content: '';
+  position: absolute;
+  left: 15%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 6px solid currentColor;
+}
+
+.processing-volume-glyph::after {
+  content: '';
+  position: absolute;
+  right: 10%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transform: translate(0, -50%);
+  opacity: 0.7;
+}
+
+/* —— Export —— */
+.processing-rail__export-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.processing-rail__export-icon::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 6px;
+  height: 8px;
+  background: currentColor;
+  transform: translateX(-50%);
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+}
+
+.processing-rail__export-icon::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 1px;
+  height: 6px;
+  background: currentColor;
+  transform: translateX(-50%);
+  box-shadow: -3px 3px 0 currentColor, 3px 3px 0 currentColor;
+}
