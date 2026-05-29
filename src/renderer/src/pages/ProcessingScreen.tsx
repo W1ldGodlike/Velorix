@@ -6,12 +6,10 @@ import { NeonWindowChrome } from '../components/NeonWindowChrome'
 
 import {
   PROCESSING_GPU,
-  PROCESSING_MEDIA_LIBRARY,
   PROCESSING_NAV,
   PROCESSING_STATUS_CENTER,
   PROCESSING_STATUS_READY,
-  PROCESSING_STATUS_RIGHT,
-  PROCESSING_STORAGE
+  PROCESSING_STATUS_RIGHT
 } from './processing-ref1-data'
 import { ProcessingEditorCenterBody } from './processing-ref1-center-parts'
 import { ProcessingFfmpegRail } from './processing-ref1-parts'
@@ -35,7 +33,7 @@ export function ProcessingScreen(): JSX.Element {
             </div>
             <span className="processing-sidebar__brand-edition">PRO</span>
           </div>
-          <section className="processing-sidebar__project vn-surface-glass" aria-label="Проект">
+          <section className="processing-sidebar__nav-block" aria-label="Проект">
             <h2 className="processing-sidebar__section-title">ПРОЕКТ</h2>
             <nav className="processing-nav" aria-label="Навигация">
               {PROCESSING_NAV.map((item) => (
@@ -56,48 +54,6 @@ export function ProcessingScreen(): JSX.Element {
                 </span>
               ))}
             </nav>
-            <div className="processing-sidebar__project-divider" aria-hidden />
-            <div className="processing-sidebar__project-active">
-              <p className="processing-sidebar__project-name processing-sidebar__project-name--active">
-                <span className="processing-sidebar__project-badge">НОВЫЙ</span>
-                <span className="processing-sidebar__project-title">СЕЗОН</span>
-              </p>
-              <p className="processing-sidebar__project-meta">16:9 · 4K · 60 fps</p>
-              <div className="processing-sidebar__storage">
-                <div className="processing-sidebar__storage-head">
-                  <span className="processing-sidebar__storage-label">
-                    {PROCESSING_STORAGE.label}
-                  </span>
-                  <span className="processing-sidebar__storage-values">
-                    {PROCESSING_STORAGE.usedTb} / {PROCESSING_STORAGE.totalTb} TB
-                  </span>
-                </div>
-                <div className="processing-sidebar__storage-bar">
-                  <div
-                    className="processing-sidebar__storage-fill"
-                    style={{ width: `${PROCESSING_STORAGE.percent}%` }}
-                  />
-                </div>
-                <span className="processing-sidebar__storage-pct">
-                  {PROCESSING_STORAGE.percent}%
-                </span>
-              </div>
-            </div>
-          </section>
-          <section className="processing-sidebar__media vn-surface-glass" aria-label="Медиатека">
-            <h2 className="processing-sidebar__section-title">МЕДИАТЕКА</h2>
-            <ul className="processing-media-cats">
-              {PROCESSING_MEDIA_LIBRARY.map((cat) => (
-                <li
-                  key={cat.slug}
-                  className={`processing-media-cat processing-media-cat--${cat.slug}${cat.active ? ' processing-media-cat--active' : ''}`}
-                >
-                  <span className="processing-media-cat__glyph processing-glyph" aria-hidden />
-                  <span className="processing-media-cat__label">{cat.label}</span>
-                  <span className="processing-media-cat__count">{cat.count}</span>
-                </li>
-              ))}
-            </ul>
           </section>
           <div className="processing-sidebar__gpu vn-surface-glass">
             <div className="processing-sidebar__gpu-head">

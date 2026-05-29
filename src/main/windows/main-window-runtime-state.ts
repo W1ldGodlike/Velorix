@@ -41,6 +41,16 @@ export function bindFfmpegExportBatchSnapshotBroadcast(
   broadcastFfmpegExportBatchSnapshot = fn
 }
 
+/** NeonWindowChrome ✕ / ─ — bypass close guard (explicit user action). */
+export function closeMainWindowFromShellChrome(): void {
+  const win = mainWindowRef
+  if (win == null || win.isDestroyed()) {
+    return
+  }
+  allowMainWindowClose = true
+  win.close()
+}
+
 export function createMainApplicationWindow(): void {
   createMainWindow({
     mainDirname: __dirname,

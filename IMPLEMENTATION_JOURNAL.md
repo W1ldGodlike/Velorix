@@ -1962,3 +1962,5 @@
 - [J-1936] 2026-05-29 15:44:02 [Assistant]: ui.3 ref.4 vs PNG chrome — center head/actions (создать+импорт); tab schedule; sidebar СИСТЕМА+Диск; footer settings/tools/power; statusbar Готово; shell tests. Не sign-off. `npm run check:quiet` (250 / 1802).
 - [J-1937] 2026-05-29 15:50:16 [Assistant]: ui.3 ref.5 vs PNG chrome — center head/toolbar (поиск+AI); pills active; sidebar СИСТЕМА+Диск; footer settings/tools/power; statusbar Готово; shell tests. Не sign-off. `npm run check:quiet` (250 / 1802).
 - [J-1938] 2026-05-29 15:55:37 [Assistant]: ui.3 ref.6 vs PNG chrome — center head/actions (импорт+экспорт+сброс); tab general active; sidebar СИСТЕМА+Диск; footer settings/tools/power; statusbar Готово; shell tests. Не sign-off. `npm run check:quiet` (250 / 1802).
+- [J-1939] 2026-05-29 16:10:04 [Assistant]: ui.2 ref.1 layout fix vs PNG — grid-template-areas sidebar|editor|rail; убраны sidebar МЕДИАТЕКА/НОВЫЙ СЕЗОН вне PNG; shell tests. Не sign-off. `npm run check:quiet` (250 / 1802).
+- [J-1940] 2026-05-29 16:15:28 [Assistant]: NeonWindowChrome close — shell IPC sets allowMainWindowClose before win.close; main-shell-ipc test. `npm run check:quiet` (251 / 1803).

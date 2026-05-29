@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
 
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
-import { mainWindowRef } from '../windows/main-window-runtime-state'
+import { closeMainWindowFromShellChrome, mainWindowRef } from '../windows/main-window-runtime-state'
 
 let ipcRegistered = false
 
@@ -12,10 +12,7 @@ export function registerMainShellIpcHandlers(): void {
   ipcRegistered = true
 
   ipcMain.handle(mw.shellRequestClose, () => {
-    const win = mainWindowRef
-    if (win != null && !win.isDestroyed()) {
-      win.close()
-    }
+    closeMainWindowFromShellChrome()
   })
 
   ipcMain.handle(mw.shellRequestMinimize, () => {
