@@ -1,7 +1,15 @@
-/** UI PURGE v3 — stub until NEON rebuild from docs/reference/*.png */
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+
+import './assets/app.css'
+import { App } from './App'
+
 const rootEl = document.getElementById('root')
 if (rootEl != null) {
-  rootEl.setAttribute('data-velorix-ui', 'rebuild')
-  document.documentElement.style.background = '#0a0a0c'
-  rootEl.style.minHeight = '100vh'
+  rootEl.setAttribute('data-velorix-ui', 'neon-kit')
+  createRoot(rootEl).render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  )
 }

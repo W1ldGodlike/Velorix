@@ -1,0 +1,13 @@
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-space-1: 0.25rem;
+  --vn-space-2: 0.5rem;
+  --vn-space-3: 0.75rem;
+  --vn-space-4: 1rem;
+  --vn-space-5: 1.25rem;
+  --vn-space-6: 1.5rem;
+  --vn-radius-sm: 4px;
+  --vn-radius-md: 8px;
+  --vn-radius-lg: 12px;
+  --vn-radius-pill: 999px;
+}

@@ -29,7 +29,7 @@
 
 ## UI PURGE v3 — выполнен (2026-05-28)
 
-**Статус:** renderer = **stub** (`data-velorix-ui=rebuild`); `locales/**` удалены; UI IPC в preload — **shell / log / quit**; `RENDERER_STATE_APPROACH = 'none'`. Матрица refs 1–27 — **все `[ ]`**. Rebuild не начат.
+**Статус:** ui.1 в работе — `assets/neon/` токены + dev kit `#` ref.27 / `#ref26`; `RENDERER_STATE_APPROACH = 'none'`; матрица refs 1–27 — **все `[ ]`** (sign-off только vs PNG).
 
 **Запрещено** без явной просьбы владельца: `git revert` / `git restore` / `checkout` удалённого renderer/locales.
 
@@ -60,7 +60,7 @@
 | Слой | Факт |
 | ---- | ---- |
 | **Окно** | Frameless; на весь workArea; только ─ и ✕ (**J-1807**). |
-| **Renderer** | Stub `#root[data-velorix-ui=rebuild]` — **нет** React/CSS/экранов. |
+| **Renderer** | ui.1 kit: `#root[data-velorix-ui=neon-kit]` — ref.27/26 dev; **не** sign-off; ui.2 ref.1 далее. |
 | **Main/preload** | Backend + survival IPC (shell/log/quit). |
 | **Refs 1–27** | PNG на диске; матрица sign-off ниже — **все `[ ]`**. |
 

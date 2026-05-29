@@ -228,5 +228,19 @@ export const VELORIX_NEON_SEMANTIC_ALIAS_TOKENS = [
 
 export const VELORIX_NEON_CSS_ROOT = 'src/renderer/src/assets/neon' as const
 
-/** UI ZERO: CSS shards appear with first ref sign-off in renderer. */
-export const VELORIX_NEON_CSS_FILES = [] as const
+/** ui.1 rebuild — token pack + kit boards (sign-off vs PNG отдельно). */
+export const VELORIX_NEON_CSS_FILES = [
+  'index.css',
+  '01-primitives.css',
+  '02-typography.css',
+  '03-spacing.css',
+  '04-gradients.css',
+  '05-glow.css',
+  '06-shadows.css',
+  '07-glass.css',
+  '08-borders.css',
+  '09-motion.css',
+  '10-semantic-bridge.css',
+  '11-atmosphere.css',
+  '12-utilities.css'
+] as const

@@ -1,0 +1,12 @@
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-font-sans: Inter, 'Segoe UI', system-ui, sans-serif;
+  --vn-font-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --vn-font-size-xs: 0.68rem;
+  --vn-font-size-sm: 0.72rem;
+  --vn-font-size-md: 0.8rem;
+  --vn-font-size-lg: 0.95rem;
+  --vn-font-size-xl: 1.15rem;
+  --vn-line-tight: 1.2;
+  --vn-line-ui: 1.45;
+}

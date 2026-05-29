@@ -1,0 +1,9 @@
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-glow-accent-soft: 0 0 12px rgba(255, 0, 255, 0.25);
+  --vn-glow-accent-medium: 0 0 22px rgba(168, 85, 247, 0.45);
+  --vn-glow-accent-strong: 0 0 36px rgba(255, 0, 255, 0.55), 0 0 48px rgba(0, 255, 255, 0.2);
+  --vn-glow-inner-panel: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --vn-glow-focus-ring: 0 0 0 2px rgba(0, 255, 255, 0.35);
+  --vn-glow-playhead: 0 0 16px rgba(255, 0, 255, 0.75);
+}

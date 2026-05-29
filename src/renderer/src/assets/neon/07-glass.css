@@ -1,0 +1,6 @@
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-glass-blur-md: blur(14px);
+  --vn-glass-surface: var(--vn-alpha-glass-fill);
+  --vn-backdrop-filter-panel: blur(14px) saturate(140%);
+}

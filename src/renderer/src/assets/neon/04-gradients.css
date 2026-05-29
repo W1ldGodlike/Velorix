@@ -1,0 +1,12 @@
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-gradient-bg-vertical: linear-gradient(180deg, #0a0a15 0%, #05050a 55%, #12081f 100%);
+  --vn-gradient-surface: linear-gradient(145deg, rgba(30, 10, 60, 0.55) 0%, rgba(10, 10, 22, 0.92) 100%);
+  --vn-gradient-accent-primary: linear-gradient(90deg, #ff00ff 0%, #a855f7 45%, #00ffff 100%);
+  --vn-gradient-progress: linear-gradient(90deg, #8a2be2 0%, #ff00ff 50%, #00ffff 100%);
+  --vn-gradient-border-illuminated: linear-gradient(
+    135deg,
+    rgba(255, 0, 255, 0.65),
+    rgba(0, 255, 255, 0.45)
+  );
+}

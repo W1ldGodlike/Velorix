@@ -1,0 +1,8 @@
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-shadow-elevation-1: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --vn-shadow-elevation-2: 0 10px 28px rgba(0, 0, 0, 0.55);
+  --vn-shadow-elevation-3: 0 18px 42px rgba(0, 0, 0, 0.62);
+  --vn-shadow-elevation-4: 0 28px 64px rgba(0, 0, 0, 0.72);
+  --vn-shadow-panel-lift: 0 12px 32px rgba(138, 43, 226, 0.18);
+}

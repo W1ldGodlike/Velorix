@@ -1,0 +1,25 @@
+/** Bridge to legacy --fa-* names used during rebuild. */
+
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --fa-bg: var(--vn-color-void);
+  --fa-surface: #101018;
+  --fa-surface-elevated: #161622;
+  --fa-border: rgba(168, 85, 247, 0.28);
+  --fa-border-subtle: rgba(138, 43, 226, 0.18);
+  --fa-text-primary: var(--vn-color-text-primary);
+  --fa-text-secondary: var(--vn-color-text-secondary);
+  --fa-text-muted: var(--vn-color-text-muted);
+  --fa-accent: var(--vn-color-violet-rich);
+  --fa-danger: var(--vn-color-danger-neon);
+  --fa-success: var(--vn-color-success-matrix);
+  --fa-warning: var(--vn-color-warning-amber);
+  --fa-focus-ring: rgba(0, 255, 255, 0.55);
+
+  --fa-neon-bg-atmosphere: var(--vn-gradient-bg-vertical);
+  --fa-neon-bg-ambient: radial-gradient(ellipse 80% 50% at 20% 0%, rgba(138, 43, 226, 0.22), transparent 60%);
+  --fa-neon-accent-gradient: var(--vn-gradient-accent-primary);
+  --fa-neon-glow-accent: var(--vn-glow-accent-medium);
+  --fa-neon-shadow-panel: var(--vn-shadow-panel-lift);
+  --fa-neon-glass-panel: var(--vn-glass-surface);
+}

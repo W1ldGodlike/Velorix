@@ -1,0 +1,18 @@
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-duration-fast: 120ms;
+  --vn-duration-normal: 220ms;
+  --vn-ease-out-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+  --vn-transition-colors: color var(--vn-duration-fast) var(--vn-ease-out-cinematic),
+    background-color var(--vn-duration-fast) var(--vn-ease-out-cinematic),
+    border-color var(--vn-duration-fast) var(--vn-ease-out-cinematic),
+    box-shadow var(--vn-duration-normal) var(--vn-ease-out-cinematic);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme='dark'],
+  html:not([data-theme]) {
+    --vn-duration-fast: 0ms;
+    --vn-duration-normal: 0ms;
+  }
+}

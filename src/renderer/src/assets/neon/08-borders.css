@@ -1,0 +1,5 @@
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --vn-border-subtle: 1px solid rgba(168, 85, 247, 0.22);
+  --vn-border-glow: 1px solid rgba(255, 0, 255, 0.38);
+}

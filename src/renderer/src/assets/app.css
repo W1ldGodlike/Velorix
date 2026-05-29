@@ -1,0 +1,7 @@
+@import './base.css';
+@import './ref27-kit.css';
+@import './ref26-kit.css';
+
+#root[data-velorix-ui='neon-kit'] {
+  min-height: 100vh;
+}

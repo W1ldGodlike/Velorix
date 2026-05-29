@@ -1,6 +1,6 @@
 # Эталонные материалы UI (VELORIX NEON)
 
-**UI PURGE v3 (2026-05-28):** в `src/renderer/src/` только stub [`main.tsx`](../../src/renderer/src/main.tsx) (`data-velorix-ui=rebuild`). Таблица ниже — **цель** rebuild 1:1; канон процесса — [`VELORIX_NEON_THEME.md`](../VELORIX_NEON_THEME.md), sprint — [`IMPLEMENTATION_NEON_CHECKLIST.md`](../IMPLEMENTATION_NEON_CHECKLIST.md).
+**UI PURGE v3 + ui.1 (в работе):** `src/renderer/src/assets/neon/` — токены; dev routes ref.27 (`#`) / ref.26 (`#ref26`). Sign-off — только vs PNG ниже. Канон — [`VELORIX_NEON_THEME.md`](../VELORIX_NEON_THEME.md), sprint — [`IMPLEMENTATION_NEON_CHECKLIST.md`](../IMPLEMENTATION_NEON_CHECKLIST.md).
 
 Каталог для **канонических** картинок, mockup и визуальных референсов темы.
 

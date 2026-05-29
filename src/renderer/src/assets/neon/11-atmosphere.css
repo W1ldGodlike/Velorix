@@ -1,0 +1,12 @@
+html[data-theme='dark'],
+html:not([data-theme]) {
+  background: var(--fa-neon-bg-atmosphere);
+  color: var(--fa-text-primary);
+}
+
+html[data-theme='dark'] body,
+html:not([data-theme]) body {
+  background-color: var(--vn-color-void);
+  background-image: var(--fa-neon-bg-atmosphere), var(--fa-neon-bg-ambient);
+  background-attachment: fixed;
+}
