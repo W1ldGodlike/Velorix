@@ -1,7 +1,6 @@
 import { mkdirSync, writeFileSync } from 'fs'
 import { dirname, join } from 'path'
 
-import { OWNER_HARDWARE_CHECKLIST_SUPPORT_ZIP_SECTION_HEADING } from '../../../shared/owner-hardware-checklist-bundle'
 import { TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING } from '../../../shared/terminal-contract-hints-meta'
 import { resolveAppTempDirectory } from '../../core/app-data-root-paths'
 import { getDiagnosticsMaintenanceSnapshot } from './diagnostics-maintenance'
@@ -73,8 +72,9 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     ...(info.terminalHintsLines.length > 0
       ? ['', TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING, ...info.terminalHintsLines]
       : []),
-    ...(info.releaseSmokeLines.length > 0 ? ['', 'releaseSmoke:', ...info.releaseSmokeLines] : []),
-    ...(info.ffprobeSmokeLines.length > 0 ? ['', 'ffprobeSmoke:', ...info.ffprobeSmokeLines] : []),
+    ...(info.unpackedLayoutLines.length > 0
+      ? ['', 'unpackedLayout:', ...info.unpackedLayoutLines]
+      : []),
     ...(info.uiLocaleIpcLines.length > 0 ? ['', 'uiLocale:', ...info.uiLocaleIpcLines] : []),
     ...(info.localeJsonCatalogLines.length > 0
       ? ['', 'localeJson:', ...info.localeJsonCatalogLines]
@@ -82,29 +82,7 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     ...(info.rendererStateLines.length > 0
       ? ['', 'rendererState:', ...info.rendererStateLines]
       : []),
-    ...(info.uiDpiLines.length > 0 ? ['', 'uiDpi:', ...info.uiDpiLines] : []),
-    ...(info.hwManualSmokeChecklistLines.length > 0
-      ? ['', 'hwManualSmoke:', ...info.hwManualSmokeChecklistLines]
-      : []),
-    ...(info.winPackagedSmokeChecklistLines.length > 0
-      ? ['', 'winPackagedSmoke:', ...info.winPackagedSmokeChecklistLines]
-      : []),
-    ...(info.linuxPackagedSmokeChecklistLines.length > 0
-      ? ['', 'linuxPackagedSmoke:', ...info.linuxPackagedSmokeChecklistLines]
-      : []),
-    ...(info.macosPackagedSmokeChecklistLines.length > 0
-      ? ['', 'macosPackagedSmoke:', ...info.macosPackagedSmokeChecklistLines]
-      : []),
-    ...(info.workflowOsSchedulerSmokeChecklistLines.length > 0
-      ? ['', 'workflowOsSchedulerSmoke:', ...info.workflowOsSchedulerSmokeChecklistLines]
-      : []),
-    ...(info.ownerHardwareChecklistBundleLines.length > 0
-      ? [
-          '',
-          OWNER_HARDWARE_CHECKLIST_SUPPORT_ZIP_SECTION_HEADING,
-          ...info.ownerHardwareChecklistBundleLines
-        ]
-      : [])
+    ...(info.uiDpiLines.length > 0 ? ['', 'uiDpi:', ...info.uiDpiLines] : [])
   ].join('\n')
 }
 

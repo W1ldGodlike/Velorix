@@ -13,3 +13,5 @@
 Вспомогательный стек: таблица в `docs/ARCHITECTURE.md` при первом внедрении инструмента вне Electron/React/TS/ffmpeg/yt-dlp.
 
 Legacy: если мешает задаче/NEON — удалить или заменить в той же итерации; не оставлять «на всякий случай»; check:quiet.
+
+Git restore (блокер): без явной просьбы владельца в чате — запрещено возвращать удалённый/старый код из git (checkout <rev> --, restore --source=, git show → файл, revert). Rebuild — новые файлы по PNG/THEME. Канон: .cursor/rules/velorix-no-git-restore.mdc.

@@ -21,7 +21,7 @@ import {
   parseFfmpegExportVideoVignette
 } from '../ffmpeg/ffmpeg-export-service'
 import type { AppSettings } from './settings-store'
-import type { FfmpegExportSettingsPersisters } from '../../ipc/register-settings-ipc'
+import type { FfmpegExportSettingsPersisters } from './settings-ipc-persist-core'
 import { commit, type MainSettingsAccess } from './settings-ipc-persist-core'
 
 export function createFfmpegExportSettingsPersistersOutput(

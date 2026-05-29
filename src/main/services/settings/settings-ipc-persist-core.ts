@@ -1,7 +1,49 @@
 import type { AppSettings } from './settings-store'
-import type { FfmpegExportSettingsPersisters } from '../../ipc/register-settings-ipc'
 import type { AppUiLocale } from '../../../shared/app-ui-locale'
 import type { EnginePathOverridesPatch } from '../engines/engine-service'
+
+type PersistSetting = (raw: unknown) => AppSettings
+
+export type FfmpegExportSettingsPersisters = {
+  encodePreset: PersistSetting
+  videoCodec: PersistSetting
+  container: PersistSetting
+  crf: PersistSetting
+  audioBitrate: PersistSetting
+  audioMode: PersistSetting
+  videoBitrate: PersistSetting
+  twoPass: PersistSetting
+  economyMode: PersistSetting
+  benchmarkLoadThreshold: PersistSetting
+  hwDecode: PersistSetting
+  extraArgsLine: PersistSetting
+  batchOutputSuffix: PersistSetting
+  batchOutputDirectory: PersistSetting
+  editorUrlPasteBehavior: PersistSetting
+  fps: PersistSetting
+  scalePreset: PersistSetting
+  videoTransform: PersistSetting
+  cropPreset: PersistSetting
+  audioGainDb: PersistSetting
+  stripMetadata: PersistSetting
+  stripChapters: PersistSetting
+  subtitleMode: PersistSetting
+  videoDenoise: PersistSetting
+  videoDeband: PersistSetting
+  videoHisteq: PersistSetting
+  videoLut3d: PersistSetting
+  videoSharpen: PersistSetting
+  videoEqPreset: PersistSetting
+  videoGrain: PersistSetting
+  videoVignette: PersistSetting
+  videoBlur: PersistSetting
+  videoDeinterlace: PersistSetting
+  videoHue: PersistSetting
+  audioNormalize: PersistSetting
+  snapshotFormat: PersistSetting
+  userPresets: PersistSetting
+  applySnapshot: PersistSetting
+}
 
 export type MainSettingsAccess = {
   get: () => AppSettings
@@ -10,8 +52,7 @@ export type MainSettingsAccess = {
 }
 
 export type SettingsIpcPersistHooks = {
-  buildApplicationMenu: () => void
-  syncDownloadsWindowLocale: (locale: AppUiLocale) => void
+  syncAppWindowTitlesToLocale: (locale: AppUiLocale) => void
   refreshEnginePathOverridesSnapshot: () => void
 }
 

@@ -18,6 +18,10 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 - **Если** только обсуждение без diff **то** журнал **не** дописывать.
 - **Запрещено:** **микро-J**, **микро-срез** (глоссарий).
 
+## Git — запрет восстановления (блокер)
+
+**Запрещено:** без **явной просьбы владельца** в **этом** чате (или **тотального одобрения**) возвращать удалённый/старый код из git (`git checkout <rev> --`, `git restore --source=`, `git show` → файл, `git revert`, копипаста из истории). **Обязательно:** писать заново по PNG/THEME; `git log`/`git show` только read-only. Исполняемое: [`velorix-no-git-restore.mdc`](velorix-no-git-restore.mdc), глоссарий **«Запрет восстановления из git»**.
+
 ## Git author
 
 **Обязательно** в этом репозитории: `git config user.name "W1ldGodlike"`; `git config user.email "W1ld.Godlike@gmail.com"` (без `--global`).
@@ -30,13 +34,13 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 
 ## UI
 
-**Запрещено:** `data:text/html`, `build*Html` pop-out, `*-window-ui-strings-*` вне `ui-text` / `locales/**`. **Если** `BrowserWindow` **то** тот же renderer + hash (`#inspector`, `#downloads`). **UI ZERO:** `check:ui-surfaces-guard` / `check:ui-copy-quality` / `check:renderer-state-approach` **удалены** до rebuild UI — **не** возвращать skip-режим ради зелёного `check:quiet`.
+**Запрещено:** `data:text/html`, `build*Html` pop-out. **Post PURGE v3:** renderer = stub (`RENDERER_STATE_APPROACH = 'none'`); **запрещено** `[x]`/`[~]` на UI в NEON-чеклисте без sign-off PNG. **UI guards** (`check:ui-*`) **удалены** — **не** возвращать ради `check:quiet`. Восстановление renderer/locales из git — [`velorix-no-git-restore.mdc`](velorix-no-git-restore.mdc).
 
 ## Legacy (удалять, не копить)
 
 **Если** устаревший артефакт **мешает** задаче или NEON-плану **то** удалить/заменить в той же итерации; `npm run check:quiet`. **Запрещено:** оставлять «на всякий случай», параллельный старый+новый путь, обход новым слоем. Канон: глоссарий **«Удаление мешающего legacy»**, [`velorix-simplicity.mdc`](velorix-simplicity.mdc) § «Рефакторинг и legacy».
 
-**UI PURGE v3 (2026-05-28):** **Запрещено** `git revert` / `git restore` / `checkout` удалённого `src/renderer` UI и `locales/**` без **явной** просьбы владельца — только rebuild вперёд ([`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](../../docs/IMPLEMENTATION_NEON_CHECKLIST.md) § UI PURGE v3).
+**UI PURGE v3 (2026-05-28):** только rebuild вперёд ([`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](../../docs/IMPLEMENTATION_NEON_CHECKLIST.md) § UI PURGE v3). Восстановление `src/renderer` / `locales/**` из git — под общий запрет [`velorix-no-git-restore.mdc`](velorix-no-git-restore.mdc).
 
 ## Audit
 

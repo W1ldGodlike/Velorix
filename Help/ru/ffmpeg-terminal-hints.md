@@ -10,7 +10,6 @@
 
 Частые теги ffmpeg: `-i`, `-map`, `-c:v copy`, `-ss`, `-t`, аппаратные кодеки `*_nvenc`/`*_amf`/`*_qsv`. yt‑dlp — `-F`, `-f`, сеть через `--proxy` и авторизацию `--cookies`/из браузера.
 
-
 ## Встроенные сценарии (для разработчиков)
 
 Подсказки вкладки **Загрузки** и превью задаются в шардах `src/shared/terminal-contract-hints-*.ts` (канон **`terminal-contract-hints-meta`**: 14 загрузки + 8 превью (22 файлов), 839+465 подсказок; `npm run check:terminal-contract-hints-shards`). Barrel — `src/shared/terminal-contract.ts` (`summary` / `token` / `fullLine`). После правок в `summary` используйте **допишите ссылку**, а не устаревшую **допишите URL**, и пометку `(поле …)` для строк с `--print-to-file` и `velorix-ytdlp-*.txt`; затем выполните **`npm run locales:terminal-summaries-ru`** **дважды**, пока второй прогон не выведет **0** замен и **0** gloss; при необходимости только глосс полей — **`npm run locales:terminal-velorix-pole`**. Скрипты **не** меняют `fullLine`. Регрессия — `tests/shared/terminal-contract-scenarios.test.ts`.
@@ -19,4 +18,4 @@
 
 ## См. также
 
-[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (после `pack:dir`).
+[about-support-logs.md](about-support-logs.md) · [logging-and-diagnostics.md](logging-and-diagnostics.md).

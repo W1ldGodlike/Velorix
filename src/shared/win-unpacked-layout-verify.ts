@@ -90,7 +90,7 @@ export function formatWinUnpackedLayoutVerifyDiagnosticLines(
 ): string[] {
   const unpackedRoot = winUnpackedLayoutRoot(repoRoot)
   return [
-    'command: npm run verify:win-unpacked (part of check:release / smoke:packaged-release)',
+    'command: npm run verify:win-unpacked (part of check:release)',
     'checks: Velorix.exe, resources/bin engines, VELORIX_NEON_THEME.md, Data/trusted_hashes.json, Help/',
     'env: VELORIX_SKIP_PACK_VERIFY',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',

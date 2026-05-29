@@ -22,7 +22,7 @@ import {
   parseFfmpegExportVideoCodec
 } from '../ffmpeg/ffmpeg-export-service'
 import type { AppSettings } from './settings-store'
-import type { FfmpegExportSettingsPersisters } from '../../ipc/register-settings-ipc'
+import type { FfmpegExportSettingsPersisters } from './settings-ipc-persist-core'
 import { commit, snapshot, type MainSettingsAccess } from './settings-ipc-persist-core'
 
 export function createFfmpegExportSettingsPersistersCore(

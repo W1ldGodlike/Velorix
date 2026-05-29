@@ -30,27 +30,13 @@ export interface SupportBundleRuntimeInfo {
   engineDiagnosticLines: readonly string[]
   /** §8 — dev guards для terminal-contract-hints shards (check:quiet). */
   terminalHintsLines: readonly string[]
-  /** §19 — подсказки `smoke:packaged-release` и наличие `dist/win-unpacked`. */
-  releaseSmokeLines: readonly string[]
-  /** §9/§18 — packaged ffprobe smoke: кандидаты путей и команда проверки. */
-  ffprobeSmokeLines: readonly string[]
+  /** §19 — наличие `dist/*-unpacked` (present/missing, без smoke-скриптов). */
+  unpackedLayoutLines: readonly string[]
   /** §2.2 — hot-reload uiLocale (IPC + renderer session). */
   uiLocaleIpcLines: readonly string[]
   localeJsonCatalogLines: readonly string[]
   rendererStateLines: readonly string[]
   uiDpiLines: readonly string[]
-  /** §16 — ручной smoke HW encode (чеклист владельца, не CI). */
-  hwManualSmokeChecklistLines: readonly string[]
-  /** §3 — ручной smoke packaged Win (чеклист владельца, не CI UI). */
-  winPackagedSmokeChecklistLines: readonly string[]
-  /** §3 — ручной smoke packaged Linux. */
-  linuxPackagedSmokeChecklistLines: readonly string[]
-  /** §3 — ручной smoke packaged macOS. */
-  macosPackagedSmokeChecklistLines: readonly string[]
-  /** §10 — ручной smoke OS scheduler watch-folder. */
-  workflowOsSchedulerSmokeChecklistLines: readonly string[]
-  /** §16/§1.1/§10 — единый пакет owner smoke (HiDPI + HW + OS scheduler). */
-  ownerHardwareChecklistBundleLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {

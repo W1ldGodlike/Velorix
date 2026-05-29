@@ -88,7 +88,6 @@ function readTree(relDir) {
 
 const mainText = readTree('src/main')
 const preloadText = readTree('src/preload')
-const settingsIpcText = readRepoUtf8('src/main/ipc/register-settings-ipc.ts')
 
 const byFile = {}
 const handleRe = /ipcMain\.handle\(/g
@@ -101,9 +100,7 @@ for (const file of walkTs(join(REPO_ROOT, 'src/main'))) {
 }
 
 const rawHandleLines = Object.values(byFile).reduce((a, b) => a + b, 0)
-const ffmpegLoopExtra =
-  (readRepoUtf8('src/main/ipc/register-settings-ipc.ts').match(/channel:\s*mw\./g) ?? []).length - 1
-const handleTotal = rawHandleLines + Math.max(0, ffmpegLoopExtra)
+const handleTotal = rawHandleLines
 
 function mainRegistersKey(key, scope) {
   const ref = scope === 'downloads' ? `d.${key}` : `mw.${key}`
@@ -113,12 +110,6 @@ function mainRegistersKey(key, scope) {
       mainText.includes(`ipcMain.on(\n    ${ref}`) ||
       mainText.includes(`ipcMain.on(\r\n    ${ref}`)
     )
-  }
-  if (
-    scope === 'main' &&
-    (settingsIpcText.includes(`channel: ${ref}`) || settingsIpcText.includes(`channel: ${ref},`))
-  ) {
-    return true
   }
   return (
     mainText.includes(`ipcMain.handle(${ref}`) ||

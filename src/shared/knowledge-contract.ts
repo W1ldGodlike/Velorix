@@ -52,27 +52,14 @@ export const KNOWLEDGE_SLUG_HARDWARE_ENCODING = 'hardware-encoding'
 /** §1.1 — тема, язык, HiDPI-панель в настройках. */
 export const KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME = 'appearance-language-theme'
 
-/** §3 — ручной smoke packaged Win после pack:dir. */
-export const KNOWLEDGE_SLUG_PACKAGED_WINDOWS_SMOKE = 'packaged-windows-smoke'
-
-/** §3 — ручной smoke packaged Linux после pack:linux:dir. */
-export const KNOWLEDGE_SLUG_PACKAGED_LINUX_SMOKE = 'packaged-linux-smoke'
-
-/** §3 — ручной smoke packaged macOS после pack:mac:dir. */
-export const KNOWLEDGE_SLUG_PACKAGED_MACOS_SMOKE = 'packaged-macos-smoke'
-
 /** §10/§11 — планировщик, watch-folder, сценарии, запуск из редактора. */
 export const KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS = 'workflows-planner-scenarios'
 
 /** §13 — история обработки в правой FFmpeg-панели. */
 export const KNOWLEDGE_SLUG_PROCESSING_HISTORY = 'processing-history'
 
-/** Не в оглавлении listArticles — packaged smoke; ручные чеклисты железа — Support ZIP `ownerHardwareChecklist:`. */
-export const KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS = [
-  'packaged-windows-smoke',
-  'packaged-linux-smoke',
-  'packaged-macos-smoke'
-] as const
+/** Слуги, скрытые из in-app справки (post UI PURGE — пусто). */
+export const KNOWLEDGE_UI_HIDDEN_ARTICLE_SLUGS = [] as const
 
 /** §14 — меню Проводника и Open with (Windows). */
 export const KNOWLEDGE_SLUG_WINDOWS_SHELL_INTEGRATION = 'windows-shell-integration'

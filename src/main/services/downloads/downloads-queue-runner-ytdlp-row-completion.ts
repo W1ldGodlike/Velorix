@@ -1,7 +1,7 @@
 import type { AppPaths } from '../../core/app-paths'
 import { resolveAllowedYtdlpDownloadOutputFile } from '../ytdlp/ytdlp-download-output'
 import { getDownloadsQueueRowById, updateDownloadsRow } from './downloads-queue'
-import { emitDownloadsLog } from '../../ipc/downloads/downloads-log-ipc'
+import { emitDownloadsLog } from './downloads-log-sink'
 import { getYtdlpRunOptionsSnapshot } from '../ytdlp/ytdlp-run-options-sync'
 import {
   velorixLogAutoOpenSkippedBadPath,

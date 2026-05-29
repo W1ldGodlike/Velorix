@@ -1,4 +1,4 @@
-import type { FfmpegExportSettingsPersisters } from '../../ipc/register-settings-ipc'
+import type { FfmpegExportSettingsPersisters } from './settings-ipc-persist-core'
 import type { MainSettingsAccess } from './settings-ipc-persist-core'
 import { createFfmpegExportSettingsPersistersCore } from './settings-ipc-persist-ffmpeg-core'
 import { createFfmpegExportSettingsPersistersOutput } from './settings-ipc-persist-ffmpeg-output'

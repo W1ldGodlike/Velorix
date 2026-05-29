@@ -27,7 +27,7 @@ describe('platform-packaging-scripts §19', () => {
     expect(lines.some((l) => l.includes(LINUX_RELEASE_LOCAL_ONLY_POLICY))).toBe(true)
     expect(lines.some((l) => l.includes(BUILD_LINUX_NPM_SCRIPT))).toBe(true)
     expect(lines.some((l) => l.includes('check:platform-packaging-scripts'))).toBe(true)
-    expect(lines.some((l) => l.includes('smoke:packaged-release'))).toBe(true)
+    expect(lines.some((l) => l.includes('verify:win-unpacked'))).toBe(true)
     expect(lines.some((l) => l.includes(VERIFY_MAC_UNPACKED_NPM_SCRIPT))).toBe(true)
     expect(lines.some((l) => l.includes(VERIFY_LINUX_UNPACKED_NPM_SCRIPT))).toBe(true)
   })

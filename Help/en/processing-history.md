@@ -27,4 +27,4 @@ The list refreshes automatically when a new entry is appended.
 
 ## See also
 
-[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (post-`pack:dir`).
+[about-support-logs.md](about-support-logs.md) · [logging-and-diagnostics.md](logging-and-diagnostics.md).

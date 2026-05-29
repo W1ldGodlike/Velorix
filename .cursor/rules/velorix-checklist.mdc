@@ -21,6 +21,7 @@ alwaysApply: false
 - **Запрещено:** [`docs/archive/IMPLEMENTATION_CHECKLIST.OLD.md`](../../docs/archive/IMPLEMENTATION_CHECKLIST.OLD.md), [`docs/archive/VELORIX_TZ.OLD.md`](../../docs/archive/VELORIX_TZ.OLD.md) как рабочий план; корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`.
 - **`## Ближайший TODO спринта`:** **3–7** пунктов, каждый ≤ **220** символов; матрица refs **1–27** и Phase D — в том же файле ниже `---`.
 - `[x]` — end-to-end; тест или J; IPC — вертикальный срез.
+- **Post UI PURGE v3:** UI sprint (`ui.*`), матрица refs, Phase D/X/VA (кроме **VA.5** infra) — **только `[ ]`** до sign-off vs PNG; **запрещено:** `[~]` «частично» без кода 1:1.
 - **Если** закрыли пункт sprint **то** обновить блок в том же commit или по **Git по J-NNN**.
 
 ## Проверка

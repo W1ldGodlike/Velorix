@@ -1,6 +1,6 @@
 # VELORIX NEON — план и чеклист темы
 
-**Навигатор агента:** UI/UX, NEON, Phase D, refs **1–27**, открытые пробелы Variant A, новый функционал под PNG. **«продолжай» / `+`:** этот файл → sprint TODO в [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md). **Запрещено:** [`docs/archive/`](archive/README.md) как навигатор. Ручная проверка на железе (владелец) — Support ZIP `ownerHardwareChecklist:`.
+**Навигатор агента:** UI/UX, NEON, Phase D, refs **1–27**, открытые пробелы Variant A, новый функционал под PNG. **«продолжай» / `+`:** этот файл → sprint TODO в [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md). **Запрещено:** [`docs/archive/`](archive/README.md) как навигатор. Ручная проверка на железе (владелец) — после NEON rebuild; Support ZIP `unpackedLayout:` + `terminalHints:`.
 
 **Эталон UI — «Обработка» / редактор (реф. 1):** [`reference/velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png) — **канон shell chrome** для всех PNG refs 1–27  
 **Эталон иконки приложения:** [`reference/velorix-neon-app-icon-reference.png`](reference/velorix-neon-app-icon-reference.png) → в сборке: `resources/icon.png` (по явной просьбе владельца).  
@@ -39,38 +39,45 @@
 
 ---
 
-## UI ZERO REBUILD (2026-05-27)
+## После UI PURGE v3 (2026-05-28)
 
-**Смысл:** не удалять этот файл и не «убирать ZERO» — **сбросить ложные галочки** по визуалу после снятия renderer с диска. Журнал J-1633…J-1680 = история кода до purge; **для UI считаем старт с нуля**.
+**Смысл:** renderer **stub**; визуальный прогресс **только** через матрицу sign-off refs 1–27 в NEON-чеклисте. Журнал J-1633…J-1808 = история **до** purge; **не** считать «UI готов».
 
 | Факт | Деталь |
 | ---- | ------ |
-| **Renderer** | `AppRefBootstrap`: по умолчанию `#ref1` `NeonShell`; `#ref27` / `#ref26` — kit; `RENDERER_STATE_APPROACH = 'ref27-bootstrap'`. |
-| **Старый React/CSS** | **Снят с диска** (не «режим none» ради зелёного CI). |
-| **Main/preload** | IPC и сервисы **сохранены**; подстраиваются под refs, не наоборот. |
-| **UI guards** | `check:ui-surfaces-guard`, `check:ui-copy-quality`, `check:renderer-state-approach`, `check:export-preview-hints-locale`, Playwright `test:e2e:gui` — **удалены**; **не** подгонять `check:quiet`. |
-| **Порядок rebuild** | **ref.27** → **ref.26** → **ref.1** → refs 2–9 → 10–25 → motion. |
+| **Renderer** | `RENDERER_STATE_APPROACH = 'none'`; `main.tsx` → `#root[data-velorix-ui=rebuild]`. |
+| **locales / ui-text** | Удалены; восстановить **только** с подписей PNG при rebuild. |
+| **Preload (UI)** | shell / log / quit — остальное IPC подключается **вертикальными срезами** после экрана. |
+| **Main** | `src/main/services/**` сохранены; backend под UI, не наоборот. |
+| **Порядок rebuild** | **ref.27** → **ref.26** → **ref.1** → refs 2–27 → motion. |
 
-**Запрещено:** `git checkout` старого `src/renderer/`; восстанавливать `AppRoot` / `NeonShell` / `velorix-neon-*.css` как «готово».
+**Запрещено:** `git revert` / `restore` purge; помечать старый `NeonShell` / CSS как «готово».
+
+### Исключения chrome (все refs)
+
+| Элемент | Решение |
+| ------- | ------- |
+| Footer сайдбара (2× settings + power) | **Не в каноне** |
+| ─ / ✕ | **Обязательны** (`NeonWindowChrome`) |
+| □ maximize, app menu, OS title bar | **Нет** |
+| ref.1 PNG без ─/✕ | Chrome в продукте **есть**; overlay не сравнивает верх до обновления PNG |
 
 ### Задача №1 (блокер; владелец 2026-05-28)
 
-**Смысл:** весь UI **идентично** PNG refs **1–27**; функционал кнопок — позже. **Пока Задача №1 не закрыта — другие продуктовые срезы запрещены.**
-
 | Команда | Действие агента |
 | ------- | ---------------- |
-| **«продолжай» / `+`** | Продолжить **Задачу №1**; активный срез — [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) `## Ближайший TODO` (сейчас **ui.2 ref.1**). |
-| Сверка владельца | Только `npm run dev` — без overlay/настроек |
-| Сверка агента | `npm run dev:capture-ui`; overlay debug: `localStorage velorixRefOverlay=1` |
-| Sign-off | Матрица refs: `[x]` только при 1:1 vs PNG |
+| **«продолжай» / `+`** | Задача №1; активный sprint — [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) (**ui.1** ref.27→26). |
+| Сверка владельца | `npm run dev` — экран целиком vs PNG |
+| Сверка агента | overlay + capture **после** появления экрана в renderer |
+| Sign-off | `[x]` в матрице **только** при 1:1 vs PNG |
 
-Чеклист sprint: [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) § «Задача №1».
+Чеклист: [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) § «Задача №1», § UI PURGE v3.
 
 ---
 
 ## Вариант A — единственный UI NEON (канон продукта, старт работ)
 
-**Статус:** принято владельцем **2026-05-22**. **2026-05-27** — **UI ZERO REBUILD** (см. § выше): renderer снят; канон PNG и этот документ **сохранены**; галочки визуала сброшены.
+**Статус:** принято владельцем **2026-05-22**. **2026-05-28** — **UI PURGE v3** (см. § выше): renderer stub; канон PNG сохранён; **все** sign-off UI = `[ ]`.
 
 ### Смысл варианта A (кратко, от агента)
 
@@ -121,7 +128,7 @@
 - [ ] В настройках и меню **нет** выбора `light` / `dark` / `system` — только NEON.
 - [ ] Удалены неиспользуемые CSS/компоненты старых тем; `main.css` не дублирует `velorix-neon-*`.
 - [ ] Pop-out downloads/inspector **не** в целевом UX (код вычищен или сведён к shell).
-- [ ] `npm run check:quiet` зелёный; приёмка на железе — Support ZIP `ownerHardwareChecklist:`.
+- [ ] `npm run check:quiet` зелёный; приёмка на железе — после NEON rebuild; Support ZIP `unpackedLayout:` + `terminalHints:`.
 
 ---
 
@@ -182,7 +189,7 @@
 
 | # | Текст в доке | Зона | CSS / код (факт) | Sign-off vs PNG |
 |---|--------------|------|------------------|-----------------|
-| 1 | [ ] | Design tokens, atmosphere | `themes/velorix-neon/*` (появятся с rebuild) | [ ] |
+| 1 | [ ] | Design tokens, atmosphere | `src/renderer/src/assets/neon/*` (создать при ui.1) | [ ] |
 | 2 | [ ] | Sidebar + topbar | `velorix-neon-chrome.css` (UI ZERO) | [ ] |
 | 3 | [ ] | Preview + transport | `velorix-neon-preview.css` (UI ZERO) | [ ] |
 | 4 | [ ] | Timeline + playhead | `velorix-neon-timeline.css` (UI ZERO) | [ ] |
@@ -955,7 +962,7 @@ Avoid generic SaaS appearance at all costs.
 - [ ] **VA.2** Tools hub refs 10–20 — не full-screen 1:1.
 - [ ] **VA.3** System refs 21–25 — диалоги, не 1:1 PNG.
 - [ ] **VA.4** Showcase 26–27 — эталон компонентов, не весь app.
-- [x] **VA.5** Legacy cleanup (pop-out/theme) — снято.
+- [x] **VA.5** Legacy cleanup (pop-out/theme) — **инфра** (J-1651..1667), **не** sign-off экранов.
 
 ### Cleanup buckets (первый проход)
 
@@ -987,26 +994,22 @@ Avoid generic SaaS appearance at all costs.
 - Layout / плотность — без фазы D.
 - Светлая тема — без NEON.
 
-## Архитектура токенов
+## Архитектура токенов (цель rebuild; после PURGE v3 путей нет)
 
 ```
-src/renderer/src/assets/base.css          ← @import themes/velorix-neon/index.css
-src/renderer/src/assets/themes/velorix-neon/   (01…12, index.css)
-src/renderer/src/assets/themes/
-  velorix-neon-chrome.css      ← этап 2
-  velorix-neon-preview.css     ← этап 3
-  velorix-neon-timeline.css    ← этап 4
-  velorix-neon-inspector.css   ← этап 5
-  velorix-neon-polish.css      ← этап 6 (последний)
+src/renderer/src/assets/neon/           ← токены ref.27→26 (создать при ui.1)
+src/renderer/src/assets/neon/chrome.css   ← этап 2
+src/renderer/src/assets/neon/preview.css  ← этап 3
+…
 ```
 
-**В компонентах:** `var(--fa-*)`; расширение `var(--fa-neon-*)`, `.vn-*`.
+**В компонентах:** `var(--fa-neon-*)`, `.vn-*` — только из PNG, без копирования удалённого `velorix-neon-*` legacy.
 
 ## Чеклист (технический — фаза A)
 
 ### Фаза A — фундамент (этап 1)
 
-- [x] **A.1**–**A.17** — см. журнал J-1617, J-1619; все пункты токенов закрыты.
+- [ ] **A.1**–**A.17** — **сброшено** post PURGE v3; журнал J-1617/J-1619 = история до purge, **не** sign-off UI.
 
 ### Фаза B — привязка к этапам 2–6 (код залит, sign-off отдельно)
 
@@ -1039,11 +1042,11 @@ src/renderer/src/assets/themes/
 | NEON | `--fa-neon-*` | `--fa-neon-accent-gradient` |
 | Utilities | `.vn-*` | `.vn-surface-glass` |
 
-## Следующий шаг агента
+## Следующий шаг агента (post PURGE v3)
 
-1. **Канон текстов:** **6 / 6** — готово. Код **не** трогать без команды владельца «делай этап N».
-2. **Порядок выполнения:** этап **1** → sign-off vs PNG → этап **2** → … → этап **6** (polish **после** sign-off 1–5 или с пересборкой polish).
-3. На каждый этап в коде: только зона промпта, одна `J-NNN`, `npm run check:quiet`.
+1. **ui.1** — ref.27→26 токены в `src/renderer/src/assets/neon/`.
+2. **NeonWindowChrome** + px-shell → **ui.2** ref.1 → остальные refs.
+3. `[x]` в матрице и sprint **только** после sign-off vs PNG; одна `J-NNN`, `npm run check:quiet`.
 
 ## История файла
 

@@ -1,0 +1,40 @@
+---
+description: Запрет восстановления кода/файлов из git без явной просьбы владельца
+alwaysApply: true
+---
+
+# Git — запрет восстановления (блокер)
+
+Глоссарий: **«Запрет восстановления из git»** — [`velorix-rules-explicit.mdc`](velorix-rules-explicit.mdc).
+
+## Запрещено
+
+Без **явной просьбы владельца** в **этом** чате (или **тотального одобрения** владельца на восстановление) — **любое** возвращение удалённого/старого содержимого из истории git в рабочее дерево, в том числе:
+
+| Команда / действие | Пример |
+| ------------------ | ------ |
+| `git checkout <rev> -- <path>` | `git checkout HEAD~3 -- src/renderer/` |
+| `git restore --source=<rev>` | `git restore --source=HEAD~5 -- src/renderer/` |
+| `git show <rev>:<file>` → запись в файл | «вытащить» CSS/TSX из старого коммита |
+| `git revert` / `git cherry-pick` | откат/перенос коммита ради старого UI |
+| Копипаста из `git show` / diff старого коммита | «как в J-1803 было» → файл в репо |
+
+**Запрещено** оправдывать восстановление: «продолжай», `+`, sprint **ui.1**, журнал **J-*** , «быстрее закрыть задачу», post **UI PURGE v3**.
+
+## Обязательно
+
+- Удалённый или устаревший код — **писать заново** по канону (`docs/reference/*.png`, `docs/VELORIX_NEON_THEME.md`, sprint NEON-чеклист).
+- Для ориентира по старому коду — только **чтение** (`git log`, `git show` **без** записи в tracked-файлы), если владелец не разрешил восстановление.
+
+## Исключения
+
+| Условие | Действие |
+| ------- | -------- |
+| Владелец в **этом** чате: «восстанови из git …» / «checkout коммит …» / «верни файлы из …» | Только названные пути; одна итерация — один согласованный объём |
+| Откат **своей** ошибочной `git checkout`/`restore` в **той же** итерации | `git restore --staged --worktree <path>` к **HEAD** до коммита |
+| Обычный `git status` / `git diff` / `git log` | Разрешено (read-only) |
+
+## Связь
+
+- UI PURGE v3: [`velorix-agent.mdc`](velorix-agent.mdc) § UI, [`IMPLEMENTATION_NEON_CHECKLIST.md`](../../docs/IMPLEMENTATION_NEON_CHECKLIST.md) § UI PURGE v3.
+- «продолжай» / `+`: [`.cursor/skills/velorix-continue/SKILL.md`](../skills/velorix-continue/SKILL.md).

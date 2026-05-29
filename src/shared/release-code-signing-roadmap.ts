@@ -52,14 +52,14 @@ export function formatLinuxReleaseCodeSigningRoadmapDiagnosticLine(): string {
   return 'Linux publish: docs/RELEASE.md §4.1 — GPG deb/AppImage signing (roadmap; pack:linux:dir may skip)'
 }
 
-/** Shared Help §15 hub + guards tail (ops/bin/docs index). */
+/** Shared Help §15 hub tail (ops/bin/docs index). */
 function formatReleaseCodeSigningRoadmapHelpGuardsMarkdownTail(): string {
-  return 'Help packaged win/linux/macos + §15 hub — `check:help-packaged-smoke-docs`, `check:help-owner-hardware-checklist-docs`, strict signing in `check:help-workflow-smoke-crosslinks`.'
+  return 'Help §15 hub — `check:help-terminal-hints-docs` (§8 terminal hints; packaged smoke/crosslink guards removed post UI PURGE).'
 }
 
-/** Plain-text Help guards tail (SDK / diagnostics). */
+/** Plain-text Help tail (SDK / diagnostics). */
 function formatReleaseCodeSigningRoadmapHelpGuardsPlainTail(): string {
-  return 'Help check:help-packaged-smoke-docs + check:help-owner-hardware-checklist-docs + strict signing (check:help-workflow-smoke-crosslinks).'
+  return 'Help check:help-terminal-hints-docs (§8 terminal hints only).'
 }
 
 /** `docs/ARCHITECTURE.md` — §19 publish signing roadmaps (win/linux/mac). */
@@ -87,7 +87,7 @@ function formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedPlainTail(
 
 /** `docs/ARCHITECTURE.md` — §19 signing indexed (SDK sprint + diagnostics). */
 export function formatReleaseCodeSigningRoadmapArchitectureSigningIndexedClause(): string {
-  return `§19 signing indexed (SDK sprint + diagnostics): Help §15 hub — \`check:help-packaged-smoke-docs\`, \`check:help-owner-hardware-checklist-docs\`, strict signing crosslinks; \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; \`check:release\` / \`check:platform-packaging-scripts\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`.${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedTail()}`
+  return `§19 signing indexed (SDK sprint + diagnostics): Help §15 hub — \`check:help-terminal-hints-docs\`; \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; \`check:release\` / \`check:platform-packaging-scripts\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`.${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedTail()}`
 }
 
 /** `bin/README.md` — §19 signing roadmaps entry point. */
@@ -107,13 +107,13 @@ export function formatReleaseCodeSigningRoadmapReadmeLine(): string {
 
 /** `docs/RELEASE.md` — §4 win/linux/mac signing canon pointer (before §4.1). */
 export function formatReleaseCodeSigningRoadmapReleaseCanonParagraph(): string {
-  return '**Дорожные карты подписи (win/linux/mac, канон):** [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) — Help clauses в `packaged-{windows,linux,macos}-smoke.md` (+ EN) и §15 hub (getting-started, owner/about, logging, knowledge, planner, ffmpeg); guards `npm run check:help-packaged-smoke-docs`, `check:help-owner-hardware-checklist-docs`, strict signing в `check:help-workflow-smoke-crosslinks`; dev `pack:*:dir` / `CSC_IDENTITY_AUTO_DISCOVERY=false` может обходиться без подписи до публикации.'
+  return '**Дорожные карты подписи (win/linux/mac, канон):** [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) — clauses в §15 hub (getting-started, about/logging, ffmpeg); `npm run check:help-terminal-hints-docs`; dev `pack:*:dir` / `CSC_IDENTITY_AUTO_DISCOVERY=false` может обходиться без подписи до публикации.'
 }
 
 /** `docs/RELEASE.md` — §4 signing indexed (SDK sprint + diagnostics). */
 export function formatReleaseCodeSigningRoadmapReleaseSigningIndexedParagraph(): string {
   const count = getReleaseCodeSigningElectronBuilderYmlComments().length
-  return `**§19 signing indexed (SDK sprint + diagnostics):** Help §15 hub + \`check:help-packaged-smoke-docs\` + \`check:help-owner-hardware-checklist-docs\` + strict signing crosslinks; \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; Support ZIP — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\` (\`check:release\` / \`check:platform-packaging-scripts\`). **Packaging indexed:** \`electron-builder.yml\` (**${count}** §19 yaml comments); \`formatReleaseCodeSigningRoadmap*ElectronBuilder*\` + \`formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnosticLine\` (J-1520..1539).`
+  return `**§19 signing indexed (SDK sprint + diagnostics):** Help §15 hub + \`check:help-terminal-hints-docs\`; \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; Support ZIP — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\` (\`check:release\` / \`check:platform-packaging-scripts\`). **Packaging indexed:** \`electron-builder.yml\` (**${count}** §19 yaml comments); \`formatReleaseCodeSigningRoadmap*ElectronBuilder*\` + \`formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnosticLine\` (J-1520..1539).`
 }
 
 /** `scripts/cursor-automation/prompts/agent-contract.txt` — §19 signing tail. */
@@ -123,7 +123,7 @@ export function formatReleaseCodeSigningRoadmapSdkContractClause(): string {
 
 /** `scripts/cursor-automation/prompts/agent-contract.txt` — §19 signing indexed tail. */
 export function formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause(): string {
-  return `§19 signing indexed: \`release-code-signing-roadmap.ts\` + \`docs/RELEASE.md\` §4/§4.1/§4.2; Help §15 hub + \`check:help-packaged-smoke-docs\` + \`check:help-owner-hardware-checklist-docs\` + strict signing crosslinks.${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedPlainTail()}`
+  return `§19 signing indexed: \`release-code-signing-roadmap.ts\` + \`docs/RELEASE.md\` §4/§4.1/§4.2; Help §15 hub + \`check:help-terminal-hints-docs\`.${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedPlainTail()}`
 }
 
 /** `scripts/cursor-automation/prompts/agent-contract.txt` — §19 electron-builder.yml tail. */
@@ -140,18 +140,18 @@ export function formatReleaseCodeSigningRoadmapSdkContinuePromptElectronBuilderF
 
 /** `continue.txt` / `initial.txt` — §19 signing indexed + electron-builder tail. */
 export function formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock(): string {
-  return `§19 signing roadmaps indexed: \`release-code-signing-roadmap.ts\` + \`docs/RELEASE.md\` §4/§4.1/§4.2; Help §15 hub + \`check:help-packaged-smoke-docs\` + \`check:help-owner-hardware-checklist-docs\` + strict signing crosslinks. ${formatReleaseCodeSigningRoadmapSdkContinuePromptElectronBuilderFragment()}`
+  return `§19 signing roadmaps indexed: \`release-code-signing-roadmap.ts\` + \`docs/RELEASE.md\` §4/§4.1/§4.2; Help §15 hub + \`check:help-terminal-hints-docs\`. ${formatReleaseCodeSigningRoadmapSdkContinuePromptElectronBuilderFragment()}`
 }
 
 /** `check:release` / `check:platform-packaging-scripts` — §19 signing indexed (Support ZIP). */
 export function formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine(): string {
   const count = getReleaseCodeSigningElectronBuilderYmlComments().length
-  return `§19 signing indexed: release-code-signing-roadmap.ts + RELEASE §4/4.1/4.2; Help §15 hub; check:help-packaged-smoke-docs + check:help-owner-hardware-checklist-docs; strict signing crosslinks; electron-builder.yml ${count} §19 yaml comments (packaging indexed J-1520..1539)`
+  return `§19 signing indexed: release-code-signing-roadmap.ts + RELEASE §4/4.1/4.2; Help §15 hub; check:help-terminal-hints-docs; electron-builder.yml ${count} §19 yaml comments (packaging indexed J-1520..1539)`
 }
 
 /** `check-release-scripts` / Support ZIP diagnostics — signing roadmaps index. */
 export function formatReleaseCodeSigningRoadmapCheckReleaseDiagnosticLine(): string {
-  return 'publish signing roadmaps: release-code-signing-roadmap.ts + docs/RELEASE.md §4/§4.1/§4.2 (dev pack:*:dir may skip; check:help-packaged-smoke-docs; check:help-owner-hardware-checklist-docs; strict signing crosslinks)'
+  return 'publish signing roadmaps: release-code-signing-roadmap.ts + docs/RELEASE.md §4/§4.1/§4.2 (dev pack:*:dir may skip; check:help-terminal-hints-docs)'
 }
 
 /** `docs/RELEASE.md` §4 — packaging config pointer (win nsis+zip only; no portable target). */
@@ -201,7 +201,7 @@ export function formatReleaseCodeSigningRoadmapElectronBuilderYmlNsisComment(): 
 
 /** `bin/README.md` — §19 signing indexed (SDK sprint + diagnostics). */
 export function formatReleaseCodeSigningRoadmapBinReadmeSigningIndexedLine(): string {
-  return `- §19 signing indexed: Help §15 hub + \`check:help-packaged-smoke-docs\` + \`check:help-owner-hardware-checklist-docs\` + strict signing crosslinks; SDK \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; diagnostics — \`check:release\` / \`check:platform-packaging-scripts\` (\`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`).${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedShortTail()}`
+  return `- §19 signing indexed: Help §15 hub + \`check:help-terminal-hints-docs\`; SDK \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; diagnostics — \`check:release\` / \`check:platform-packaging-scripts\` (\`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`).${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedShortTail()}`
 }
 
 /** `bin/README.md` — electron-builder.yml §19 signing entry. */
@@ -247,7 +247,7 @@ export function formatReleaseCodeSigningRoadmapElectronBuilderYmlCommentsDiagnos
 
 /** `AGENTS.md` — §19 signing indexed bullet (SDK sprint + diagnostics). */
 export function formatReleaseCodeSigningRoadmapAgentsSigningIndexedBullet(): string {
-  return `**§19 signing indexed:** Help §15 hub + \`check:help-packaged-smoke-docs\` + \`check:help-owner-hardware-checklist-docs\` + strict signing crosslinks; SDK \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; diagnostics — \`check:release\` / \`check:platform-packaging-scripts\` (\`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`).${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedShortTail()}`
+  return `**§19 signing indexed:** Help §15 hub + \`check:help-terminal-hints-docs\`; SDK \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; diagnostics — \`check:release\` / \`check:platform-packaging-scripts\` (\`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`).${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedShortTail()}`
 }
 
 /** `AGENTS.md` — §19 electron-builder.yml bullet (after signing roadmaps). */
@@ -258,7 +258,7 @@ export function formatReleaseCodeSigningRoadmapAgentsElectronBuilderBullet(): st
 
 /** `README.md` — §19 signing indexed bullet. */
 export function formatReleaseCodeSigningRoadmapReadmeSigningIndexedLine(): string {
-  return `- §19 signing indexed: Help §15 hub + \`check:help-packaged-smoke-docs\` + \`check:help-owner-hardware-checklist-docs\` + strict signing crosslinks; SDK \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; diagnostics — \`check:release\` / \`check:platform-packaging-scripts\` (\`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`).${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedShortTail()}`
+  return `- §19 signing indexed: Help §15 hub + \`check:help-terminal-hints-docs\`; SDK \`continue.txt\` / \`initial.txt\` / \`agent-contract.txt\` — \`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock\` / \`formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause\`; diagnostics — \`check:release\` / \`check:platform-packaging-scripts\` (\`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine\`).${formatReleaseCodeSigningRoadmapSigningIndexedPackagingIndexedShortTail()}`
 }
 
 /** `README.md` — §19 electron-builder.yml bullet. */
@@ -293,12 +293,12 @@ export function formatReleaseCodeSigningRoadmapSdkContinuePromptSprintChecklistS
 
 /** `docs/RELEASE.md` §4.1 — Linux Help + formatter pointer. */
 export function formatReleaseCodeSigningRoadmapReleaseLinuxHelpPointer(): string {
-  return 'Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatLinuxReleaseCodeSigningRoadmapHelpClause`); `Help/ru/packaged-linux-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.'
+  return 'Formatters: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatLinuxReleaseCodeSigningRoadmapHelpClause`); §15 hub — `check:help-terminal-hints-docs`.'
 }
 
 /** `docs/RELEASE.md` §4.2 — macOS Help + formatter pointer. */
 export function formatReleaseCodeSigningRoadmapReleaseMacosHelpPointer(): string {
-  return 'Formatters и Help: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatMacosReleaseCodeSigningRoadmapHelpClause`); `Help/ru/packaged-macos-smoke.md` (+ EN) — `check:help-packaged-smoke-docs`.'
+  return 'Formatters: [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) (`formatMacosReleaseCodeSigningRoadmapHelpClause`); §15 hub — `check:help-terminal-hints-docs`.'
 }
 
 /** `scripts/cursor-automation/README.md` — §19 signing index. */
@@ -327,17 +327,17 @@ export function formatReleaseCodeSigningRoadmapOwnerHardwareChecklistArchiveClau
   locale: ReleaseCodeSigningRoadmapLocale
 ): string {
   return locale === 'en'
-    ? ' §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../../docs/RELEASE.md) §4/§4.1/§4.2 — `check:help-packaged-smoke-docs`;'
-    : ' §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../docs/RELEASE.md) §4/§4.1/§4.2 — `check:help-packaged-smoke-docs`;'
+    ? ' §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../../docs/RELEASE.md) §4/§4.1/§4.2;'
+    : ' §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../docs/RELEASE.md) §4/§4.1/§4.2;'
 }
 
-/** Help `getting-started.md` (+ EN) — §19 signing tail (alias — `packaged-e2e-help-workflow-crosslinks-meta`). */
+/** Help `getting-started.md` (+ EN) — §19 signing tail. */
 export function formatReleaseCodeSigningRoadmapGettingStartedHelpClause(
   locale: ReleaseCodeSigningRoadmapLocale
 ): string {
   return locale === 'en'
-    ? ' §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../../docs/RELEASE.md) §4/§4.1/§4.2 — `check:help-packaged-smoke-docs`;'
-    : ' §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../docs/RELEASE.md) §4/§4.1/§4.2 — `check:help-packaged-smoke-docs`;'
+    ? ' §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../../docs/RELEASE.md) §4/§4.1/§4.2;'
+    : ' §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](../src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](../docs/RELEASE.md) §4/§4.1/§4.2;'
 }
 
 /** Help `logging-and-diagnostics.md` (+ EN) — §19 signing in Dev line (alias). */

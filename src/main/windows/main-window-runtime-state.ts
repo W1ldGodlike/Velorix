@@ -15,7 +15,7 @@ import {
   attachMainWindowBoundsPersistence,
   getCachedSettings
 } from '../services/settings/main-cached-settings-host'
-import { buildApplicationMenu } from '../menu/main-application-menu'
+import { hideApplicationMenuBar } from './hide-application-menu-bar'
 import { createMainWindow } from './main-window'
 import { tryFulfillPendingWindowsExplorerShellLaunch } from '../services/platform/windows-explorer-shell-launch-schedule'
 
@@ -76,6 +76,6 @@ export function createMainApplicationWindow(): void {
       cancelDownloadsRunner()
     },
     mainAppStr,
-    buildApplicationMenu
+    hideApplicationMenuBar
   })
 }

@@ -86,18 +86,6 @@ jobs:
       - name: Verify win-unpacked layout (§19)
         run: npm run verify:win-unpacked
 
-      - name: Packaged app smoke (§19)
-        run: npm run smoke:packaged-app
-
-      - name: Packaged ffprobe smoke (§19)
-        run: npm run smoke:packaged-ffprobe
-
-      - name: Packaged ffmpeg smoke (§19)
-        run: npm run smoke:packaged-ffmpeg
-
-      - name: Packaged yt-dlp smoke (§19)
-        run: npm run smoke:packaged-ytdlp
-
   linux-packaging:
     runs-on: ubuntu-latest
     timeout-minutes: 25

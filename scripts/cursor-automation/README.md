@@ -44,7 +44,7 @@ npm run agent:loop -- --max-steps 200 --session-steps 1
 CURSOR_API_KEY=crsr_...
 ```
 
-- §19 publish signing (win/linux/mac): `release-code-signing-roadmap.ts` + `docs/RELEASE.md` §4/§4.1/§4.2 — см. `prompts/agent-contract.txt`; Help check:help-packaged-smoke-docs + check:help-owner-hardware-checklist-docs + strict signing (check:help-workflow-smoke-crosslinks).
+- §19 publish signing (win/linux/mac): `release-code-signing-roadmap.ts` + `docs/RELEASE.md` §4/§4.1/§4.2 — см. `prompts/agent-contract.txt`; Help `check:help-terminal-hints-docs`.
 - §19 signing indexed: `continue.txt` / `initial.txt` / `agent-contract.txt` — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock` / `formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause`; diagnostics — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine` (`check:release` / `check:platform-packaging-scripts`). Packaging indexed: `electron-builder.yml` (**9** §19 yaml comments; J-1520..1539).
 - §19 packaging (electron-builder.yml): win nsis+zip (no portable); 9 §19 yaml comments — getReleaseCodeSigningElectronBuilderYmlComments in release-code-signing-roadmap.ts.
 - Sprint §19 (archive): `formatReleaseCodeSigningRoadmapChecklistSprintSection19Line` (J-1511..1545).

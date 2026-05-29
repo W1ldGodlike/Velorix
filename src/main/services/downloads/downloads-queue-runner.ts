@@ -37,7 +37,7 @@ export function configureDownloadsQueueRunnerHooks(hooks: {
   downloadsQueueRunnerState.afterDownloadEnqueueBatchHook = hooks.afterDownloadEnqueueBatch ?? null
 }
 
-/** Вызывается из downloads-window: обновить UI после изменений очереди/прогресса. */
+/** Optional hook when renderer listens for queue snapshots (post rebuild). */
 export function setDownloadsRunnerNotifier(fn: () => void): void {
   downloadsQueueRunnerState.notifySnapshot = fn
 }

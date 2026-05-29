@@ -62,7 +62,6 @@ export function createSettingsShellPersist(
     }
     const saved = commit(access, merged)
     hooks.refreshEnginePathOverridesSnapshot()
-    hooks.buildApplicationMenu()
     BrowserWindow.getAllWindows().forEach((w) => {
       w.webContents.send(mw.enginePathsChanged)
     })
@@ -77,8 +76,7 @@ export function createSettingsShellPersist(
     const next = patchAppSettingsUiLocale(access.get(), v)
     access.set(next)
     access.save()
-    hooks.buildApplicationMenu()
-    hooks.syncDownloadsWindowLocale(v)
+    hooks.syncAppWindowTitlesToLocale(v)
     for (const w of BrowserWindow.getAllWindows()) {
       if (!w.isDestroyed()) {
         w.webContents.send(mw.uiLocaleChanged, v)

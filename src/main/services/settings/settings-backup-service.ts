@@ -18,10 +18,9 @@ export type SettingsBackupServiceHooks = {
   getSettings: () => AppSettings
   replaceSettings: (next: AppSettings) => void
   saveSettings: () => void
-  buildApplicationMenu: () => void
   refreshEnginePathOverridesSnapshot: () => void
   refreshYtdlpFromSettings: () => void
-  syncDownloadsWindowLocale: (locale: import('../../../shared/app-ui-locale').AppUiLocale) => void
+  syncAppWindowTitlesToLocale: (locale: import('../../../shared/app-ui-locale').AppUiLocale) => void
   mainAppStr: () => {
     settingsBackupExportTitle: string
     settingsBackupExportFilter: string
@@ -60,7 +59,7 @@ function broadcastSettingsReplacements(prev: AppSettings, next: AppSettings): vo
   const nextLoc = parseAppUiLocale(next.uiLocale)
   const prevLoc = parseAppUiLocale(prev.uiLocale)
   if (nextLoc !== undefined && nextLoc !== prevLoc) {
-    h.syncDownloadsWindowLocale(nextLoc)
+    h.syncAppWindowTitlesToLocale(nextLoc)
     for (const w of BrowserWindow.getAllWindows()) {
       if (!w.isDestroyed()) {
         w.webContents.send(mw.uiLocaleChanged, nextLoc)
@@ -75,7 +74,6 @@ function broadcastSettingsReplacements(prev: AppSettings, next: AppSettings): vo
     }
   }
   h.refreshYtdlpFromSettings()
-  h.buildApplicationMenu()
 }
 
 export function applyImportedAppSettings(partial: Record<string, unknown>): AppSettings {

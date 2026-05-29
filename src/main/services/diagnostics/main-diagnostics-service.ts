@@ -3,14 +3,7 @@ import { basename } from 'path'
 
 import { app, BrowserWindow, clipboard, dialog, screen, shell } from 'electron'
 
-import { buildSupportZipFfprobeSmokeLines } from '../../../shared/packaged-ffprobe-smoke'
-import { formatFfmpegHwManualSmokeChecklistLines } from '../../../shared/ffmpeg-hw-manual-smoke-checklist'
-import { formatLinuxPackagedManualSmokeChecklistLines } from '../../../shared/linux-packaged-manual-smoke-checklist'
-import { formatMacosPackagedManualSmokeChecklistLines } from '../../../shared/macos-packaged-manual-smoke-checklist'
-import { formatWinPackagedManualSmokeChecklistLines } from '../../../shared/win-packaged-manual-smoke-checklist'
-import { buildOwnerHardwareChecklistBundleLines } from '../../../shared/owner-hardware-checklist-bundle'
-import { formatWorkflowOsSchedulerManualSmokeChecklistLines } from '../../../shared/workflow-os-scheduler-manual-smoke-checklist'
-import { buildSupportZipPackagedReleaseLines } from '../../../shared/packaged-release-smoke'
+import { buildSupportZipUnpackedLayoutLines } from '../../../shared/support-zip-unpacked-layout-lines'
 import { formatTerminalContractHintsSupportZipLines } from '../../../shared/terminal-contract-hints-meta'
 import { buildSupportZipBuildInfoLines, readAppBuildInfo } from '../../../shared/app-build-info'
 import { formatLocaleJsonCatalogDiagnosticLines } from '../../../shared/locale-json-catalog'
@@ -118,22 +111,11 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
   }
 
   const terminalHintsLines = formatTerminalContractHintsSupportZipLines()
-  const releaseSmokeLines = buildSupportZipPackagedReleaseLines(paths.appRoot, existsSync)
-  const ffprobeSmokeLines = buildSupportZipFfprobeSmokeLines(paths.appRoot, existsSync)
+  const unpackedLayoutLines = buildSupportZipUnpackedLayoutLines(paths.appRoot, existsSync)
   const uiLocaleIpcLines = formatUiLocaleIpcDiagnosticLines()
   const localeJsonCatalogLines = formatLocaleJsonCatalogDiagnosticLines()
   const rendererStateLines = formatRendererStateDiagnosticLines()
   const uiDpiLines = formatWindowHidpiDiagnosticLines()
-  const hwManualSmokeChecklistLines = formatFfmpegHwManualSmokeChecklistLines()
-  const winPackagedSmokeChecklistLines = formatWinPackagedManualSmokeChecklistLines()
-  const linuxPackagedSmokeChecklistLines = formatLinuxPackagedManualSmokeChecklistLines()
-  const macosPackagedSmokeChecklistLines = formatMacosPackagedManualSmokeChecklistLines()
-  const workflowOsSchedulerSmokeChecklistLines =
-    formatWorkflowOsSchedulerManualSmokeChecklistLines()
-  const ownerHardwareChecklistBundleLines = buildOwnerHardwareChecklistBundleLines({
-    uiDpiLines,
-    platform: process.platform
-  })
 
   return {
     appVersion: app.getVersion(),
@@ -159,18 +141,11 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     crashDumps: getCrashDumpsPathSafe(),
     engineDiagnosticLines,
     terminalHintsLines,
-    releaseSmokeLines,
-    ffprobeSmokeLines,
+    unpackedLayoutLines,
     uiLocaleIpcLines,
     localeJsonCatalogLines,
     rendererStateLines,
-    uiDpiLines,
-    hwManualSmokeChecklistLines,
-    winPackagedSmokeChecklistLines,
-    linuxPackagedSmokeChecklistLines,
-    macosPackagedSmokeChecklistLines,
-    workflowOsSchedulerSmokeChecklistLines,
-    ownerHardwareChecklistBundleLines
+    uiDpiLines
   }
 }
 

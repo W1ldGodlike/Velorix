@@ -36,7 +36,7 @@ vi.mock('../../src/main/services/ytdlp/ytdlp-run-options-sync', () => ({
     hoisted.getYtdlpSnapshot()
 }))
 
-vi.mock('../../src/main/ipc/downloads/downloads-log-ipc', () => ({
+vi.mock('../../src/main/services/downloads/downloads-log-sink', () => ({
   emitDownloadsLog: (...args: unknown[]): ReturnType<typeof hoisted.emitDownloadsLog> =>
     hoisted.emitDownloadsLog(...args)
 }))

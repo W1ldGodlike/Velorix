@@ -113,14 +113,11 @@ npm run engines:doctor
 - Агент: [`AGENTS.md`](./AGENTS.md), [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md).
 - `Data/`, `Help/` — конфиги и подсказки UI.
 - Русские `summary` терминала: **`npm run locales:terminal-summaries-ru`** (дважды до 0 замен) — [`Help/ru/ffmpeg-terminal-hints.md`](./Help/ru/ffmpeg-terminal-hints.md).
-- Help §21: `npm run check:help-workflow-smoke-crosslinks` (44 workflow; user footer (owner-hardware-checklist + packaged-windows-smoke); 44/44 workflow user crosslink footers).
-- §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](./src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](./docs/RELEASE.md) §4/§4.1/§4.2; Help packaged win/linux/macos + §15 hub — `check:help-packaged-smoke-docs`, `check:help-owner-hardware-checklist-docs`, strict signing in `check:help-workflow-smoke-crosslinks`.
-- §19 signing indexed: Help §15 hub + `check:help-packaged-smoke-docs` + `check:help-owner-hardware-checklist-docs` + strict signing crosslinks; SDK `continue.txt` / `initial.txt` / `agent-contract.txt` — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock` / `formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause`; diagnostics — `check:release` / `check:platform-packaging-scripts` (`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine`). Packaging indexed: `electron-builder.yml` (**9** §19 yaml comments; J-1520..1539).
+- Help §8: `npm run check:help-terminal-hints-docs` (terminal hint shards + Support ZIP crosslinks in Help).
+- §19 publish signing (win/linux/mac): [`release-code-signing-roadmap.ts`](./src/shared/release-code-signing-roadmap.ts) + [`docs/RELEASE.md`](./docs/RELEASE.md) §4/§4.1/§4.2; Help §15 hub — `check:help-terminal-hints-docs`.
+- §19 signing indexed: Help §15 hub + `check:help-terminal-hints-docs`; SDK `continue.txt` / `initial.txt` / `agent-contract.txt` — `formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedBlock` / `formatReleaseCodeSigningRoadmapSdkContractSigningIndexedClause`; diagnostics — `check:release` / `check:platform-packaging-scripts` (`formatReleaseCodeSigningRoadmapSdkPromptSprintSigningIndexedDiagnosticLine`). Packaging indexed: `electron-builder.yml` (**9** §19 yaml comments; J-1520..1539).
 - §19 packaging (`electron-builder.yml`): win **nsis** + **zip** (no `portable`); **9** §19 yaml comments — `getReleaseCodeSigningElectronBuilderYmlComments` in [`release-code-signing-roadmap.ts`](./src/shared/release-code-signing-roadmap.ts).
-- §21 Playwright GUI e2e: `npm run check:packaged-gui-e2e-playwright-deferred` — `npm run test:e2e:gui` → `scripts/e2e/run-planned-gui-e2e-playwright.mjs` (`tests/e2e/gui/planned-gui-e2e-step-runners.ts`, 8 steps). Help UiHintSuffix: AGENTS + 4 §15 anchors + 6 packaged (`formatPackagedGuiE2ePlaywright*HelpUiHintSuffix`; `check:help-owner-hardware-checklist-docs`, `check:help-packaged-smoke-docs`).
-- §21 Playwright scaffold: `tests/e2e/gui/planned-gui-e2e-steps.ts` + `planned-gui-e2e.spec.ts` (`PLANNED_GUI_E2E_*`; skip без `VELORIX_E2E_APP`).
-- §21 Playwright planned notes: `PLANNED_GUI_E2E_STEP_BY_ID`; Copy/releaseSmoke — `formatPackagedGuiE2ePlaywrightPlannedStepByIdDiagnosticLine`.
-- §21 Playwright run on hardware: `docs/RELEASE.md` — `formatPackagedGuiE2ePlaywrightReleaseWiringHandoffBullet` (manual **21.x**).
+- CI packaged: `npm run pack:dir` + `npm run verify:win-unpacked` (см. `check:release`).
 - SDK automation: [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
 - yt-dlp по умолчанию: `<папка программы>/app-data/downloads/ytdlp`.
 - NSIS спрашивает про удаление `app-data/`; в ZIP — `Uninstall Velorix.cmd`.

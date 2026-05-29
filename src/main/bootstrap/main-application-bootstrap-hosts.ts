@@ -4,12 +4,7 @@ import { electronApp } from '@electron-toolkit/utils'
 import { resolveAppPaths } from '../core/app-paths'
 import { createSettingsIpcPersist } from '../services/settings/settings-ipc-persist'
 import { configureDownloadsQueueRunnerHooks } from '../services/downloads/downloads-queue-runner'
-import {
-  broadcastDownloadsCliOptionsChanged,
-  broadcastDownloadsOutputDirectorySnapshot,
-  syncDownloadsWindowLocale
-} from '../windows/downloads-window'
-import { configureMainDownloadsWindowBoundsBootstrap } from '../windows/main-downloads-window-bounds-bootstrap'
+import { syncBrowserWindowTitlesToLocale } from '../windows/window-title-locale'
 import {
   configureMainBootstrapIpcHelpers,
   mainAppStr,
@@ -21,18 +16,12 @@ import {
   mainSettingsAccess,
   patchCachedSettings,
   persistLastOpenedSource,
-  previewOpenDialogOptsFromSettings,
   refreshEnginePathOverridesSnapshot,
   saveCachedSettingsToDisk,
-  setCachedSettings,
-  technicalSpecPath
+  setCachedSettings
 } from '../services/settings/main-cached-settings-host'
-import { buildApplicationMenu, configureMainApplicationMenu } from '../menu/main-application-menu'
 import {
   configureMainDiagnosticsService,
-  createSupportBundleWithDialog,
-  openMainLogFile,
-  openSessionLogFile,
   pruneDiagnosticsOnStartup,
   showProcessErrorDialog
 } from '../services/diagnostics/main-diagnostics-service'
@@ -65,27 +54,15 @@ import {
 } from '../core/main-export-output-paths'
 import { syncYtdlpDownloadDirectoryFromSettings } from '../services/ytdlp/ytdlp-download-output'
 import { refreshYtdlpRunOptionsSnapshot } from '../services/ytdlp/ytdlp-run-options-sync'
-import {
-  configurePresetsExportService,
-  exportUserPresetsWithDialog,
-  importUserPresetsWithDialog
-} from '../services/presets/presets-export-service'
-import {
-  configureSettingsBackupService,
-  exportSettingsBackupWithDialog,
-  importSettingsBackupWithDialog
-} from '../services/settings/settings-backup-service'
+import { configurePresetsExportService } from '../services/presets/presets-export-service'
+import { configureSettingsBackupService } from '../services/settings/settings-backup-service'
 import {
   activeExportAbort,
   broadcastFfmpegExportBatchSnapshot,
-  mainWindowRef,
   mainWindowWebContentsId,
   setActiveExportAbort
 } from '../windows/main-window-runtime-state'
-import {
-  getMainApplicationSettingsIpcPersist,
-  setMainApplicationSettingsIpcPersist
-} from './main-application-bootstrap-state'
+import { setMainApplicationSettingsIpcPersist } from './main-application-bootstrap-state'
 
 export function bootstrapMainApplicationHosts(): void {
   electronApp.setAppUserModelId('com.VELORIX')
@@ -135,50 +112,18 @@ export function bootstrapMainApplicationHosts(): void {
     getSettings: getCachedSettings,
     replaceSettings: setCachedSettings,
     saveSettings: saveCachedSettingsToDisk,
-    buildApplicationMenu,
     refreshEnginePathOverridesSnapshot,
     refreshYtdlpFromSettings: () => {
       const settings = getCachedSettings()
       refreshYtdlpRunOptionsSnapshot(settings, mainDownloadsUiLocale())
-      broadcastDownloadsCliOptionsChanged()
       syncYtdlpDownloadDirectoryFromSettings(settings.ytdlpDownloadDirectory)
-      broadcastDownloadsOutputDirectorySnapshot()
     },
-    syncDownloadsWindowLocale,
+    syncAppWindowTitlesToLocale: syncBrowserWindowTitlesToLocale,
     mainAppStr
-  })
-  configureMainApplicationMenu({
-    getMainWindowRef: () => mainWindowRef,
-    mainDownloadsUiLocale,
-    mainAppStr,
-    previewOpenDialogOptsFromSettings,
-    persistLastOpenedSource,
-    persistUiLocale: (locale) => {
-      void getMainApplicationSettingsIpcPersist().persistUiLocale(locale)
-    },
-    technicalSpecPath,
-    openMainLogFile,
-    openSessionLogFile,
-    createSupportBundleWithDialog: (win) => {
-      void createSupportBundleWithDialog(win)
-    },
-    exportSettingsBackup: (win) => {
-      void exportSettingsBackupWithDialog(win)
-    },
-    importSettingsBackup: (win) => {
-      void importSettingsBackupWithDialog(win)
-    },
-    exportPresetsBackup: (win) => {
-      void exportUserPresetsWithDialog(win)
-    },
-    importPresetsBackup: (win) => {
-      void importUserPresetsWithDialog(win)
-    }
   })
   setMainApplicationSettingsIpcPersist(
     createSettingsIpcPersist(mainSettingsAccess, {
-      buildApplicationMenu,
-      syncDownloadsWindowLocale,
+      syncAppWindowTitlesToLocale: syncBrowserWindowTitlesToLocale,
       refreshEnginePathOverridesSnapshot
     })
   )
@@ -201,12 +146,9 @@ export function bootstrapMainApplicationHosts(): void {
     mainDownloadsUiLocale,
     onDownloadDirectoryChanged: (directory) => {
       syncYtdlpDownloadDirectoryFromSettings(directory)
-      buildApplicationMenu()
-      broadcastDownloadsOutputDirectorySnapshot()
     },
     onCliOptionsChanged: () => {
       refreshYtdlpRunOptionsSnapshot(getCachedSettings(), mainDownloadsUiLocale())
-      broadcastDownloadsCliOptionsChanged()
     }
   })
   configureMainFfmpegExportBatchHost({
@@ -237,12 +179,6 @@ export function bootstrapMainApplicationHosts(): void {
   refreshYtdlpRunOptionsSnapshot(getCachedSettings(), mainDownloadsUiLocale())
   attachFfmpegExportBatchQueuePersist(app)
   hydrateFfmpegExportBatchQueueFromDisk(resolveAppPaths().userData)
-  configureMainDownloadsWindowBoundsBootstrap({
-    getMainWindowWebContentsId: () => mainWindowWebContentsId,
-    mainDownloadsUiLocale,
-    getSettings: getCachedSettings,
-    openDownloadedFileInMainHandler
-  })
   configureDownloadsQueueRunnerHooks({
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile),
     afterDownloadOpenedInMainHandler: scheduleAutoExportAfterSuccessfulYtdlpOpen,

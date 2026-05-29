@@ -28,7 +28,7 @@ vi.mock('../../src/main/services/workflow/workflow-scenario-ytdlp-complete', () 
   tryRunWorkflowScenarioAfterYtdlpDownload: (): ReturnType<typeof tryWorkflow> => tryWorkflow()
 }))
 
-vi.mock('../../src/main/ipc/downloads/downloads-log-ipc', () => ({
+vi.mock('../../src/main/services/downloads/downloads-log-sink', () => ({
   emitDownloadsLog: vi.fn()
 }))
 

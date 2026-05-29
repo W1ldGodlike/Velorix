@@ -12,8 +12,6 @@ import {
   TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
   TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS,
-  TERMINAL_CONTRACT_HINTS_WORKFLOW_KNOWLEDGE_HELP_PATHS,
-  TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_BIN_README_PATH,
   TERMINAL_CONTRACT_HINTS_BIN_README_REQUIRED_SNIPPETS,
@@ -26,7 +24,6 @@ import {
   formatTerminalContractHintsShardCountEnSnippet,
   formatTerminalContractHintsShardCountRuSnippet
 } from '../../src/shared/terminal-contract-hints-meta.ts'
-import { formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter } from '../lib/help-workflow-crosslinks-meta.mjs'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from '../lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from '../lib/repo-root.mjs'
 
@@ -48,15 +45,6 @@ for (const rel of TERMINAL_CONTRACT_HINTS_HELP_PATHS) {
     : formatTerminalContractHintsShardCountRuSnippet()
   failed =
     checkHelpSmokeDocSnippet(REPO_ROOT, LOG_PREFIX, rel, countSnippet, 'shard-count') || failed
-  const locale = rel.includes('/en/') ? 'en' : 'ru'
-  failed =
-    checkHelpSmokeDocSnippet(
-      REPO_ROOT,
-      LOG_PREFIX,
-      rel,
-      formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(locale),
-      'ffmpeg-see-also-footer'
-    ) || failed
 }
 
 failed =
@@ -67,18 +55,6 @@ failed =
     TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS,
     'tools-terminal-inspector'
   ) || failed
-
-for (const rel of TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS) {
-  const locale = rel.includes('/en/') ? 'en' : 'ru'
-  failed =
-    checkHelpSmokeDocSnippet(
-      REPO_ROOT,
-      LOG_PREFIX,
-      rel,
-      formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(locale),
-      'tools-see-also-footer'
-    ) || failed
-}
 
 failed =
   checkHelpSmokeDocFiles(
@@ -136,30 +112,6 @@ failed =
     TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
     'faq-troubleshooting'
   ) || failed
-
-for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS) {
-  const locale = rel.includes('/en/') ? 'en' : 'ru'
-  failed =
-    checkHelpSmokeDocSnippet(
-      REPO_ROOT,
-      LOG_PREFIX,
-      rel,
-      formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(locale),
-      'workflow-user-footer'
-    ) || failed
-}
-
-for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_KNOWLEDGE_HELP_PATHS) {
-  const locale = rel.includes('/en/') ? 'en' : 'ru'
-  failed =
-    checkHelpSmokeDocSnippet(
-      REPO_ROOT,
-      LOG_PREFIX,
-      rel,
-      formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter(locale),
-      'knowledge-see-also-footer'
-    ) || failed
-}
 
 const binReadmePath = path.join(REPO_ROOT, TERMINAL_CONTRACT_HINTS_BIN_README_PATH)
 const binReadmeText = fs.readFileSync(binReadmePath, 'utf8')

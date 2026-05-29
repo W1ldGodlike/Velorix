@@ -44,7 +44,7 @@ export type MainWindowCreateDeps = {
   onPrepareMainWindowQuit: () => void
   onQuitAbortConfirmed: () => void
   mainAppStr: () => MainWindowQuitStrings
-  buildApplicationMenu: () => void
+  hideApplicationMenuBar: () => void
 }
 
 function formatIdleQuitMessage(q: MainWindowQuitStrings, waitingCount: number): string {
@@ -259,7 +259,7 @@ export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    deps.buildApplicationMenu()
+    deps.hideApplicationMenuBar()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

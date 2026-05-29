@@ -8,4 +8,4 @@
 
 «продолжай» и `+` — skill `velorix-continue` — NEON-трекер + NEON-чеклист sprint.
 
-Вспомогательный стек: `docs/ARCHITECTURE.md`. Legacy, мешающий задаче — удалять в той же итерации; не копить.
+Вспомогательный стек: `docs/ARCHITECTURE.md`. Legacy, мешающий задаче — удалять в той же итерации; не копить. Git restore: без явной просьбы владельца — запрещено (`velorix-no-git-restore.mdc`).

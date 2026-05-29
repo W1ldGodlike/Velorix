@@ -4,7 +4,7 @@
 
 **Toolchain:** Electron 42, Vite 8, TS 6, ESLint 9 — `package.json`; lock — `tests/shared/toolchain-baseline-package.test.ts` (журнал **J-1354**).
 
-**Rules:** [`velorix-rules-explicit.mdc`](.cursor/rules/velorix-rules-explicit.mdc), [`velorix-core.mdc`](.cursor/rules/velorix-core.mdc), [`velorix-agent.mdc`](.cursor/rules/velorix-agent.mdc), [`velorix-simplicity.mdc`](.cursor/rules/velorix-simplicity.mdc) — **удалять** legacy, который мешает задаче; не копить из осторожности.
+**Rules:** [`velorix-rules-explicit.mdc`](.cursor/rules/velorix-rules-explicit.mdc), [`velorix-core.mdc`](.cursor/rules/velorix-core.mdc), [`velorix-agent.mdc`](.cursor/rules/velorix-agent.mdc), [`velorix-no-git-restore.mdc`](.cursor/rules/velorix-no-git-restore.mdc) (**блокер:** ничего не восстанавливать из git без явной просьбы владельца), [`velorix-simplicity.mdc`](.cursor/rules/velorix-simplicity.mdc) — **удалять** legacy, который мешает задаче; не копить из осторожности.
 
 **Skills:** [продолжай / +](.cursor/skills/velorix-continue/SKILL.md), [journal-entry](.cursor/skills/velorix-journal-entry/SKILL.md), [checklist-audit](.cursor/skills/velorix-checklist-audit/SKILL.md), [release](.cursor/skills/velorix-release/SKILL.md).
 
@@ -12,7 +12,7 @@
 
 **Индекс:** [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md) · [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) · [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](docs/IMPLEMENTATION_NEON_CHECKLIST.md) · [`docs/archive/`](docs/archive/) (старые ТЗ/чеклист — **не** навигатор) · SDK [`agent-contract.txt`](scripts/cursor-automation/prompts/agent-contract.txt)
 
-**Проверки:** `npm run check:quiet` — **26** шагов (post UI PURGE v3: без locale/UI guards); снимок **234** test files / **1787** tests — NEON-чеклист `snap.3`. Help §15: 44 workflow — user footer (`formatPackagedE2eHelpWorkflowCrosslinksWorkflowUserFooter`); dev §21 — owner/about/logging; sync `node scripts/maint/sync-help-workflow-user-footers.mjs`. После локального `npm run build` — вернуть `src/shared/app-build-info.json` → `dev` ([`docs/RELEASE.md`](docs/RELEASE.md) §1). `npm run audit:moderate` не в `check:quiet` — [`docs/RELEASE.md`](docs/RELEASE.md) §1.
+**Проверки:** `npm run check:quiet` — post UI PURGE v3 (без locale/UI guards и Help smoke/crosslinks); снимок **219** test files / **1736** tests — NEON-чеклист `snap.3`. Help §8: `check:help-terminal-hints-docs` (terminal hints). CI packaged: `pack:dir` + `verify:win-unpacked`. После локального `npm run build` — вернуть `src/shared/app-build-info.json` → `dev` ([`docs/RELEASE.md`](docs/RELEASE.md) §1). `npm run audit:moderate` не в `check:quiet` — [`docs/RELEASE.md`](docs/RELEASE.md) §1.
 
 **Git author (локально, без `--global`):** `user.name` **W1ldGodlike**, `user.email` **W1ld.Godlike@gmail.com**.
 

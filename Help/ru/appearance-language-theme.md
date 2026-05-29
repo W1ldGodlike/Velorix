@@ -8,7 +8,6 @@
 
 Проверяйте единый NEON UI по чеклисту: контраст primary-кнопок и ссылок, focus Tab, disabled-состояния, стеклянные/backdrop-состояния модалок «Настройки» и «О программе», поверхности `Загрузки` и `Инспектор` внутри shell, узлы конструктора сценариев и планировщика. Отдельные pop-out поверхности и проверка `match system` не относятся к целевому UX.
 
-
 ## Язык интерфейса
 
 Язык влияет на подписи кнопок, встроенные пресеты экспорта FFmpeg, сообщения об ошибках и **текст этой справки**. Смена языка в topbar или **Настройки → Общие** применяется сразу, без перезапуска; открытое окно справки обновляет оглавление и текст статьи автоматически.
@@ -22,10 +21,10 @@
 - какой блок CSS `@120/144/168/192dpi` сейчас активен;
 - чеклист зон для ручной проверки (редактор, загрузки, модалки, статусбар).
 
-[about-support-logs.md](about-support-logs.md) (ручная проверка на железе) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (ручная проверка после `pack:dir`).
+[about-support-logs.md](about-support-logs.md) · [logging-and-diagnostics.md](logging-and-diagnostics.md).
 
 См. [getting-started.md](getting-started.md).
 
 ## См. также
 
-[about-support-logs.md](about-support-logs.md) (Support ZIP `ownerHardwareChecklist:`) · [packaged-windows-smoke.md](packaged-windows-smoke.md) (после `pack:dir`).
+[about-support-logs.md](about-support-logs.md) · [logging-and-diagnostics.md](logging-and-diagnostics.md).

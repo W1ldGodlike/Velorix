@@ -5,22 +5,15 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import {
-  PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY,
-  formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintBody
-} from '../../src/shared/packaged-gui-e2e-playwright-meta.ts'
-import {
   TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY,
   TERMINAL_CONTRACT_HINTS_META_MODULE,
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_SOURCE_PATHS,
   TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS,
   TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING,
-  formatTerminalContractHintsAboutSupportZipSectionsHint,
   formatTerminalContractHintsSupportZipLines
 } from '../../src/shared/terminal-contract-hints-meta.ts'
 import { REPO_ROOT } from '../lib/repo-root.mjs'
-
-const LOCALE_JSON_LOCALES = ['ru', 'en']
 
 const LOG_PREFIX = 'check:support-bundle-terminal-hints'
 
@@ -74,35 +67,6 @@ for (const rel of TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS) {
     failed = true
     console.error(
       `[${LOG_PREFIX}] ${rel} must reference ${TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY} (uiText)`
-    )
-  }
-}
-
-const localesAboutGuardActive = LOCALE_JSON_LOCALES.every((locale) =>
-  fs.existsSync(path.join(REPO_ROOT, 'locales', locale, 'about.json'))
-)
-
-for (const locale of localesAboutGuardActive ? LOCALE_JSON_LOCALES : []) {
-  const aboutPath = path.join(REPO_ROOT, 'locales', locale, 'about.json')
-  const aboutTable = JSON.parse(fs.readFileSync(aboutPath, 'utf8'))
-  const expected = formatPackagedGuiE2ePlaywrightAboutSupportZipSectionsHintBody(
-    locale,
-    formatTerminalContractHintsAboutSupportZipSectionsHint(locale)
-  )
-  const hint = aboutTable[TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY]
-  if (
-    TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY !==
-    PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY
-  ) {
-    failed = true
-    console.error(
-      `[${LOG_PREFIX}] TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY must match PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY`
-    )
-  }
-  if (hint !== expected) {
-    failed = true
-    console.error(
-      `[${LOG_PREFIX}] locales/${locale}/about.json ${TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY} expected: ${expected}`
     )
   }
 }

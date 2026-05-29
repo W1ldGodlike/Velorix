@@ -22,7 +22,6 @@ export const SCRIPTS_INVENTORY_BUCKETS = [
 export const SCRIPTS_WIRING_EXEMPT_REL_PATHS = [
   'scripts/maint/journal-lib.mjs',
   'scripts/maint/terminal-contract-hint-paths.mjs',
-  'scripts/maint/sync-help-workflow-user-footers.mjs',
   'scripts/release/engines-bundled-sha256.mjs',
   'scripts/release/engines-exe-version-line.mjs',
   'scripts/release/prepare-engines-unix.mjs'

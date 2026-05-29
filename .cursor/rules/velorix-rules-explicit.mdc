@@ -27,7 +27,7 @@ alwaysApply: true
 | Дословный дубликат другого rule в том же коммите | Удалить копию; смысл уже в оставшемся файле (в commit message указать «дубль → …»). |
 | **Явная просьба владельца** удалить конкретный rule/пункт | Удалить только названное. |
 | Временный план-файл `docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md` | Удалён J-887; канон audit — `velorix-agent.mdc` + `audit-*`. |
-| Временный план `docs/UI_CONSOLIDATION_AND_COPY_PROGRAM.md` | Удалён J-984; канон UI — `velorix-agent.mdc` + `check:ui-surfaces-guard` (`gate=no-plan`). |
+| Временный план `docs/UI_CONSOLIDATION_AND_COPY_PROGRAM.md` | Удалён J-984; канон UI — `velorix-agent.mdc` + NEON-чеклист (UI guards сняты post PURGE v3). |
 | Временный план `docs/GOVERNANCE_CONSOLIDATION_PLAN.md` | Удалён J-1137 (фаза F); канон governance — `velorix-agent.mdc` + `check:docs-governance`. |
 
 ## Формат каждого требования
@@ -52,9 +52,11 @@ alwaysApply: true
 | **Итерация** | Ровно **один** полный ответ агента до конца turn (в т.ч. сообщение «продолжай» / `+`). |
 | **check:quiet зелёный** | `npm run check:quiet` вернул **exit code 0**. |
 | **Продолжай / +** | Команды **«продолжай»** и **`+`** равнозначны: продолжить **текущую** задачу; **если** закончена **то** [`docs/VELORIX_NEON_THEME.md`](../../docs/VELORIX_NEON_THEME.md) → sprint TODO в [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](../../docs/IMPLEMENTATION_NEON_CHECKLIST.md). **Запрещено:** [`docs/archive/`](../../docs/archive/) и корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`. Skill: [`.cursor/skills/velorix-continue/SKILL.md`](../skills/velorix-continue/SKILL.md). |
-| **UI-поверхности (постоянно)** | [`velorix-agent.mdc`](velorix-agent.mdc): один renderer на фичу; **запрещены** HTML-pop-out и `*-window-ui-strings-*` вне `ui-text`; `check:ui-surfaces-guard` + `check:ui-copy-quality`. |
+| **UI-поверхности (постоянно)** | [`velorix-agent.mdc`](velorix-agent.mdc): один renderer на фичу; **запрещены** HTML-pop-out; post PURGE v3 — stub до rebuild; sign-off только матрица refs в NEON-чеклисте. |
+| **Sign-off UI (post PURGE v3)** | `[x]` / `[~]` на UI в NEON-чеклисте / THEME **только** после 1:1 vs `docs/reference/*.png`; **запрещено:** ~% «готово», «фундамент есть», журнал J как sign-off визуала. |
 | **Git по J-NNN** | **Если** в итерации записана новая `J-NNN` и **check:quiet зелёный** **то:** `NNN % 5 === 0` → `git commit`; `NNN % 10 === 0` → также `git push` (без force `main`/`master`). Любой чат (Cursor, SDK). **Следующий commit по J:** **J-1580**; **следующий push по J:** **J-1580** — [`velorix-agent.mdc`](velorix-agent.mdc). **Запрещено:** пропускать commit/push при выполнении условий выше. |
-| **Явная просьба владельца** | В сообщении пользователя в **этом** чате: «правь/измени/добавь» + путь к файлу; **или** «удали rule …». Правка **архива** `docs/archive/*.OLD.md` — только явная просьба. |
+| **Явная просьба владельца** | В сообщении пользователя в **этом** чате: «правь/измени/добавь» + путь к файлу; **или** «удали rule …»; **или** «восстанови из git …» / «checkout коммит …» (см. **«Запрет восстановления из git»**). Правка **архива** `docs/archive/*.OLD.md` — только явная просьба. |
+| **Запрет восстановления из git** | **Запрещено:** без **явной просьбы владельца** в **этом** чате (или **тотального одобрения**) возвращать удалённый/старый код из истории git в tracked-файлы (`git checkout <rev> --`, `git restore --source=`, `git show` → запись, `git revert`, копипаста из старого коммита). **Обязательно:** писать заново по PNG/THEME/sprint; `git log`/`git show` — только read-only. **Запрещено** оправдывать: «продолжай», `+`, ui.1, журнал J. Исполняемое: [`velorix-no-git-restore.mdc`](velorix-no-git-restore.mdc), [`velorix-agent.mdc`](velorix-agent.mdc) § «Git — запрет восстановления». |
 | **Приоритет rules vs шапка** | **Формат** `J-NNN` — шапка `IMPLEMENTATION_JOURNAL.md`; **sprint TODO** — `docs/IMPLEMENTATION_NEON_CHECKLIST.md`. **Процесс** — `.cursor/rules/*.mdc`. **Если** конфликт **то** синхронизировать **одним коммитом**. |
 | **Микро-J** | Новая строка `J-NNN`, где **единственная** суть — одно из: один `format.tags.*`, один ключ `resolve`, один IPC-канал, один packaged smoke, одна aria-busy правка. `check:journal` падает при ≥4 таких в последних 14 строках. |
 | **Микро-срез** | За итерацию изменён **только** один объект («одно поле / один IPC / …») **без** пакета по спринту. По смыслу = одна **микро-J**, даже если J ещё не записана. |

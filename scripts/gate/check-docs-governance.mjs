@@ -79,7 +79,9 @@ const FORBIDDEN_LINK_TARGETS = [
   'docs/ZUSTAND_MIGRATION_CHECKLIST_DONE.md',
   'scripts/archive/',
   'src/main/downloads-window-html.ts',
-  'src/preload/downloads-window.ts'
+  'src/preload/downloads-window.ts',
+  'src/main/ipc/register-settings-ipc.ts',
+  'src/main/windows/downloads-window.ts'
 ]
 
 const MARKDOWN_LINK_RE = /\[[^\]]*\]\(([^)]+)\)/g

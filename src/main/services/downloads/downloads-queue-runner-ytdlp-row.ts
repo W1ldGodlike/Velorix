@@ -1,7 +1,7 @@
 import type { AppPaths } from '../../core/app-paths'
 import { getEnginePathOverridesSnapshot } from '../engines/engine-path-sync'
 import { getDownloadsQueueRowById, updateDownloadsRow } from './downloads-queue'
-import { emitDownloadsLog } from '../../ipc/downloads/downloads-log-ipc'
+import { emitDownloadsLog } from './downloads-log-sink'
 import { runYtdlpOnce } from '../ytdlp/ytdlp-download-service'
 import {
   classifyYtdlpQueueFailureKind,

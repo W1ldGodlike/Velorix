@@ -95,51 +95,12 @@ describe('createSupportBundleZip', () => {
         'npm run check:terminal-contract-hints-shards (14 downloads + 8 preview shards (22 files); 839+465 hints)',
         'npm run check:terminal-hints-locale'
       ],
-      releaseSmokeLines: [
-        'command: npm run smoke:packaged-release (check:release after pack:dir)',
-        'steps: verify:win-unpacked → smoke:packaged-app → smoke:packaged-engines (ffprobe, yt-dlp, ffmpeg)',
-        'mac: npm run build:mac (electron-builder --mac; dmg; engines/bin вручную)',
-        'linux: npm run build:linux (AppImage + deb; engines/bin вручную)',
-        'layout: Velorix.exe (missing)'
-      ],
-      ffprobeSmokeLines: [
-        'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
-        'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
-        'candidate: C:\\bin\\ffprobe.exe (present)'
-      ],
+      unpackedLayoutLines: ['layout: Velorix.exe (missing)', 'linux-unpacked: (missing)'],
       uiLocaleIpcLines: ['ui-locale: (purged — restore with NEON ui-text)'],
-      localeJsonCatalogLines: [
-        'catalog: (empty — UI PURGE v3)',
-        'manual-smoke: src/shared/post-purge-manual-smoke/{ru,en}/*.json'
-      ],
+      localeJsonCatalogLines: ['catalog: (empty — UI PURGE v3)', 'shards: 0'],
       rendererStateLines: ['approach: none (UI PURGE v3)'],
       uiDpiLines: [
-        'CSS HiDPI: @media 120/144/168/192dpi — main.css (editor, downloads, terminal, modals, knowledge, probe, history)'
-      ],
-      hwManualSmokeChecklistLines: [
-        'section: win-nvenc — Windows — NVENC (NVIDIA)',
-        '  step [nvenc-manual]: manual h264_nvenc'
-      ],
-      winPackagedSmokeChecklistLines: [
-        'doc: docs/RELEASE.md §4',
-        '  step [launch]: Run dist/win-unpacked/Velorix.exe'
-      ],
-      linuxPackagedSmokeChecklistLines: [
-        'doc: docs/RELEASE.md §4.1',
-        '  step [launch]: Run dist/linux-unpacked/VELORIX'
-      ],
-      macosPackagedSmokeChecklistLines: [
-        'doc: docs/RELEASE.md §4.2',
-        '  step [launch]: Open Velorix.app'
-      ],
-      workflowOsSchedulerSmokeChecklistLines: [
-        'doc: docs/RELEASE.md §4.3',
-        '  step [planner-task]: Planner watch-folder task'
-      ],
-      ownerHardwareChecklistBundleLines: [
-        'ownerHardwareChecklist: NVENC/VAAPI + HiDPI + OS scheduler',
-        '=== HiDPI ===',
-        'check: editor'
+        'CSS HiDPI: @media 120/144/168/192dpi — NEON rebuild (renderer CSS removed in UI PURGE v3)'
       ]
     })
 
@@ -165,24 +126,12 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('ffprobe: ready'))).toBe(true)
     expect(zip.includes(Buffer.from('terminalHints:'))).toBe(true)
     expect(zip.includes(Buffer.from('check:terminal-contract-hints-shards'))).toBe(true)
-    expect(zip.includes(Buffer.from('releaseSmoke:'))).toBe(true)
-    expect(zip.includes(Buffer.from('smoke:packaged-release'))).toBe(true)
-    expect(zip.includes(Buffer.from('verify:win-unpacked'))).toBe(true)
-    expect(zip.includes(Buffer.from('ffprobeSmoke:'))).toBe(true)
-    expect(zip.includes(Buffer.from('smoke:packaged-ffprobe'))).toBe(true)
-    expect(zip.includes(Buffer.from('ParsableForSmoke'))).toBe(true)
+    expect(zip.includes(Buffer.from('unpackedLayout:'))).toBe(true)
     expect(zip.includes(Buffer.from('uiLocale:'))).toBe(true)
     expect(zip.includes(Buffer.from('purged'))).toBe(true)
     expect(zip.includes(Buffer.from('localeJson:'))).toBe(true)
     expect(zip.includes(Buffer.from('PURGE v3'))).toBe(true)
     expect(zip.includes(Buffer.from('uiDpi:'))).toBe(true)
-    expect(zip.includes(Buffer.from('build:linux'))).toBe(true)
-    expect(zip.includes(Buffer.from('hwManualSmoke:'))).toBe(true)
-    expect(zip.includes(Buffer.from('ownerHardwareChecklist:'))).toBe(true)
-    expect(zip.includes(Buffer.from('winPackagedSmoke:'))).toBe(true)
-    expect(zip.includes(Buffer.from('linuxPackagedSmoke:'))).toBe(true)
-    expect(zip.includes(Buffer.from('macosPackagedSmoke:'))).toBe(true)
-    expect(zip.includes(Buffer.from('win-nvenc'))).toBe(true)
   })
 })
 

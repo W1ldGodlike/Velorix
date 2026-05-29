@@ -2,7 +2,7 @@ import { parseFfmpegExportUserPresetSnapshot } from '../ffmpeg/ffmpeg-export-ser
 import { mergeFfmpegExportSnapshotIntoAppSettings } from '../ffmpeg/ffmpeg-export-app-settings-merge'
 import { persistExportUserPresetsList } from '../presets/presets-export-service'
 import type { AppSettings } from './settings-store'
-import type { FfmpegExportSettingsPersisters } from '../../ipc/register-settings-ipc'
+import type { FfmpegExportSettingsPersisters } from './settings-ipc-persist-core'
 import { commit, snapshot, type MainSettingsAccess } from './settings-ipc-persist-core'
 
 export function createFfmpegExportSettingsPersistersPresets(

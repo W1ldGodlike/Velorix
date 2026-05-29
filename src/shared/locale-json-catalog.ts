@@ -6,7 +6,7 @@ import { join } from 'node:path'
 export const LOCALE_JSON_LOCALES = ['ru', 'en'] as const
 export type LocaleJsonLocale = (typeof LOCALE_JSON_LOCALES)[number]
 
-/** Empty until NEON rebuild; manual-smoke copy lives under post-purge-manual-smoke/. */
+/** Empty until NEON rebuild. */
 export const LOCALE_JSON_SHARDS = [] as const
 export type LocaleJsonShard = (typeof LOCALE_JSON_SHARDS)[number]
 
@@ -29,9 +29,5 @@ export function localeJsonShardPath(locale: LocaleJsonLocale, shard: LocaleJsonS
 }
 
 export function formatLocaleJsonCatalogDiagnosticLines(): string[] {
-  return [
-    'catalog: (empty — UI PURGE v3)',
-    'manual-smoke: src/shared/post-purge-manual-smoke/{ru,en}/*.json',
-    `shards: ${LOCALE_JSON_SHARDS.length}`
-  ]
+  return ['catalog: (empty — UI PURGE v3)', `shards: ${LOCALE_JSON_SHARDS.length}`]
 }

@@ -1,6 +1,6 @@
 /**
  * VELORIX NEON — design token registry for guards and documentation.
- * Values live in `src/renderer/src/assets/themes/velorix-neon/*.css`.
+ * CSS values — post PURGE v3: создать в `src/renderer/src/assets/neon/` при ui.1 (сейчас файлов нет).
  */
 
 export const VELORIX_NEON_THEME_ID = 'velorix-neon' as const
@@ -226,7 +226,7 @@ export const VELORIX_NEON_SEMANTIC_ALIAS_TOKENS = [
   '--fa-neon-glass-panel'
 ] as const
 
-export const VELORIX_NEON_CSS_ROOT = 'src/renderer/src/assets/themes/velorix-neon' as const
+export const VELORIX_NEON_CSS_ROOT = 'src/renderer/src/assets/neon' as const
 
 /** UI ZERO: CSS shards appear with first ref sign-off in renderer. */
 export const VELORIX_NEON_CSS_FILES = [] as const

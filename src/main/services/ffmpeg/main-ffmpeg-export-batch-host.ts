@@ -21,7 +21,7 @@ import {
 } from './ffmpeg-export-batch-queue'
 import { isFfmpegExportBatchActive, runFfmpegExportBatchQueue } from './ffmpeg-export-batch-runner'
 import { grantMediaPath } from '../../core/media-protocol'
-import { emitDownloadsLog } from '../../ipc/downloads/downloads-log-ipc'
+import { emitDownloadsLog } from '../downloads/downloads-log-sink'
 import { getYtdlpRunOptionsSnapshot } from '../ytdlp/ytdlp-run-options-sync'
 
 export type MainFfmpegExportBatchHostAccess = {

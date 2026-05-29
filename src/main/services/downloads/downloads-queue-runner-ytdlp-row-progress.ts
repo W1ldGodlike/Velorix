@@ -1,5 +1,5 @@
 import { getDownloadsQueueRowById, updateDownloadsRow } from './downloads-queue'
-import { emitDownloadsLog } from '../../ipc/downloads/downloads-log-ipc'
+import { emitDownloadsLog } from './downloads-log-sink'
 import {
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,

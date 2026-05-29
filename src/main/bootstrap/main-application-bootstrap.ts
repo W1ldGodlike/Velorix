@@ -3,7 +3,7 @@ import { optimizer } from '@electron-toolkit/utils'
 
 import { bootstrapMainApplicationHosts } from './main-application-bootstrap-hosts'
 import { registerMainApplicationBootstrapIpc } from './main-application-bootstrap-ipc'
-import { buildApplicationMenu } from '../menu/main-application-menu'
+import { hideApplicationMenuBar } from '../windows/hide-application-menu-bar'
 import { createMainApplicationWindow } from '../windows/main-window-runtime-state'
 
 export function runMainApplicationBootstrap(): void {
@@ -15,10 +15,10 @@ export function runMainApplicationBootstrap(): void {
   })
 
   app.on('browser-window-focus', () => {
-    buildApplicationMenu()
+    hideApplicationMenuBar()
   })
 
-  buildApplicationMenu()
+  hideApplicationMenuBar()
   createMainApplicationWindow()
 
   app.on('activate', () => {

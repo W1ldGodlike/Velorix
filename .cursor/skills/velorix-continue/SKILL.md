@@ -9,9 +9,10 @@ description: «продолжай» и `+` — равнозначные кома
 
 1. **Задача №1** — UI **идентично** PNG refs **1–27** ([`IMPLEMENTATION_NEON_CHECKLIST.md`](../../../docs/IMPLEMENTATION_NEON_CHECKLIST.md) § «Задача №1»). **Запрещено:** другие sprint/IPC/фичи, пока Задача №1 не закрыта (все refs sign-off).
 2. **Активный срез** — первый незакрытый пункт `## Ближайший TODO спринта` (`ui.1` … `ui.5`). Сейчас приоритет: **ui.2 ref.1** (Обработка), после фундамента **ui.1**.
-3. **Post PURGE v3:** renderer stub (`RENDERER_STATE_APPROACH = 'none'`); rebuild UI по PNG — [`VELORIX_NEON_THEME.md`](../../../docs/VELORIX_NEON_THEME.md); overlay/capture — после появления экранов.
+3. **Post PURGE v3:** renderer stub (`RENDERER_STATE_APPROACH = 'none'`); rebuild UI по PNG — [`VELORIX_NEON_THEME.md`](../../../docs/VELORIX_NEON_THEME.md); **sprint ui.* и матрица refs — все `[ ]` до sign-off**; не ставить `[~]`/проценты «готово».
 4. **Запрещено:** [`docs/archive/`](../../../docs/archive/), корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`.
-5. `npm run check:quiet` при diff; одна `J-NNN` (skill [`velorix-journal-entry`](../velorix-journal-entry/SKILL.md)).
-6. **Git по J-NNN** — [`velorix-agent.mdc`](../../rules/velorix-agent.mdc).
+5. **Запрещено:** восстанавливать код из git без **явной просьбы владельца** в чате (`git checkout <rev> --`, `git restore --source=`, `git show` → файл). Rebuild — **новые** файлы по PNG; канон: [`velorix-no-git-restore.mdc`](../../rules/velorix-no-git-restore.mdc).
+6. `npm run check:quiet` при diff; одна `J-NNN` (skill [`velorix-journal-entry`](../velorix-journal-entry/SKILL.md)).
+7. **Git по J-NNN** — [`velorix-agent.mdc`](../../rules/velorix-agent.mdc).
 
 Исполняемое: [`velorix-agent.mdc`](../../rules/velorix-agent.mdc).
