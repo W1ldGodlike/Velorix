@@ -60,7 +60,7 @@
 | Слой | Факт |
 | ---- | ---- |
 | **Окно** | Frameless; на весь workArea; только ─ и ✕ (**J-1807**). |
-| **Renderer** | ui.1 kit: `#root[data-velorix-ui=neon-kit]` — ref.27/26 dev; **не** sign-off; ui.2 ref.1 далее. |
+| **Renderer** | ui.2 в работе: default **ref.1** + `#ref27`/`#ref26`; `NeonWindowChrome` (─ ✕); **не** sign-off. |
 | **Main/preload** | Backend + survival IPC (shell/log/quit). |
 | **Refs 1–27** | PNG на диске; матрица sign-off ниже — **все `[ ]`**. |
 

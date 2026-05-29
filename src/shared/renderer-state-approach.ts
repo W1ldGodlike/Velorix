@@ -4,7 +4,8 @@
 
 export const RENDERER_STATE_APPROACH = 'none' as const
 
-export const RENDERER_SHELL_ENTRY = 'main.tsx → #root[data-velorix-ui=neon-kit] (#ref26 states)'
+export const RENDERER_SHELL_ENTRY =
+  'main.tsx → #root[data-velorix-ui=neon-kit] (default ref.1; #ref27 #ref26)'
 
 export const RENDERER_ZUSTAND_STORES = [] as const
 

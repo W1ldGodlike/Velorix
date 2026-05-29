@@ -1,25 +1,29 @@
 import type { JSX } from 'react'
 import { useEffect, useState } from 'react'
 
+import { ProcessingScreen } from './pages/ProcessingScreen'
 import { Ref26StatesPage } from './pages/Ref26StatesPage'
 import { Ref27KitPage } from './pages/Ref27KitPage'
 
-type NeonKitRoute = 'ref27' | 'ref26'
+type NeonRoute = 'ref27' | 'ref26' | 'ref1'
 
-function readRoute(): NeonKitRoute {
+function readRoute(): NeonRoute {
   if (typeof window === 'undefined') {
-    return 'ref27'
+    return 'ref1'
   }
   const hash = window.location.hash
   if (hash === '#ref26' || hash === '#states') {
     return 'ref26'
   }
-  return 'ref27'
+  if (hash === '#ref27' || hash === '#components') {
+    return 'ref27'
+  }
+  return 'ref1'
 }
 
-/** ui.1 — ref.27 default, ref.26 via #ref26 (rebuild from PNG; not sign-off). */
+/** NEON dev routes: ref.1 default, #ref27 kit, #ref26 states. */
 export function AppNeonBootstrap(): JSX.Element {
-  const [route, setRoute] = useState<NeonKitRoute>(readRoute)
+  const [route, setRoute] = useState<NeonRoute>(readRoute)
 
   useEffect(() => {
     const onHash = (): void => {
@@ -29,5 +33,11 @@ export function AppNeonBootstrap(): JSX.Element {
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
-  return route === 'ref26' ? <Ref26StatesPage /> : <Ref27KitPage />
+  if (route === 'ref26') {
+    return <Ref26StatesPage />
+  }
+  if (route === 'ref27') {
+    return <Ref27KitPage />
+  }
+  return <ProcessingScreen />
 }
