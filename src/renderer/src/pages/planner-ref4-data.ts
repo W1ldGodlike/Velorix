@@ -4,13 +4,16 @@ import type { ProcessingNavSlug } from './processing-ref1-data'
 
 export const PLANNER_ACTIVE_NAV: ProcessingNavSlug = 'planner'
 
+export const PLANNER_CENTER_SUMMARY =
+  '8 задач в расписании · неделя 01–07.06 · ср. 05.06 · 3 в очереди' as const
+
 export const PLANNER_TABS = [
-  { id: 'schedule', label: 'Расписание задач' },
-  { id: 'done', label: 'Выполненные' },
-  { id: 'templates', label: 'Шаблоны' },
+  { id: 'schedule', label: 'Расписание задач', count: 8 },
+  { id: 'done', label: 'Выполненные', count: 24 },
+  { id: 'templates', label: 'Шаблоны', count: 6 },
   { id: 'calendar', label: 'Календарь' },
-  { id: 'triggers', label: 'Триггеры' },
-  { id: 'dependencies', label: 'Зависимости' }
+  { id: 'triggers', label: 'Триггеры', count: 4 },
+  { id: 'dependencies', label: 'Зависимости', count: 2 }
 ] as const
 
 export type PlannerTaskKind = 'processing' | 'archive' | 'upload' | 'report' | 'backup' | 'system'
@@ -217,3 +220,22 @@ export const PLANNER_CALENDAR_DAYS = [
 ] as const
 
 export const PLANNER_CALENDAR_ACTIVE_DAY = 5 as const
+
+export const PLANNER_SCHEDULED_COUNT = 8 as const
+
+export const PLANNER_STATUS_READY = 'Готово' as const
+
+export type PlannerStatusAccent = 'cyan' | 'magenta'
+
+export type PlannerStatusRow = {
+  label: string
+  value: string
+  accent?: PlannerStatusAccent
+  mono?: boolean
+}
+
+export const PLANNER_STATUS_ROWS: readonly PlannerStatusRow[] = [
+  { label: 'Неделя', value: '01.06–07.06.2024', mono: true },
+  { label: 'Активных', value: '7', accent: 'cyan' },
+  { label: 'Очередь', value: '3 выполняется', accent: 'magenta' }
+]

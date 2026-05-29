@@ -69,70 +69,75 @@ export function SettingsSystemRail(): JSX.Element {
   const res = SETTINGS_RESOURCES
   return (
     <aside className="settings-rail" aria-label="Система">
-      <section className="settings-rail__section vn-surface-glass">
-        <h2 className="settings-rail__title">О системе</h2>
-        <div className="settings-about">
-          <span className="processing-sidebar__mark settings-about__mark" aria-hidden>
-            V
-          </span>
-          <dl>
+      <div className="settings-rail__scroll">
+        <section className="settings-rail__section vn-surface-glass">
+          <h2 className="settings-rail__title">О системе</h2>
+          <div className="settings-about">
+            <span className="processing-sidebar__mark settings-about__mark" aria-hidden>
+              V
+            </span>
+            <dl>
+              <div>
+                <dt>Версия</dt>
+                <dd>{about.version}</dd>
+              </div>
+              <div>
+                <dt>Сборка</dt>
+                <dd>{about.build}</dd>
+              </div>
+              <div>
+                <dt>Платформа</dt>
+                <dd>{about.platform}</dd>
+              </div>
+              <div>
+                <dt>Движок</dt>
+                <dd>{about.engine}</dd>
+              </div>
+            </dl>
+          </div>
+          <button type="button" className="settings-rail__link" disabled>
+            Проверить обновления
+          </button>
+        </section>
+        <section className="settings-rail__section vn-surface-glass">
+          <h2 className="settings-rail__title">Ресурсы системы</h2>
+          <dl className="settings-resources">
             <div>
-              <dt>Версия</dt>
-              <dd>{about.version}</dd>
+              <dt>ОС</dt>
+              <dd>{res.os}</dd>
             </div>
             <div>
-              <dt>Сборка</dt>
-              <dd>{about.build}</dd>
+              <dt>CPU</dt>
+              <dd>{res.cpu}</dd>
             </div>
             <div>
-              <dt>Платформа</dt>
-              <dd>{about.platform}</dd>
+              <dt>RAM</dt>
+              <dd>{res.ram}</dd>
             </div>
             <div>
-              <dt>Движок</dt>
-              <dd>{about.engine}</dd>
+              <dt>GPU</dt>
+              <dd>{res.gpu}</dd>
             </div>
           </dl>
-        </div>
-        <button type="button" className="settings-rail__link" disabled>
-          Проверить обновления
-        </button>
-      </section>
-      <section className="settings-rail__section vn-surface-glass">
-        <h2 className="settings-rail__title">Ресурсы системы</h2>
-        <dl className="settings-resources">
-          <div>
-            <dt>ОС</dt>
-            <dd>{res.os}</dd>
-          </div>
-          <div>
-            <dt>CPU</dt>
-            <dd>{res.cpu}</dd>
-          </div>
-          <div>
-            <dt>RAM</dt>
-            <dd>{res.ram}</dd>
-          </div>
-          <div>
-            <dt>GPU</dt>
-            <dd>{res.gpu}</dd>
-          </div>
-        </dl>
-        {res.disks.map((disk) => (
-          <div key={disk.id} className="settings-disk">
-            <div className="settings-disk__head">
-              <strong>{disk.label}</strong>
-              <span>
-                {disk.free} свободно из {disk.total}
-              </span>
+          {res.disks.map((disk) => (
+            <div key={disk.id} className="settings-disk">
+              <div className="settings-disk__head">
+                <strong>{disk.label}</strong>
+                <span>
+                  {disk.free} свободно из {disk.total}
+                </span>
+              </div>
+              <div className="settings-disk__bar" aria-hidden>
+                <span className="settings-disk__fill" style={{ width: `${disk.percent}%` }} />
+              </div>
             </div>
-            <div className="settings-disk__bar" aria-hidden>
-              <span className="settings-disk__fill" style={{ width: `${disk.percent}%` }} />
-            </div>
-          </div>
-        ))}
-      </section>
-      <section className="settings-rail__section vn-surface-glass">
+          ))}
+        </section>
+      </div>
+      <section
+        className="settings-rail__quick-sticky vn-surface-glass"
+        aria-label="Быстрые действия"
+      >
         <h2 className="settings-rail__title">Быстрые действия</h2>
         <ul className="settings-quick">
           {SETTINGS_QUICK_ACTIONS.map((action) => (

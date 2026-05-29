@@ -23,7 +23,7 @@
 
 **Охват:** **все** `docs/reference/*.png` (refs **1–27** + логотипы/иконка). **ref.1** в sprint — только **порядок работ**, не «единственный экран».
 
-**Активный срез:** **ui.1** (ref.27→26, затем ui.2 ref.1). Детали: [`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md).
+**Активный срез:** **ui.2** ref.1 — layout vs PNG sign-off (dev overlay HUD на ref.1); **ui.3** refs 2–9 polish complete (sign-off `[ ]`). Детали: [`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md).
 
 ---
 
@@ -112,11 +112,11 @@
 
 **Правило:** **3–7** пунктов, ≤ **220** символов. **Блокер:** пока UI ≠ PNG 1:1 — **только** вёрстка refs; IPC/фичи — после sign-off.
 
-- [ ] **ui.1** **ref.27→26** ← **следующий срез** — токены + kit 1:1; overlay после появления dev overlay.
-- [ ] **ui.2** **ref.1** — NeonWindowChrome + px-layout; processing 1:1 vs PNG (chrome вне overlay PNG до обновления файла).
-- [ ] **ui.3** **refs 2–9** — экраны portal 1:1; ref.5 = `KnowledgeEmbeddedWorkspace` + rail превью.
-- [ ] **ui.4** **refs 10–25** — modals/tools full-screen 1:1.
-- [ ] **ui.5** **refs 26–27** — showcase в prod hash; sign-off каждого PNG в J.
+- [ ] **ui.1** **ref.27→26** — shell 31 секций; layout 1:1 vs PNG; motion X.4 на `.vn-*`.
+- [ ] **ui.2** **ref.1** — mock-shell + center summary, clip/rail/timeline hovers; dev `velorixref` overlay HUD (`?refOverlayFit=`); sign-off vs PNG владельца.
+- [ ] **ui.3** **refs 2–9** — ref.2–9 polish complete (scroll, summary, sticky foot, statusbar, hovers); sign-off vs PNG all `[ ]`.
+- [ ] **ui.4** **refs 10–25** — ref.10–25 polish complete (portal 3-col, scroll, sticky, status rows); PNG sign-off `[ ]` all.
+- [ ] **ui.5** **refs 26–27** — shell есть; sign-off showcase PNG в J.
 
 ---
 
@@ -221,7 +221,7 @@ PNG: `docs/reference/`. Анализ: NEON § «Анализ референса 
 
 - [x] **snap.1** Electron + TS + single-NEON; pop-out снят.
 - [x] **snap.2** `npm run check:quiet` зелёный.
-- [x] **snap.3** Vitest **219** test files / **1736** tests (post packaged/manual smoke removal).
+- [x] **snap.3** Vitest **247** test files / **1794** tests (NEON ref shell tests 1–27).
 - [x] **snap.4** `audit-manifest` **791** файлов.
 - [x] **snap.5** Help 44 workflow; guards OK.
 - [ ] **snap.6** **NEON UI 0%** — UI ZERO REBUILD; backend отдельно.

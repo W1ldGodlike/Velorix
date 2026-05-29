@@ -2,11 +2,59 @@ html[data-theme='dark'],
 html:not([data-theme]) {
   --vn-duration-fast: 120ms;
   --vn-duration-normal: 220ms;
+  --vn-duration-slow: 320ms;
   --vn-ease-out-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
   --vn-transition-colors: color var(--vn-duration-fast) var(--vn-ease-out-cinematic),
     background-color var(--vn-duration-fast) var(--vn-ease-out-cinematic),
     border-color var(--vn-duration-fast) var(--vn-ease-out-cinematic),
     box-shadow var(--vn-duration-normal) var(--vn-ease-out-cinematic);
+  --vn-transition-surface: transform var(--vn-duration-normal) var(--vn-ease-out-cinematic),
+    opacity var(--vn-duration-fast) var(--vn-ease-out-cinematic),
+    filter var(--vn-duration-normal) var(--vn-ease-out-cinematic);
+  --vn-transition-route: opacity var(--vn-duration-normal) var(--vn-ease-out-cinematic),
+    transform var(--vn-duration-normal) var(--vn-ease-out-cinematic);
+}
+
+#root[data-velorix-ui='neon-kit'] .vn-route-surface {
+  min-height: 100vh;
+  animation: vn-route-enter var(--vn-duration-normal) var(--vn-ease-out-cinematic);
+}
+
+@keyframes vn-route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#root[data-velorix-ui='neon-kit'] .vn-btn,
+#root[data-velorix-ui='neon-kit'] .processing-nav__item,
+#root[data-velorix-ui='neon-kit'] .vn-input,
+#root[data-velorix-ui='neon-kit'] .neon-kit-nav a,
+#root[data-velorix-ui='neon-kit'] .ks-tabs__item,
+#root[data-velorix-ui='neon-kit'] .ks-icon-btn,
+#root[data-velorix-ui='neon-kit'] .tools-sidebar__nav-block a,
+#root[data-velorix-ui='neon-kit'] .processing-clip,
+#root[data-velorix-ui='neon-kit'] .processing-rail__preset-card {
+  transition: var(--vn-transition-colors), var(--vn-transition-surface);
+}
+
+#root[data-velorix-ui='neon-kit'] .vn-btn--primary:hover:not(:disabled),
+#root[data-velorix-ui='neon-kit'] .ks-head__chip:hover {
+  box-shadow: var(--vn-glow-accent-soft);
+}
+
+#root[data-velorix-ui='neon-kit'] .neon-kit-nav a:hover:not([aria-current='page']) {
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.28);
+}
+
+#root[data-velorix-ui='neon-kit'] .processing-nav__item:hover {
+  filter: brightness(1.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -14,5 +62,14 @@ html:not([data-theme]) {
   html:not([data-theme]) {
     --vn-duration-fast: 0ms;
     --vn-duration-normal: 0ms;
+    --vn-duration-slow: 0ms;
+  }
+
+  #root[data-velorix-ui='neon-kit'] .vn-route-surface {
+    animation: none;
+  }
+
+  #root[data-velorix-ui='neon-kit'] .processing-nav__item:hover {
+    filter: none;
   }
 }

@@ -29,7 +29,7 @@ export function HistoryTypeTag(props: {
 export function HistoryTableRow(props: { row: HistoryRowMock }): JSX.Element {
   const { row } = props
   return (
-    <tr className="history-table__row">
+    <tr className={`history-table__row${row.selected ? ' history-table__row--selected' : ''}`}>
       <td className="history-table__cell history-table__cell--event">
         <span
           className={`history-event-glyph history-event-glyph--${row.kind} processing-glyph`}

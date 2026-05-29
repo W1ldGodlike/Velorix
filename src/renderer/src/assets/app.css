@@ -7,6 +7,25 @@
 @import './ref4-planner.css';
 @import './ref5-knowledge.css';
 @import './ref6-settings.css';
+@import './ref7-scenarios.css';
+@import './ref8-inspector.css';
+@import './ref9-terminal.css';
+@import './ref10-tools.css';
+@import './ref11-about.css';
+@import './ref12-file-maintenance.css';
+@import './ref13-image-conversion.css';
+@import './ref14-noise-generator.css';
+@import './ref15-slideshow.css';
+@import './ref16-scenario-builder.css';
+@import './ref17-external-script-filter.css';
+@import './ref18-export-preset-name.css';
+@import './ref19-engine-paths.css';
+@import './ref20-first-run-engines.css';
+@import './ref21-quit-confirm.css';
+@import './ref22-ffmpeg-error.css';
+@import './ref23-critical-crash.css';
+@import './ref24-encoder-benchmark.css';
+@import './ref25-plugins.css';
 
 #root[data-velorix-ui='neon-kit'] {
   min-height: 100vh;

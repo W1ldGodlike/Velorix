@@ -8,7 +8,10 @@ export function DownloadCard(props: { row: DownloadRowMock }): JSX.Element {
     <article
       className={`downloads-card vn-surface-glass${row.selected ? ' downloads-card--selected' : ''}`}
     >
-      <div className="downloads-card__thumb" aria-hidden>
+      <div
+        className={`downloads-card__thumb${row.thumbTone ? ` downloads-card__thumb--tone-${row.thumbTone}` : ''}`}
+        aria-hidden
+      >
         <span className="downloads-card__thumb-film" />
         <span className="downloads-card__badges">
           {row.badges.map((badge) => (
@@ -19,7 +22,10 @@ export function DownloadCard(props: { row: DownloadRowMock }): JSX.Element {
         </span>
       </div>
       <div className="downloads-card__body">
-        <h3 className="downloads-card__title">{row.title}</h3>
+        <h3 className="downloads-card__title">
+          {row.selected ? <span className="downloads-card__live-dot" aria-hidden /> : null}
+          {row.title}
+        </h3>
         <p className="downloads-card__source">
           <span className={`downloads-card__platform downloads-card__platform--${row.platform}`} />
           {row.source}

@@ -1,0 +1,113 @@
+/* ref.7 — scenario glyphs (CSS; not sign-off) */
+
+.scenario-glyph {
+  display: inline-block;
+  flex-shrink: 0;
+  position: relative;
+  color: currentColor;
+  box-sizing: border-box;
+}
+
+.scenario-glyph--lg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.scenario-glyph--video {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  box-shadow: inset 0 -4px 0 currentColor;
+}
+
+.scenario-glyph--audio {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.scenario-glyph--subs {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px dashed currentColor;
+  border-radius: 2px;
+}
+
+.scenario-glyph--export {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid currentColor;
+}
+
+.scenario-glyph--export::after {
+  content: '';
+  position: absolute;
+  right: 15%;
+  top: 22%;
+  border-left: 4px solid currentColor;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+}
+
+.scenario-glyph--custom,
+.scenario-glyph--organize {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  font-size: 0.55rem;
+  font-family: var(--vn-font-mono);
+  line-height: 1.1rem;
+  text-align: center;
+}
+
+.scenario-glyph--custom::before {
+  content: '{}';
+}
+
+.scenario-glyph--organize::before {
+  content: '≡';
+}
+
+.scenario-glyph--menu {
+  width: 0.15rem;
+  height: 0.15rem;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow:
+    0 -4px 0 currentColor,
+    0 4px 0 currentColor;
+}
+
+.scenario-glyph--grid {
+  width: 0.65rem;
+  height: 0.65rem;
+  background:
+    linear-gradient(currentColor, currentColor) 0 0 / 40% 40% no-repeat,
+    linear-gradient(currentColor, currentColor) 60% 0 / 40% 40% no-repeat,
+    linear-gradient(currentColor, currentColor) 0 60% / 40% 40% no-repeat,
+    linear-gradient(currentColor, currentColor) 60% 60% / 40% 40% no-repeat;
+}
+
+.scenario-glyph--list {
+  width: 0.65rem;
+  height: 0.65rem;
+}
+
+.scenario-glyph--list::before,
+.scenario-glyph--list::after,
+.scenario-glyph--list {
+  background: linear-gradient(currentColor, currentColor) 0 15% / 100% 1px no-repeat;
+  box-shadow: 0 0.22rem 0 currentColor, 0 0.44rem 0 currentColor;
+}
+
+.scenario-status-dot {
+  width: 0.35rem;
+  height: 0.35rem;
+  margin-right: 0.2rem;
+  border-radius: 50%;
+  background: #34f5a0;
+  box-shadow: 0 0 6px rgba(52, 245, 160, 0.65);
+}

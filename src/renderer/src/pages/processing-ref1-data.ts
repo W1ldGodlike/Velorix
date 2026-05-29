@@ -18,6 +18,89 @@ export type ProcessingNavItem = {
   label: string
 }
 
+export type ProcessingMediaCategory = {
+  slug: 'video' | 'audio' | 'image'
+  label: string
+  count: number
+  /** Highlighted row in sidebar (ref.1 PNG — video active). */
+  active?: boolean
+}
+
+/** Sidebar media library counts (mock; ref.1 PNG). */
+export const PROCESSING_MEDIA_LIBRARY: readonly ProcessingMediaCategory[] = [
+  { slug: 'video', label: 'Видео', count: 24, active: true },
+  { slug: 'audio', label: 'Аудио', count: 12 },
+  { slug: 'image', label: 'Изображения', count: 8 }
+]
+
+export const PROCESSING_PREVIEW_SAVED_LABEL = 'Сохранено 2 мин назад' as const
+
+export const PROCESSING_PREVIEW_BADGE = '4K ULTRA HD' as const
+
+export const PROCESSING_PREVIEW_ZOOM_PERCENT = 70 as const
+
+export const PROCESSING_PREVIEW_VOLUME_PERCENT = 72 as const
+
+export const PROCESSING_CENTER_EYEBROW = 'Обработка · монтаж' as const
+
+export const PROCESSING_HEAD_CHIP = '4K · 60 fps' as const
+
+/** Timeline selection length (ref.1 PNG statusbar). */
+export const PROCESSING_SELECTION_TIMECODE = '00:00:00:00' as const
+
+/** Project storage widget (mock; ref.1 PNG). */
+export const PROCESSING_STORAGE = {
+  label: 'Хранилище',
+  usedTb: 1.2,
+  totalTb: 2.0,
+  percent: 60
+} as const
+
+/** Sidebar GPU widget (mock; ref.1 PNG). */
+export const PROCESSING_GPU = {
+  name: 'NVIDIA RTX 3090',
+  vram: '24 GB GDDR6X',
+  tag: 'NVENC',
+  loadPercent: 68,
+  tempCelsius: 58
+} as const
+
+export const PROCESSING_CENTER_SUMMARY =
+  'НОВЫЙ СЕЗОН · 5 дорожек · TC 01:36:53:08 · H.264 NVENC · 4K 60fps' as const
+
+export const PROCESSING_STATUS_READY = 'Готово' as const
+
+export const PROCESSING_TIMECODE = '01:36:53:08' as const
+
+/** Timeline zoom slider mock (ref.1 PNG). */
+export const PROCESSING_TIMELINE_ZOOM_PERCENT = 42 as const
+
+/** Playhead position over lane area only (ref.1 PNG ~01:36:53:08). */
+export const PROCESSING_TIMELINE_PLAYHEAD_PERCENT = 57 as const
+
+export type ProcessingStatusAccent = 'cyan' | 'magenta'
+
+export type ProcessingStatusRow = {
+  label: string
+  value: string
+  accent?: ProcessingStatusAccent
+  /** Mono timecode styling in statusbar. */
+  mono?: boolean
+}
+
+export const PROCESSING_STATUS_CENTER: readonly ProcessingStatusRow[] = [
+  { label: 'Проект', value: 'НОВЫЙ СЕЗОН.vlxrp' },
+  { label: 'Длительность', value: PROCESSING_TIMECODE, accent: 'magenta', mono: true },
+  { label: 'Разрешение', value: '3840×2160 (4K)', accent: 'cyan' },
+  { label: 'Кадров', value: '174 708' },
+  { label: 'Выделение', value: PROCESSING_SELECTION_TIMECODE, mono: true }
+]
+
+export const PROCESSING_STATUS_RIGHT: readonly ProcessingStatusRow[] = [
+  { label: 'FFmpeg', value: '6.1.1' },
+  { label: 'GPU', value: 'NVIDIA GeForce RTX 4080', accent: 'cyan' }
+]
+
 export const PROCESSING_NAV: readonly ProcessingNavItem[] = [
   { slug: 'processing', label: 'Обработка' },
   { slug: 'downloads', label: 'Загрузки' },
@@ -32,32 +115,101 @@ export const PROCESSING_NAV: readonly ProcessingNavItem[] = [
   { slug: 'help', label: 'Справка' }
 ]
 
+export type ProcessingRailFieldMock = {
+  label: string
+  value: string
+}
+
+export type ProcessingClipThumbTone = 'violet' | 'cyan' | 'magenta' | 'amber'
+
 export type ProcessingClipMock = {
   name: string
   /** flex-grow weight on the lane (visual width only). */
   grow: number
   badges?: readonly string[]
   thumb?: boolean
+  /** Strip tint for video clip thumbs (mock). */
+  thumbTone?: ProcessingClipThumbTone
   waveform?: boolean
+  /** Playhead / selection highlight (mock). */
+  highlight?: boolean
+  /** Linked to previous clip (ref.1 PNG corner chain). */
+  linked?: boolean
 }
 
+/** Extra video rail rows (ref.1 PNG density). */
+export const PROCESSING_RAIL_VIDEO_EXTRA: readonly ProcessingRailFieldMock[] = [
+  { label: 'Битрейт', value: 'Авто (CRF)' },
+  { label: 'GOP', value: '120' }
+]
+
+export const PROCESSING_RAIL_AUDIO_FIELDS: readonly ProcessingRailFieldMock[] = [
+  { label: 'Кодек', value: 'AAC' },
+  { label: 'Частота', value: '48 kHz' },
+  { label: 'Каналы', value: 'Stereo' },
+  { label: 'Битрейт', value: '320 kbps' }
+]
+
+export const PROCESSING_RAIL_FORMAT_FIELDS: readonly ProcessingRailFieldMock[] = [
+  { label: 'Контейнер', value: 'MP4' },
+  { label: 'Поток', value: 'Faststart' },
+  { label: 'Цвет', value: 'bt709' }
+]
+
+export const PROCESSING_RAIL_PRESET_ACTIVE = 'YouTube 4K Premium' as const
+
+export type ProcessingRailPresetMock = {
+  name: string
+  active?: boolean
+}
+
+/** FFmpeg rail preset list (ref.1 PNG; collapsed section). */
+export const PROCESSING_RAIL_PRESETS: readonly ProcessingRailPresetMock[] = [
+  { name: PROCESSING_RAIL_PRESET_ACTIVE, active: true },
+  { name: 'Instagram Reels 1080p', active: false },
+  { name: 'Archive ProRes HQ', active: false }
+]
+
+export const PROCESSING_RAIL_EYEBROW = 'FFmpeg · export' as const
+
+export const PROCESSING_RAIL_CHIP = 'NVENC' as const
+
+export const PROCESSING_RAIL_SUMMARY = 'H.264 · 4K 60fps · two-pass ON · CRF 18' as const
+
 export const V1_CLIPS: readonly ProcessingClipMock[] = [
-  { name: 'city_night_4k.mp4', grow: 4, badges: ['4K'], thumb: true },
-  { name: 'drive_sequence.mov', grow: 3, thumb: true },
-  { name: 'neon_building.mp4', grow: 2, badges: ['fx'], thumb: true },
-  { name: 'digital_billboard.mov', grow: 2, thumb: true },
-  { name: 'glitch_effect.mov', grow: 2, badges: ['fx'], thumb: true },
-  { name: 'rain_reflections.mp4', grow: 3, thumb: true }
+  {
+    name: 'city_night_4k.mp4',
+    grow: 4,
+    badges: ['4K'],
+    thumb: true,
+    thumbTone: 'violet',
+    highlight: true
+  },
+  { name: 'drive_sequence.mov', grow: 3, thumb: true, thumbTone: 'cyan', linked: true },
+  {
+    name: 'neon_building.mp4',
+    grow: 2,
+    badges: ['fx'],
+    thumb: true,
+    thumbTone: 'magenta',
+    linked: true
+  },
+  { name: 'digital_billboard.mov', grow: 2, thumb: true, thumbTone: 'amber', linked: true },
+  {
+    name: 'glitch_effect.mov',
+    grow: 2,
+    badges: ['fx'],
+    thumb: true,
+    thumbTone: 'magenta',
+    linked: true
+  },
+  { name: 'rain_reflections.mp4', grow: 3, thumb: true, thumbTone: 'violet', linked: true }
 ]
 
-export const V2_CLIPS: readonly ProcessingClipMock[] = [
-  { name: 'b_roll_01.mp4', grow: 2, thumb: true },
-  { name: 'b_roll_02.mp4', grow: 2, thumb: true }
-]
+/** ref.1 PNG: V2/V3 video lanes empty; clips only on V1. */
+export const V2_CLIPS: readonly ProcessingClipMock[] = []
 
-export const V3_CLIPS: readonly ProcessingClipMock[] = [
-  { name: 'overlay.mov', grow: 3, badges: ['fx'], thumb: true }
-]
+export const V3_CLIPS: readonly ProcessingClipMock[] = []
 
 export const A1_CLIPS: readonly ProcessingClipMock[] = [
   { name: 'music_background.mp3', grow: 6, waveform: true }

@@ -1,0 +1,93 @@
+/* ref.10 — tools card glyphs (CSS; not sign-off) */
+
+.tools-glyph {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: var(--vn-space-2);
+  border: 1px solid currentColor;
+  border-radius: var(--vn-radius-sm);
+  color: rgba(168, 85, 247, 0.85);
+}
+
+.tools-glyph--about {
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.5rem;
+  text-align: center;
+}
+
+.tools-glyph--about::before {
+  content: 'V';
+}
+
+.tools-glyph--maintenance {
+  box-shadow: inset 0 -5px 0 currentColor;
+}
+
+.tools-glyph--images {
+  background: linear-gradient(currentColor, currentColor) 15% 20% / 35% 55% no-repeat;
+}
+
+.tools-glyph--noise {
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0,
+    currentColor 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  mask-image: linear-gradient(180deg, transparent 15%, #000 40%, #000 85%, transparent);
+}
+
+.tools-glyph--slideshow {
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+
+.tools-glyph--builder {
+  border-radius: 2px;
+  font-size: 0.45rem;
+  font-family: var(--vn-font-mono);
+  line-height: 1.5rem;
+  text-align: center;
+}
+
+.tools-glyph--builder::before {
+  content: '◆';
+}
+
+.tools-glyph--script {
+  font-size: 0.45rem;
+  font-family: var(--vn-font-mono);
+  line-height: 1.5rem;
+  text-align: center;
+}
+
+.tools-glyph--script::before {
+  content: '{}';
+}
+
+.tools-glyph--engines {
+  border-radius: 50%;
+}
+
+.tools-glyph--engines::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 55%;
+  height: 1px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(-35deg);
+}
+
+.tools-glyph--plugins {
+  border-style: dashed;
+}
+
+.tools-glyph--diagnostics {
+  background: linear-gradient(currentColor, currentColor) 0 45% / 100% 2px no-repeat;
+  mask-image: linear-gradient(90deg, transparent 0, #000 20%, #000 35%, transparent 36%, transparent 64%, #000 65%, #000 80%, transparent 100%);
+}

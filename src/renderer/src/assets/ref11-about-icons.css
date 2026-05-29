@@ -1,0 +1,88 @@
+/* ref.11 — about modal glyphs (CSS; not sign-off) */
+
+.about-glyph {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  border-radius: var(--vn-radius-sm);
+  color: rgba(168, 85, 247, 0.9);
+}
+
+.about-glyph--fast {
+  border-radius: 50% 50% 2px 2px;
+  transform: rotate(-45deg);
+}
+
+.about-glyph--reliable {
+  border-radius: 2px;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+
+.about-glyph--powerful {
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+
+.about-glyph--flexible {
+  border-style: dashed;
+}
+
+.about-glyph--external {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 55% 1px no-repeat;
+}
+
+.about-glyph--external::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 55%;
+  height: 55%;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+}
+
+.about-glyph--info {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  font-size: 0.55rem;
+  font-weight: 700;
+  line-height: 0.85rem;
+  text-align: center;
+}
+
+.about-glyph--info::before {
+  content: 'i';
+}
+
+.about-glyph--action-logs {
+  background: linear-gradient(currentColor, currentColor) 50% 70% / 50% 2px no-repeat;
+}
+
+.about-glyph--action-support {
+  border-radius: 2px;
+}
+
+.about-glyph--action-cache {
+  border-radius: 2px;
+  background: linear-gradient(currentColor, currentColor) 50% 85% / 70% 2px no-repeat;
+}
+
+.about-glyph--row {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+}
+
+.about-glyph--comp {
+  width: 1rem;
+  height: 1rem;
+  border-radius: var(--vn-radius-sm);
+}

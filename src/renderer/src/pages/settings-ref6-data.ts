@@ -4,6 +4,9 @@ import type { ProcessingNavSlug } from './processing-ref1-data'
 
 export const SETTINGS_ACTIVE_NAV: ProcessingNavSlug = 'settings'
 
+export const SETTINGS_CENTER_SUMMARY =
+  '6 карточек · вкладка Основные · Velorix Dark · NVENC' as const
+
 export const SETTINGS_TABS = [
   { id: 'general', label: 'Основные', active: true },
   { id: 'performance', label: 'Производительность' },
@@ -154,3 +157,22 @@ export const SETTINGS_QUICK_ACTIONS = [
   'Показать системные логи',
   'Настройки уведомлений'
 ] as const
+
+export const SETTINGS_CARD_COUNT = 6 as const
+
+export const SETTINGS_STATUS_READY = 'Готово' as const
+
+export type SettingsStatusAccent = 'cyan' | 'magenta'
+
+export type SettingsStatusRow = {
+  label: string
+  value: string
+  accent?: SettingsStatusAccent
+  mono?: boolean
+}
+
+export const SETTINGS_STATUS_ROWS: readonly SettingsStatusRow[] = [
+  { label: 'Версия', value: '2.1.0', accent: 'cyan' },
+  { label: 'Профиль', value: 'Velorix Dark', accent: 'magenta' },
+  { label: 'Папки', value: 'D:\\Velorix\\Projects', mono: true }
+]

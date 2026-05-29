@@ -4,8 +4,13 @@ import type { ProcessingNavSlug } from './processing-ref1-data'
 
 export const KNOWLEDGE_ACTIVE_NAV: ProcessingNavSlug = 'knowledge'
 
+export const KNOWLEDGE_CENTER_SUMMARY =
+  '156 статей · 4 популярных · выбрана Troubleshooting frame drops' as const
+
+export const KNOWLEDGE_PAGINATION_SUMMARY = '1–10 из 156' as const
+
 export const KNOWLEDGE_CATEGORY_PILLS = [
-  { id: 'all', label: 'Все категории', count: null, active: true },
+  { id: 'all', label: 'Все категории', count: 156, active: true },
   { id: 'guides', label: 'Руководства', count: 24 },
   { id: 'solutions', label: 'Решения', count: 15 },
   { id: 'faq', label: 'FAQ', count: 32 },
@@ -173,3 +178,22 @@ export const KNOWLEDGE_PREVIEW = {
     { id: 'a3', name: 'default-presets.json', size: '12 KB', kind: 'json' as const }
   ]
 } as const
+
+export const KNOWLEDGE_ARTICLE_COUNT = 156 as const
+
+export const KNOWLEDGE_STATUS_READY = 'Готово' as const
+
+export type KnowledgeStatusAccent = 'cyan' | 'magenta'
+
+export type KnowledgeStatusRow = {
+  label: string
+  value: string
+  accent?: KnowledgeStatusAccent
+  mono?: boolean
+}
+
+export const KNOWLEDGE_STATUS_ROWS: readonly KnowledgeStatusRow[] = [
+  { label: 'Категорий', value: '8', accent: 'cyan' },
+  { label: 'Страница', value: KNOWLEDGE_PAGINATION_SUMMARY, mono: true },
+  { label: 'Превью', value: 'Troubleshooting frame drops', accent: 'magenta' }
+]

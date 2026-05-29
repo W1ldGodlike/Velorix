@@ -9,6 +9,7 @@ import { captureWindowsExplorerShellArgv } from './services/platform/windows-exp
 import { tryFulfillPendingWindowsExplorerShellLaunch } from './services/platform/windows-explorer-shell-launch-schedule'
 import { registervelorixmediaPrivileges } from './core/media-protocol'
 import { registerFluxHelpPrivileges } from './core/help-assets-protocol'
+import { registerVelorixReferencePrivileges } from './core/reference-assets-protocol'
 import { isNativeMainQuitOnLastWindowClosed } from './platform/index'
 
 /** Все runtime-данные — в `<installRoot>/app-data`, не в %AppData%. */
@@ -17,6 +18,7 @@ configurePortableAppDataPaths()
 attachProcessErrorHandlers()
 registervelorixmediaPrivileges()
 registerFluxHelpPrivileges()
+registerVelorixReferencePrivileges()
 
 const gotSingleInstanceLock = app.requestSingleInstanceLock()
 

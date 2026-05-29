@@ -4,14 +4,19 @@ import type { ProcessingNavSlug } from './processing-ref1-data'
 
 export const HISTORY_ACTIVE_NAV: ProcessingNavSlug = 'history'
 
+export const HISTORY_CENTER_SUMMARY =
+  '1 248 событий · май 2024 · 96 ошибок · 1–25 на странице' as const
+
 export const HISTORY_DOMAIN_TABS = [
-  { id: 'all', label: 'Все события' },
-  { id: 'processing', label: 'Обработка' },
-  { id: 'downloads', label: 'Загрузки' },
-  { id: 'scripts', label: 'Сценарии' },
-  { id: 'system', label: 'Система' },
-  { id: 'errors', label: 'Ошибки' }
+  { id: 'all', label: 'Все', count: 1248 },
+  { id: 'processing', label: 'Обработка', count: 512 },
+  { id: 'downloads', label: 'Загрузки', count: 298 },
+  { id: 'scripts', label: 'Сценарии', count: 156 },
+  { id: 'system', label: 'Система', count: 186 },
+  { id: 'errors', label: 'Ошибки', count: 96 }
 ] as const
+
+export const HISTORY_PAGINATION_SUMMARY = '1–25 из 1 248' as const
 
 export type HistoryStatus = 'success' | 'error' | 'paused'
 
@@ -39,6 +44,7 @@ export type HistoryRowMock = {
   datetime: string
   duration: string
   size: string
+  selected?: boolean
 }
 
 export const HISTORY_ROWS: readonly HistoryRowMock[] = [
@@ -54,7 +60,8 @@ export const HISTORY_ROWS: readonly HistoryRowMock[] = [
     statusLabel: 'Успешно',
     datetime: '31.05.2024 14:22',
     duration: '00:18:42',
-    size: '4.97 GB'
+    size: '4.97 GB',
+    selected: true
   },
   {
     id: 'h2',
@@ -223,3 +230,20 @@ export const HISTORY_DONUT_SEGMENTS = [
 export const HISTORY_TOTAL_EVENTS = 1248 as const
 
 export const HISTORY_TOTAL_EVENTS_LABEL = '1,248' as const
+
+export const HISTORY_STATUS_READY = 'Готово' as const
+
+export type HistoryStatusAccent = 'cyan' | 'magenta' | 'red'
+
+export type HistoryStatusRow = {
+  label: string
+  value: string
+  accent?: HistoryStatusAccent
+  mono?: boolean
+}
+
+export const HISTORY_STATUS_ROWS: readonly HistoryStatusRow[] = [
+  { label: 'Период', value: '01.05–31.05.2024', mono: true },
+  { label: 'События', value: String(HISTORY_TOTAL_EVENTS), accent: 'cyan' },
+  { label: 'Ошибки', value: '96', accent: 'red' }
+]

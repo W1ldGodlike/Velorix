@@ -1,0 +1,8 @@
+/* ref.9 — terminal toolbar glyphs (CSS; not sign-off) */
+
+.terminal-glyph--pause {
+  width: 0.35rem;
+  height: 0.55rem;
+  border-left: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}

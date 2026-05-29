@@ -1,0 +1,71 @@
+/* ref.12 — file maintenance glyphs (CSS; not sign-off) */
+
+.fm-glyph {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  border-radius: var(--vn-radius-sm);
+  color: rgba(168, 85, 247, 0.9);
+}
+
+.fm-glyph--header {
+  width: 1.35rem;
+  height: 1.35rem;
+  transform: rotate(45deg);
+}
+
+.fm-glyph--check {
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.25);
+}
+
+.fm-glyph--check::before {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  font-size: 0.65rem;
+  line-height: 1rem;
+  text-align: center;
+  transform: rotate(0deg);
+}
+
+.fm-glyph--shield {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 2px 2px 50% 50%;
+}
+
+.fm-glyph--run {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+}
+
+.fm-glyph--run::before {
+  content: '';
+  position: absolute;
+  left: 38%;
+  top: 28%;
+  border: 4px solid transparent;
+  border-left-color: currentColor;
+}
+
+.fm-file-card__visual {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: var(--vn-radius-md);
+  background:
+    linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(0, 255, 255, 0.08)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(168, 85, 247, 0.15) 0,
+      rgba(168, 85, 247, 0.15) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  box-shadow: 0 0 1.25rem rgba(168, 85, 247, 0.25);
+}

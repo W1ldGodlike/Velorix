@@ -1,0 +1,31 @@
+/** Dev hash routes for NEON ref screens (bootstrap only). */
+
+export const NEON_DEV_ROUTES = [
+  { ref: '1', hash: '#ref1', label: 'Обработка' },
+  { ref: '2', hash: '#ref2', label: 'Загрузки' },
+  { ref: '3', hash: '#ref3', label: 'История' },
+  { ref: '4', hash: '#ref4', label: 'Планировщик' },
+  { ref: '5', hash: '#ref5', label: 'База знаний' },
+  { ref: '6', hash: '#ref6', label: 'Настройки' },
+  { ref: '7', hash: '#ref7', label: 'Сценарии' },
+  { ref: '8', hash: '#ref8', label: 'Инспектор' },
+  { ref: '9', hash: '#ref9', label: 'Терминал' },
+  { ref: '10', hash: '#ref10', label: 'Инструменты' },
+  { ref: '11', hash: '#ref11', label: 'О программе' },
+  { ref: '12', hash: '#ref12', label: 'Файлы' },
+  { ref: '13', hash: '#ref13', label: 'Изображения' },
+  { ref: '14', hash: '#ref14', label: 'Шум' },
+  { ref: '15', hash: '#ref15', label: 'Слайдшоу' },
+  { ref: '16', hash: '#ref16', label: 'Конструктор' },
+  { ref: '17', hash: '#ref17', label: 'Script-filter' },
+  { ref: '18', hash: '#ref18', label: 'Пресет' },
+  { ref: '19', hash: '#ref19', label: 'Движки' },
+  { ref: '20', hash: '#ref20', label: 'First-run' },
+  { ref: '21', hash: '#ref21', label: 'Quit' },
+  { ref: '22', hash: '#ref22', label: 'FFmpeg err' },
+  { ref: '23', hash: '#ref23', label: 'Crash' },
+  { ref: '24', hash: '#ref24', label: 'Benchmark' },
+  { ref: '25', hash: '#ref25', label: 'Плагины' },
+  { ref: '26', hash: '#ref26', label: 'States' },
+  { ref: '27', hash: '#ref27', label: 'Components' }
+] as const

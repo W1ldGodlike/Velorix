@@ -1,0 +1,11 @@
+/* ref.16 — scenario builder glyphs (CSS; not sign-off) */
+
+.sb-glyph {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  border-radius: var(--vn-radius-sm);
+  color: rgba(168, 85, 247, 0.9);
+}

@@ -79,77 +79,79 @@ export function KnowledgePreviewRail(): JSX.Element {
   return (
     <aside className="knowledge-preview" aria-label="Превью статьи">
       <div className="knowledge-preview__hero" aria-hidden />
-      <div className="knowledge-preview__body vn-surface-glass">
-        <h2>{p.title}</h2>
-        <p>{p.description}</p>
-        <dl className="knowledge-preview__meta">
-          <div>
-            <dt>Обновлено</dt>
-            <dd>{p.updated}</dd>
-          </div>
-          <div>
-            <dt>Автор</dt>
-            <dd>{p.author}</dd>
-          </div>
-          <div>
-            <dt>Время чтения</dt>
-            <dd>{p.readMin} мин</dd>
-          </div>
-          <div>
-            <dt>Просмотров</dt>
-            <dd>{p.views}</dd>
-          </div>
-          <div>
-            <dt>Категория</dt>
-            <dd className="knowledge-preview__category">{p.category}</dd>
-          </div>
-        </dl>
-        <ul className="knowledge-preview__tags">
-          {p.tags.map((tag) => (
-            <li key={tag}>{tag}</li>
-          ))}
-        </ul>
-        <section className="knowledge-preview__toc">
-          <h3>Содержание</h3>
-          <ol>
-            {p.toc.map((item, idx) => (
-              <li key={item}>
-                {idx + 1}. {item}
-              </li>
-            ))}
-          </ol>
-        </section>
-        <section className="knowledge-preview__attachments">
-          <h3>Прикреплённые файлы</h3>
-          <ul>
-            {p.attachments.map((file) => (
-              <li key={file.id}>
-                <span
-                  className={`knowledge-file-glyph knowledge-file-glyph--${file.kind} processing-glyph`}
-                  aria-hidden
-                />
-                <span>{file.name}</span>
-                <em>{file.size}</em>
-              </li>
+      <div className="knowledge-preview__scroll">
+        <div className="knowledge-preview__body vn-surface-glass">
+          <h2>{p.title}</h2>
+          <p>{p.description}</p>
+          <dl className="knowledge-preview__meta">
+            <div>
+              <dt>Обновлено</dt>
+              <dd>{p.updated}</dd>
+            </div>
+            <div>
+              <dt>Автор</dt>
+              <dd>{p.author}</dd>
+            </div>
+            <div>
+              <dt>Время чтения</dt>
+              <dd>{p.readMin} мин</dd>
+            </div>
+            <div>
+              <dt>Просмотров</dt>
+              <dd>{p.views}</dd>
+            </div>
+            <div>
+              <dt>Категория</dt>
+              <dd className="knowledge-preview__category">{p.category}</dd>
+            </div>
+          </dl>
+          <ul className="knowledge-preview__tags">
+            {p.tags.map((tag) => (
+              <li key={tag}>{tag}</li>
             ))}
           </ul>
-        </section>
-        <div className="knowledge-preview__actions">
-          <button type="button" className="vn-btn vn-btn--primary" disabled>
-            <span
-              className="knowledge-action-glyph knowledge-action-glyph--open processing-glyph"
-              aria-hidden
-            />
-            Открыть статью
-          </button>
-          <button type="button" className="vn-btn vn-btn--secondary" disabled>
-            <span
-              className="knowledge-action-glyph knowledge-action-glyph--share processing-glyph"
-              aria-hidden
-            />
-            Поделиться
-          </button>
+          <section className="knowledge-preview__toc">
+            <h3>Содержание</h3>
+            <ol>
+              {p.toc.map((item, idx) => (
+                <li key={item}>
+                  {idx + 1}. {item}
+                </li>
+              ))}
+            </ol>
+          </section>
+          <section className="knowledge-preview__attachments">
+            <h3>Прикреплённые файлы</h3>
+            <ul>
+              {p.attachments.map((file) => (
+                <li key={file.id}>
+                  <span
+                    className={`knowledge-file-glyph knowledge-file-glyph--${file.kind} processing-glyph`}
+                    aria-hidden
+                  />
+                  <span>{file.name}</span>
+                  <em>{file.size}</em>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
+      </div>
+      <div className="knowledge-preview__actions-sticky">
+        <button type="button" className="vn-btn vn-btn--primary" disabled>
+          <span
+            className="knowledge-action-glyph knowledge-action-glyph--open processing-glyph"
+            aria-hidden
+          />
+          Открыть статью
+        </button>
+        <button type="button" className="vn-btn vn-btn--secondary" disabled>
+          <span
+            className="knowledge-action-glyph knowledge-action-glyph--share processing-glyph"
+            aria-hidden
+          />
+          Поделиться
+        </button>
       </div>
     </aside>
   )

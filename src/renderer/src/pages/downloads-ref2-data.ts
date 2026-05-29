@@ -4,8 +4,18 @@ import type { ProcessingNavSlug } from './processing-ref1-data'
 
 export const DOWNLOADS_ACTIVE_NAV: ProcessingNavSlug = 'downloads'
 
+export const DOWNLOADS_CENTER_SUMMARY =
+  '5 активных · 153 всего · ↓ 12.6 MB/s · выбран Cyberpunk 4K' as const
+
+/** ref.2 PNG — bulk row label above start/pause. */
+export const DOWNLOADS_ACTIVE_COUNT_LABEL = '5 активных загрузок' as const
+
+export const DOWNLOADS_STATS_PERIOD = 'Сегодня' as const
+
+export type DownloadThumbTone = 'violet' | 'cyan' | 'magenta' | 'amber'
+
 export const DOWNLOAD_FILTER_TABS = [
-  { id: 'all', label: 'Все' },
+  { id: 'all', label: 'Все', count: 153 },
   { id: 'active', label: 'Активные', count: 5 },
   { id: 'done', label: 'Завершённые', count: 142 },
   { id: 'errors', label: 'Ошибки', count: 3 },
@@ -18,6 +28,7 @@ export type DownloadRowMock = {
   source: string
   platform: 'youtube' | 'vimeo'
   badges: readonly string[]
+  thumbTone?: DownloadThumbTone
   percent: number
   downloaded: string
   total: string
@@ -33,6 +44,7 @@ export const ACTIVE_DOWNLOADS: readonly DownloadRowMock[] = [
     source: 'youtube.com/watch?v=…',
     platform: 'youtube',
     badges: ['4K', 'H.265'],
+    thumbTone: 'violet',
     percent: 45,
     downloaded: '2.24 GB',
     total: '4.97 GB',
@@ -46,6 +58,7 @@ export const ACTIVE_DOWNLOADS: readonly DownloadRowMock[] = [
     source: 'vimeo.com/…',
     platform: 'vimeo',
     badges: ['8K', 'HEVC', 'HDR'],
+    thumbTone: 'cyan',
     percent: 72,
     downloaded: '6.1 GB',
     total: '8.4 GB',
@@ -58,6 +71,7 @@ export const ACTIVE_DOWNLOADS: readonly DownloadRowMock[] = [
     source: 'youtube.com/watch?v=…',
     platform: 'youtube',
     badges: ['4K', 'NVENC'],
+    thumbTone: 'magenta',
     percent: 12,
     downloaded: '420 MB',
     total: '3.2 GB',
@@ -70,6 +84,7 @@ export const ACTIVE_DOWNLOADS: readonly DownloadRowMock[] = [
     source: 'youtube.com/watch?v=…',
     platform: 'youtube',
     badges: ['4K', 'IMAX'],
+    thumbTone: 'amber',
     percent: 88,
     downloaded: '1.9 GB',
     total: '2.1 GB',
@@ -82,6 +97,7 @@ export const ACTIVE_DOWNLOADS: readonly DownloadRowMock[] = [
     source: 'youtube.com/watch?v=…',
     platform: 'youtube',
     badges: ['4K', 'HEVC'],
+    thumbTone: 'violet',
     percent: 33,
     downloaded: '890 MB',
     total: '2.7 GB',
@@ -98,8 +114,27 @@ export const QUEUE_DOWNLOADS: readonly Pick<DownloadRowMock, 'id' | 'title' | 'b
 export const DOWNLOADS_STATUS = {
   parallel: 5,
   speedLimit: 'Неограниченно',
-  folder: 'D:\\Velorix\\Downloads'
+  folder: 'D:\\Velorix\\Downloads',
+  aggregateSpeed: '↓ 12.6 MB/s'
 } as const
+
+export const DOWNLOADS_STATUS_READY = 'Готово' as const
+
+export type DownloadsStatusAccent = 'cyan' | 'magenta'
+
+export type DownloadsStatusRow = {
+  label: string
+  value: string
+  accent?: DownloadsStatusAccent
+  mono?: boolean
+}
+
+export const DOWNLOADS_STATUS_ROWS: readonly DownloadsStatusRow[] = [
+  { label: 'Скорость', value: DOWNLOADS_STATUS.aggregateSpeed, accent: 'cyan', mono: true },
+  { label: 'Одновременных', value: String(DOWNLOADS_STATUS.parallel), accent: 'magenta' },
+  { label: 'Лимит', value: DOWNLOADS_STATUS.speedLimit },
+  { label: 'Папка', value: DOWNLOADS_STATUS.folder }
+]
 
 export const DOWNLOADS_STATS = {
   todayGb: '42.7 GB',

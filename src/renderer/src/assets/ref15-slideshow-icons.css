@@ -1,0 +1,33 @@
+/* ref.15 — slideshow glyphs (CSS; not sign-off) */
+
+.ss-glyph--export {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-right: 0.35rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.ss-seq-row__thumb {
+  width: 2.5rem;
+  height: 1.5rem;
+  border-radius: var(--vn-radius-sm);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(0, 255, 255, 0.12));
+  border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.ss-preview__frame {
+  flex: 1;
+  min-height: 8rem;
+  border-radius: var(--vn-radius-sm);
+  background:
+    linear-gradient(180deg, rgba(168, 85, 247, 0.15), rgba(4, 4, 12, 0.9)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(168, 85, 247, 0.08) 0,
+      rgba(168, 85, 247, 0.25) 8%,
+      rgba(0, 255, 255, 0.12) 16%
+    );
+}
