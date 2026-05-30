@@ -1,6 +1,12 @@
 /** Dev overlay vs `docs/reference/*.png` (sign-off tooling; not product UI). */
 
-import { VELORIX_REFERENCE_ASSETS_DIR } from './velorix-neon-theme-tokens'
+import {
+  VELORIX_NEON_REFERENCE_PROCESSING_REL,
+  VELORIX_REFERENCE_ASSETS_DIR
+} from './velorix-neon-theme-tokens'
+
+/** Portal target: shell body без `NeonWindowChrome` (NEON-чеклист § UI PURGE v3). */
+export const NEON_REF_OVERLAY_SHELL_BODY_SELECTOR = '.neon-chrome-shell__body' as const
 
 export const NEON_REF_OVERLAY_STORAGE_KEY = 'velorix.neon.refOverlay.opacity' as const
 export const NEON_REF_OVERLAY_VISIBLE_KEY = 'velorix.neon.refOverlay.visible' as const
@@ -10,13 +16,19 @@ export type RefOverlayFit = 'cover' | 'contain' | 'fill'
 
 const DEFAULT_OPACITY = 0.45
 
+/** PNG из `docs/reference/` для UI и dev overlay (`velorixref:///`). */
+export function velorixRefPngUrl(rel: string): string {
+  return refOverlayUrlForRel(rel)
+}
+
 export function refOverlayUrlForRel(rel: string): string {
   const prefix = `${VELORIX_REFERENCE_ASSETS_DIR}/`
   const name = rel.startsWith(prefix) ? rel.slice(prefix.length) : rel.split('/').pop()
   if (!name || name.includes('..')) {
     return ''
   }
-  return `velorixref://${name}`
+  // Трёхслэшный path (как velorixhelp:///) — иначе имя уходит в host и protocol отдаёт 403.
+  return `velorixref:///${name}`
 }
 
 export function readRefOverlayOpacity(): number {
@@ -85,4 +97,24 @@ export function writeRefOverlayFit(fit: RefOverlayFit): void {
   } catch {
     /* ignore quota */
   }
+}
+
+export function refOverlayPortalHost(): HTMLElement | null {
+  if (typeof document === 'undefined') {
+    return null
+  }
+  return (
+    document.querySelector(NEON_REF_OVERLAY_SHELL_BODY_SELECTOR) ?? document.getElementById('root')
+  )
+}
+
+/**
+ * Подсказка HUD: ref.1 PNG без ─/✕; footer sidebar (settings/power) не в каноне.
+ * @see docs/IMPLEMENTATION_NEON_CHECKLIST.md § «Исключения / cross-cutting chrome»
+ */
+export function refOverlayCompareNoteForRel(rel: string): string {
+  if (rel === VELORIX_NEON_REFERENCE_PROCESSING_REL) {
+    return 'зона shell body · ─✕ вне PNG · footer sidebar не верстаем'
+  }
+  return 'зона shell body · ─✕ вне PNG'
 }

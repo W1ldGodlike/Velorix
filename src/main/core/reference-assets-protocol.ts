@@ -31,12 +31,18 @@ export function registerVelorixReferenceProtocol(getReferenceDir: () => string |
       return new Response('Reference dir not found', { status: 404 })
     }
     let pathname: string
+    let host = ''
     try {
-      pathname = decodeURIComponent(new URL(request.url).pathname)
+      const parsed = new URL(request.url)
+      pathname = decodeURIComponent(parsed.pathname)
+      host = parsed.hostname
     } catch {
       return new Response('Bad URL', { status: 400 })
     }
-    const name = basename(pathname.replace(/^\/+/, ''))
+    let name = basename(pathname.replace(/^\/+/, ''))
+    if (name.length === 0 && host.length > 0 && !host.includes('..')) {
+      name = host
+    }
     if (name.length === 0 || name.includes('..')) {
       return new Response('Forbidden', { status: 403 })
     }

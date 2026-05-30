@@ -87,11 +87,13 @@ function runStep(name, args) {
 for (const [name, args] of steps) {
   const result = await runStep(name, args)
   if (result.code !== 0) {
-    console.error(`[check:quiet] ${name} FAILED (exit ${result.code})`)
+    console.error(`[check:quiet] FAILED at ${name} (exit ${result.code})`)
     console.error(trimFailureOutput(result.output))
     process.exit(result.code)
   }
-  console.log(`[check:quiet] ${name}: ${summarizeSuccess(name, result.output)}`)
+  if (process.env.CHECK_QUIET_VERBOSE === '1') {
+    console.log(`[check:quiet] ${name}: ${summarizeSuccess(name, result.output)}`)
+  }
 }
 
 console.log('[check:quiet] OK')

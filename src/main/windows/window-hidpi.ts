@@ -46,6 +46,10 @@ export function mainEditorWorkAreaBounds(d: Display): StoredWindowRect {
   return { x, y, width, height }
 }
 
+export function isNeonRefVisualMode(): boolean {
+  return process.env['VELORIX_REF_VISUAL'] === '1'
+}
+
 export const WINDOW_LOGICAL_SCALE_TIERS = [1, 1.25, 1.5, 1.75, 2] as const
 
 export function formatWindowHidpiDiagnosticLines(): string[] {

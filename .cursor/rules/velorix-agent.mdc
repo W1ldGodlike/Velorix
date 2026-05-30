@@ -36,6 +36,18 @@ Skills: [`.cursor/skills/velorix-continue/SKILL.md`](../../.cursor/skills/velori
 
 **Запрещено:** `data:text/html`, `build*Html` pop-out. **Post PURGE v3:** renderer = stub (`RENDERER_STATE_APPROACH = 'none'`); **запрещено** `[x]`/`[~]` на UI в NEON-чеклисте без sign-off PNG. **UI guards** (`check:ui-*`) **удалены** — **не** возвращать ради `check:quiet`. Восстановление renderer/locales из git — [`velorix-no-git-restore.mdc`](velorix-no-git-restore.mdc).
 
+### Последовательные refs 1→27 (блокер; владелец 2026-05-29)
+
+Глоссарий: **«Активный ref»**, **«Последовательный ref (1→27)»** — [`velorix-rules-explicit.mdc`](velorix-rules-explicit.mdc).
+
+| Правило | Деталь |
+| ------- | ------ |
+| **Канон** | `docs/reference/velorix-neon-reference-*.png` — **идентично**; PNG активного ref = единственный визуальный ориентир итерации. |
+| **Активный ref** | **ref.1** (Обработка) — пока в матрице NEON-чеклиста нет `[x]` sign-off vs [`velorix-neon-reference-processing.png`](../../docs/reference/velorix-neon-reference-processing.png). |
+| **Обязательно** | Каждая итерация Задачи №1 двигает **только** активный ref к **1:1** (шрифты, кнопки, свечение, плотность, rails) **от первого пикселя до последнего** на экране. |
+| **Запрещено** | Переход к **ref.2** и далее; polish ref.27/26 «сначала»; IPC/фичи/другие sprint, пока активный ref без sign-off `[x]`. |
+| **«продолжай» / `+`** | Skill [`velorix-continue`](../../.cursor/skills/velorix-continue/SKILL.md) — **только** активный ref. |
+
 ## Legacy (удалять, не копить)
 
 **Если** устаревший артефакт **мешает** задаче или NEON-плану **то** удалить/заменить в той же итерации; `npm run check:quiet`. **Запрещено:** оставлять «на всякий случай», параллельный старый+новый путь, обход новым слоем. Канон: глоссарий **«Удаление мешающего legacy»**, [`velorix-simplicity.mdc`](velorix-simplicity.mdc) § «Рефакторинг и legacy».

@@ -1,10 +1,14 @@
 import type { JSX } from 'react'
 import { useCallback, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import {
+  NEON_REF_OVERLAY_VISIBLE_KEY,
   readRefOverlayFitFromLocation,
   readRefOverlayOpacity,
   readRefOverlayVisible,
+  refOverlayCompareNoteForRel,
+  refOverlayPortalHost,
   refOverlayUrlForRel,
   writeRefOverlayFit,
   writeRefOverlayOpacity,
@@ -14,12 +18,26 @@ import {
 
 import '../assets/neon-reference-overlay.css'
 
-/** PNG overlay for dev sign-off (`npm run dev`); excludes product window chrome. */
+/** PNG overlay for dev sign-off; portal → `.neon-chrome-shell__body` (─✕ вне сравнения). */
 export function NeonReferenceOverlay(props: { referenceRel: string }): JSX.Element | null {
   const { referenceRel } = props
-  const [visible, setVisible] = useState(() => readRefOverlayVisible())
+  const [visible, setVisible] = useState(() => {
+    const stored = readRefOverlayVisible()
+    if (stored) {
+      return true
+    }
+    try {
+      if (import.meta.env.DEV && localStorage.getItem(NEON_REF_OVERLAY_VISIBLE_KEY) == null) {
+        return true
+      }
+    } catch {
+      /* ignore */
+    }
+    return stored
+  })
   const [opacity, setOpacity] = useState(() => readRefOverlayOpacity())
   const [fit, setFit] = useState<RefOverlayFit>(() => readRefOverlayFitFromLocation())
+  const [imgError, setImgError] = useState(false)
 
   const toggleVisible = useCallback(() => {
     setVisible((prev) => {
@@ -55,23 +73,39 @@ export function NeonReferenceOverlay(props: { referenceRel: string }): JSX.Eleme
   }, [toggleVisible])
 
   const src = refOverlayUrlForRel(referenceRel)
+
   if (!src) {
     return null
   }
 
   const refTag = referenceRel.split('/').pop() ?? 'ref'
+  const compareNote = refOverlayCompareNoteForRel(referenceRel)
 
-  return (
+  const layer = (
     <div
       className="neon-ref-overlay"
       data-neon-ref-overlay={refTag}
+      data-neon-ref-overlay-zone="shell-body"
       style={{ ['--neon-ref-overlay-fit' as string]: fit }}
     >
       {visible ? (
-        <img className="neon-ref-overlay__img" src={src} alt="" aria-hidden style={{ opacity }} />
+        <img
+          key={src}
+          className="neon-ref-overlay__img"
+          src={src}
+          alt=""
+          aria-hidden
+          style={{ opacity }}
+          onLoad={() => setImgError(false)}
+          onError={() => setImgError(true)}
+        />
       ) : null}
       <div className="neon-ref-overlay__hud vn-surface-glass">
-        <span className="neon-ref-overlay__tag">ref overlay · {refTag}</span>
+        <span className="neon-ref-overlay__tag" title={compareNote}>
+          ref overlay · {refTag}
+          {imgError ? ' · PNG не загрузился' : ''}
+        </span>
+        <span className="neon-ref-overlay__note">{compareNote}</span>
         <button type="button" className="neon-ref-overlay__btn" onClick={toggleVisible}>
           {visible ? 'Скрыть' : 'Показать'}
         </button>
@@ -104,4 +138,7 @@ export function NeonReferenceOverlay(props: { referenceRel: string }): JSX.Eleme
       </div>
     </div>
   )
+
+  const host = refOverlayPortalHost()
+  return host != null ? createPortal(layer, host) : layer
 }

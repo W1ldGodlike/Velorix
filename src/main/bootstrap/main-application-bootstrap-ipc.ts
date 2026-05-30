@@ -26,8 +26,19 @@ export function registerMainApplicationBootstrapIpc(): void {
     )
   )
   registerVelorixReferenceProtocol(() => {
-    const dir = join(app.getAppPath(), 'docs', 'reference')
-    return existsSync(dir) ? dir : null
+    const candidates = [
+      join(app.getAppPath(), 'docs', 'reference'),
+      join(process.cwd(), 'docs', 'reference')
+    ]
+    if (app.isPackaged) {
+      candidates.unshift(join(process.resourcesPath, 'docs', 'reference'))
+    }
+    for (const dir of candidates) {
+      if (existsSync(dir)) {
+        return dir
+      }
+    }
+    return null
   })
   registerMainShellIpcHandlers()
   registerMainRendererLogIpcHandler()

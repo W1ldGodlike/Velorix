@@ -20,7 +20,7 @@ describe('ref.2 downloads shell (ui.3)', () => {
     expect(readFileSync(tsx, 'utf8')).toContain('downloads-rail__period')
     expect(readFileSync(tsx, 'utf8')).toContain('downloads-statusbar__ready')
     expect(readFileSync(tsx, 'utf8')).toContain('downloads-statusbar__tc')
-    expect(readFileSync(tsx, 'utf8')).toContain('processing-sidebar__brand-edition')
+    expect(readFileSync(tsx, 'utf8')).toContain('NeonSidebarBrand')
     expect(readFileSync(parts, 'utf8')).toContain('downloads-card__live-dot')
     expect(readFileSync(css, 'utf8')).toContain('.downloads-statusbar__dot')
     expect(readFileSync(css, 'utf8')).toContain('.downloads-center__footer')

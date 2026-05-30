@@ -1,4 +1,4 @@
-Канон UI/UX: `docs/VELORIX_NEON_THEME.md` (NEON, Phase D, refs 1–27). Sprint TODO: `docs/IMPLEMENTATION_NEON_CHECKLIST.md`. **Запрещено:** `docs/archive/*`, корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`.
+Канон UI/UX: `docs/VELORIX_NEON_THEME.md`. Задача №1: refs 1–27 строго по порядку; активный ref.1 (1:1 vs velorix-neon-reference-processing.png) — ref.2+ запрещены до sign-off. Sprint: `docs/IMPLEMENTATION_NEON_CHECKLIST.md`. **Запрещено:** `docs/archive/*`, корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`.
 
 Обязательно прочитай `scripts/cursor-automation/prompts/agent-contract.txt` (канон SDK).
 

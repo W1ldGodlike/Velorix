@@ -1,5 +1,7 @@
 import type { JSX, ReactNode } from 'react'
 
+import { NeonChromeWordmark } from './NeonBrandLogo'
+
 export function NeonWindowChrome(props: { children: ReactNode }): JSX.Element {
   const { children } = props
 
@@ -14,7 +16,7 @@ export function NeonWindowChrome(props: { children: ReactNode }): JSX.Element {
   return (
     <div className="neon-chrome-shell">
       <header className="neon-window-chrome">
-        <span className="neon-window-chrome__brand vn-text-gradient">VELORIX</span>
+        <NeonChromeWordmark />
         <div className="neon-window-chrome__controls">
           <button
             type="button"

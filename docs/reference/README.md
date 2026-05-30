@@ -1,6 +1,6 @@
 # Эталонные материалы UI (VELORIX NEON)
 
-**UI PURGE v3 + ui.1 (в работе):** `src/renderer/src/assets/neon/` — токены; dev routes ref.27 (`#`) / ref.26 (`#ref26`). Sign-off — только vs PNG ниже. Канон — [`VELORIX_NEON_THEME.md`](../VELORIX_NEON_THEME.md), sprint — [`IMPLEMENTATION_NEON_CHECKLIST.md`](../IMPLEMENTATION_NEON_CHECKLIST.md).
+**UI PURGE v3 — активный ref.1:** работа **только** vs [`velorix-neon-reference-processing.png`](velorix-neon-reference-processing.png) до sign-off 1:1; порядок **ref.1 → … → ref.27**. Sign-off — только vs PNG ниже. Канон — [`VELORIX_NEON_THEME.md`](../VELORIX_NEON_THEME.md), sprint — [`IMPLEMENTATION_NEON_CHECKLIST.md`](../IMPLEMENTATION_NEON_CHECKLIST.md).
 
 Каталог для **канонических** картинок, mockup и визуальных референсов темы.
 
@@ -9,6 +9,8 @@
 | Файл | Назначение |
 |------|------------|
 | [`velorix-neon-reference-processing.png`](velorix-neon-reference-processing.png) | **Обработка / редактор** (реф. 1): превью, timeline, FFmpeg rail; **канон shell chrome** для refs 2–27 |
+| `velorix-neon-ref1-demo-preview.png` | ref.1 **demo** кадр превью (без transport/chrome; UI поверх в renderer) |
+| `velorix-neon-ref1-demo-thumb-*.png` | ref.1 **demo** thumbs клипов V1; перегенерация: `npm run ref1:demo:thumbs` |
 | [`velorix-neon-app-icon-reference.png`](velorix-neon-app-icon-reference.png) | Эталон **иконки приложения** (V + lightning, neon gradient) → упаковка: `resources/icon.png` |
 | [`velorix-neon-logo-wordmark-reference.png`](velorix-neon-logo-wordmark-reference.png) | Эталон **горизонтального** логотипа: mark слева + **VELORIX** справа (sidebar / topbar) |
 | [`velorix-neon-logo-stacked-reference.png`](velorix-neon-logo-stacked-reference.png) | Эталон **вертикального** логотипа: mark сверху + **VELORIX** снизу (splash, about, узкий sidebar) |

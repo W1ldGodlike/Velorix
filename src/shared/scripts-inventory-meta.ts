@@ -22,6 +22,9 @@ export const SCRIPTS_INVENTORY_BUCKETS = [
 export const SCRIPTS_WIRING_EXEMPT_REL_PATHS = [
   'scripts/maint/journal-lib.mjs',
   'scripts/maint/terminal-contract-hint-paths.mjs',
+  'scripts/e2e/neon-ref-visual-config.mjs',
+  'scripts/e2e/neon-ref-visual-display.mjs',
+  'scripts/e2e/import-neon-refs-from-assets.mjs',
   'scripts/release/engines-bundled-sha256.mjs',
   'scripts/release/engines-exe-version-line.mjs',
   'scripts/release/prepare-engines-unix.mjs'

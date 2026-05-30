@@ -19,17 +19,18 @@
 | **Сверка** | Владелец: `npm run dev` без настроек. Агент: overlay/capture в CI; sign-off по PNG. |
 | **Авто-setup** | После rebuild: bootstrap NEON; сейчас stub renderer. |
 | **Sign-off** | `[x]` в матрице refs **только** после overlay ≈ 0 или скрин в J. |
-| **Порядок срезов** | `ui.1` ref.27→26 → `ui.2` ref.1 → `ui.3` refs 2–9 → `ui.4` 10–25 → `ui.5` 26–27 + motion. |
+| **Порядок срезов** | **Строго ref.1 → ref.2 → … → ref.27**; к ref.(N+1) **не** переходить, пока ref.N без sign-off `[x]` vs PNG (1:1: layout, шрифты, кнопки, glow, rails, chrome — **весь экран**). |
+| **Активный ref** | **ref.1** — [`velorix-neon-reference-processing.png`](reference/velorix-neon-reference-processing.png). |
 
-**Охват:** **все** `docs/reference/*.png` (refs **1–27** + логотипы/иконка). **ref.1** в sprint — только **порядок работ**, не «единственный экран».
+**Охват:** **все** `docs/reference/*.png` (refs **1–27** + логотипы/иконка).
 
-**Активный срез:** **ui.2** ref.1 — layout vs PNG sign-off (dev overlay HUD на ref.1); **ui.3** refs 2–9 polish complete (sign-off `[ ]`). Детали: [`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md).
+**Запрещено:** верстать ref.2+, отдельный sprint ref.27/26 «сначала», IPC/фичи вне **ref.1**, пока ref.1 без `[x]` в матрице. Детали: [`VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md).
 
 ---
 
 ## UI PURGE v3 — выполнен (2026-05-28)
 
-**Статус:** ui.1 в работе — `assets/neon/` токены + dev kit `#` ref.27 / `#ref26`; `RENDERER_STATE_APPROACH = 'none'`; матрица refs 1–27 — **все `[ ]`** (sign-off только vs PNG).
+**Статус:** **ref.1** в работе (единственный активный ref); `RENDERER_STATE_APPROACH = 'none'`; матрица refs 1–27 — **все `[ ]`** (sign-off только vs PNG).
 
 **Запрещено** без явной просьбы владельца: `git revert` / `git restore` / `checkout` удалённого renderer/locales.
 
@@ -44,7 +45,7 @@
 
 ### После rebuild
 
-1. ref.27→26 токены → `NeonWindowChrome` + px-shell → refs 1–27 → IPC вертикальными срезами → новые `locales`/ui-text с PNG.
+1. **ref.1 → … → ref.27** по одному PNG (1:1 каждый) → `NeonWindowChrome` + px-shell из ref.1 → IPC вертикальными срезами **после** sign-off экрана → новые `locales`/ui-text с PNG.
 2. `dev:capture-ui` — **новая** команда после rebuild (старая удалена).
 
 ---
@@ -60,7 +61,7 @@
 | Слой | Факт |
 | ---- | ---- |
 | **Окно** | Frameless; на весь workArea; только ─ и ✕ (**J-1807**). |
-| **Renderer** | ui.2 в работе: default **ref.1** + `#ref27`/`#ref26`; `NeonWindowChrome` (─ ✕); **не** sign-off. |
+| **Renderer** | **Активный ref.1**; dev-маршруты других refs — только навигация, **не** sprint; `NeonWindowChrome` (─ ✕); **не** sign-off. |
 | **Main/preload** | Backend + survival IPC (shell/log/quit). |
 | **Refs 1–27** | PNG на диске; матрица sign-off ниже — **все `[ ]`**. |
 
@@ -76,7 +77,7 @@
 | **Bridge** (`workspaceRouteBridge*`) | Временный; **снять** при первом ref экрана. |
 | **Модалки** вместо full-screen PNG | Заменить route-surface; старый dialog UI — **удалить**. |
 
-**Порядок:** **ui.1** ref.27→26 (токены) → **NeonWindowChrome** + px-shell → **ui.2** ref.1 → refs 2–27 → **X.4** motion.
+**Порядок:** **ref.1** (1:1) → **ref.2** → … → **ref.27** → **X.4** motion. **Запрещено:** ref.27/26 или ref.2+ до sign-off предыдущего ref.
 
 **Запрещено:** сравнивать с LosslessCut/StaxRip как целевой UX; упоминать как канон (только «удалённый legacy trim-UI», если нужно в J).
 
@@ -86,7 +87,7 @@
 
 | Область | ~% | Комментарий |
 | ------- | -- | ----------- |
-| Токены / тема в renderer | **0** | Rebuild: `src/renderer/src/assets/neon/` + ref.27→26. |
+| Токены / тема в renderer | **0** | Извлекать с PNG **активного ref** (сейчас ref.1); не открывать ref.27/26 как отдельный sprint. |
 | Shell layout (Phase D.2) | **0** | Rebuild: NeonWindowChrome + px-shell. |
 | Визуал экранов refs **1–9** | **0** | Только PNG; матрица `[ ]`. |
 | Модалки / утилиты refs **10–25** | **0** | Только PNG; матрица `[ ]`. |
@@ -112,11 +113,11 @@
 
 **Правило:** **3–7** пунктов, ≤ **220** символов. **Блокер:** пока UI ≠ PNG 1:1 — **только** вёрстка refs; IPC/фичи — после sign-off.
 
-- [ ] **ui.1** **ref.27→26** — shell 31 секций; layout 1:1 vs PNG; motion X.4 на `.vn-*`.
-- [ ] **ui.2** **ref.1** — mock-shell + center summary, clip/rail/timeline hovers; dev `velorixref` overlay HUD (`?refOverlayFit=`); sign-off vs PNG владельца.
-- [ ] **ui.3** **refs 2–9** — ref.2–9 polish complete (scroll, summary, sticky foot, statusbar, hovers); sign-off vs PNG all `[ ]`.
-- [ ] **ui.4** **refs 10–25** — ref.10–25 polish complete (portal 3-col, scroll, sticky, status rows); PNG sign-off `[ ]` all.
-- [ ] **ui.5** **refs 26–27** — shell есть; sign-off showcase PNG в J.
+- [ ] **ui.1** **ref.1** — **АКТИВНЫЙ:** 1:1 vs processing PNG; overlay → shell body (─✕ вне PNG); **без** footer sidebar settings/power; sign-off `[x]` только vs PNG.
+- [ ] **ui.2** **refs 2–9** — **заблокировано** до `[x]` ref.1; каждый ref 1:1 vs PNG; sign-off all `[ ]`.
+- [ ] **ui.3** **refs 10–25** — **заблокировано** до `[x]` refs 2–9; modals/full-screen 1:1; sign-off all `[ ]`.
+- [ ] **ui.4** **refs 26–27** — **заблокировано** до `[x]` refs 10–25; showcase 1:1; sign-off PNG.
+- [ ] **ui.5** **motion X.4** — **заблокировано** до sign-off layout всех refs 1–27.
 
 ---
 
@@ -205,13 +206,12 @@ PNG: `docs/reference/`. Анализ: NEON § «Анализ референса 
 
 ---
 
-## Порядок реализации (рекомендуемый)
+## Порядок реализации (обязательный)
 
-1. **D.2** shell-grid → **ref.27** компоненты → **ref.26** states → **ref.1** → **refs 2–9** по приоритету продукта.
-2. **refs 10–17** утилиты full-screen.
-3. **refs 11, 18–25** modals/system — единый chrome (**X.3**).
-4. **Motion** (**X.4**) после layout 1:1 каждого экрана или волнами.
-5. **Функц.** колонка — отдельные срезы (не блокировать чистый UI).
+1. **ref.1** → **ref.2** → … → **ref.27** — по одному PNG, **1:1 целиком** (sign-off `[x]` в матрице) перед следующим номером.
+2. **Запрещено:** ref.27/26 «сначала», параллельный polish ref.2+ при открытом ref.1.
+3. **Motion** (**X.4**) — после sign-off layout **всех** refs 1–27.
+4. **Функц.** колонка — отдельные срезы **после** sign-off Layout активного ref (не блокировать 1:1 визуал).
 
 **Запрещено:** ставить `[x]` на **Layout** без сравнения с PNG.
 

@@ -13,7 +13,7 @@ describe('ref.25 plugins shell (ui.4)', () => {
     expect(readFileSync(tsx, 'utf8')).toContain('NeonReferenceOverlay')
     expect(readFileSync(parts, 'utf8')).toContain('pl-center__eyebrow')
     expect(readFileSync(parts, 'utf8')).toContain('pl-center__head-chip')
-    expect(readFileSync(tsx, 'utf8')).toContain('processing-sidebar__brand-edition')
+    expect(readFileSync(tsx, 'utf8')).toContain('NeonSidebarBrand')
     expect(readFileSync(tsx, 'utf8')).toContain('tools-statusbar__ready')
     expect(readFileSync(tsx, 'utf8')).toContain('tools-statusbar__tc')
     expect(readFileSync(tsx, 'utf8')).toContain('pl-shell')

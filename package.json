@@ -75,7 +75,7 @@
     "check:release": "npm run check && npm run engines:prepare:win && npm run engines:doctor && npm run build && npm run pack:dir && npm run verify:win-unpacked && npm run audit:moderate",
     "check:release:local": "npm run engines:doctor && npm run build && npm run pack:dir && npm run verify:win-unpacked && npm run audit:moderate",
     "audit:moderate": "npm audit --audit-level=moderate",
-    "test": "vitest run --reporter=default",
+    "test": "node scripts/gate/run-vitest.mjs",
     "test:coverage": "vitest run --coverage --reporter=default && node scripts/maint/clean-coverage-dir.mjs",
     "test:watch": "vitest",
     "check:tz-artifacts": "node scripts/gate/check-tz-artifacts.mjs",
@@ -112,7 +112,11 @@
     "release:win": "npm run engines:prepare:win && npm run engines:doctor && npm run build && electron-builder --win",
     "release:win:force": "npm run engines:prepare:win:force && npm run engines:doctor && npm run build && electron-builder --win",
     "build:mac": "npm run build && electron-builder --mac",
-    "build:linux": "npm run build && electron-builder --linux"
+    "build:linux": "npm run build && electron-builder --linux",
+    "neon:ref:visual": "node scripts/e2e/neon-ref-visual.mjs run",
+    "neon:ref:visual:capture": "node scripts/e2e/neon-ref-visual.mjs capture",
+    "neon:ref:visual:diff": "node scripts/e2e/neon-ref-visual.mjs diff",
+    "ref1:demo:thumbs": "node scripts/maint/write-ref1-demo-thumbs.mjs"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
@@ -137,9 +141,12 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "prettier": "^3.7.4",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
+    "sharp": "^0.34.5",
     "typescript": "^6.0.3",
     "vite": "^8.0.13",
     "vitest": "^4.1.6"

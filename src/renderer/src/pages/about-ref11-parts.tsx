@@ -1,4 +1,5 @@
 import type { JSX } from 'react'
+import { NeonBrandStacked, NeonSidebarBrand } from '../components/NeonBrandLogo'
 
 import type {
   AboutActionMock,
@@ -28,14 +29,7 @@ export function AboutToolsBackdrop(): JSX.Element {
   return (
     <div className="tools-shell about-scene__tools" aria-hidden>
       <aside className="tools-sidebar">
-        <div className="tools-sidebar__brand">
-          <span className="processing-sidebar__mark">V</span>
-          <div className="processing-sidebar__brand-text">
-            <div className="processing-sidebar__logo vn-text-gradient">VELORIX</div>
-            <p className="processing-sidebar__version">v1.7.0</p>
-          </div>
-          <span className="processing-sidebar__brand-edition">PRO</span>
-        </div>
+        <NeonSidebarBrand className="tools-sidebar__brand processing-sidebar__brand" />
         <section className="tools-sidebar__nav-block">
           <h2 className="processing-sidebar__section-title">ПРОЕКТ</h2>
           <nav className="processing-nav">
@@ -181,10 +175,7 @@ export function AboutModalPanel(): JSX.Element {
       <div className="about-modal__scroll">
         <div className="about-modal__body">
           <section className="about-modal__brand" aria-label="Velorix">
-            <div className="about-modal__logo-mark" aria-hidden>
-              V
-            </div>
-            <h3 className="about-modal__wordmark vn-text-gradient">VELORIX</h3>
+            <NeonBrandStacked className="about-modal__stacked-logo" />
             <p className="about-modal__tagline">MEDIA PROCESSING ENGINE</p>
             <span className="about-modal__badge">ПРОФЕССИОНАЛЬНАЯ ВЕРСИЯ</span>
             <p className="about-modal__desc">

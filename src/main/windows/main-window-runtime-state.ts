@@ -76,7 +76,10 @@ export function createMainApplicationWindow(): void {
     setAllowMainWindowClose: (value) => {
       allowMainWindowClose = value
     },
-    getConfirmCloseOnQuit: () => getCachedSettings().confirmCloseOnQuit !== false,
+    getConfirmCloseOnQuit: () =>
+      process.env['VELORIX_REF_VISUAL'] === '1'
+        ? false
+        : getCachedSettings().confirmCloseOnQuit !== false,
     isExportBusy: () => activeExportAbort !== null,
     isDownloadsBusy: () => isDownloadsRunnerBusy(),
     countDownloadsQueueWaiting: () => countDownloadsQueueWaitingRows(),

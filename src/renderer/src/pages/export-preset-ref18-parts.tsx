@@ -1,4 +1,5 @@
 import type { JSX } from 'react'
+import { NeonSidebarBrand } from '../components/NeonBrandLogo'
 
 import {
   EPN_CATEGORY,
@@ -17,13 +18,8 @@ export function ExportPresetConversionBackdrop(): JSX.Element {
   return (
     <div className="epn-backdrop tools-shell" aria-hidden>
       <aside className="tools-sidebar">
-        <div className="tools-sidebar__brand">
-          <span className="processing-sidebar__mark">V</span>
-          <div className="processing-sidebar__brand-text">
-            <div className="processing-sidebar__logo vn-text-gradient">VELORIX</div>
-          </div>
-          <span className="processing-sidebar__brand-edition">PRO</span>
-        </div>
+        <NeonSidebarBrand className="tools-sidebar__brand processing-sidebar__brand" />
+
         <nav className="processing-nav tools-sidebar__nav-block">
           {PROCESSING_NAV.slice(0, 6).map((item) => (
             <span

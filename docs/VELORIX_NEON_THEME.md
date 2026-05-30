@@ -49,7 +49,7 @@
 | **locales / ui-text** | Удалены; восстановить **только** с подписей PNG при rebuild. |
 | **Preload (UI)** | shell / log / quit — остальное IPC подключается **вертикальными срезами** после экрана. |
 | **Main** | `src/main/services/**` сохранены; backend под UI, не наоборот. |
-| **Порядок rebuild** | **ref.27** → **ref.26** → **ref.1** → refs 2–27 → motion. |
+| **Порядок rebuild** | **ref.1 → ref.2 → … → ref.27** (строго по одному PNG); к ref.(N+1) **не** переходить без sign-off `[x]` ref.N; motion — после всех refs. |
 
 **Запрещено:** `git revert` / `restore` purge; помечать старый `NeonShell` / CSS как «готово».
 
@@ -66,7 +66,7 @@
 
 | Команда | Действие агента |
 | ------- | ---------------- |
-| **«продолжай» / `+`** | Задача №1; активный sprint — [`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) (**ui.1** ref.27→26). |
+| **«продолжай» / `+`** | Задача №1; **активный ref.1** — 1:1 vs `velorix-neon-reference-processing.png`; **запрещено** ref.2+ до sign-off ref.1 ([`IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md)). |
 | Сверка владельца | `npm run dev` — экран целиком vs PNG |
 | Сверка агента | overlay + capture **после** появления экрана в renderer |
 | Sign-off | `[x]` в матрице **только** при 1:1 vs PNG |
@@ -116,6 +116,7 @@
 | 6 | **Названия.** Мелкие отличия подписей mockup vs `ui-text` — допустимы; композиция и иерархия — **нет**. |
 | 7 | **Удалять мешающее.** Устаревший код/doc/guard/UX, который блокирует план или реализацию — **удалить** или заменить в той же итерации; **не** копить legacy «из страха» и **не** дублировать старый+новый путь. Глоссарий: **«Удаление мешающего legacy»** в `velorix-rules-explicit.mdc`. |
 | 8 | **Burn-down UI.** Единственная визуальная истина — **PNG refs 1–27**. Старый shell/layout/компоненты — **срезать** при внедрении ref-экрана; backend (IPC/stores) — сохранить. **Запрещено:** LosslessCut/чужие IDE как ориентир. |
+| 9 | **Последовательный ref.** Порядок **ref.1 → ref.2 → … → ref.27**; **активный ref** — минимальный N без sign-off `[x]` в NEON-чеклисте (**сейчас ref.1**). **Запрещено:** ref.(N+1), ref.27/26 «сначала», polish неактивного ref — до 1:1 vs PNG активного ref **целиком** (шрифты, кнопки, glow, rails). Глоссарий: **«Последовательный ref (1→27)»** в `velorix-rules-explicit.mdc`. |
 
 ### Конфликт с другими документами
 
@@ -208,10 +209,8 @@
 
 | Зона на PNG | Этап NEON | Заметки |
 |-------------|-----------|---------|
-| Sidebar: **Обработка** (active), заголовок экрана | **2** | «Профессиональная обработка и монтаж…»; nav + GPU/CPU (не путать с вкладкой «Редактор» в **текущем** коде) |
-| Topbar (вариант mockup) | **2** | На части PNG — вкладки «Редактор» · Загрузки · «Консоль» (= **Терминал**, см. ниже); приоритет у sidebar |
-| Левый sidebar (детали) | **2** | На части mockup’ов — медиатека/проекты; на эталоне — блок «ПРОЕКТ» + мониторинг |
-| Центр: превью + transport + timecode | **3** | Рамка neon; crop / snapshot / volume |
+| Sidebar | **2** | Brand (иконка V + **VELORIX** + v1.7.0) → **ПРОЕКТ** → nav (11 пунктов) → GPU (RTX 3090, sparkline) → **Система** (CPU/RAM/Диск). **На PNG нет:** медиатека, файлы, хранилище, PRO, footer settings/power |
+| Центр: превью + transport + timecode | **3** | Рамка; zoom/fit; playback; volume |
 | Низ центра: **таймлайн NLE** | **4** | Самая насыщенная **функциональная** дельта vs код |
 | Правый rail: FFmpeg + экспорт | **5** | Плотные секции, CRF, NVENC, «НАЧАТЬ ЭКСПОРТ» |
 | Status bar внизу | **6** | Путь, 4K, кадры, FFmpeg 6.1.1, GPU |
@@ -234,11 +233,9 @@
 
 | Область | На mockup | Сейчас в продукте (ориентир) |
 |---------|-----------|------------------------------|
-| Shell | Левый sidebar + центр + правый rail | Другая сетка (наследие; **фаза D**) |
-| Медиатека в sidebar | Категории Video/Audio/Image + счётчики | Нет такого блока в editor shell |
-| Проекты | Список с aspect ratio, highlight «НОВЫЙ СЕЗОН» | Нет multi-project UI как на PNG |
-| Хранилище | 1.2 / 2.0 TB progress | Нет виджета в sidebar |
-| Превью chrome | Saved 2 min ago, zoom %, window controls в панели | Упрощённый transport |
+| Shell | Левый sidebar + центр + правый rail | Rebuild по PNG |
+| Sidebar (ref.1) | Только nav + GPU + Система (см. карта зон) | **Запрещено** верстать медиатеку/файлы/хранилище |
+| Превью chrome | Zoom %, «Вписать», search / expand / close справа; badge 4K на кадре | Подгонка vs PNG |
 | FFmpeg rail | Collapsible Video/Audio/Format/…, two-pass toggle, preset footer | Rail есть; плотность/секции ≠ 1:1 |
 | Status | Selection length, GPU, FFmpeg version | Частично / другие поля |
 

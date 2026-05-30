@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { BrowserWindow, dialog, ipcMain } from 'electron'
+import { BrowserWindow, dialog, ipcMain, screen, type Display } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
 import icon from '../../../resources/icon.png?asset'
@@ -12,7 +12,12 @@ import {
 import { installExternalNavigationGuard, openAllowedExternalUrl } from '../core/external-url'
 import { resolvePreloadOutFile } from '../core/preload-resolve'
 import type { WindowBoundsConfig } from '../services/settings/settings-store'
-import { displayMatchingRestoreRect, mainEditorWorkAreaBounds } from './window-hidpi'
+import type { StoredWindowRect } from '../services/settings/settings-store'
+import {
+  displayMatchingRestoreRect,
+  isNeonRefVisualMode,
+  mainEditorWorkAreaBounds
+} from './window-hidpi'
 import { isNativeMainBrowserWindowNeedsIcon } from '../platform'
 import { rectifyBoundsForRestore } from './window-bounds'
 
@@ -68,6 +73,16 @@ function busyQuitMessage(
   return q.quitConfirmDownloads
 }
 
+/** Подогнать frameless окно под workArea текущего монитора (FHD/2K/4K). */
+export function applyMainEditorWorkAreaBounds(win: BrowserWindow): void {
+  if (win.isDestroyed()) {
+    return
+  }
+  const disp = screen.getDisplayMatching(win.getBounds())
+  const work = mainEditorWorkAreaBounds(disp)
+  win.setBounds(work)
+}
+
 function buildQuitConfirmRequestPayload(
   requestId: number,
   exportBusy: boolean,
@@ -83,10 +98,22 @@ function buildQuitConfirmRequestPayload(
   }
 }
 
+function resolveMainWindowDisplay(rect: StoredWindowRect | null): Display {
+  if (isNeonRefVisualMode()) {
+    const raw = process.env['VELORIX_REF_VISUAL_DISPLAY_POINT']?.trim()
+    const m = raw ? /^(-?\d+)\s*,\s*(-?\d+)$/.exec(raw) : null
+    if (m) {
+      return screen.getDisplayNearestPoint({ x: Number(m[1]), y: Number(m[2]) })
+    }
+  }
+  return displayMatchingRestoreRect(rect)
+}
+
 export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
-  const savedMain = deps.getSavedMainBounds()
+  const refVisualMode = isNeonRefVisualMode()
+  const savedMain = refVisualMode ? undefined : deps.getSavedMainBounds()
   const rect = savedMain ? rectifyBoundsForRestore(savedMain) : null
-  const mainDisp = displayMatchingRestoreRect(rect)
+  const mainDisp = resolveMainWindowDisplay(rect)
   const workArea = mainEditorWorkAreaBounds(mainDisp)
 
   const mainWindow = new BrowserWindow({
@@ -257,7 +284,16 @@ export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
 
   deps.attachBoundsPersistence(mainWindow)
 
+  const syncWorkArea = (): void => {
+    applyMainEditorWorkAreaBounds(mainWindow)
+  }
+  screen.on('display-metrics-changed', syncWorkArea)
+  mainWindow.on('closed', () => {
+    screen.removeListener('display-metrics-changed', syncWorkArea)
+  })
+
   mainWindow.on('ready-to-show', () => {
+    syncWorkArea()
     mainWindow.show()
     deps.hideApplicationMenuBar()
   })

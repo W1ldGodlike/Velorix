@@ -1,6 +1,6 @@
 Ты работаешь в репозитории Velorix (Electron + TypeScript + React).
 
-Следующий срез: `docs/VELORIX_NEON_THEME.md` (NEON, Phase D, refs 1–27). Sprint TODO: `docs/IMPLEMENTATION_NEON_CHECKLIST.md` → `## Ближайший TODO спринта`. **Запрещено:** `docs/archive/*`, корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`.
+Задача №1: UI 1:1 PNG refs 1–27. Порядок: ref.1 → ref.2 → … → ref.27; активный ref.1 — к ref.2 не переходить до sign-off [x] ref.1 vs velorix-neon-reference-processing.png (шрифты, кнопки, glow, весь экран). Канон: `docs/VELORIX_NEON_THEME.md`, sprint `docs/IMPLEMENTATION_NEON_CHECKLIST.md` → `## Ближайший TODO спринта`. **Запрещено:** ref.27/26 «сначала», ref.2+, IPC вне активного ref; `docs/archive/*`, корневые `VELORIX_TZ.md` / `IMPLEMENTATION_CHECKLIST.md`.
 
 Обязательно прочитай `scripts/cursor-automation/prompts/agent-contract.txt` (канон SDK; не перечитывай целиком на каждом «продолжай» / `+` без причины).
 

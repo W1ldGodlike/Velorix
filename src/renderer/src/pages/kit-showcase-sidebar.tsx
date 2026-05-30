@@ -1,21 +1,13 @@
 import type { JSX } from 'react'
 
+import { NeonSidebarBrand } from '../components/NeonBrandLogo'
 import { PROCESSING_NAV } from './processing-ref1-data'
 
 /** Shared sidebar for ref.26 / ref.27 kit showcase (mock; not sign-off). */
 export function KitShowcaseSidebar(): JSX.Element {
   return (
     <aside className="tools-sidebar ks-sidebar" aria-label="Навигация">
-      <div className="tools-sidebar__brand">
-        <span className="processing-sidebar__mark" aria-hidden>
-          V
-        </span>
-        <div className="processing-sidebar__brand-text">
-          <div className="processing-sidebar__logo vn-text-gradient">VELORIX</div>
-          <p className="processing-sidebar__version">v1.7.0</p>
-        </div>
-        <span className="processing-sidebar__brand-edition">PRO</span>
-      </div>
+      <NeonSidebarBrand className="tools-sidebar__brand processing-sidebar__brand" />
       <section className="tools-sidebar__nav-block" aria-label="Проект">
         <h2 className="processing-sidebar__section-title">ПРОЕКТ</h2>
         <nav className="processing-nav">

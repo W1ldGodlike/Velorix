@@ -13,7 +13,7 @@ describe('ref.23 critical crash shell (ui.4)', () => {
     expect(readFileSync(tsx, 'utf8')).toContain('NeonReferenceOverlay')
     expect(readFileSync(parts, 'utf8')).toContain('cc-hero__eyebrow')
     expect(readFileSync(parts, 'utf8')).toContain('cc-hero__head-chip')
-    expect(readFileSync(parts, 'utf8')).toContain('processing-sidebar__brand-edition')
+    expect(readFileSync(parts, 'utf8')).toContain('NeonSidebarBrand')
     expect(readFileSync(tsx, 'utf8')).toContain('tools-statusbar__ready')
     expect(readFileSync(tsx, 'utf8')).toContain('tools-statusbar__tc')
     expect(readFileSync(tsx, 'utf8')).toContain('cc-shell')

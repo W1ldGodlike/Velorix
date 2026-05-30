@@ -1,0 +1,32 @@
+{
+  "V1_FILM_TOP": 860,
+  "V1_FILM_HEIGHT": 28,
+  "V1_LANE_LEFT": 412,
+  "V1_LANE_WIDTH": 1280,
+  "CLIPS": [
+    {
+      "id": "city-night",
+      "grow": 4
+    },
+    {
+      "id": "drive-sequence",
+      "grow": 3
+    },
+    {
+      "id": "neon-building",
+      "grow": 2
+    },
+    {
+      "id": "digital-billboard",
+      "grow": 2
+    },
+    {
+      "id": "glitch-effect",
+      "grow": 2
+    },
+    {
+      "id": "rain-reflections",
+      "grow": 3
+    }
+  ]
+}

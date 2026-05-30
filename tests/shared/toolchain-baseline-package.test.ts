@@ -123,7 +123,7 @@ describe('toolchain baseline (package.json / .npmrc / tsconfig.web)', () => {
     const coverage = dev['@vitest/coverage-v8'] ?? ''
     expect(coverage.length).toBeGreaterThan(0)
     expect(majorOfRange(coverage)).toBe(4)
-    expect(pkg.scripts['test']).toContain('vitest run')
+    expect(pkg.scripts['test']).toContain('run-vitest.mjs')
     expect(pkg.scripts['test:coverage']).toContain('--coverage')
     const vitestConfig = readFileSync('vitest.config.ts', 'utf8')
     expect(vitestConfig).toContain("environment: 'node'")

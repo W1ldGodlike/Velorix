@@ -1,19 +1,33 @@
 import { Fragment, type JSX } from 'react'
 
+import { processingRef1DemoClipThumbUrl } from '../../../shared/processing-ref1-demo-media'
+
 import {
   CLIP_WAVEFORM_BAR_COUNT,
   PROCESSING_RAIL_AUDIO_FIELDS,
   PROCESSING_RAIL_FORMAT_FIELDS,
   PROCESSING_RAIL_PRESET_ACTIVE,
   PROCESSING_RAIL_PRESETS,
-  PROCESSING_RAIL_VIDEO_EXTRA,
+  PROCESSING_RAIL_SECTION_HINTS,
+  PROCESSING_RAIL_SUBTITLE,
   type ProcessingClipMock
 } from './processing-ref1-data'
+
+function RailSectionSummary(props: { label: string; hint?: string }): JSX.Element {
+  const { label, hint } = props
+  return (
+    <>
+      <span className="processing-rail__section-label">{label}</span>
+      {hint ? <span className="processing-rail__section-hint">{hint}</span> : null}
+    </>
+  )
+}
 
 const WAVEFORM_BAR_INDICES = Array.from({ length: CLIP_WAVEFORM_BAR_COUNT }, (_, i) => i)
 
 export function ProcessingClip(props: { clip: ProcessingClipMock; audio?: boolean }): JSX.Element {
   const { clip, audio = false } = props
+
   const classNames = [
     'processing-clip',
     audio ? 'processing-clip--audio' : '',
@@ -21,6 +35,7 @@ export function ProcessingClip(props: { clip: ProcessingClipMock; audio?: boolea
     clip.thumbTone ? `processing-clip--tone-${clip.thumbTone}` : '',
     clip.waveform ? 'processing-clip--wave' : '',
     clip.highlight ? 'processing-clip--highlight' : '',
+    clip.linked ? 'processing-clip--linked' : '',
     `processing-clip--grow-${clip.grow}`
   ]
     .filter(Boolean)
@@ -28,11 +43,15 @@ export function ProcessingClip(props: { clip: ProcessingClipMock; audio?: boolea
 
   return (
     <span className={classNames}>
-      {!audio && clip.thumb ? (
-        <>
-          <span className="processing-clip__film" aria-hidden />
-          <span className="processing-clip__thumb-shine" aria-hidden />
-        </>
+      {!audio && clip.thumb && clip.thumbDemoId ? (
+        <span className="processing-clip__film processing-clip__film--ref-demo" aria-hidden>
+          <img
+            className="processing-clip__film-demo"
+            src={processingRef1DemoClipThumbUrl(clip.thumbDemoId)}
+            alt=""
+            draggable={false}
+          />
+        </span>
       ) : null}
       {clip.linked ? (
         <span className="processing-clip__link-mark processing-glyph" aria-hidden title="Связано" />
@@ -58,7 +77,9 @@ export function ProcessingClip(props: { clip: ProcessingClipMock; audio?: boolea
               className={
                 badge === 'fx'
                   ? 'processing-clip__badge processing-clip__badge--fx'
-                  : 'processing-clip__badge'
+                  : badge === '4K'
+                    ? 'processing-clip__badge processing-clip__badge--4k'
+                    : 'processing-clip__badge'
               }
             >
               {badge}
@@ -88,25 +109,44 @@ export function TrackRow(props: {
     showLinkMarkers = false,
     trackHint
   } = props
+  const emptyVideo = !audio && clips.length === 0
+
   return (
     <div
-      className={`processing-timeline__track${active ? ' processing-timeline__track--active' : ''}`}
+      className={[
+        'processing-timeline__track',
+        active ? 'processing-timeline__track--active' : '',
+        emptyVideo ? 'processing-timeline__track--video-empty' : ''
+      ]
+        .filter(Boolean)
+        .join(' ')}
     >
       <div className="processing-timeline__head">
         <span className="processing-timeline__label">{id}</span>
         <span className="processing-timeline__track-tools" aria-hidden>
-          <span
-            className="processing-track-icon processing-track-icon--lock processing-glyph"
-            title="Lock"
-          />
-          <span
-            className="processing-track-icon processing-track-icon--mute processing-glyph"
-            title="Mute"
-          />
-          <span
-            className="processing-track-icon processing-track-icon--visible processing-glyph"
-            title="Visibility"
-          />
+          {audio ? (
+            <>
+              <span
+                className="processing-track-icon processing-track-icon--mute processing-glyph"
+                title="Mute"
+              />
+              <span
+                className="processing-track-icon processing-track-icon--solo processing-glyph"
+                title="Solo"
+              />
+            </>
+          ) : (
+            <>
+              <span
+                className="processing-track-icon processing-track-icon--lock processing-glyph"
+                title="Lock"
+              />
+              <span
+                className="processing-track-icon processing-track-icon--visible processing-glyph"
+                title="Visibility"
+              />
+            </>
+          )}
         </span>
       </div>
       <div
@@ -164,13 +204,18 @@ export function ProcessingFfmpegRail(): JSX.Element {
     <aside className="processing-rail" aria-label="FFmpeg">
       <div className="processing-rail__scroll">
         <header className="processing-rail__head processing-rail__head--png">
-          <h2 className="processing-rail__title">НАСТРОЙКИ FFMPEG</h2>
-          <button type="button" className="processing-rail__help" disabled title="Справка">
-            ?
-          </button>
+          <div className="processing-rail__head-top">
+            <h2 className="processing-rail__title">НАСТРОЙКИ FFMPEG</h2>
+            <button type="button" className="processing-rail__help" disabled title="Справка">
+              ?
+            </button>
+          </div>
+          <p className="processing-rail__subtitle">{PROCESSING_RAIL_SUBTITLE}</p>
         </header>
-        <details className="processing-rail__section vn-surface-glass" open>
-          <summary>ВИДЕО</summary>
+        <details className="processing-rail__section processing-rail__section--video" open>
+          <summary>
+            <RailSectionSummary label="ВИДЕО" />
+          </summary>
           <div className="processing-rail__fields">
             <RailField label="Кодек" value="H.264 (libx264)" />
             <RailField label="Профиль" value="High" />
@@ -204,29 +249,32 @@ export function ProcessingFfmpegRail(): JSX.Element {
               </span>
             </label>
             <RailField label="Аппаратное ускорение" value="NVIDIA NVENC" />
-            {PROCESSING_RAIL_VIDEO_EXTRA.map((field) => (
-              <RailField key={field.label} label={field.label} value={field.value} />
-            ))}
           </div>
         </details>
-        <details className="processing-rail__section vn-surface-glass">
-          <summary>АУДИО</summary>
+        <details className="processing-rail__section">
+          <summary>
+            <RailSectionSummary label="АУДИО" hint={PROCESSING_RAIL_SECTION_HINTS.audio} />
+          </summary>
           <div className="processing-rail__fields">
             {PROCESSING_RAIL_AUDIO_FIELDS.map((field) => (
               <RailField key={field.label} label={field.label} value={field.value} />
             ))}
           </div>
         </details>
-        <details className="processing-rail__section vn-surface-glass">
-          <summary>ФОРМАТ</summary>
+        <details className="processing-rail__section">
+          <summary>
+            <RailSectionSummary label="ФОРМАТ" hint={PROCESSING_RAIL_SECTION_HINTS.format} />
+          </summary>
           <div className="processing-rail__fields">
             {PROCESSING_RAIL_FORMAT_FIELDS.map((field) => (
               <RailField key={field.label} label={field.label} value={field.value} />
             ))}
           </div>
         </details>
-        <details className="processing-rail__section vn-surface-glass">
-          <summary>ПРЕСЕТЫ</summary>
+        <details className="processing-rail__section">
+          <summary>
+            <RailSectionSummary label="ПРЕСЕТЫ" hint={PROCESSING_RAIL_SECTION_HINTS.presets} />
+          </summary>
           <ul className="processing-rail__preset-list">
             {PROCESSING_RAIL_PRESETS.map((preset) => (
               <li
@@ -242,14 +290,20 @@ export function ProcessingFfmpegRail(): JSX.Element {
             ))}
           </ul>
         </details>
-        <details className="processing-rail__section vn-surface-glass">
-          <summary>СЦЕНАРИИ</summary>
+        <details className="processing-rail__section">
+          <summary>
+            <RailSectionSummary label="СЦЕНАРИИ" hint={PROCESSING_RAIL_SECTION_HINTS.scenarios} />
+          </summary>
         </details>
-        <details className="processing-rail__section vn-surface-glass">
-          <summary>ФИЛЬТРЫ</summary>
+        <details className="processing-rail__section">
+          <summary>
+            <RailSectionSummary label="ФИЛЬТРЫ" hint={PROCESSING_RAIL_SECTION_HINTS.filters} />
+          </summary>
         </details>
-        <details className="processing-rail__section vn-surface-glass">
-          <summary>МЕТАДАННЫЕ</summary>
+        <details className="processing-rail__section">
+          <summary>
+            <RailSectionSummary label="МЕТАДАННЫЕ" hint={PROCESSING_RAIL_SECTION_HINTS.metadata} />
+          </summary>
         </details>
       </div>
       <div className="processing-rail__export">
@@ -261,7 +315,7 @@ export function ProcessingFfmpegRail(): JSX.Element {
           <span className="processing-rail__export-icon processing-glyph" aria-hidden />
           НАЧАТЬ ЭКСПОРТ
         </button>
-        <div className="processing-rail__preset-card vn-surface-glass">
+        <div className="processing-rail__preset-card">
           <div className="processing-rail__preset-head">
             <strong>{PROCESSING_RAIL_PRESET_ACTIVE}</strong>
             <span className="processing-rail__preset-gear processing-glyph" aria-hidden />

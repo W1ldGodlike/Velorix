@@ -10,7 +10,7 @@
 | 2 | Шапка [`IMPLEMENTATION_JOURNAL.md`](../IMPLEMENTATION_JOURNAL.md) | Формат `J-NNN`, время, одна сводная за итерацию. |
 | 3 | [`docs/VELORIX_NEON_THEME.md`](VELORIX_NEON_THEME.md) | **Навигатор агента:** post **UI PURGE v3**, Variant A, Phase D, refs **1–27**. |
 | 3b | [`docs/IMPLEMENTATION_NEON_CHECKLIST.md`](IMPLEMENTATION_NEON_CHECKLIST.md) | **Активный чеклист:** UI **0%** (sign-off), sprint TODO, матрица refs, snap.*. |
-| 4 | [`velorix-continue`](../.cursor/skills/velorix-continue/SKILL.md) + [`velorix-agent.mdc`](../.cursor/rules/velorix-agent.mdc) | **«продолжай» / `+`:** **Задача №1** (UI 1:1 PNG) → активный срез `ui.*` в NEON-чеклисте; иначе запрещено. Git по J — `velorix-agent.mdc`. |
+| 4 | [`velorix-continue`](../.cursor/skills/velorix-continue/SKILL.md) + [`velorix-agent.mdc`](../.cursor/rules/velorix-agent.mdc) | **«продолжай» / `+`:** **Задача №1** — **только активный ref** (**ref.1** → … → **ref.27**); иначе запрещено. Глоссарий **«Последовательный ref (1→27)»**. Git по J — `velorix-agent.mdc`. |
 | 5 | [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) · [`docs/RELEASE.md`](RELEASE.md) | IPC, npm, packaging, вспомогательный стек (таблица). |
 | 6 | [`scripts/cursor-automation/prompts/agent-contract.txt`](../scripts/cursor-automation/prompts/agent-contract.txt) | SDK-агент; синхрон с 1–4. |
 | — | [`docs/archive/`](archive/) | **ARCHIVE:** `VELORIX_TZ.OLD.md`, `IMPLEMENTATION_CHECKLIST.OLD.md`, `UX_REFERENCE_V0.OLD.md` — **запрещено** как навигатор и spec. |
@@ -30,9 +30,10 @@
 | Журнал / формат J | шапка `IMPLEMENTATION_JOURNAL.md`, `velorix-journal.mdc`, `agent-contract.txt` |
 | Sprint TODO (NEON) | `docs/IMPLEMENTATION_NEON_CHECKLIST.md`, `velorix-checklist.mdc`, `agent-contract.txt`, `continue.txt`, `initial.txt` |
 | Vitest snapshot | `AGENTS.md`, `README.md`, `docs/IMPLEMENTATION_NEON_CHECKLIST.md` (`snap.3`) |
-| Продолжай / + | `velorix-continue` SKILL, `velorix-agent.mdc`, `velorix-rules-explicit.mdc`, SDK prompts → **NEON-трекер**, не архив |
+| Продолжай / + | `velorix-continue` SKILL, `velorix-agent.mdc`, `velorix-rules-explicit.mdc` (**«Последовательный ref (1→27)»**), SDK prompts → **активный ref**, не архив |
 | Git по J-NNN | глоссарий `velorix-rules-explicit.mdc`, `velorix-agent.mdc`, SDK prompts |
-| VELORIX NEON | `VELORIX_NEON_THEME.md`, `docs/reference/`, `velorix-neon-theme-tokens.ts`; CSS токены — **создать** в `src/renderer/src/assets/neon/` при ui.1 |
+| VELORIX NEON | `VELORIX_NEON_THEME.md`, `docs/reference/`, `velorix-neon-theme-tokens.ts`; CSS токены — из PNG **активного ref** (сейчас ref.1), не sprint ref.27/26 «сначала» |
+| ref.1 visual e2e | `npm run neon:ref:visual ref1` → `.neon-ref-visual/latest/`; config `scripts/e2e/neon-ref-visual-config.mjs`; demo media `velorix-neon-ref1-demo-*.png`, `npm run ref1:demo:thumbs` |
 | Вспомогательный стек | таблица в `docs/ARCHITECTURE.md`; при записи — NEON-чеклист § «Вспомогательный стек» |
 | Архив TZ/старый чеклист | только `docs/archive/*`; **запрещены** `VELORIX_TZ.md` и `IMPLEMENTATION_CHECKLIST.md` в корне (`check:tz-artifacts`) |
 | §19 signing | `release-code-signing-roadmap.ts`, `electron-builder.yml`, `RELEASE.md`, Help guards |

@@ -1,5 +1,7 @@
 import type { JSX } from 'react'
 
+import { NeonBrandAppIcon, NeonSidebarBrand } from '../components/NeonBrandLogo'
+
 import type { QuitActiveTaskMock, QuitExitOptionMock } from './quit-confirm-ref21-data'
 import {
   QC_ACTIVE_TASKS,
@@ -60,15 +62,7 @@ export function QuitConfirmProcessingBackdrop(): JSX.Element {
   return (
     <div className="processing-shell qc-backdrop about-scene__tools" aria-hidden>
       <aside className="processing-sidebar">
-        <div className="processing-sidebar__brand">
-          <span className="processing-sidebar__mark" aria-hidden>
-            V
-          </span>
-          <div>
-            <div className="processing-sidebar__logo vn-text-gradient">VELORIX</div>
-            <p className="processing-sidebar__version">v1.7.0</p>
-          </div>
-        </div>
+        <NeonSidebarBrand showEdition={false} />
         <nav className="processing-nav" aria-label="Навигация">
           {PROCESSING_NAV.slice(0, 8).map((item) => (
             <span
@@ -98,9 +92,7 @@ export function QuitConfirmModal(): JSX.Element {
     <div className="qc-modal" role="dialog" aria-labelledby="qc-modal-title" id="ref21">
       <header className="qc-modal__head">
         <div className="qc-modal__brand">
-          <span className="processing-sidebar__mark" aria-hidden>
-            V
-          </span>
+          <NeonBrandAppIcon className="processing-sidebar__mark qc-modal__mark" />
           <div className="qc-modal__head-main">
             <p className="qc-modal__eyebrow">Выход · confirm</p>
             <h2 id="qc-modal-title">ЗАКРЫТЬ VELORIX?</h2>

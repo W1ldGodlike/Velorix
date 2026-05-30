@@ -1,4 +1,5 @@
 import type { JSX } from 'react'
+import { NeonSidebarBrand } from '../components/NeonBrandLogo'
 
 import type { FirstRunEngineMock } from './first-run-ref20-data'
 import {
@@ -57,14 +58,10 @@ export function FirstRunEnginesWizard(): JSX.Element {
   return (
     <div className="fr-wizard">
       <header className="fr-wizard__hero">
-        <div className="fr-wizard__brand">
-          <span className="processing-sidebar__mark">V</span>
-          <div className="processing-sidebar__brand-text">
-            <div className="processing-sidebar__logo vn-text-gradient">VELORIX</div>
-            <p>Мультимедиа инструмент нового поколения</p>
-          </div>
-          <span className="processing-sidebar__brand-edition">PRO</span>
-        </div>
+        <NeonSidebarBrand
+          className="fr-wizard__brand processing-sidebar__brand"
+          tagline="Мультимедиа инструмент нового поколения"
+        />
         <div className="fr-wizard__hero-art" aria-hidden />
       </header>
 

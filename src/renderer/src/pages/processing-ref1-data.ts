@@ -1,3 +1,11 @@
+import {
+  processingRef1DemoPreviewUrl,
+  type ProcessingRef1DemoClipThumbId
+} from '../../../shared/processing-ref1-demo-media'
+
+/** ref.1 demo preview frame (`velorixref:///`). */
+export const PROCESSING_REF1_DEMO_PREVIEW_URL = processingRef1DemoPreviewUrl()
+
 /** Mock NLE data for ref.1 visual (not backend model). */
 
 export type ProcessingNavSlug =
@@ -18,20 +26,13 @@ export type ProcessingNavItem = {
   label: string
 }
 
-export type ProcessingMediaCategory = {
-  slug: 'video' | 'audio' | 'image'
-  label: string
-  count: number
-  /** Highlighted row in sidebar (ref.1 PNG — video active). */
-  active?: boolean
-}
-
-/** Sidebar media library counts (mock; ref.1 PNG). */
-export const PROCESSING_MEDIA_LIBRARY: readonly ProcessingMediaCategory[] = [
-  { slug: 'video', label: 'Видео', count: 24, active: true },
-  { slug: 'audio', label: 'Аудио', count: 12 },
-  { slug: 'image', label: 'Изображения', count: 8 }
-]
+/** Sidebar GPU widget (mock; ref.1 PNG). */
+export const PROCESSING_GPU = {
+  name: 'NVIDIA RTX 3090',
+  vram: '24GB GDDR6X',
+  loadPercent: 68,
+  tempCelsius: 58
+} as const
 
 export const PROCESSING_PREVIEW_SAVED_LABEL = 'Сохранено 2 мин назад' as const
 
@@ -48,27 +49,23 @@ export const PROCESSING_HEAD_CHIP = '4K · 60 fps' as const
 /** Timeline selection length (ref.1 PNG statusbar). */
 export const PROCESSING_SELECTION_TIMECODE = '00:00:00:00' as const
 
-/** Project storage widget (mock; ref.1 PNG). */
-export const PROCESSING_STORAGE = {
-  label: 'Хранилище',
-  usedTb: 1.2,
-  totalTb: 2.0,
-  percent: 60
-} as const
+/** A1 lane hint pill (ref.1 PNG). */
+export const PROCESSING_A1_TRACK_HINT = 'Высокая громк.' as const
 
-/** Sidebar GPU widget (mock; ref.1 PNG). */
-export const PROCESSING_GPU = {
-  name: 'NVIDIA RTX 3090',
-  vram: '24 GB GDDR6X',
-  tag: 'NVENC',
-  loadPercent: 68,
-  tempCelsius: 58
+/** Sidebar system rings (mock %; ref.1 PNG). */
+export const PROCESSING_SYSTEM_RINGS = {
+  cpu: 18,
+  ram: 42,
+  disk: 38
 } as const
 
 export const PROCESSING_CENTER_SUMMARY =
   'НОВЫЙ СЕЗОН · 5 дорожек · TC 01:36:53:08 · H.264 NVENC · 4K 60fps' as const
 
 export const PROCESSING_STATUS_READY = 'Готово' as const
+
+/** Statusbar project filename (ref.1 PNG left cluster). */
+export const PROCESSING_STATUS_PROJECT = 'НОВЫЙ СЕЗОН.vlxr' as const
 
 export const PROCESSING_TIMECODE = '01:36:53:08' as const
 
@@ -89,7 +86,6 @@ export type ProcessingStatusRow = {
 }
 
 export const PROCESSING_STATUS_CENTER: readonly ProcessingStatusRow[] = [
-  { label: 'Проект', value: 'НОВЫЙ СЕЗОН.vlxrp' },
   { label: 'Длительность', value: PROCESSING_TIMECODE, accent: 'magenta', mono: true },
   { label: 'Разрешение', value: '3840×2160 (4K)', accent: 'cyan' },
   { label: 'Кадров', value: '174 708' },
@@ -130,6 +126,8 @@ export type ProcessingClipMock = {
   thumb?: boolean
   /** Strip tint for video clip thumbs (mock). */
   thumbTone?: ProcessingClipThumbTone
+  /** Dedicated demo thumb PNG id (ref.1 mock). */
+  thumbDemoId?: ProcessingRef1DemoClipThumbId
   waveform?: boolean
   /** Playhead / selection highlight (mock). */
   highlight?: boolean
@@ -137,12 +135,7 @@ export type ProcessingClipMock = {
   linked?: boolean
 }
 
-/** Extra video rail rows (ref.1 PNG density). */
-export const PROCESSING_RAIL_VIDEO_EXTRA: readonly ProcessingRailFieldMock[] = [
-  { label: 'Битрейт', value: 'Авто (CRF)' },
-  { label: 'GOP', value: '120' }
-]
-
+/** Audio rail fields (ref.1 PNG; collapsed section). */
 export const PROCESSING_RAIL_AUDIO_FIELDS: readonly ProcessingRailFieldMock[] = [
   { label: 'Кодек', value: 'AAC' },
   { label: 'Частота', value: '48 kHz' },
@@ -158,6 +151,19 @@ export const PROCESSING_RAIL_FORMAT_FIELDS: readonly ProcessingRailFieldMock[] =
 
 export const PROCESSING_RAIL_PRESET_ACTIVE = 'YouTube 4K Premium' as const
 
+/** FFmpeg rail header subtitle (ref.1 PNG). */
+export const PROCESSING_RAIL_SUBTITLE = 'Профессиональная обработка медиафайлов' as const
+
+/** Collapsed rail section hints (ref.1 PNG). */
+export const PROCESSING_RAIL_SECTION_HINTS = {
+  audio: 'AAC',
+  format: 'MP4',
+  presets: 'YouTube 4K',
+  scenarios: '2',
+  filters: 'FX',
+  metadata: 'ID3'
+} as const
+
 export type ProcessingRailPresetMock = {
   name: string
   active?: boolean
@@ -170,12 +176,6 @@ export const PROCESSING_RAIL_PRESETS: readonly ProcessingRailPresetMock[] = [
   { name: 'Archive ProRes HQ', active: false }
 ]
 
-export const PROCESSING_RAIL_EYEBROW = 'FFmpeg · export' as const
-
-export const PROCESSING_RAIL_CHIP = 'NVENC' as const
-
-export const PROCESSING_RAIL_SUMMARY = 'H.264 · 4K 60fps · two-pass ON · CRF 18' as const
-
 export const V1_CLIPS: readonly ProcessingClipMock[] = [
   {
     name: 'city_night_4k.mp4',
@@ -183,27 +183,51 @@ export const V1_CLIPS: readonly ProcessingClipMock[] = [
     badges: ['4K'],
     thumb: true,
     thumbTone: 'violet',
+    thumbDemoId: 'city-night',
     highlight: true
   },
-  { name: 'drive_sequence.mov', grow: 3, thumb: true, thumbTone: 'cyan', linked: true },
+  {
+    name: 'drive_sequence.mov',
+    grow: 3,
+    thumb: true,
+    thumbTone: 'cyan',
+    thumbDemoId: 'drive-sequence',
+    linked: true
+  },
   {
     name: 'neon_building.mp4',
     grow: 2,
     badges: ['fx'],
     thumb: true,
     thumbTone: 'magenta',
+    thumbDemoId: 'neon-building',
     linked: true
   },
-  { name: 'digital_billboard.mov', grow: 2, thumb: true, thumbTone: 'amber', linked: true },
+  {
+    name: 'digital_billboard.mov',
+    grow: 2,
+    thumb: true,
+    thumbTone: 'amber',
+    thumbDemoId: 'digital-billboard',
+    linked: true
+  },
   {
     name: 'glitch_effect.mov',
     grow: 2,
     badges: ['fx'],
     thumb: true,
     thumbTone: 'magenta',
+    thumbDemoId: 'glitch-effect',
     linked: true
   },
-  { name: 'rain_reflections.mp4', grow: 3, thumb: true, thumbTone: 'violet', linked: true }
+  {
+    name: 'rain_reflections.mp4',
+    grow: 3,
+    thumb: true,
+    thumbTone: 'violet',
+    thumbDemoId: 'rain-reflections',
+    linked: true
+  }
 ]
 
 /** ref.1 PNG: V2/V3 video lanes empty; clips only on V1. */

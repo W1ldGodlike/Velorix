@@ -12,7 +12,7 @@ export default defineConfig({
     environment: 'node',
     include: ['tests/**/*.test.ts'],
     exclude: ['tests/e2e/**/*.spec.ts'],
-    reporters: ['default'],
+    reporters: process.env['VITEST_VERBOSE'] === '1' ? ['default'] : ['dot'],
     passWithNoTests: false,
     clearMocks: true,
     coverage: {

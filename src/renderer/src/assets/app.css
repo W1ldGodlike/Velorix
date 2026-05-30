@@ -1,4 +1,5 @@
 @import './base.css';
+@import './neon-brand.css';
 @import './ref27-kit.css';
 @import './ref26-kit.css';
 @import './ref1-processing.css';
@@ -28,5 +29,8 @@
 @import './ref25-plugins.css';
 
 #root[data-velorix-ui='neon-kit'] {
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
 }

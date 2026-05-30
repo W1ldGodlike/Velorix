@@ -1,5 +1,6 @@
 import type { JSX } from 'react'
 
+import { NeonSidebarBrand } from '../components/NeonBrandLogo'
 import {
   CC_AUTOSAVE,
   CC_CRASH_REPORT_LINES,
@@ -19,16 +20,7 @@ import { PROCESSING_NAV } from './processing-ref1-data'
 export function CriticalCrashSidebar(): JSX.Element {
   return (
     <aside className="cc-sidebar" aria-label="Навигация">
-      <div className="tools-sidebar__brand">
-        <span className="processing-sidebar__mark" aria-hidden>
-          V
-        </span>
-        <div className="processing-sidebar__brand-text">
-          <div className="processing-sidebar__logo vn-text-gradient">VELORIX</div>
-          <p className="processing-sidebar__version">v1.7.0</p>
-        </div>
-        <span className="processing-sidebar__brand-edition">PRO</span>
-      </div>
+      <NeonSidebarBrand className="tools-sidebar__brand processing-sidebar__brand" />
       <nav className="processing-nav cc-sidebar__nav">
         {PROCESSING_NAV.map((item) => (
           <span key={item.slug} className="processing-nav__item">

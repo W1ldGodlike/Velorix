@@ -1,13 +1,14 @@
-import type { JSX } from 'react'
+import { type CSSProperties, type JSX } from 'react'
 
 import {
   A1_CLIPS,
   A2_CLIPS,
-  PROCESSING_PREVIEW_BADGE,
-  PROCESSING_PREVIEW_SAVED_LABEL,
+  PROCESSING_A1_TRACK_HINT,
   PROCESSING_PREVIEW_ZOOM_PERCENT,
   PROCESSING_PREVIEW_VOLUME_PERCENT,
+  PROCESSING_REF1_DEMO_PREVIEW_URL,
   PROCESSING_TIMECODE,
+  PROCESSING_TIMELINE_PLAYHEAD_PERCENT,
   PROCESSING_TIMELINE_ZOOM_PERCENT,
   TIMELINE_RULER_MARKS,
   V1_CLIPS,
@@ -20,41 +21,52 @@ import { TrackRow } from './processing-ref1-parts'
 export function ProcessingEditorCenterBody(): JSX.Element {
   return (
     <>
-      <div className="processing-preview" aria-label="Превью">
-        <div className="processing-preview__scene" aria-hidden>
-          <span className="processing-preview__horizon" />
-          <span className="processing-preview__ground-mist" />
-          <div className="processing-preview__skyline">
-            <span className="processing-preview__tower processing-preview__tower--a" />
-            <span className="processing-preview__tower processing-preview__tower--b" />
-            <span className="processing-preview__tower processing-preview__tower--c" />
-            <span className="processing-preview__tower processing-preview__tower--d" />
-          </div>
-          <span className="processing-preview__neon-sign processing-preview__neon-sign--left" />
-          <span className="processing-preview__neon-sign processing-preview__neon-sign--right" />
-          <span className="processing-preview__car" />
-          <span className="processing-preview__watermark">VELORIX</span>
-          <span className="processing-preview__vignette" />
-          <span className="processing-preview__scanlines" />
+      <div className="processing-preview processing-preview--ref" aria-label="Превью">
+        <div className="processing-preview__scene processing-preview__scene--ref" aria-hidden>
+          <img
+            className="processing-preview__scene-demo"
+            src={PROCESSING_REF1_DEMO_PREVIEW_URL}
+            alt=""
+            draggable={false}
+          />
         </div>
         <div className="processing-preview__chrome">
-          <span className="processing-preview__saved">{PROCESSING_PREVIEW_SAVED_LABEL}</span>
-          <span className="processing-preview__zoom">{PROCESSING_PREVIEW_ZOOM_PERCENT}%</span>
-          <button type="button" className="processing-preview__fit" disabled>
-            Вписать ▾
-          </button>
-          <span className="processing-preview__chrome-spacer" />
-          <button type="button" className="processing-preview__chrome-btn" disabled aria-hidden>
-            <span className="processing-chrome-glyph processing-chrome-glyph--search processing-glyph" />
-          </button>
-          <button type="button" className="processing-preview__chrome-btn" disabled aria-hidden>
-            <span className="processing-chrome-glyph processing-chrome-glyph--fullscreen processing-glyph" />
-          </button>
-          <button type="button" className="processing-preview__chrome-btn" disabled aria-hidden>
-            <span className="processing-chrome-glyph processing-chrome-glyph--close processing-glyph" />
-          </button>
+          <div className="processing-preview__chrome-left">
+            <button type="button" className="processing-preview__zoom" disabled>
+              {PROCESSING_PREVIEW_ZOOM_PERCENT}%
+              <span className="processing-preview__zoom-chevron" aria-hidden>
+                ▾
+              </span>
+            </button>
+            <button type="button" className="processing-preview__fit" disabled>
+              Вписать
+              <span className="processing-preview__fit-chevron" aria-hidden>
+                ▾
+              </span>
+            </button>
+          </div>
+          <div className="processing-preview__chrome-right">
+            <button type="button" className="processing-preview__chrome-btn" disabled title="Поиск">
+              <span className="processing-chrome-glyph processing-chrome-glyph--search processing-glyph" />
+            </button>
+            <button
+              type="button"
+              className="processing-preview__chrome-btn"
+              disabled
+              title="Полный экран"
+            >
+              <span className="processing-chrome-glyph processing-chrome-glyph--fullscreen processing-glyph" />
+            </button>
+            <button
+              type="button"
+              className="processing-preview__chrome-btn"
+              disabled
+              title="Закрыть превью"
+            >
+              <span className="processing-chrome-glyph processing-chrome-glyph--close processing-glyph" />
+            </button>
+          </div>
         </div>
-        <span className="processing-preview__badge">{PROCESSING_PREVIEW_BADGE}</span>
         <div className="processing-preview__transport">
           <button type="button" className="processing-preview__tc-box" disabled>
             {PROCESSING_TIMECODE}
@@ -68,7 +80,7 @@ export function ProcessingEditorCenterBody(): JSX.Element {
               type="button"
               className="vn-btn vn-btn--secondary vn-btn--icon"
               disabled
-              aria-hidden
+              title="В начало"
             >
               <span className="processing-media-glyph processing-media-glyph--skip-start processing-glyph" />
             </button>
@@ -76,7 +88,7 @@ export function ProcessingEditorCenterBody(): JSX.Element {
               type="button"
               className="vn-btn vn-btn--secondary vn-btn--icon"
               disabled
-              aria-hidden
+              title="Назад"
             >
               <span className="processing-media-glyph processing-media-glyph--rewind processing-glyph" />
             </button>
@@ -91,7 +103,7 @@ export function ProcessingEditorCenterBody(): JSX.Element {
               type="button"
               className="vn-btn vn-btn--secondary vn-btn--icon"
               disabled
-              aria-hidden
+              title="Вперёд"
             >
               <span className="processing-media-glyph processing-media-glyph--forward processing-glyph" />
             </button>
@@ -99,7 +111,7 @@ export function ProcessingEditorCenterBody(): JSX.Element {
               type="button"
               className="vn-btn vn-btn--secondary vn-btn--icon"
               disabled
-              aria-hidden
+              title="В конец"
             >
               <span className="processing-media-glyph processing-media-glyph--skip-end processing-glyph" />
             </button>
@@ -118,20 +130,19 @@ export function ProcessingEditorCenterBody(): JSX.Element {
               type="button"
               className="processing-preview__transport-tool"
               disabled
-              title="Повтор"
-            >
-              <span className="processing-transport-glyph processing-transport-glyph--loop processing-glyph" />
-            </button>
-            <button
-              type="button"
-              className="processing-preview__transport-tool"
-              disabled
               title="PiP"
             >
               <span className="processing-transport-glyph processing-transport-glyph--pip processing-glyph" />
             </button>
           </span>
-          <label className="processing-preview__volume">
+          <label
+            className="processing-preview__volume"
+            style={
+              {
+                '--processing-preview-volume-pct': `${PROCESSING_PREVIEW_VOLUME_PERCENT}%`
+              } as CSSProperties
+            }
+          >
             <span className="processing-volume-glyph processing-glyph" aria-hidden />
             <span className="sr-only">Громкость</span>
             <input
@@ -160,9 +171,9 @@ export function ProcessingEditorCenterBody(): JSX.Element {
             </button>
             <button
               type="button"
-              className="vn-btn vn-btn--secondary vn-btn--icon processing-timeline__tool--active"
+              className="vn-btn vn-btn--secondary vn-btn--icon"
               disabled
-              title="Blade"
+              title="Разрез"
             >
               <span className="processing-tool-glyph processing-tool-glyph--blade processing-glyph" />
             </button>
@@ -176,7 +187,7 @@ export function ProcessingEditorCenterBody(): JSX.Element {
             </button>
             <button
               type="button"
-              className="vn-btn vn-btn--secondary vn-btn--icon"
+              className="vn-btn vn-btn--secondary vn-btn--icon processing-timeline__tool--link-on"
               disabled
               title="Связать"
             >
@@ -184,41 +195,21 @@ export function ProcessingEditorCenterBody(): JSX.Element {
             </button>
             <button
               type="button"
-              className="vn-btn vn-btn--secondary vn-btn--icon"
-              disabled
-              title="Группа"
-            >
-              <span className="processing-tool-glyph processing-tool-glyph--group processing-glyph" />
-            </button>
-            <button
-              type="button"
-              className="vn-btn vn-btn--secondary vn-btn--icon"
+              className="vn-btn vn-btn--secondary vn-btn--icon processing-timeline__tool--active"
               disabled
               title="Привязка"
             >
               <span className="processing-tool-glyph processing-tool-glyph--snap processing-glyph" />
             </button>
-            <button
-              type="button"
-              className="vn-btn vn-btn--secondary vn-btn--icon"
-              disabled
-              title="Перо"
-            >
-              <span className="processing-tool-glyph processing-tool-glyph--pen processing-glyph" />
-            </button>
-            <button
-              type="button"
-              className="vn-btn vn-btn--secondary vn-btn--icon"
-              disabled
-              title="Слои"
-            >
-              <span className="processing-tool-glyph processing-tool-glyph--layers processing-glyph" />
-            </button>
-            <span className="processing-timeline__snap-pill processing-timeline__snap-pill--on">
-              SNAP
-            </span>
           </div>
-          <label className="processing-timeline__zoom">
+          <label
+            className="processing-timeline__zoom"
+            style={
+              {
+                '--processing-timeline-zoom-pct': `${PROCESSING_TIMELINE_ZOOM_PERCENT}%`
+              } as CSSProperties
+            }
+          >
             <span className="sr-only">Масштаб таймлайна</span>
             <span className="processing-timeline__zoom-btn" aria-hidden>
               −
@@ -238,7 +229,14 @@ export function ProcessingEditorCenterBody(): JSX.Element {
             </span>
           </label>
         </div>
-        <div className="processing-timeline__body">
+        <div
+          className="processing-timeline__body"
+          style={
+            {
+              '--processing-timeline-playhead': PROCESSING_TIMELINE_PLAYHEAD_PERCENT / 100
+            } as CSSProperties
+          }
+        >
           <div className="processing-timeline__tracks">
             <div className="processing-timeline__playhead" aria-hidden>
               <span className="processing-timeline__playhead-bubble">{PROCESSING_TIMECODE}</span>
@@ -256,7 +254,7 @@ export function ProcessingEditorCenterBody(): JSX.Element {
             <TrackRow id="V3" clips={V3_CLIPS} />
             <TrackRow id="V2" clips={V2_CLIPS} />
             <TrackRow id="V1" clips={V1_CLIPS} active showLinkMarkers />
-            <TrackRow id="A1" clips={A1_CLIPS} audio trackHint="Высокая громк." />
+            <TrackRow id="A1" clips={A1_CLIPS} audio trackHint={PROCESSING_A1_TRACK_HINT} />
             <TrackRow id="A2" clips={A2_CLIPS} audio showEnvelope />
           </div>
         </div>

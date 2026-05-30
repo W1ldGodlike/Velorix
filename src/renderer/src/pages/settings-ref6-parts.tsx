@@ -1,5 +1,7 @@
 import type { JSX } from 'react'
 
+import { NeonBrandAppIcon } from '../components/NeonBrandLogo'
+
 import type { SettingsCardMock } from './settings-ref6-data'
 import { SETTINGS_ABOUT, SETTINGS_QUICK_ACTIONS, SETTINGS_RESOURCES } from './settings-ref6-data'
 
@@ -73,9 +75,7 @@ export function SettingsSystemRail(): JSX.Element {
         <section className="settings-rail__section vn-surface-glass">
           <h2 className="settings-rail__title">О системе</h2>
           <div className="settings-about">
-            <span className="processing-sidebar__mark settings-about__mark" aria-hidden>
-              V
-            </span>
+            <NeonBrandAppIcon className="processing-sidebar__mark settings-about__mark" />
             <dl>
               <div>
                 <dt>Версия</dt>

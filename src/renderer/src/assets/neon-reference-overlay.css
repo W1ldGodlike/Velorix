@@ -1,4 +1,8 @@
-/* Dev PNG overlay (sign-off); not product chrome */
+/* Dev PNG overlay (sign-off); mounted in .neon-chrome-shell__body (─✕ вне сравнения) */
+
+.neon-chrome-shell__body {
+  position: relative;
+}
 
 .neon-ref-overlay {
   position: absolute;
@@ -39,6 +43,14 @@
 .neon-ref-overlay__tag {
   color: var(--fa-text-secondary);
   white-space: nowrap;
+}
+
+.neon-ref-overlay__note {
+  flex: 1 1 100%;
+  font-size: 0.48rem;
+  line-height: 1.25;
+  color: var(--fa-text-muted);
+  opacity: 0.92;
 }
 
 .neon-ref-overlay__btn,

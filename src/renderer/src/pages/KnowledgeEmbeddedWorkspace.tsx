@@ -1,4 +1,5 @@
 import type { JSX } from 'react'
+import { NeonSidebarBrand } from '../components/NeonBrandLogo'
 
 import { VELORIX_NEON_REFERENCE_KNOWLEDGE_REL } from '../../../shared/velorix-neon-theme-tokens'
 import { NeonReferenceOverlay } from '../components/NeonReferenceOverlay'
@@ -30,16 +31,8 @@ export function KnowledgeEmbeddedWorkspace(): JSX.Element {
           <NeonReferenceOverlay referenceRel={VELORIX_NEON_REFERENCE_KNOWLEDGE_REL} />
         ) : null}
         <aside className="knowledge-sidebar" aria-label="Навигация">
-          <div className="knowledge-sidebar__brand">
-            <span className="processing-sidebar__mark" aria-hidden>
-              V
-            </span>
-            <div className="processing-sidebar__brand-text">
-              <div className="processing-sidebar__logo vn-text-gradient">VELORIX</div>
-              <p className="processing-sidebar__version">v1.7.0</p>
-            </div>
-            <span className="processing-sidebar__brand-edition">PRO</span>
-          </div>
+          <NeonSidebarBrand className="knowledge-sidebar__brand processing-sidebar__brand" />
+
           <section className="knowledge-sidebar__nav-block" aria-label="Проект">
             <h2 className="processing-sidebar__section-title">ПРОЕКТ</h2>
             <nav className="processing-nav">

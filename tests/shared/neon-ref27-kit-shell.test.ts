@@ -21,7 +21,7 @@ describe('ref.27 UI components kit shell (ui.5)', () => {
     expect(readFileSync(tsx, 'utf8')).toContain('tools-statusbar__ready')
     expect(readFileSync(tsx, 'utf8')).toContain('tools-statusbar__tc')
     const sidebar = join(process.cwd(), 'src/renderer/src/pages/kit-showcase-sidebar.tsx')
-    expect(readFileSync(sidebar, 'utf8')).toContain('processing-sidebar__brand-edition')
+    expect(readFileSync(sidebar, 'utf8')).toContain('NeonSidebarBrand')
     const statusData = join(process.cwd(), 'src/renderer/src/pages/kit-showcase-status-data.ts')
     expect(readFileSync(statusData, 'utf8')).toContain('KIT_STATUS_READY')
     expect(readFileSync(statusData, 'utf8')).toContain('KIT_SUMMARY_REF27')
